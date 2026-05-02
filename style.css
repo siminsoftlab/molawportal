@@ -58,3 +58,147 @@ button:hover {
   font-size: 14px;
   color: #777;
 }
+.two-box {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* 왼쪽·오른쪽 박스: 배경 제거 + 테두리만 표시 */
+.left-box, .right-box {
+  flex: 1;
+  background: none; /* 배경 제거 */
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  border: 0px solid #4A90E2; /* 테두리만 표시 */
+}
+
+/* 계산기 이미지 */
+.calc-img {
+  width: 100%;
+  max-width: 180px;
+  margin-bottom: 15px;
+}
+
+/* 버튼 */
+.calc-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  background: #4A90E2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calc-btn:hover {
+  background: #357ABD;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .two-box {
+    flex-direction: column;
+  }
+}
+
+
+.v-marquee {
+  width: 100%;
+  height: 40px; /* 보이는 영역 */
+  overflow: hidden;
+  position: relative;
+  background: #1a2b4c;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.v-marquee-inner {
+  display: flex;
+  flex-direction: column;
+  animation: scrollUp 10s linear infinite;
+}
+
+/* 마우스 올리면 멈춤 */
+.v-marquee:hover .v-marquee-inner {
+  animation-play-state: paused;
+}
+
+.v-marquee-inner div {
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
+  text-align: center; /* 중앙 정렬 */
+  color: #ffffff;
+}
+
+/* 위로만 계속 올라가는 무한 스크롤 */
+@keyframes scrollUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-240px); } /* 40px × 6줄 */
+}
+
+a.no-style {
+  text-decoration: none;
+  color: inherit;
+}
+
+.banner-slider {
+  width: 800px;
+  height: 150px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  margin-top: 40px;
+}
+
+.banner-slider img.banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 1;
+}
+
+.banner-slider img.active {
+  opacity: 1;
+}
+
+/* 🔥 버튼이 무조건 보이도록 강제 고정 */
+.banner-slider button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px;
+  height: 45px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 9999; /* 최상단 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 양쪽 끝에 딱 붙이기 */
+.banner-slider .prev {
+  left: 0;
+}
+
+.banner-slider .next {
+  right: 0;
+}
+
+/* 호버 시 더 선명하게 */
+.banner-slider button:hover {
+  background: rgba(0,0,0,0.85);
+}
