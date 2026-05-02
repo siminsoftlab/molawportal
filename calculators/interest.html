@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>부당이득금 계산기</title>
+  <link rel="stylesheet" href="../style.css">
+  <script src="../app.js" defer></script>
+</head>
+<body>
+
+<header>
+  <h1>부당이득금 계산기</h1>
+</header>
+
+<div class="container">
+  <label>원금(원)</label>
+  <input id="principal" type="number">
+
+  <label>연 이자율(%)</label>
+  <input id="rate" type="number" value="5">
+
+  <label>기간(일수)</label>
+  <input id="days" type="number">
+
+  <button onclick="calcInterest()">계산하기</button>
+
+  <div id="interestResult" class="result-box"></div>
+
+  <p class="notice">
+    ※ 본 계산기는 참고용이며 실제 부당이득금 산정은 법률 전문가 판단에 따라 달라질 수 있습니다.
+  </p>
+</div>
+
+</body>
+</html>

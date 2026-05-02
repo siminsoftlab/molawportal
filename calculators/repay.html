@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>개인회생 변제금 계산기</title>
+  <link rel="stylesheet" href="../style.css">
+  <script src="../app.js" defer></script>
+</head>
+<body>
+
+<header>
+  <h1>개인회생 변제금 계산기</h1>
+</header>
+
+<div class="container">
+  <label>월 소득(원)</label>
+  <input id="income" type="number">
+
+  <label>기본 생계비(원)</label>
+  <input id="living" type="number">
+
+  <label>추가 생계비(원)</label>
+  <input id="extra" type="number" value="0">
+
+  <label>변제기간(개월)</label>
+  <input id="months" type="number" value="36">
+
+  <label>청산가치(원, 선택)</label>
+  <input id="asset" type="number" value="0">
+
+  <button onclick="calcRepay()">계산하기</button>
+
+  <div id="repayResult" class="result-box"></div>
+
+  <p class="notice">
+    ※ 본 계산기는 참고용이며 실제 변제금은 법원 판단에 따라 달라질 수 있습니다.
+  </p>
+</div>
+
+</body>
+</html>
