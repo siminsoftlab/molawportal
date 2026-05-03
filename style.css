@@ -249,6 +249,14 @@ a.no-style {
   ul li a {
     font-size: 15px;
   }
+
+   .left-box, .right-box {
+    min-height: 200px;
+  }
+
+  .calc-img {
+    max-width: 140px;
+  }
 }
 
 /* ------------------------------
