@@ -153,12 +153,12 @@ button:hover {
   border: 1px solid #ddd;
 } -- */
 .v-marquee {
-  position: fixed;
+ position: fixed !important;
   bottom: 0;
   left: 0;
   width: 100%;
-  z-index: 9999; /* 항상 위에 보이도록 */
-  border-radius: 0; /* 하단 고정 시 둥근 모서리 제거 추천 */
+  z-index: 99999;
+  border-radius: 0;
 }
 
 .v-marquee-inner {
