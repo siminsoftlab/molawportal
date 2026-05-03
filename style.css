@@ -68,25 +68,22 @@ button:hover {
   margin-top: 20px;
 }
 
-.left-box, .right-box {
-  flex: 1;
-  background: none;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  border: 1px solid #4A90E2;
-
-  /* 🔥 추가된 부분 */
-  min-height: 300px; /* 원하는 높이로 조절 가능 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .calc-img {
   width: 100%;
-  max-width: 180px;
+  max-width: 160px;
   margin-bottom: 15px;
+}
+
+.left-box, .right-box {
+  flex: 1;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  min-height: 220px; /* 높이 증가 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .calc-btn {
