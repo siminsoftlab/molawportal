@@ -68,22 +68,27 @@ button:hover {
   margin-top: 20px;
 }
 
-.calc-img {
-  width: 100%;
-  max-width: 160px;
-  margin-bottom: 15px;
-}
-
 .left-box, .right-box {
   flex: 1;
   padding: 25px;
   border-radius: 12px;
   text-align: center;
-  min-height: 220px; /* 높이 증가 */
+  min-height: 240px; /* 높이 증가 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 위·아래 행 분리 */
+  align-items: center;
+}
+.box-top {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+}
+
+.calc-img {
+  width: 100%;
+  max-width: 160px;
+  margin-bottom: 15px;
 }
 
 .calc-btn {
@@ -99,6 +104,16 @@ button:hover {
 
 .calc-btn:hover {
   background: #357ABD;
+}
+
+.box-bottom {
+  margin-top: 10px;
+}
+
+.calc-desc {
+  font-size: 17px;
+  font-weight: 500;
+  color: #333;
 }
 
 /* ------------------------------
@@ -200,6 +215,23 @@ a.no-style {
 ------------------------------ */
 @media (max-width: 768px) {
 
+    .two-box {
+    flex-direction: column;
+  }
+
+  .left-box, .right-box {
+    min-height: 220px;
+  }
+
+  .calc-img {
+    max-width: 140px;
+  }
+
+  .calc-desc {
+    font-size: 16px;
+  }
+
+
   /* 컨테이너 여백 축소 */
   .container {
     width: 92%;
@@ -232,9 +264,6 @@ a.no-style {
   }
 
   /* 계산기 버튼 세로 배치 */
-  .two-box {
-    flex-direction: column;
-  }
 
   .calc-btn {
     font-size: 17px;
@@ -257,6 +286,7 @@ a.no-style {
   .calc-img {
     max-width: 140px;
   }
+
 }
 
 /* ------------------------------
@@ -278,4 +308,6 @@ a.no-style {
   .v-marquee-inner div {
     font-size: 13px;
   }
+
+  
 }
