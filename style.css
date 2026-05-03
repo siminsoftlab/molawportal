@@ -7,11 +7,13 @@ body {
 }
 
 header {
-  background: #1A2A4A;
+ background: #1A2A4A;
   color: white;
   padding: 20px;
-  text-align: center;
-  position: relative; /* 홈 버튼 위치 고정용 */
+  display: flex;               /* 가로 배치 */
+  justify-content: center;     /* 제목 가운데 정렬 */
+  align-items: center;         /* 수직 가운데 정렬 */
+  position: relative;          /* 홈 버튼 위치 기준 */
 }
 
 /* 홈 버튼 스타일 */
