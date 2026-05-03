@@ -74,7 +74,7 @@ button:hover {
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  border: 0px solid #4A90E2;
+  border: 1px solid #4A90E2;
 
   /* 🔥 추가된 부분 */
   min-height: 300px; /* 원하는 높이로 조절 가능 */
