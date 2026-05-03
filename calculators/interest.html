@@ -21,9 +21,10 @@
 
   <label>기간(일수)</label>
   <input id="days" type="number">
-
-  <button onclick="calcInterest()">계산하기</button>
-
+  <div class="btn-row">
+    <button onclick="calcInterest()">계산하기</button>
+    <button onclick="resetInputs()">초기화</button>
+  </div>
   <div id="interestResult" class="result-box"></div>
 
   <p class="notice">
