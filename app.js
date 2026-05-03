@@ -35,3 +35,20 @@ function calcInterest() {
     `<strong>이자:</strong> ${interest.toLocaleString()}원<br>
      <strong>총액:</strong> ${total.toLocaleString()}원`;
 }
+function resetInputs() {
+  // 모든 입력 요소를 선택
+  const inputs = document.querySelectorAll('input[type="number"]');
+
+  // 각 입력값 초기화
+  inputs.forEach(input => {
+    input.value = ''; // 기본적으로 빈 값으로 초기화
+  });
+
+  // 결과창도 초기화
+  document.getElementById('repayResult').innerHTML = '';
+
+  // 필요 시 기본값 복원 (예: months, extra, asset)
+  document.getElementById('extra').value = 0;
+  document.getElementById('months').value = 36;
+  document.getElementById('asset').value = 0;
+}
