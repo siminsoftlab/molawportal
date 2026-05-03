@@ -11,6 +11,25 @@ header {
   color: white;
   padding: 20px;
   text-align: center;
+  position: relative; /* 홈 버튼 위치 고정용 */
+}
+
+/* 홈 버튼 스타일 */
+.home-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #4A90E2;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.home-btn:hover {
+  background: #357ABD;
 }
 
 .container {
