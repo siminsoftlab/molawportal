@@ -76,8 +76,8 @@ button:hover {
   text-align: center;
   border: 0px solid #4A90E2;
 
-    /* 🔥 추가된 부분 */
-  min-height: 180px; /* 원하는 높이로 조절 가능 */
+  /* 🔥 추가된 부분 */
+  min-height: 300px; /* 원하는 높이로 조절 가능 */
   display: flex;
   align-items: center;
   justify-content: center;
