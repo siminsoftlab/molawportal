@@ -28,9 +28,10 @@
   <label>청산가치(원, 선택)</label>
   <input id="asset" type="number" value="0">
 
-  <button onclick="calcRepay()">계산하기</button>
-  <button onclick="resetInputs()">초기화</button>
-
+  <div class="btn-row">
+    <button onclick="calcRepay()">계산하기</button>
+    <button onclick="resetInputs()">초기화</button>
+  </div>
   <div id="repayResult" class="result-box"></div>
 
   <p class="notice">
