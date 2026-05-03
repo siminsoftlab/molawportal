@@ -4,6 +4,7 @@ body {
   padding: 0;
   background: #f7f9fc;
   color: #333;
+  padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
 
 header {
