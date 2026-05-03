@@ -35,6 +35,14 @@ function calcInterest() {
     `<strong>이자:</strong> ${interest.toLocaleString()}원<br>
      <strong>총액:</strong> ${total.toLocaleString()}원`;
 }
+
+function resetinterestInputs() {
+  document.getElementById('principal').value = '';
+  document.getElementById('rate').value = 20;
+  document.getElementById('days').value = '';
+  document.getElementById('interestResult').innerHTML = '';
+}
+
 function resetInputs() {
   // 모든 입력 요소를 선택
   const inputs = document.querySelectorAll('input[type="number"]');
