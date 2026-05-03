@@ -210,6 +210,16 @@ a.no-style {
   background: rgba(0,0,0,0.85);
 }
 
+.btn-row {
+  display: flex;
+  gap: 15px; /* 버튼 사이 간격 */
+  margin-top: 15px;
+}
+
+.btn-row button {
+  flex: 1; /* 두 버튼을 동일한 너비로 */
+}
+
 /* ------------------------------
    🔥 모바일 반응형 최적화
 ------------------------------ */
@@ -308,6 +318,8 @@ a.no-style {
   .v-marquee-inner div {
     font-size: 13px;
   }
-
+ .btn-row {
+    flex-direction: column;
+  }
   
 }
