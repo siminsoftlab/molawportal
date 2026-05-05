@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>모두의로펌 계산기</title>
+    <link>https://molawcalculator.com/</link>
+    <description>개인회생 변제금·이자 계산기 및 서류발급대행·불법사채 피해구제 블로그 RSS피드</description>
+    <language>ko</language>
+    <lastBuildDate>Tue, 05 May 2026 23:47:00 +0900</lastBuildDate>
+
+    <item>
+      <title><![CDATA[쏜살민원이란?]]></title>
+      <link>https://molawcalculator.com/blog/ssonsalminwon.html</link>
+      <description><![CDATA[쏜살민원은 서류 발급, 법원 제증명 발급등 복잡한 민원 절차를 대신 처리해 드립니다.]]></description>
+      <pubDate>Tue, 05 May 2026 23:47:00 +0900</pubDate>
+      <guid>https://molawcalculator.com/blog/ssonsalminwon.html</guid>
+    </item>
+
+    <item>
+      <title><![CDATA[모두의로펌이란?]]></title>
+      <link>https://molawcalculator.com/blog/modoolawfirm.html</link>
+      <description><![CDATA[모두의로펌은 불법사채·불법사금융 피해, 불법추심 피해구제, 개인회생·파산 신청등 채무 문제를 해결해 드립니다.]]></description>
+      <pubDate>Tue, 05 May 2026 23:47:00 +0900</pubDate>
+      <guid>https://molawcalculator.com/blog/modoolawfirm.html</guid>
+    </item>
+
+    <item>
+      <title><![CDATA[이자 계산기]]></title>
+      <link>https://molawcalculator.com/calculators/interest.html</link>
+      <description><![CDATA[원금, 이자율, 기간 등을 입력하면 연이자 계산기입니다.]]></description>
+      <pubDate>Tue, 05 May 2026 23:47:00 +0900</pubDate>
+      <guid>https://molawcalculator.com/calculators/interest.html</guid>
+    </item>
+
+    <item>
+      <title><![CDATA[개인회생 변제금 계산기]]></title>
+      <link>https://molawcalculator.com/calculators/repay.html</link>
+      <description><![CDATA[월 소득, 생계비, 변제 기간 등을 입력하면 개인회생 변제금 계산기입니다.]]></description>
+      <pubDate>Tue, 05 May 2026 23:47:00 +0900</pubDate>
+      <guid>https://molawcalculator.com/calculators/repay.html</guid>
+    </item>
+
+  </channel>
+</rss>
