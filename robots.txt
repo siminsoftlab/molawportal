@@ -1,4 +1,2 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://siminsoftlab.github.io/molawportal/sitemap.xml
