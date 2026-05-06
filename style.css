@@ -346,5 +346,52 @@ a.no-style {
  .btn-row {
     flex-direction: column;
   }
-  
+  /*--
+  계산결과
+    --*/
+  .result-box {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-left: 6px solid #4A90E2;
+  transition: all 0.3s ease;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.result-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.result-value {
+  font-weight: 700;
+  color: #222;
+}
+
+.highlight {
+  color: #E74C3C;
+  font-size: 22px;
+}
+
 }
