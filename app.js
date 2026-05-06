@@ -1,3 +1,5 @@
+
+/*
 function calcRepay() {
   const income = Number(document.getElementById('income').value);
   const living = Number(document.getElementById('living').value);
@@ -20,6 +22,31 @@ function calcRepay() {
   document.getElementById('repayResult').innerHTML =
     `<strong>월 변제금:</strong> ${monthly.toLocaleString()}원<br>
      <strong>총 변제액:</strong> ${total.toLocaleString()}원`;
+}
+*/
+
+function calcRepay() {
+  const income = Number(document.getElementById('income').value);
+  const living = Number(document.getElementById('living').value);
+  const extra  = Number(document.getElementById('extra').value);
+  const months = Number(document.getElementById('months').value);
+  const asset  = Number(document.getElementById('asset').value);
+
+  // 1) 가용소득 계산
+  const disposable = Math.max(income - (living + extra), 0);
+
+  // 2) 가용소득 기준 총 변제액
+  const totalByIncome = disposable * months;
+
+  // 3) 청산가치와 비교하여 더 큰 값 선택
+  const finalTotal = Math.max(totalByIncome, asset);
+
+  // 4) 최종 월 변제금
+  const monthly = Math.ceil(finalTotal / months);
+
+  document.getElementById('repayResult').innerHTML =
+    `<strong>월 변제금:</strong> ${monthly.toLocaleString()}원<br>
+     <strong>총 변제액:</strong> ${finalTotal.toLocaleString()}원`;
 }
 
 function calcInterest() {
