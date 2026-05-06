@@ -58,7 +58,7 @@ function calcRepay() {
     </div>
   `;
 }
-
+/*
 function calcInterest() {
   const principal = Number(document.getElementById('principal').value);
   const rate      = Number(document.getElementById('rate').value) / 100;
@@ -71,6 +71,42 @@ function calcInterest() {
   document.getElementById('interestResult').innerHTML =
     `<strong>이자:</strong> ${interest.toLocaleString()}원<br>
      <strong>총액:</strong> ${total.toLocaleString()}원`;
+}
+*/
+
+function calcInterest() {
+  const principal = Number(document.getElementById('principal').value);
+  const rate = Number(document.getElementById('rate').value);
+  const days = Number(document.getElementById('days').value);
+
+  if (!principal || !rate || !days) {
+    document.getElementById('interestResult').innerHTML = `
+      <div class="result-title">⚠ 입력 오류</div>
+      <div class="result-item">
+        <div class="result-label">안내</div>
+        <div class="result-value">모든 값을 입력해주세요.</div>
+      </div>
+    `;
+    return;
+  }
+
+  // 연이자 계산: (원금 × 연이율 × 일수 / 365)
+  const interest = Math.floor(principal * (rate / 100) * (days / 365));
+  const total = principal + interest;
+
+  document.getElementById('interestResult').innerHTML = `
+    <div class="result-title">📌 계산 결과</div>
+
+    <div class="result-item">
+      <div class="result-label">이자 금액</div>
+      <div class="result-value highlight">${interest.toLocaleString()}원</div>
+    </div>
+
+    <div class="result-item">
+      <div class="result-label">총 상환액(원금+이자)</div>
+      <div class="result-value">${total.toLocaleString()}원</div>
+    </div>
+  `;
 }
 
 function resetinterestInputs() {
