@@ -44,9 +44,19 @@ function calcRepay() {
   // 4) 최종 월 변제금
   const monthly = Math.ceil(finalTotal / months);
 
-  document.getElementById('repayResult').innerHTML =
-    `<strong>월 변제금:</strong> ${monthly.toLocaleString()}원<br>
-     <strong>총 변제액:</strong> ${finalTotal.toLocaleString()}원`;
+  document.getElementById('repayResult').innerHTML = `
+  <div class="result-title">📌 계산 결과</div>
+
+  <div class="result-item">
+    <div class="result-label">월 변제금</div>
+    <div class="result-value highlight">${monthly.toLocaleString()}원</div>
+  </div>
+
+  <div class="result-item">
+    <div class="result-label">총 변제액</div>
+    <div class="result-value">${total.toLocaleString()}원</div>
+  </div>
+`;
 }
 
 function calcInterest() {
@@ -89,17 +99,3 @@ function resetInputs() {
   document.getElementById('months').value = 36;
   document.getElementById('asset').value = 0;
 }
-
-document.getElementById('repayResult').innerHTML = `
-  <div class="result-title">📌 계산 결과</div>
-
-  <div class="result-item">
-    <div class="result-label">월 변제금</div>
-    <div class="result-value highlight">${monthly.toLocaleString()}원</div>
-  </div>
-
-  <div class="result-item">
-    <div class="result-label">총 변제액</div>
-    <div class="result-value">${total.toLocaleString()}원</div>
-  </div>
-`;
