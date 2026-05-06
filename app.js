@@ -110,6 +110,14 @@ function calcInterest() {
 }
 
 function resetinterestInputs() {
+   // 모든 입력 요소를 선택
+  const inputs = document.querySelectorAll('input[type="number"]:not(#living)');
+
+  // 각 입력값 초기화
+  inputs.forEach(input => {
+    input.value = ''; // 기본적으로 빈 값으로 초기화
+  });
+  
   document.getElementById('principal').value = 0;
   document.getElementById('rate').value = 20;
   document.getElementById('days').value = 1;
