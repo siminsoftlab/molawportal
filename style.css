@@ -190,7 +190,6 @@ a.no-style {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  position: relative;
   top: 0;
   left: 0;
   opacity: 0;
@@ -198,6 +197,7 @@ a.no-style {
   z-index: 5;
   pointer-events: auto;   /* 이미지 클릭 가능 */
   cursor: pointer;
+  display: none;
 }
 
 .banner-slider a {
@@ -206,6 +206,7 @@ a.no-style {
 
 .banner-slider img.active {
   opacity: 1;
+  display: block;
 }
 
 .banner-slider button {
