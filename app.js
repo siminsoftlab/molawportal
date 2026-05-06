@@ -57,7 +57,7 @@ function resetInputs() {
 
   // 필요 시 기본값 복원 (예: months, extra, asset)
   document.getElementById("income").value = "";
-  document.getElementById("living").value = "";
+  document.getElementById("living").setectedIndex = 0; //dropdown 초기화
   document.getElementById('extra').value = 0;
   document.getElementById('months').value = 36;
   document.getElementById('asset').value = 0;
