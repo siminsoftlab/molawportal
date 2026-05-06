@@ -196,6 +196,12 @@ a.no-style {
   opacity: 0;
   transition: opacity 1s ease-in-out;
   z-index: 5;
+  pointer-events: auto;   /* 이미지 클릭 가능 */
+  cursor: pointer;
+}
+
+.banner-slider a {
+  pointer-events: none;   /* 혹시 남아 있는 a 태그가 클릭 못 하게 */
 }
 
 .banner-slider img.active {
