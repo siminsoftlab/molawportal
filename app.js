@@ -110,9 +110,9 @@ function calcInterest() {
 }
 
 function resetinterestInputs() {
-  document.getElementById('principal').value = '';
+  document.getElementById('principal').value = 0;
   document.getElementById('rate').value = 20;
-  document.getElementById('days').value = '';
+  document.getElementById('days').value = 1;
   document.getElementById('interestResult').innerHTML = '';
 }
 
