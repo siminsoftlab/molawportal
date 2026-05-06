@@ -6,7 +6,7 @@ body {
   color: #333;
   padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
-/*
+
 header {
  background: #1A2A4A;
   color: white;
@@ -15,32 +15,8 @@ header {
   justify-content: center;     /* 제목 가운데 */
   align-items: center;         /* 수직 가운데 */
   position: relative;          /* 홈 버튼 위치 기준 */
-}*/
-
-header {
-  background: #1A2A4A;
-  color: white;
-  padding: 20px;
-
-  display: flex;
-  justify-content: center;   /* 전체를 중앙으로 */
-  align-items: center;       /* 수직 중앙 */
-  gap: 20px;                 /* 제목과 홈 버튼 사이 간격 */
 }
 
-header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-header .home-btn {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 6px 12px;
-  border: 1px solid rgba(255,255,255,0.6);
-  border-radius: 6px;
-}
 /* 홈 버튼 스타일 */
 .home-btn {
   position: absolute;
