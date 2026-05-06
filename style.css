@@ -68,14 +68,6 @@ button:hover {
   background: #357ABD;
 }
 
-.result-box {
-  margin-top: 20px;
-  padding: 15px;
-  background: #eef4ff;
-  border-left: 4px solid #4A90E2;
-  border-radius: 5px;
-}
-
 .notice {
   margin-top: 20px;
   font-size: 14px;
@@ -346,9 +338,11 @@ a.no-style {
  .btn-row {
     flex-direction: column;
   }
+  
   /*--
   계산결과
     --*/
+  
   .result-box {
   margin-top: 20px;
   padding: 20px;
