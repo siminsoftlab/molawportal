@@ -178,6 +178,43 @@ a.no-style {
    배너 슬라이더
 ------------------------------ */
 .banner-slider {
+  position: relative;
+  width: 100%;
+  max-width: 900px;   /* 너무 넓지 않게 */
+  margin: 0 auto;     /* 중앙 정렬 */
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.banner-slider img {
+  width: 100%;
+  display: none;
+}
+
+.banner-slider img.active {
+  display: block;
+}
+
+.banner-slider button.prev,
+.banner-slider button.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.banner-slider .prev { left: 10px; }
+.banner-slider .next { right: 10px; }
+
+
+/*
+.banner-slider {
   width: 100%;
   max-width: 800px;
   height: 150px;
@@ -226,7 +263,7 @@ a.no-style {
 .banner-slider button:hover {
   background: rgba(0,0,0,0.85);
 }
-
+*/
 .btn-row {
   display: flex;
   gap: 15px; /* 버튼 사이 간격 */
