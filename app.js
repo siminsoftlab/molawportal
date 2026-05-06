@@ -45,7 +45,7 @@ function resetinterestInputs() {
 
 function resetInputs() {
   // 모든 입력 요소를 선택
-  const inputs = document.querySelectorAll('input[type="number"]');
+  const inputs = document.querySelectorAll('input[type="number"]:not(#living)');
 
   // 각 입력값 초기화
   inputs.forEach(input => {
