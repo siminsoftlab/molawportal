@@ -89,3 +89,17 @@ function resetInputs() {
   document.getElementById('months').value = 36;
   document.getElementById('asset').value = 0;
 }
+
+document.getElementById('repayResult').innerHTML = `
+  <div class="result-title">📌 계산 결과</div>
+
+  <div class="result-item">
+    <div class="result-label">월 변제금</div>
+    <div class="result-value highlight">${monthly.toLocaleString()}원</div>
+  </div>
+
+  <div class="result-item">
+    <div class="result-label">총 변제액</div>
+    <div class="result-value">${total.toLocaleString()}원</div>
+  </div>
+`;
