@@ -6,6 +6,22 @@ body {
   color: #333;
   padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
+/* 다른 페이지용 고정 헤더 */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  z-index: 9999;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+/* 본문이 헤더 뒤로 숨지 않도록 여백 추가 */
+main {
+  margin-top: 90px;
+}
 /* 상단 마퀴 박스 */
 .top-marquee {
   width: 100%;
