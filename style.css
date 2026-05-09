@@ -6,6 +6,28 @@ body {
   color: #333;
   padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
+/* 🔥 오른쪽 하단 고정 카톡 버튼 */
+.quick-kakao {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ffe812; /* 카카오톡 노란색 */
+  color: #3c1e1e; /* 카카오톡 브라운 */
+  padding: 14px 18px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  z-index: 99999;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* hover 효과 */
+.quick-kakao:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
 /* 다른 페이지용 고정 헤더 */
 .fixed-header {
   position: fixed;
@@ -397,6 +419,12 @@ a.no-style {
    🔥 모바일 반응형 최적화
 ------------------------------ */
 @media (max-width: 768px) {
+   .quick-kakao {
+    padding: 16px 20px;
+    font-size: 18px;
+    bottom: 16px;
+    right: 16px;
+  }
   .consult-call {
     font-size: 20px;
     padding: 4px 0;
