@@ -6,6 +6,31 @@ body {
   color: #333;
   padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
+.intro-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: #f5f5f5;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+}
+
+.intro-marquee-inner {
+  display: inline-block;
+  padding-left: 100%;
+  font-size: 15px;
+  animation: intro-marquee 12s linear infinite;
+}
+
+@keyframes intro-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 #live-clock {
   width: 100%;
   background-color: #222;
