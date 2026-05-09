@@ -6,6 +6,15 @@ body {
   color: #333;
   padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
+.marquee-call {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.marquee-call:hover {
+  text-decoration: underline;
+}
 .intro-marquee {
   overflow: hidden;
   white-space: nowrap;
