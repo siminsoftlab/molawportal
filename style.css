@@ -9,16 +9,16 @@ body {
 /* 상단 마퀴 박스 */
 .top-marquee {
   width: 100%;
-  background: linear-gradient(90deg, #ff2a2a, #ff4b4b);
+  background: #d60000; /* 모바일에서도 확실히 보이는 강한 레드 */
   color: #fff;
   overflow: hidden;
   white-space: nowrap;
   position: sticky;
-  top: 40px; /* 시계 높이에 맞춰 조정 */
+  top: 40px;
   z-index: 9998;
   padding: 12px 0;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 900;
   text-align: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
@@ -40,8 +40,9 @@ body {
 .marquee-call {
   color: #fff;
   text-decoration: none;
-  font-weight: 800;
-  letter-spacing: 0.5px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-shadow: 0 0 4px rgba(0,0,0,0.6); /* 모바일 가독성 핵심 */
 }
 
 .marquee-call:hover {
