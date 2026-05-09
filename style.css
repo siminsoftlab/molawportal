@@ -4,9 +4,11 @@ body {
   padding: 0;
   background: #f7f9fc;
   color: #333;
-  padding-bottom: 80px; /* 마퀴 높이만큼 여백 확보 */
+  padding-top: 80px; /* header 높이만큼 여백 확보 */
+  padding-bottom: 80px; /* 마퀴 높이만큼 여백 확보 */  
 }
 .container {
+  margin-top: 80px;
   margin-bottom: 100px;
 }
 /* 🔥 오른쪽 하단 고정 카톡 버튼 */
