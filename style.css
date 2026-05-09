@@ -5,11 +5,11 @@ body {
   background: #f7f9fc;
   color: #333;
   padding-top: 120px; /* header 높이만큼 여백 확보 */
-  padding-bottom: 80px; /* 마퀴 높이만큼 여백 확보 */  
+  padding-bottom: 120px; /* 마퀴 높이만큼 여백 확보 */  
 }
 .container {
   margin-top: 120px;
-  margin-bottom: 100px;
+  margin-bottom: 120px;
 }
 /* 🔥 오른쪽 하단 고정 카톡 버튼 */
 .quick-kakao {
