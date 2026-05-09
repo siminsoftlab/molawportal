@@ -25,6 +25,7 @@ function calcRepay() {
 }
 */
 
+
 function calcRepay() {
   const income = Number(document.getElementById('income').value);
   const living = Number(document.getElementById('living').value);
