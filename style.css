@@ -6,41 +6,20 @@ body {
   color: #333;
   padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
-.top-bar {
+#live-clock {
   width: 100%;
   background-color: #222;
   color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 18px;
-  font-size: 20px;
+  text-align: center;
+  padding: 14px 0;
+  font-size: 22px;
   font-weight: 700;
+  letter-spacing: 1px;
   position: sticky;
   top: 0;
   z-index: 9999;
+  font-family: 'Pretendard', sans-serif;
 }
-
-#live-clock {
-  letter-spacing: 1px;
-}
-
-.contact-btn {
-  background-color: #ff4b4b;
-  color: #fff;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.contact-btn:hover {
-  background-color: #ff2a2a;
-}
-
-
 .top-title-banner {
   width: 100%;
   background-color: #ff4b4b;
