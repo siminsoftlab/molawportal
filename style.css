@@ -29,7 +29,7 @@ body {
   overflow: hidden;
   white-space: nowrap;
   position: sticky;
-  top: 52px; /* 시계+버튼 높이만큼 아래에 고정 */
+  top: 52px;
   z-index: 9998;
   padding: 8px 0;
 }
@@ -40,15 +40,17 @@ body {
   padding-left: 100%;
   font-size: 15px;
   animation: marquee-scroll 12s linear infinite;
+  animation-play-state: running; /* 기본: 재생 */
+}
+
+/* 🔥 마우스 올리면 멈춤 */
+.top-marquee-inner:hover {
+  animation-play-state: paused;
 }
 
 @keyframes marquee-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
 @keyframes intro-marquee {
