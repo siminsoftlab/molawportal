@@ -34,10 +34,16 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background: #ffffff;
+  background: #ffffff; /* 흰색 배경 */
+  color: #000000; /* 글자 검정색 */
   z-index: 9999;
   padding: 15px 0;
   border-bottom: 1px solid #ddd;
+}
+
+.fixed-header h1,
+.fixed-header a {
+  color: #000000; /* 글자색 확실하게 검정으로 */
 }
 
 /* 본문이 헤더 뒤로 숨지 않도록 여백 추가 */
