@@ -6,6 +6,19 @@ body {
   color: #333;
   padding-bottom: 50px; /* 마퀴 높이만큼 여백 확보 */
 }
+.top-title-banner {
+  width: 100%;
+  background-color: #ff4b4b;
+  color: #fff;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 20px;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+}
+
 .intro-box {
 max-width: 800px;
   margin: 20px auto 0;
