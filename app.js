@@ -135,10 +135,10 @@ function resetRepayInputs() {
     const inputs = document.querySelectorAll("input[type='number']");
     for (let i = 0; i < inputs.length; i++) inputs[i].value = "";
 
-    $('income').value = 0;
-    $('extra').value = 0;
+    $('income').value = "";
+    $('extra').value = "";
     $('months').value = 36;
-    $('asset').value = 0;
+    $('asset').value = "";
 
     const living = $('living');
     if (living) living.selectedIndex = 0;
@@ -181,9 +181,9 @@ function resetInterestInputs() {
     const inputs = document.querySelectorAll("input[type='number']");
     for (let i = 0; i < inputs.length; i++) inputs[i].value = "";
 
-    $('principal').value = 0;
+    $('principal').value = "";
     $('rate').value = 20;
-    $('days').value = 1;
+    $('days').value = "";
 
     setHTMLSafe("interestResult", "");
   } catch (e) {
