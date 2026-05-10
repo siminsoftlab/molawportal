@@ -15,7 +15,7 @@ body.subpage {
 /* 🔥 오른쪽 하단 고정 카톡 버튼 */
 .quick-kakao {
   position: fixed;
-   bottom: 150px !important;   /* ← WebView에서도 강제 적용 */
+  bottom: 150px !important;   /* ← WebView에서도 강제 적용 */
   right: 20px;
   background: #ffe812; /* 카카오톡 노란색 */
   color: #3c1e1e; /* 카카오톡 브라운 */
