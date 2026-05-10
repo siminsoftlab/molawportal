@@ -15,6 +15,23 @@ function setHTMLSafe(id, html) {
   if (el) el.innerHTML = html;
 }
 
+// WebView 감지
+function isWebView() {
+  const ua = navigator.userAgent || "";
+  return ua.includes("wv") || ua.includes("Version/4.0");
+}
+
+// WebView에서는 target="_blank" 제거
+function fixTargetsForWebView() {
+  if (!isWebView()) return;
+
+  const links = document.querySelectorAll('a[target="_blank"]');
+  for (let i = 0; i < links.length; i++) {
+    links[i].removeAttribute("target");
+    links[i].removeAttribute("rel");
+  }
+}
+
 // ========== 실시간 시계 ==========
 function updateClock() {
   const el = $('live-clock');
