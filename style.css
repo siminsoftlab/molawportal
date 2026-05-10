@@ -4,7 +4,7 @@ body {
   padding: 0;
   background: #f7f9fc;
   color: #333;
-  padding-bottom: 150px;  /* 하단 상담바 때문에 */
+  padding-bottom: 120px;  /* 하단 상담바 때문에 */
 }
 /* 다른 페이지에서만 적용 */
 body.subpage {
