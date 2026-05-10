@@ -1,24 +1,111 @@
 // ========== 공통 유틸 ==========
 
-// 안전하게 요소 가져오기
+// id로 요소 가져오기 (없으면 null)
 function $(id) {
   return document.getElementById(id);
 }
 
-// 숫자 변환 (빈 값, NaN 방지)
-function toNumber(value) {
-  const n = Number(value);
+// 숫자 변환 (NaN 방지)
+function toNumber(v) {
+  const n = Number(v);
   return isNaN(n) ? 0 : n;
 }
 
-// 결과 영역에 안전하게 HTML 넣기
+// 안전하게 innerHTML 설정
 function setHTMLSafe(id, html) {
   const el = $(id);
   if (!el) return;
   el.innerHTML = html;
 }
 
-// ========== 변제금 계산 ==========
+// ========== 실시간 시계 ==========
+
+function updateClock() {
+  const clockEl = $('live-clock');
+  if (!clockEl) return;
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  const min = String(now.getMinutes()).padStart(2, '0');
+  const sec = String(now.getSeconds()).padStart(2, '0');
+
+  clockEl.textContent = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+}
+
+// ========== 배너 슬라이더 (메인 페이지) ==========
+
+function initBannerSlider() {
+  try {
+    const banners = document.querySelectorAll('.banner');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+
+    if (!banners || banners.length === 0) return; // 배너 없으면 그냥 종료
+
+    let current = 0;
+
+    function showBanner(index) {
+      for (var i = 0; i < banners.length; i++) {
+        banners[i].classList.remove('active');
+      }
+      banners[index].classList.add('active');
+    }
+
+    function showNextBanner() {
+      current = (current + 1) % banners.length;
+      showBanner(current);
+    }
+
+    function showPrevBanner() {
+      current = (current - 1 + banners.length) % banners.length;
+      showBanner(current);
+    }
+
+    // 자동 슬라이드
+    let autoSlide = setInterval(showNextBanner, 3000);
+
+    function resetAutoSlide() {
+      clearInterval(autoSlide);
+      autoSlide = setInterval(showNextBanner, 3000);
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        showNextBanner();
+        resetAutoSlide();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function () {
+        showPrevBanner();
+        resetAutoSlide();
+      });
+    }
+
+    // 배너 클릭 시 data-link로 이동
+    for (var i = 0; i < banners.length; i++) {
+      (function (banner) {
+        banner.addEventListener('click', function () {
+          var url = banner.getAttribute('data-link');
+          if (url) {
+            window.location.href = url;
+          }
+        });
+      })(banners[i]);
+    }
+
+    // 초기 표시
+    showBanner(0);
+  } catch (e) {
+    console.log('initBannerSlider error:', e);
+  }
+}
+
+// ========== 변제금 계산기 ==========
 
 function calcRepay() {
   try {
@@ -39,16 +126,9 @@ function calcRepay() {
       return;
     }
 
-    // 1) 가용소득 계산
     const disposable = Math.max(income - (living + extra), 0);
-
-    // 2) 가용소득 기준 총 변제액
     const totalByIncome = disposable * months;
-
-    // 3) 청산가치와 비교하여 더 큰 값 선택
     const finalTotal = Math.max(totalByIncome, asset);
-
-    // 4) 최종 월 변제금
     const monthly = Math.ceil(finalTotal / months);
 
     setHTMLSafe('repayResult', `
@@ -76,7 +156,30 @@ function calcRepay() {
   }
 }
 
-// ========== 이자 계산 ==========
+function resetRepayInputs() {
+  try {
+    var inputs = document.querySelectorAll('input[type="number"]');
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].value = '';
+    }
+
+    if ($('income'))  $('income').value = 0;
+    if ($('extra'))   $('extra').value = 0;
+    if ($('months'))  $('months').value = 36;
+    if ($('asset'))   $('asset').value = 0;
+
+    var livingEl = $('living');
+    if (livingEl && typeof livingEl.selectedIndex === 'number') {
+      livingEl.selectedIndex = 0;
+    }
+
+    setHTMLSafe('repayResult', '');
+  } catch (e) {
+    console.log('resetRepayInputs error:', e);
+  }
+}
+
+// ========== 이자 계산기 ==========
 
 function calcInterest() {
   try {
@@ -95,7 +198,6 @@ function calcInterest() {
       return;
     }
 
-    // 연이자 계산: (원금 × 연이율 × 일수 / 365)
     const interest = Math.floor(principal * (rate / 100) * (days / 365));
     const total = principal + interest;
 
@@ -124,8 +226,6 @@ function calcInterest() {
   }
 }
 
-// ========== 입력값 리셋 (이자) ==========
-
 function resetInterestInputs() {
   try {
     var inputs = document.querySelectorAll('input[type="number"]');
@@ -143,40 +243,7 @@ function resetInterestInputs() {
   }
 }
 
-// ========== 입력값 리셋 (변제금) ==========
-
-function resetInputs() {
-  try {
-    var inputs = document.querySelectorAll('input[type="number"]');
-    for (var i = 0; i < inputs.length; i++) {
-      var input = inputs[i];
-      // living은 select라서 여기선 건드리지 않음
-      if (input.id !== 'income' &&
-          input.id !== 'extra' &&
-          input.id !== 'months' &&
-          input.id !== 'asset') {
-        input.value = '';
-      }
-    }
-
-    if ($('income'))  $('income').value = 0;
-    if ($('extra'))   $('extra').value = 0;
-    if ($('months'))  $('months').value = 36;
-    if ($('asset'))   $('asset').value = 0;
-
-    // living이 select라면 기본값으로
-    var livingEl = $('living');
-    if (livingEl && typeof livingEl.selectedIndex === 'number') {
-      livingEl.selectedIndex = 0;
-    }
-
-    setHTMLSafe('repayResult', '');
-  } catch (e) {
-    console.log('resetInputs error:', e);
-  }
-}
-
-// ========== DOM 로드 후 이벤트 바인딩 ==========
+// ========== DOM 로드 후 바인딩 ==========
 
 function safeBind(id, event, handler) {
   var el = $(id);
@@ -185,10 +252,18 @@ function safeBind(id, event, handler) {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
-  // 버튼에 직접 onclick을 안 쓰고 JS에서 바인딩하면 WebView에서도 더 안정적
-  safeBind('btnCalcRepay', 'click', calcRepay);
-  safeBind('btnResetRepay', 'click', resetInputs);
+  // 시계
+  updateClock();
+  setInterval(updateClock, 1000);
 
+  // 배너 슬라이더 (메인에만 있으면 자동으로 거기서만 동작)
+  initBannerSlider();
+
+  // 변제금 계산기 버튼 (repay.html에서만 존재)
+  safeBind('btnCalcRepay', 'click', calcRepay);
+  safeBind('btnResetRepay', 'click', resetRepayInputs);
+
+  // 이자 계산기 버튼 (interest.html에서만 존재)
   safeBind('btnCalcInterest', 'click', calcInterest);
   safeBind('btnResetInterest', 'click', resetInterestInputs);
 });
