@@ -57,73 +57,7 @@
   <!-- 나머지 내용들 ... -->
 
   <!-- ✅ 반드시 body 끝나기 전에 스크립트 넣기 -->
-  <script>
-document.addEventListener("DOMContentLoaded", function () {
-  let current = 0;
-  const banners = document.querySelectorAll(".banner");
-  const prevBtn = document.querySelector(".prev");
-  const nextBtn = document.querySelector(".next");
-
-  function showBanner(index) {
-    banners.forEach(b => b.classList.remove("active"));
-    banners[index].classList.add("active");
-  }
-
-  function showNextBanner() {
-    current = (current + 1) % banners.length;
-    showBanner(current);
-  }
-
-  function showPrevBanner() {
-    current = (current - 1 + banners.length) % banners.length;
-    showBanner(current);
-  }
-
-  // 자동 슬라이드
-  let autoSlide = setInterval(showNextBanner, 3000);
-
-  // 버튼 클릭 시 수동 전환
-  nextBtn.addEventListener("click", () => {
-    showNextBanner();
-    resetAutoSlide();
-  });
-
-  prevBtn.addEventListener("click", () => {
-    showPrevBanner();
-    resetAutoSlide();
-  });
-
-  // 자동 슬라이드 리셋
-  function resetAutoSlide() {
-    clearInterval(autoSlide);
-    autoSlide = setInterval(showNextBanner, 3000);
-  }
-  // 배너 클릭 시 해당 링크로 이동
-banners.forEach((banner) => {
-  banner.addEventListener("click", () => {
-    const url = banner.getAttribute("data-link");
-    if (url) window.location.href = url;
-  });
-});
-
-});
-    // 실시간 시계
-function updateClock() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hour = String(now.getHours()).padStart(2, "0");
-  const min = String(now.getMinutes()).padStart(2, "0");
-  const sec = String(now.getSeconds()).padStart(2, "0");
-
-  const formatted = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-  document.getElementById("live-clock").textContent = formatted;
-}
-
-setInterval(updateClock, 1000);
-updateClock();
-</script>
+  <script src="/script.js"></script>
 <div class="container">
   <h2>계산기</h2>
   <div class="two-box">
