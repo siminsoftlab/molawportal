@@ -1,6 +1,3 @@
-/* ------------------------------
-   기본 레이아웃
------------------------------- */
 body {  
   font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
@@ -10,18 +7,15 @@ body {
   padding-bottom: 160px !important;  /* 하단 상담바 + 카톡 버튼 여유 */
 }
 
-/* 서브페이지 */
 body.subpage {
   padding-top: 120px;
-  padding-bottom: 180px !important;
+  padding-bottom: 160px !important;
 }
 
-/* ------------------------------
-   카톡 상담 버튼 (WebView 최적화)
------------------------------- */
+/* 카톡 버튼 */
 .quick-kakao {
   position: fixed;
-  bottom: 150px !important;   /* ← WebView에서도 강제 적용 */
+  bottom: 140px;
   right: 20px;
   background: #ffe812;
   color: #3c1e1e;
@@ -40,16 +34,80 @@ body.subpage {
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
 
-/* ------------------------------
-   하단 고정 상담바
------------------------------- */
+/* 고정 헤더 */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  color: #000000;
+  z-index: 9999;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.fixed-header h1,
+.fixed-header a {
+  color: #000000;
+}
+
+main {
+  margin-top: 90px;
+}
+
+/* 상단 마퀴 */
+.top-marquee {
+  width: 100%;
+  background: #d60000;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  position: sticky;
+  top: 40px;
+  z-index: 9998;
+  padding: 12px 0;
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.top-marquee-inner {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee-scroll 10s linear infinite;
+}
+
+.top-marquee-inner:hover {
+  animation-play-state: paused;
+}
+
+.marquee-call {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+
+.marquee-call:hover {
+  text-decoration: underline;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* 하단 상담바 */
 .fixed-consult-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   background: #c40000;
-  padding: 16px 0;
+  padding: 14px 0;
   text-align: center;
   z-index: 9999;
   box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
@@ -65,9 +123,7 @@ body.subpage {
   display: block;
 }
 
-/* ------------------------------
-   상단 시계
------------------------------- */
+/* 시계 */
 #live-clock {
   width: 100%;
   background-color: #222;
@@ -80,11 +136,10 @@ body.subpage {
   position: sticky;
   top: 0;
   z-index: 9999;
+  font-family: 'Pretendard', sans-serif;
 }
 
-/* ------------------------------
-   컨테이너
------------------------------- */
+/* 컨테이너 */
 .container {
   max-width: 800px;
   margin: 30px auto;
@@ -94,9 +149,7 @@ body.subpage {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* ------------------------------
-   계산기 선택 박스
------------------------------- */
+/* 계산기 박스 */
 .two-box {
   display: flex;
   gap: 20px;
@@ -127,9 +180,7 @@ body.subpage {
   color: #333;
 }
 
-/* ------------------------------
-   배너 슬라이더
------------------------------- */
+/* 배너 슬라이더 */
 .banner-slider {
   width: 100%;
   max-width: 800px;
@@ -159,24 +210,14 @@ body.subpage {
   display: block;
 }
 
-/* ------------------------------
-   모바일 최적화
------------------------------- */
+/* 모바일 */
 @media (max-width: 768px) {
 
   .quick-kakao {
-    bottom: 130px !important;  /* 모바일에서도 위로 */
-    right: 16px;
     padding: 16px 20px;
     font-size: 18px;
-  }
-
-  .fixed-consult-bar {
-    padding: 18px 0;
-  }
-
-  .consult-call {
-    font-size: 20px;
+    bottom: 16px;
+    right: 16px;
   }
 
   .two-box {
@@ -192,14 +233,12 @@ body.subpage {
 
 @media (max-width: 480px) {
 
-  .quick-kakao {
-    bottom: 140px !important;
-    right: 14px;
-    padding: 14px 18px;
-    font-size: 17px;
+  .calc-btn {
+    font-size: 16px;
+    padding: 12px;
   }
 
-  .consult-call {
-    font-size: 19px;
+  .v-marquee-inner div {
+    font-size: 13px;
   }
 }
