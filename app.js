@@ -114,7 +114,6 @@ function calcRepay() {
     const finalTotal = Math.max(totalByIncome, asset);
     const monthly = Math.ceil(finalTotal / months);
 
-    // 🔥 실제 계산 과정 표시
     setHTMLSafe("repayResult", `
       <div class="result-title">📌 계산 결과</div>
 
@@ -127,14 +126,12 @@ function calcRepay() {
         <strong>2) 생계비 계산</strong><br>
         기본 생계비: ${living.toLocaleString()}원<br>
         추가 생계비: ${extra.toLocaleString()}원<br>
-        👉 총 생계비 = ${living.toLocaleString()} + ${extra.toLocaleString()}  
-        = <strong>${totalLiving.toLocaleString()}원</strong>
+        👉 총 생계비 = ${totalLiving.toLocaleString()}원
       </div>
 
       <div class="calc-step">
         <strong>3) 월 변제 가능 금액</strong><br>
-        월 소득 - 총 생계비 =  
-        ${income.toLocaleString()} - ${totalLiving.toLocaleString()}  
+        ${income.toLocaleString()} − ${totalLiving.toLocaleString()}  
         = <strong>${disposable.toLocaleString()}원</strong>
       </div>
 
@@ -147,33 +144,28 @@ function calcRepay() {
       ${asset ? `
       <div class="calc-step">
         <strong>5) 청산가치</strong><br>
-        보유재산 가치 = <strong>${asset.toLocaleString()}원</strong><br>
-        👉 총 변제금은 소득 기준과 청산가치 중 더 큰 금액 적용
+        ${asset.toLocaleString()}원 (소득 기준과 비교하여 더 큰 금액 적용)
       </div>
       ` : ""}
 
       <div class="calc-step">
         <strong>6) 최종 총 변제금</strong><br>
-        = <strong>${finalTotal.toLocaleString()}원</strong>
+        <strong>${finalTotal.toLocaleString()}원</strong>
       </div>
 
       <div class="calc-step highlight-box">
         <strong>7) 최종 월 변제금</strong><br>
-        총 변제금 ÷ ${months}개월 =  
-        ${finalTotal.toLocaleString()} ÷ ${months}  
+        ${finalTotal.toLocaleString()} ÷ ${months}개월  
         = <strong class="highlight">${monthly.toLocaleString()}원</strong>
       </div>
 
-      <p class="notice">
-        ※ 본 계산은 참고용이며 실제 변제금은 법원 판단에 따라 달라질 수 있습니다.
-      </p>
+      ${generateRepaySEO(income, living, extra, months, asset, monthly, finalTotal)}
     `);
 
   } catch (e) {
     console.log("calcRepay error:", e);
   }
 }
-
 
 // ========== 변제금 리셋 ==========
 function resetRepayInputs() {
@@ -193,6 +185,43 @@ function resetRepayInputs() {
   } catch (e) {
     console.log("resetRepay error:", e);
   }
+}
+
+
+// ========== 변제금 계산기 SEO 자동 설명문 ==========
+function generateRepaySEO(income, living, extra, months, asset, monthly, finalTotal) {
+  return `
+    <div class="seo-box">
+      <h3>📌 개인회생 변제금 계산 자동 설명</h3>
+
+      <p>
+        본 계산기는 개인회생 신청 시 필요한 변제금을 자동으로 계산해주는 도구입니다.
+        입력하신 월 소득 ${income.toLocaleString()}원에서 
+        기본 생계비 ${living.toLocaleString()}원과 
+        추가 생계비 ${extra.toLocaleString()}원을 제외하여 
+        월 변제 가능 금액을 산출합니다.
+      </p>
+
+      <p>
+        변제기간은 ${months}개월로 설정되었으며, 
+        이에 따라 총 변제금은 ${finalTotal.toLocaleString()}원,
+        월 변제금은 ${monthly.toLocaleString()}원으로 계산되었습니다.
+        ${asset ? `또한 청산가치 ${asset.toLocaleString()}원이 반영되었습니다.` : ""}
+      </p>
+
+      <p>
+        개인회생 변제금 계산 공식은 다음과 같습니다.<br>
+        <strong>월 소득 − 생계비 = 월 변제 가능 금액</strong><br>
+        <strong>월 변제 가능 금액 × 변제기간 = 총 변제금</strong>
+      </p>
+
+      <p>
+        개인회생 변제금 계산기, 개인회생 생계비, 변제금 산정 기준, 
+        법원 변제금 계산 등 관련 키워드 검색 시 
+        본 계산기는 빠르고 정확한 자동 계산 기능을 제공합니다.
+      </p>
+    </div>
+  `;
 }
 
 // ========== SEO 자동 설명문 생성 ==========
