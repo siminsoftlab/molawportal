@@ -195,6 +195,37 @@ function resetRepayInputs() {
   }
 }
 
+// ========== SEO 자동 설명문 생성 ==========
+function generateInterestSEO(principal, rate, days, interest, total) {
+  return `
+    <div class="seo-box">
+      <h3>📌 연이자 계산기 자동 설명</h3>
+      <p>
+        본 페이지는 연이자 계산기를 통해 원금, 연이율, 기간을 입력하면 
+        자동으로 이자를 계산해주는 기능을 제공합니다. 
+        예를 들어 원금 ${principal.toLocaleString()}원에 연이율 ${rate}%를 적용하고 
+        ${days}일 동안의 이자를 계산하면 
+        총 이자는 ${interest.toLocaleString()}원이며 
+        최종 상환액은 ${total.toLocaleString()}원이 됩니다.
+      </p>
+
+      <p>
+        연이자 계산 공식은 다음과 같습니다.<br>
+        <strong>원금 × (연이율 ÷ 100) × (일수 ÷ 365)</strong><br>
+        이 공식은 금융기관, 대출, 연체이자, 손해배상 이자 계산 등 
+        다양한 상황에서 사용되는 표준 방식입니다.
+      </p>
+
+      <p>
+        연이자 계산기, 이자 계산기, 대출이자 계산, 
+        원리금 계산 등 관련 키워드로 검색 시 
+        본 계산기는 빠르고 정확한 계산 결과를 제공합니다.
+      </p>
+    </div>
+  `;
+}
+
+
 // ========== 이자 계산 (실제 계산 과정 표시) ==========
 function calcInterest() {
   try {
@@ -239,9 +270,7 @@ function calcInterest() {
         = <strong class="highlight">${total.toLocaleString()}원</strong>
       </div>
 
-      <p class="notice">
-        ※ 본 계산은 참고용이며 실제 이자는 약정 조건에 따라 달라질 수 있습니다.
-      </p>
+     ${generateInterestSEO(principal, rate, days, interest, total)}
     `);
 
   } catch (e) {
