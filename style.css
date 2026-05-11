@@ -30,6 +30,22 @@ body.subpage {
   color: #d32f2f;
   font-weight: bold;
 }
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/calculator-bg.png'); /* 생성된 이미지 경로 */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(8px) brightness(0.4); /* 흐림 + 어둡게 */
+  z-index: -1;
+}
 
 .seo-box {
   margin-top: 20px;
