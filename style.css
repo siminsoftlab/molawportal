@@ -276,10 +276,11 @@ header {
 .container {
   max-width: 800px;
   margin: 30px auto;
-  background: white;
+  background: rgba(255, 255, 255, 0.7); /* 흰색 + 투명도 */
   padding: 25px;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px); /* 배경 흐림 효과 (선택) */
 }
 
 input, select {
