@@ -195,31 +195,60 @@ function resetRepayInputs() {
   }
 }
 
-// ========== 이자 계산 ==========
+// ========== 이자 계산 (실제 계산 과정 표시) ==========
 function calcInterest() {
   try {
-    const principal = toNumber($('principal')?.value);
-    const rate      = toNumber($('rate')?.value);
-    const days      = toNumber($('days')?.value);
+    const principal = toNumber($('principal')?.value); // 원금
+    const rate      = toNumber($('rate')?.value);      // 연이율(%)
+    const days      = toNumber($('days')?.value);      // 일수
 
+    // 계산식
     const interest = Math.floor(principal * (rate / 100) * (days / 365));
     const total = principal + interest;
 
+    // 🔥 실제 계산 과정 출력
     setHTMLSafe("interestResult", `
       <div class="result-title">📌 계산 결과</div>
-      <div class="result-item">
-        <div class="result-label">이자 금액</div>
-        <div class="result-value highlight">${interest.toLocaleString()}원</div>
+
+      <div class="calc-step">
+        <strong>1) 원금</strong><br>
+        ${principal.toLocaleString()}원
       </div>
-      <div class="result-item">
-        <div class="result-label">총 상환액</div>
-        <div class="result-value">${total.toLocaleString()}원</div>
+
+      <div class="calc-step">
+        <strong>2) 연이율</strong><br>
+        ${rate}%  
       </div>
+
+      <div class="calc-step">
+        <strong>3) 이자 계산 기간</strong><br>
+        ${days}일
+      </div>
+
+      <div class="calc-step">
+        <strong>4) 이자 계산식</strong><br>
+        원금 × (연이율 ÷ 100) × (일수 ÷ 365)<br>
+        = ${principal.toLocaleString()} × (${rate}/100) × (${days}/365)<br>
+        = <strong>${interest.toLocaleString()}원</strong>
+      </div>
+
+      <div class="calc-step highlight-box">
+        <strong>5) 총 상환액</strong><br>
+        원금 + 이자 =  
+        ${principal.toLocaleString()} + ${interest.toLocaleString()}  
+        = <strong class="highlight">${total.toLocaleString()}원</strong>
+      </div>
+
+      <p class="notice">
+        ※ 본 계산은 참고용이며 실제 이자는 약정 조건에 따라 달라질 수 있습니다.
+      </p>
     `);
+
   } catch (e) {
     console.log("calcInterest error:", e);
   }
 }
+
 
 // ========== 이자 리셋 ==========
 function resetInterestInputs() {
