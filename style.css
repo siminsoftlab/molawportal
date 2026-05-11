@@ -337,8 +337,7 @@ button:hover {
   flex-direction: column;
   justify-content: space-between; /* 위·아래 행 분리 */
   align-items: center;
-  background: rgba(255, 255, 255, 0.7); /* 흰색 + 투명도 */
-  backdrop-filter: blur(4px); /* 배경 흐림 효과 (선택) */
+  background: transparent; /* 완전 투명 */ 
 }
 .box-top {
   display: flex;
