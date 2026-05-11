@@ -16,7 +16,13 @@ body {
 /* 다른 페이지에서만 적용 */
 body.subpage {
   padding-top: 120px;     /* 상단 고정 타이틀 때문에 */
-   padding-bottom: 160px !important;
+  padding-bottom: 160px !important;
+  background-image: url('/images/calculator-bg.png'); /* 3D 계산기 배경 이미지 경로 */
+  background-size: cover; /* 화면 전체 채우기 */
+  background-position: center; /* 중앙 정렬 */
+  background-repeat: no-repeat; /* 반복 방지 */
+  background-attachment: fixed; /* 스크롤 시 고정 */
+  filter: brightness(0.9); /* 약간 어둡게 (선택사항) */
 }
 .calc-step {
   margin: 12px 0;
