@@ -10,7 +10,7 @@ body {
   background-position: center; /* 중앙 정렬 */
   background-repeat: no-repeat; /* 반복 방지 */
   background-attachment: fixed; /* 스크롤 시 고정 */
-  filter: brightness(0.9); /* 약간 어둡게 (선택사항) */  
+
 }
 
 /* 다른 페이지에서만 적용 */
