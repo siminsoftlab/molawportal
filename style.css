@@ -5,7 +5,7 @@ body {
   background: #f7f9fc;
   color: #333;
   padding-bottom: 160px !important;  /* 하단 상담바 + 카톡 버튼 여유 */
-  background-image: url('images/calculator-bg.png'); /* 3D 계산기 배경 이미지 경로 */
+  background-image: url('/images/calculator-bg.png'); /* 3D 계산기 배경 이미지 경로 */
   background-size: cover; /* 화면 전체 채우기 */
   background-position: center; /* 중앙 정렬 */
   background-repeat: no-repeat; /* 반복 방지 */
