@@ -6,10 +6,29 @@ body {
   color: #333;
   padding-bottom: 160px !important;  /* 하단 상담바 + 카톡 버튼 여유 */
 }
+
 /* 다른 페이지에서만 적용 */
 body.subpage {
   padding-top: 120px;     /* 상단 고정 타이틀 때문에 */
    padding-bottom: 160px !important;
+}
+.calc-step {
+  margin: 12px 0;
+  padding: 10px;
+  background: #f8f9fb;
+  border-left: 4px solid #4a6bdc;
+  border-radius: 4px;
+  line-height: 1.6;
+}
+
+.highlight-box {
+  background: #fff7e6;
+  border-left: 4px solid #ff9800;
+}
+
+.highlight {
+  color: #d32f2f;
+  font-weight: bold;
 }
 
 /* 🔥 오른쪽 하단 고정 카톡 버튼 */
