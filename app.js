@@ -108,26 +108,72 @@ function calcRepay() {
     const months = toNumber($('months')?.value);
     const asset  = toNumber($('asset')?.value);
 
-    const disposable = Math.max(income - (living + extra), 0);
+    const totalLiving = living + extra;
+    const disposable = Math.max(income - totalLiving, 0);
     const totalByIncome = disposable * months;
     const finalTotal = Math.max(totalByIncome, asset);
     const monthly = Math.ceil(finalTotal / months);
 
+    // 🔥 실제 계산 과정 표시
     setHTMLSafe("repayResult", `
       <div class="result-title">📌 계산 결과</div>
-      <div class="result-item">
-        <div class="result-label">월 변제금</div>
-        <div class="result-value highlight">${monthly.toLocaleString()}원</div>
+
+      <div class="calc-step">
+        <strong>1) 월 소득</strong><br>
+        ${income.toLocaleString()}원
       </div>
-      <div class="result-item">
-        <div class="result-label">총 변제액</div>
-        <div class="result-value">${finalTotal.toLocaleString()}원</div>
+
+      <div class="calc-step">
+        <strong>2) 생계비 계산</strong><br>
+        기본 생계비: ${living.toLocaleString()}원<br>
+        추가 생계비: ${extra.toLocaleString()}원<br>
+        👉 총 생계비 = ${living.toLocaleString()} + ${extra.toLocaleString()}  
+        = <strong>${totalLiving.toLocaleString()}원</strong>
       </div>
+
+      <div class="calc-step">
+        <strong>3) 월 변제 가능 금액</strong><br>
+        월 소득 - 총 생계비 =  
+        ${income.toLocaleString()} - ${totalLiving.toLocaleString()}  
+        = <strong>${disposable.toLocaleString()}원</strong>
+      </div>
+
+      <div class="calc-step">
+        <strong>4) 총 변제금(소득 기준)</strong><br>
+        ${disposable.toLocaleString()} × ${months}개월  
+        = <strong>${totalByIncome.toLocaleString()}원</strong>
+      </div>
+
+      ${asset ? `
+      <div class="calc-step">
+        <strong>5) 청산가치</strong><br>
+        보유재산 가치 = <strong>${asset.toLocaleString()}원</strong><br>
+        👉 총 변제금은 소득 기준과 청산가치 중 더 큰 금액 적용
+      </div>
+      ` : ""}
+
+      <div class="calc-step">
+        <strong>6) 최종 총 변제금</strong><br>
+        = <strong>${finalTotal.toLocaleString()}원</strong>
+      </div>
+
+      <div class="calc-step highlight-box">
+        <strong>7) 최종 월 변제금</strong><br>
+        총 변제금 ÷ ${months}개월 =  
+        ${finalTotal.toLocaleString()} ÷ ${months}  
+        = <strong class="highlight">${monthly.toLocaleString()}원</strong>
+      </div>
+
+      <p class="notice">
+        ※ 본 계산은 참고용이며 실제 변제금은 법원 판단에 따라 달라질 수 있습니다.
+      </p>
     `);
+
   } catch (e) {
     console.log("calcRepay error:", e);
   }
 }
+
 
 // ========== 변제금 리셋 ==========
 function resetRepayInputs() {
