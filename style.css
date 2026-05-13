@@ -494,18 +494,18 @@ a.no-style {
   flex: 1; /* 두 버튼을 동일한 너비로 */
 }
 
-/* PC: 4개 아이콘을 한 줄로 강제 배치 */
+/* PC: 4개 아이콘을 무조건 한 줄로 고정 */
 @media (min-width: 1024px) {
   .two-box {
-    display: flex;
-    flex-wrap: nowrap; /* 줄바꿈 금지 */
+    display: flex !important;
+    flex-wrap: nowrap !important; /* 줄바꿈 금지 */
     gap: 20px;
   }
 
   .two-box .left-box,
   .two-box .right-box {
-    flex: 0 0 25%;   /* 4개 정확히 25%씩 */
-    max-width: 25%;  /* 강제 고정 */
+    flex: 0 0 calc(25% - 15px) !important; /* gap 고려한 정확한 너비 */
+    max-width: calc(25% - 15px) !important;
   }
 }
 
