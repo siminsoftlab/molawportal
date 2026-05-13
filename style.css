@@ -336,7 +336,6 @@ button:hover {
 /* 계산기/블로그 박스 전체 높이 축소 */
 .two-box {
   display: flex;
-  flex-wrap: nowrap;   /* 한 줄 유지 */
   gap: 20px;
   margin-top: 20px;
   height: auto; /* 고정 높이 제거 */
@@ -494,12 +493,11 @@ a.no-style {
   flex: 1; /* 두 버튼을 동일한 너비로 */
 }
 
-/* PC: 4개 아이콘을 무조건 한 줄로 고정 */
 /* PC: 4개 카드형 그리드 */
 @media (min-width: 1024px) {
   .two-box {
     display: grid !important;
-    grid-template-columns: repeat(4, 1fr); /* 4개 그리드 */
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
 
@@ -537,12 +535,12 @@ a.no-style {
   }
     .two-box {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr); /* 2개씩 */
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 
   .left-box, .right-box {
-   padding: 20px;
+    padding: 20px;
     background: rgba(255,255,255,0.85);
     border-radius: 12px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
