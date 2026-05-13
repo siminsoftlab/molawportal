@@ -495,17 +495,29 @@ a.no-style {
 }
 
 /* PC: 4개 아이콘을 무조건 한 줄로 고정 */
+/* PC: 4개 카드형 그리드 */
 @media (min-width: 1024px) {
   .two-box {
-    display: flex !important;
-    flex-wrap: nowrap !important; /* 줄바꿈 금지 */
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr); /* 4개 그리드 */
     gap: 20px;
   }
 
   .two-box .left-box,
   .two-box .right-box {
-    flex: 0 0 calc(25% - 15px) !important; /* gap 고려한 정확한 너비 */
-    max-width: calc(25% - 15px) !important;
+    flex: none !important;
+    max-width: 100% !important;
+    padding: 25px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .two-box .left-box:hover,
+  .two-box .right-box:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
   }
 }
 
@@ -524,13 +536,16 @@ a.no-style {
     padding: 4px 0;
   }
     .two-box {
-    flex-direction: column;
-    flex-wrap: wrap;   /* 줄바꿈 허용 */
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr); /* 2개씩 */
+    gap: 16px;
   }
 
   .left-box, .right-box {
-    flex: 1 1 calc(50% - 10px); /* 2개씩 배치 */
-    min-height: 180px;          /* 아이콘이 잘 보이도록 */
+   padding: 20px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
   }
 
   .calc-img {
