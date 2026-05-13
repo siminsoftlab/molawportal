@@ -494,6 +494,21 @@ a.no-style {
   flex: 1; /* 두 버튼을 동일한 너비로 */
 }
 
+/* PC: 4개 아이콘을 한 줄로 강제 배치 */
+@media (min-width: 1024px) {
+  .two-box {
+    display: flex;
+    flex-wrap: nowrap; /* 줄바꿈 금지 */
+    gap: 20px;
+  }
+
+  .two-box .left-box,
+  .two-box .right-box {
+    flex: 0 0 25%;   /* 4개 정확히 25%씩 */
+    max-width: 25%;  /* 강제 고정 */
+  }
+}
+
 /* ------------------------------
    🔥 모바일 반응형 최적화
 ------------------------------ */
