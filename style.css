@@ -336,6 +336,7 @@ button:hover {
 /* 계산기/블로그 박스 전체 높이 축소 */
 .two-box {
   display: flex;
+  flex-wrap: nowrap;   /* 한 줄 유지 */
   gap: 20px;
   margin-top: 20px;
   height: auto; /* 고정 높이 제거 */
@@ -343,7 +344,7 @@ button:hover {
 
 /* 박스 자체 높이 자동 조절 */
 .left-box, .right-box {
-  flex: 1;
+  flex: 1 1 25%;       /* 4개가 정확히 1줄 */
   padding: 18px;
   border-radius: 12px;
   text-align: center;
@@ -509,10 +510,12 @@ a.no-style {
   }
     .two-box {
     flex-direction: column;
+    flex-wrap: wrap;   /* 줄바꿈 허용 */
   }
 
   .left-box, .right-box {
-    min-height: 220px;
+    flex: 1 1 calc(50% - 10px); /* 2개씩 배치 */
+    min-height: 180px;          /* 아이콘이 잘 보이도록 */
   }
 
   .calc-img {
