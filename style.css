@@ -1,5 +1,5 @@
 /* ============================
-   기본 레이아웃
+   공통 기본 레이아웃
 ============================ */
 html, body {
   height: 100%;
@@ -14,7 +14,60 @@ body {
 }
 
 /* ============================
-   하위 페이지 레이아웃 구조
+   홈페이지(homepage) 레이아웃
+============================ */
+body.homepage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body.homepage .page-wrap {
+  flex: 1;
+  padding-top: 100px; /* 홈 상단 요소 높이 */
+}
+
+body.homepage .container {
+  width: 92%;
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding: 30px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+}
+
+/* 홈페이지 박스 */
+body.homepage .two-box {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+body.homepage .left-box,
+body.homepage .right-box {
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+body.homepage .calc-img {
+  width: 70%;
+  max-width: 120px;
+  margin-bottom: 12px;
+}
+
+body.homepage .calc-desc {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ============================
+   하위 페이지(subpage) 레이아웃
 ============================ */
 body.subpage {
   display: flex;
@@ -22,14 +75,24 @@ body.subpage {
   min-height: 100vh;
 }
 
-/* 콘텐츠 전체를 감싸는 영역 */
-.page-wrap {
-  flex: 1; /* footer를 아래로 밀어내는 핵심 */
-  padding-top: 140px; /* fixed-header 높이 보정 */
+body.subpage .page-wrap {
+  flex: 1;
+  padding-top: 140px; /* fixed-header 높이 */
+}
+
+body.subpage .container {
+  width: 92%;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  padding: 25px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
 }
 
 /* ============================
-   상단 고정 헤더
+   상단 고정 헤더 (하위 페이지)
 ============================ */
 .fixed-header {
   position: fixed;
@@ -66,21 +129,7 @@ body.subpage {
 }
 
 /* ============================
-   컨테이너
-============================ */
-.container {
-  width: 92%;
-  max-width: 800px;
-  margin: 0 auto 40px;
-  padding: 25px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  backdrop-filter: blur(4px);
-}
-
-/* ============================
-   footer
+   footer (홈 + 하위 페이지 공통)
 ============================ */
 .site-footer {
   background: #000;
@@ -182,6 +231,14 @@ body.subpage {
   .fixed-header .home-btn {
     font-size: 14px;
     padding: 5px 10px;
+  }
+
+  body.homepage .container {
+    padding: 22px;
+  }
+
+  body.homepage .two-box {
+    grid-template-columns: 1fr;
   }
 
   .footer-info {
