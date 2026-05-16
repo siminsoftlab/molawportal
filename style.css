@@ -32,6 +32,29 @@ body {
   .content {
     min-height: auto;
   }
+ .site-footer {
+    background: #000 !important;
+    color: #fff !important;
+    padding: 32px 20px;
+    text-align: left;
+  }
+
+  .site-footer .footer-inner {
+    max-width: 100% !important;
+  }
+
+  .footer-company {
+    color: #fff !important;
+  }
+
+  .footer-info {
+    color: #ddd !important;
+  }
+
+  .footer-copy {
+    color: #aaa !important;
+    border-top: 1px solid #333 !important;
+  }  
 }
 
 /* ============================
