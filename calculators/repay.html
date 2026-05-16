@@ -4,84 +4,96 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>개인회생 변제금 계산기</title>
+
   <meta name="description" content="개인회생 변제금 계산기 무료 제공. 월 소득·생계비·부양가족 입력 시 자동 계산.">
   <meta property="og:type" content="article">
   <meta property="og:title" content="개인회생 변제금 계산기 – 무료 자동 계산">
   <meta property="og:description" content="개인회생 변제금 계산기 무료 제공. 월 소득·생계비·부양가족 입력 시 자동 계산.">
   <meta property="og:url" content="https://molawcalculator.com/calculators/repay.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
+
   <link rel="stylesheet" href="../style.css">
   <script src="../app.js" defer></script>
 </head>
-<body class="subpage">  
-<header class="fixed-header">
-  <h1>개인회생 변제금 계산기</h1>
-  <a href="../index.html" class="home-btn">홈</a>
-</header>
 
-<div class="container">
-  <label>월 소득(원)</label>
-  <input id="income" type="number" value="">
+<body class="subpage">
 
-  <label>기본 생계비(원)</label>
-  <select id="living">
-    <option value="1538523">1인 가구 — 1,538,523원</option>
-    <option value="2519575">2인 가구 — 2,519,575원</option>
-    <option value="3215422">3인 가구 — 3,215,422원</option>
-    <option value="3896843">4인 가구 — 3,896,843원</option>
-    <option value="4534031">5인 가구 — 4,534,031원</option>
-  </select>
- 
-  <label>추가 생계비(원)</label>
-  <input id="extra" type="number" value="">
+  <!-- 상단 고정 헤더 -->
+  <header class="fixed-header">
+    <h1>개인회생 변제금 계산기</h1>
+    <a href="../index.html" class="home-btn">홈</a>
+  </header>
 
-  <label>변제기간(개월)</label>
-  <input id="months" type="number" value="36">
+  <!-- ⭐ 페이지 전체 높이를 채우는 wrapper (footer를 아래로 밀어내는 핵심) -->
+  <div class="page-wrap">
 
-  <label>청산가치(원, 선택)</label>
-  <input id="asset" type="number" value="">
-   <p class="notice">
-    ※ 청산가치 = 보유재산 가치
-    </p>
-  <div class="btn-row">
-    <button onclick="calcRepay()">계산하기</button>
-    <button onclick="resetRepayInputs()">초기화</button>
-  </div>
-  <div id="repayResult" class="result-box"></div>
-  <div id="repaySEO"></div>
-</div>
-<!-- ⭐ footer (페이지 끝에 붙음) -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-company">딱요만큼변제</div>
-    <div class="footer-info">
-      사업자등록번호: 425-88-00769  
-      주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
-      개인정보관리책임자: 박희영  
-      전화: 02-595-5706  
-      팩스: 02-525-7255
+    <div class="container">
+      <label>월 소득(원)</label>
+      <input id="income" type="number">
+
+      <label>기본 생계비(원)</label>
+      <select id="living">
+        <option value="1538523">1인 가구 — 1,538,523원</option>
+        <option value="2519575">2인 가구 — 2,519,575원</option>
+        <option value="3215422">3인 가구 — 3,215,422원</option>
+        <option value="3896843">4인 가구 — 3,896,843원</option>
+        <option value="4534031">5인 가구 — 4,534,031원</option>
+      </select>
+
+      <label>추가 생계비(원)</label>
+      <input id="extra" type="number">
+
+      <label>변제기간(개월)</label>
+      <input id="months" type="number" value="36">
+
+      <label>청산가치(원, 선택)</label>
+      <input id="asset" type="number">
+      <p class="notice">※ 청산가치 = 보유재산 가치</p>
+
+      <div class="btn-row">
+        <button onclick="calcRepay()">계산하기</button>
+        <button onclick="resetRepayInputs()">초기화</button>
+      </div>
+
+      <div id="repayResult" class="result-box"></div>
+      <div id="repaySEO"></div>
     </div>
-    <div class="footer-copy">© 2026 딱요만큼변제. All rights reserved.</div>
+
+  </div> <!-- page-wrap 끝 -->
+
+  <!-- footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-company">딱요만큼변제</div>
+      <div class="footer-info">
+        사업자등록번호: 425-88-00769  
+        주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
+        개인정보관리책임자: 박희영  
+        전화: 02-595-5706  
+        팩스: 02-525-7255
+      </div>
+      <div class="footer-copy">© 2026 딱요만큼변제. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- 하단 고정 상담바 -->
+  <div class="call-fixed">
+    <a href="tel:025955706" class="consult-call">
+      개인회생·파산 무료상담전화 02-595-5706 ← 클릭 시 전화 연결
+    </a>
   </div>
-</footer>
 
-<!-- 🔥 하단 고정 상담바 -->
-<div class="call-fixed">
-  <a href="tel:025955706" class="consult-call">
-    개인회생·파산 무료상담전화 02-595-5706 ← 클릭 시 전화 연결
+  <!-- 카톡 상담 -->
+  <a href="http://pf.kakao.com/_wAqxen/chat" 
+     class="quick-kakao" target="_blank" rel="noopener noreferrer">
+    💬 카톡 상담
   </a>
-</div>
 
-<!-- 🔥 오른쪽 하단 고정 카톡 상담 -->
-<a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" target="_blank" rel="noopener noreferrer">
-  💬 카톡 상담
-</a>
+  <!-- JS -->
+  <script src="/app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="/firebase-counter.js"></script>
 
-<!-- JS -->
-<script src="/app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="/firebase-counter.js"></script>
 </body>
 </html>
