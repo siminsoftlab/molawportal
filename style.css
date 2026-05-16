@@ -192,9 +192,9 @@ body.subpage section .inner {
 }
 
 /* ============================
-   무료상담전화문의 — 화면 하단 고정
+   무료상담전화 — 화면 하단 고정
 ============================ */
-.fixed-consult-bar {
+.call-fixed {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -206,7 +206,7 @@ body.subpage section .inner {
   box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
 }
 
-.consult-call {
+.call-fixed .consult-call {
   color: #fff;
   font-size: 18px;
   font-weight: 900;
@@ -217,7 +217,7 @@ body.subpage section .inner {
 }
 
 /* ============================
-   카톡 상담 버튼 — 무료상담전화문의 위
+   카톡 상담 버튼 — 무료상담 위
 ============================ */
 .quick-kakao {
   position: fixed;
