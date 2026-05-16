@@ -121,9 +121,16 @@ body {
   text-align: center;
 }
 
+/* PC에서도 footer 폭을 넓혀 주소가 한 줄로 보이도록 수정 */
 .site-footer .footer-inner {
-  max-width: 480px;
+  max-width: 900px; /* 기존 480px → 900px */
   margin: 0 auto;
+}
+
+/* footer 문단 줄바꿈 유지 + 가독성 향상 */
+.footer-info {
+  white-space: pre-line;
+  line-height: 1.6;
 }
 
 /* ============================
