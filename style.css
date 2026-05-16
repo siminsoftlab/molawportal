@@ -30,7 +30,7 @@ body {
 /* 모바일에서는 content 높이 문제 해결 */
 @media (max-width: 768px) {
     body {
-    padding-bottom: 140px !important;
+          padding-bottom: 200px !important; /* 기존 120px → 200px */
   }
   .content {
     min-height: auto;
