@@ -1,3 +1,9 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {  
   font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
@@ -10,6 +16,9 @@ body {
   background-position: center; /* 중앙 정렬 */
   background-repeat: no-repeat; /* 반복 방지 */
   background-attachment: scroll; /* 스크롤 시 고정 */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 
 }
 
@@ -22,6 +31,13 @@ body.subpage {
   background-position: center; /* 중앙 정렬 */
   background-repeat: no-repeat; /* 반복 방지 */
   background-attachment: scroll; /* 스크롤 시 고정 */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
 }
 
 body.subpage section {
@@ -762,17 +778,23 @@ a.no-style {
   font-weight: bold;
   z-index: 9999;
 }
-  
+.site-footer {
+  background: #f8f8f8;
+  padding: 20px 16px;
+  text-align: center;
+}  
+/*
 .site-footer {
   width: 100%;
-  background: #000000; /* 검정색 */
-  color: #ffffff;       /* 흰색 글자 */
+  background: #000000;
+  color: #ffffff;  
   padding: 30px 20px;
-  padding-bottom: 90px; /* 무료상담전화 div 높이만큼 여백 */
+  padding-bottom: 90px; 
   margin-top: 60px;
   text-align: center;
   font-size: 14px;
-}
+}*/
+  
 .footer {
   background: #f8f8f8;
   padding: 16px 12px;
