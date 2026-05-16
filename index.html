@@ -7,151 +7,104 @@
   <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <!-- 페이지 제목 -->
- <title>딱요만큼변제</title>
 
-  <!-- 페이지 설명 (SEO) -->
+  <title>딱요만큼변제</title>
+
   <meta name="description" content="딱요만큼변제에서 개인회생 변제금 계산기와 연이율 계산기를 무료로 정확하게 확인하세요.">
 
-  <!-- Open Graph (SNS 공유 최적화) -->
-<meta property="og:title" content="딱요만큼변제">
-<meta property="og:description" content="딱요만큼변제에서 개인회생 변제금 계산기와 연이율 계산기를 무료로 정확하게 확인하세요.">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="딱요만큼변제">
-<meta property="og:url" content="https://molawcalculator.com/">
-<meta property="og:image" content="https://molawcalculator.com/images/og_main.png"> 
+  <!-- Open Graph -->
+  <meta property="og:title" content="딱요만큼변제">
+  <meta property="og:description" content="딱요만큼변제에서 개인회생 변제금 계산기와 연이율 계산기를 무료로 정확하게 확인하세요.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="딱요만큼변제">
+  <meta property="og:url" content="https://molawcalculator.com/">
+  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
-<!-- Twitter -->
-<meta name="twitter:title" content="딱요만큼변제">
-<meta name="twitter:description" content="딱요만큼변제에서 개인회생 변제금 계산기와 연이율 계산기를 무료로 정확하게 확인하세요.">
-  
-  <!-- 파비콘 (선택) -->
   <link rel="icon" href="images/favicon.ico">
-  <!-- 스타일 -->
   <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
-<!-- ✅ 반드시 body 끝나기 전에 스크립트 넣기 -->
-<script src="/app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="/firebase-counter.js"></script>
 
 <!-- 🔥 실시간 시계 -->
 <div id="live-clock"></div>
-<!-- 사이트명 & 방문자수 -->  
+
+<!-- 사이트명 & 방문자수 -->
 <div class="top-info-bar">
   딱요만큼변제 · 오늘 방문 <span id="visitor-today">0</span>명 · 전체 방문 <span id="visitor-total">0</span>명
 </div>
 
-  <!--
-  <header>
-  <h1>변제금 계산기</h1>
-</header>
--->
-  <!-- 배너 슬라이더 -->
-  <!--
- <div class="banner-slider">
-  <img src="images/banner1.png" class="banner active" data-link="calculators/repay.html" alt="개인회생 변제금 계산기">
-  <img src="images/banner2.png" class="banner" data-link="calculators/interest.html" alt="연이자 계산기">
+<!-- ⭐ 페이지 전체 내용 시작 -->
+<div class="content">
 
-  <button class="prev">&#10094;</button>
-  <button class="next">&#10095;</button>
-</div>
--->
-  <!--
-  <div class="banner-slider">
-    <a href="calculators/repay.html"><img src="images/banner1.png" class="banner active" alt="개인회생 변제금 계산기"></a>
-    <a href="calculators/interest.html"><img src="images/banner2.png" class="banner" alt="연이자 계산기"></a>
-    <button class="prev">&#10094;</button>
-    <button class="next">&#10095;</button>
-  </div> 
-   -->
-  
-<div class="container">
-  <h2>조회 & 서비스 소개</h2>
-  <div class="two-box" style="display:flex; gap:20px; flex-wrap:wrap;">
+  <!-- 조회 & 서비스 소개 -->
+  <div class="container">
+    <h2>조회 & 서비스 소개</h2>
 
-    <!-- 변제금 계산기 -->
-    <div class="left-box">
-      <a href="calculators/repay.html">
-        <div class="box-top">
-          <img src="images/repay_icon.png" class="calc-img" alt="변제금 아이콘">
-        </div>
-        <div class="box-bottom">
+    <div class="two-box">
+
+      <div class="left-box">
+        <a href="calculators/repay.html">
+          <div class="box-top">
+            <img src="images/repay_icon.png" class="calc-img" alt="변제금 아이콘">
+          </div>
           <p class="calc-desc">변제금 계산기</p>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <!-- 연이자 계산기 -->
-    <div class="right-box">
-      <a href="calculators/interest.html">
-        <div class="box-top">
-          <img src="images/interest_icon.png" class="calc-img" alt="연이자 아이콘">
-        </div>
-        <div class="box-bottom">
+      <div class="right-box">
+        <a href="calculators/interest.html">
+          <div class="box-top">
+            <img src="images/interest_icon.png" class="calc-img" alt="연이자 아이콘">
+          </div>
           <p class="calc-desc">연이자 계산기</p>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <!-- 모두의로펌 -->
-    <div class="left-box">
-      <a href="blog/modoolawfirm.html">
-        <div class="box-top">
-          <img src="images/dontworry_icon.png" class="calc-img" alt="모두의로펌 아이콘">
-        </div>
-        <div class="box-bottom">
+      <div class="left-box">
+        <a href="blog/modoolawfirm.html">
+          <div class="box-top">
+            <img src="images/dontworry_icon.png" class="calc-img" alt="모두의로펌 아이콘">
+          </div>
           <p class="calc-desc">모두의로펌</p>
-        </div>
-      </a>
-    </div>
+        </a>
+      </div>
 
-    <!-- 쏜살민원 -->
-    <div class="right-box">
-      <a href="blog/ssonsalminwon.html">
-        <div class="box-top">
-          <img src="images/rocketminwon_icon.png" class="calc-img" alt="쏜살민원 아이콘">
-        </div>
-        <div class="box-bottom">
+      <div class="right-box">
+        <a href="blog/ssonsalminwon.html">
+          <div class="box-top">
+            <img src="images/rocketminwon_icon.png" class="calc-img" alt="쏜살민원 아이콘">
+          </div>
           <p class="calc-desc">쏜살민원</p>
-        </div>
-      </a>
+        </a>
+      </div>
+
     </div>
-
   </div>
-</div>
 
+  <!-- 문의하기 -->
   <div class="container">
     <h2 style="margin-top:40px;">문의하기</h2>
     <ul>
-      <li><a href="https://molawportal.net/contact" class="no-style" target="_blank" rel="noopener noreferrer">개인회생·파산 신청(쏜살민원)</a></li>
-      <li><a href="https://molawportal.net/contact" class="no-style" target="_blank" rel="noopener noreferrer">서류발급·법원제증명 발급 대행(쏜살민원)</a></li>
-      <li><a href="https://molawportal.kr/contact" class="no-style" target="_blank" rel="noopener noreferrer">불법사채·불법추심 피해구제(모두의로펌)</a></li>
+      <li><a href="https://molawportal.net/contact" class="no-style" target="_blank">개인회생·파산 신청(쏜살민원)</a></li>
+      <li><a href="https://molawportal.net/contact" class="no-style" target="_blank">서류발급·법원제증명 발급 대행(쏜살민원)</a></li>
+      <li><a href="https://molawportal.kr/contact" class="no-style" target="_blank">불법사채·불법추심 피해구제(모두의로펌)</a></li>
     </ul>
   </div>
-<div class="container">
+
+  <!-- 커뮤니티 -->
+  <div class="container">
     <h2 style="margin-top:40px;">커뮤니티</h2>
     <ul>
-      <li><a href="https://blog.naver.com/siminsoftlab" class="no-style" target="_blank" rel="noopener noreferrer">네이버 블로그</a></li>
-      <li><a href="https://cafe.naver.com/dontworry24" class="no-style" target="_blank" rel="noopener noreferrer">네이버 카페</a></li>
+      <li><a href="https://blog.naver.com/siminsoftlab" class="no-style" target="_blank">네이버 블로그</a></li>
+      <li><a href="https://cafe.naver.com/dontworry24" class="no-style" target="_blank">네이버 카페</a></li>
     </ul>
   </div>
-<!-- footer -->
-<div class="content">
-  <!-- 본문 내용 -->
-</div>
 
-<!-- 🔥 하단 고정 상담바 -->
-<!-- <div class="fixed-consult-bar"> -->
-<div class="call-fixed">  
-  <a href="tel:025955706" class="consult-call">
-    📞 개인회생·파산 무료상담전화 02-595-5706  ← 클릭 시 전화 연결
-  </a>
 </div>
+<!-- ⭐ 페이지 전체 내용 끝 -->
+
+<!-- footer (페이지 끝에 붙음) -->
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-company">딱요만큼변제</div>
@@ -166,12 +119,24 @@
   </div>
 </footer>
 
-  <!-- 🔥 오른쪽 하단 고정 카톡 퀵링크 -->
+<!-- 🔥 하단 고정 상담바 -->
+<div class="call-fixed">
+  <a href="tel:025955706" class="consult-call">
+    📞 개인회생·파산 무료상담전화 02-595-5706 ← 클릭 시 전화 연결
+  </a>
+</div>
+
+<!-- 🔥 오른쪽 하단 고정 카톡 상담 -->
 <a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" target="_blank"
-   rel="noopener noreferrer">
+   class="quick-kakao" target="_blank" rel="noopener noreferrer">
   💬 카톡 상담
 </a>
-  
+
+<!-- JS -->
+<script src="/app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="/firebase-counter.js"></script>
+
 </body>
 </html>
