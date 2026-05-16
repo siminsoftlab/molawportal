@@ -109,7 +109,6 @@ body.subpage {
 /* footer는 문서 흐름의 끝에 자연스럽게 위치 */
 .site-footer {
   position: relative !important;
-  bottom: auto !important;
   margin-top: 40px !important;
 }
 .fixed-header {
