@@ -1,3 +1,6 @@
+/* ============================
+   기본 레이아웃 구조
+============================ */
 html, body {
   height: 100%;
   margin: 0;
@@ -6,31 +9,14 @@ html, body {
 
 body {  
   font-family: 'Noto Sans KR', sans-serif;
-  margin: 0;
-  padding: 0;
   background: #f7f9fc;
   color: #333;
-  padding-bottom: 160px !important;  /* 하단 상담바 + 카톡 버튼 여유 */
-  background-image: url('/images/calculator-bg.png'); /* 3D 계산기 배경 이미지 경로 */
-  background-size: cover; /* 화면 전체 채우기 */
-  background-position: center; /* 중앙 정렬 */
-  background-repeat: no-repeat; /* 반복 방지 */
-  background-attachment: scroll; /* 스크롤 시 고정 */
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-
-}
-
-/* 다른 페이지에서만 적용 */
-body.subpage {
-  padding-top: 120px;     /* 상단 고정 타이틀 때문에 */
   padding-bottom: 160px !important;
-  background-image: url('/images/calculator-bg.png'); /* 3D 계산기 배경 이미지 경로 */
-  background-size: cover; /* 화면 전체 채우기 */
-  background-position: center; /* 중앙 정렬 */
-  background-repeat: no-repeat; /* 반복 방지 */
-  background-attachment: scroll; /* 스크롤 시 고정 */
+  background-image: url('/images/calculator-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -40,8 +26,24 @@ body.subpage {
   flex: 1;
 }
 
+/* ============================
+   서브페이지
+============================ */
+body.subpage {
+  padding-top: 120px;
+  padding-bottom: 160px !important;
+  background-image: url('/images/calculator-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 body.subpage section {
-  padding: 0; /* section 자체는 투명하게 */
+  padding: 0;
 }
 
 body.subpage section .inner {
@@ -51,12 +53,16 @@ body.subpage section .inner {
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   backdrop-filter: blur(4px);
 }
+
+/* ============================
+   상단 정보바 / 시계
+============================ */
 .top-info-bar {
   position: fixed;
-  top: 60px; /* 시계 바로 아래 */
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
-  background: #4a90e2; /* 시계와 동일한 색 */
+  background: #4a90e2;
   color: #ffffff;
   padding: 10px 20px;
   border-radius: 12px;
@@ -66,194 +72,6 @@ body.subpage section .inner {
   z-index: 9999;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.site-title {
-  background: #4a90e2;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.visitor-count {
-  background: #f5f5f5;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.calc-step {
-  margin: 12px 0;
-  padding: 10px;
-  background: #f8f9fb;
-  border-left: 4px solid #4a6bdc;
-  border-radius: 4px;
-  line-height: 1.6;
-}
-
-.highlight-box {
-  background: #fff7e6;
-  border-left: 4px solid #ff9800;
-}
-
-.highlight {
-  color: #d32f2f;
-  font-weight: bold;
-}
-.hero {
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: url('/images/calculator-bg.png'); /* 생성된 이미지 경로 */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(8px) brightness(0.4); /* 흐림 + 어둡게 */
-  z-index: -1;
-}
-
-.seo-box {
-  margin-top: 20px;
-  padding: 15px;
-  background: #f4f7ff;
-  border: 1px solid #d6def5;
-  border-radius: 8px;
-  line-height: 1.7;
-}
-
-.seo-box h3 {
-  margin-bottom: 10px;
-  color: #2a4d8f;
-}
-
-/* 🔥 오른쪽 하단 고정 카톡 버튼 */
-.quick-kakao {
-  position: fixed;
-  bottom: 150px !important;   /* ← WebView에서도 강제 적용 */
-  right: 20px;
-  background: #ffe812; /* 카카오톡 노란색 */
-  color: #3c1e1e; /* 카카오톡 브라운 */
-  padding: 14px 18px;
-  border-radius: 50px;
-  font-size: 16px;
-  font-weight: 900;
-  text-decoration: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  z-index: 99999;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* hover 효과 */
-.quick-kakao:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
-}
-/* 다른 페이지용 고정 헤더 */
-.fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: #ffffff; /* 흰색 배경 */
-  color: #000000; /* 글자 검정색 */
-  z-index: 9999;
-  padding: 15px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.fixed-header h1,
-.fixed-header a {
-  color: #000000; /* 글자색 확실하게 검정으로 */
-}
-
-/* 본문이 헤더 뒤로 숨지 않도록 여백 추가 */
-main {
-  margin-top: 90px;
-}
-/* 상단 마퀴 박스 */
-.top-marquee {
-  width: 100%;
-  background: #d60000; /* 모바일에서도 확실히 보이는 강한 레드 */
-  color: #fff;
-  overflow: hidden;
-  white-space: nowrap;
-  position: sticky;
-  top: 40px;
-  z-index: 9998;
-  padding: 12px 0;
-  font-size: 18px;
-  font-weight: 900;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
-/* 🔥 하단 고정 상담바 */
-.fixed-consult-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #c40000; /* 강한 대비 레드 */
-  padding: 14px 0;
-  text-align: center;
-  z-index: 9999;
-  box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
-}
-
-/* 전화 연결 링크 */
-.consult-call {
-  color: #fff;
-  font-size: 18px;
-  font-weight: 900;
-  text-decoration: none;
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 6px rgba(0,0,0,0.8);
-  display: block;
-}
-
-/* 흐르는 텍스트 */
-.top-marquee-inner {
-  display: inline-block;
-  padding-left: 100%;
-  animation: marquee-scroll 10s linear infinite;
-  animation-play-state: running;
-}
-
-/* 마우스 올리면 멈춤 */
-.top-marquee-inner:hover {
-  animation-play-state: paused;
-}
-
-/* 전화번호 링크 */
-.marquee-call {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 900;
-  letter-spacing: 0.8px;
-  text-shadow: 0 0 4px rgba(0,0,0,0.6); /* 모바일 가독성 핵심 */
-}
-
-.marquee-call:hover {
-  text-decoration: underline;
-}
-
-@keyframes marquee-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-@keyframes intro-marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
 }
 
 #live-clock {
@@ -270,512 +88,113 @@ main {
   z-index: 9999;
   font-family: 'Pretendard', sans-serif;
 }
-.top-title-banner {
-  width: 100%;
-  background-color: #ff4b4b;
-  color: #fff;
-  text-align: center;
-  padding: 12px 0;
-  font-size: 20px;
-  font-weight: 700;
-  position: sticky;
-  top: 0;
-  z-index: 9999;
-}
 
-.intro-box {
-max-width: 800px;
-  margin: 20px auto 0;
-  padding: 18px 20px;
-  background: #111; /* 검은색 배경 */
-  color: #ffffff;      /* 화이트 */
-  text-align: center;
-  font-size: 16px;
-  border-radius: 10px;
-  line-height: 1.5;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-}
-
-.intro-box h2 {
-  font-size: 22px;
-  margin-bottom: 10px;
-  color: #1A2A4A;
-}
-
-.intro-box p {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #444;
-  white-space: pre-line;
-}
-
-header {
- background: #1A2A4A;
-  color: white;
-  padding: 20px;
-  display: flex;               /* 가로 배치 */
-  justify-content: center;     /* 제목 가운데 */
-  align-items: center;         /* 수직 가운데 */
-  position: relative;          /* 홈 버튼 위치 기준 */
-}
-
-/* 홈 버튼 스타일 */
-.home-btn {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #4A90E2;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 14px;
-  white-space: nowrap; /* 줄바꿈 방지 */
-}
-
-.home-btn:hover {
-  background: #357ABD;
-}
-
+/* ============================
+   컨테이너 (문의하기/커뮤니티 포함)
+============================ */
 .container {
+  width: 92%;
   max-width: 800px;
   margin: 30px auto;
-  background: rgba(255, 255, 255, 0.7); /* 흰색 + 투명도 */
   padding: 25px;
+  background: rgba(255,255,255,0.7);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  backdrop-filter: blur(4px); /* 배경 흐림 효과 (선택) */
+  backdrop-filter: blur(4px);
 }
 
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+/* PC에서는 넓게 */
+@media (min-width: 1024px) {
+  .container {
+    width: 100%;
+    max-width: 1200px !important;
+  }
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  background: #4A90E2;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #357ABD;
-}
-
-.notice {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #777;
-}
-
-/* ------------------------------
-   계산기 선택 박스
------------------------------- */
-/* 계산기/블로그 박스 전체 높이 축소 */
+/* ============================
+   조회 & 서비스 소개 (two-box)
+============================ */
 .two-box {
-  display: flex;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
   margin-top: 20px;
-  height: auto; /* 고정 높이 제거 */
 }
 
-/* 박스 자체 높이 자동 조절 */
 .left-box, .right-box {
-  flex: 1 1 25%;       /* 4개가 정확히 1줄 */
   padding: 18px;
   border-radius: 12px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  background: transparent;
-  height: auto; /* 고정 제거 */
 }
 
-/* 아이콘 영역 */
-.box-top {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: auto; /* 고정 제거 */
+.calc-img {
+  width: 70%;
+  max-width: 120px;
+  height: auto;
   margin-bottom: 10px;
 }
 
-/* 아이콘 크기 자동 조절 */
-.calc-img {
-  width: 70%;          /* div 대비 비율로 조절 */
-  max-width: 120px;    /* 너무 커지지 않도록 제한 */
-  height: auto;        /* 비율 유지 */
-  margin: 0 auto 10px;
-}
-
-/* 텍스트 영역 */
 .calc-desc {
   font-size: 16px;
   font-weight: 600;
-  margin-top: 6px;
 }
 
-/* ------------------------------
-   상단 마퀴
------------------------------- */
-.v-marquee {
-  position: fixed !important;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40px;
-  overflow: hidden;
-  background: #1a2b4c;
-  border-top: 1px solid #ddd;
-  border-radius: 0;
-  z-index: 99999;
-} 
-.v-marquee-inner {
-  display: flex;
-  flex-direction: column;
-  animation: scrollUp 10s linear infinite;
-}
-
-.v-marquee:hover .v-marquee-inner {
-  animation-play-state: paused;
-}
-
-.v-marquee-inner div {
-  height: 40px;
-  line-height: 40px;
-  font-size: 16px;
-  text-align: center;
-  color: #ffffff;
-}
-
-@keyframes scrollUp {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-240px); }
-}
-
-a.no-style {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* ------------------------------
-   배너 슬라이더
------------------------------- */
-.banner-slider {
-  width: 100%;
-  max-width: 800px;
-  height: 150px;
-  margin: 40px auto 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.banner-slider img.banner {
-  position: absolute;   /* 반드시 필요 */
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  z-index: 5;
-  pointer-events: auto;   /* 이미지 클릭 가능 */
-  cursor: pointer;
-  display: none;
-}
-
-.banner-slider a {
-  pointer-events: none;   /* 혹시 남아 있는 a 태그가 클릭 못 하게 */
-}
-
-.banner-slider img.active {
-  opacity: 1;
-  display: block;
-}
-
-.banner-slider button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 45px;
-  height: 45px;
-  background: rgba(0,0,0,0.55);
-  color: #fff;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  border-radius: 50%;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.banner-slider .prev { left: 0; }
-.banner-slider .next { right: 0; }
-
-.banner-slider button:hover {
-  background: rgba(0,0,0,0.85);
-}
-
-.btn-row {
-  display: flex;
-  gap: 15px; /* 버튼 사이 간격 */
-  margin-top: 15px;
-}
-
-.btn-row button {
-  flex: 1; /* 두 버튼을 동일한 너비로 */
-}
-
-/* PC: 4개 카드형 그리드 */
+/* PC: 4열 */
 @media (min-width: 1024px) {
-  .site-footer {
-    width: 100% !important;
-    background: #f8f8f8 !important;
-    padding: 20px 16px !important;
-    text-align: center !important;
+  .two-box {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
   }
+}
 
+/* ============================
+   footer
+============================ */
+.site-footer {
+  background: #f8f8f8;
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.site-footer .footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* PC에서는 모바일처럼 좁게 */
+@media (min-width: 1024px) {
   .site-footer .footer-inner {
     max-width: 480px !important;
-    margin: 0 auto !important;
-    display: block !important;
-    text-align: center !important;
-  }
-
-  .site-footer .footer-company,
-  .site-footer .footer-info,
-  .site-footer .footer-copy {
-    display: block !important;
-    margin-bottom: 8px !important;
-    line-height: 1.5 !important;
-    text-align: center !important;
-  }
-
-  .site-footer .footer-info {
-    white-space: pre-line !important;
-  }
-  
-  .two-box {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px; 
-  }  
-
-  .two-box .left-box,
-  .two-box .right-box {
-    flex: none !important;
-    max-width: 100% !important;
-    padding: 25px;
-    background: rgba(255,255,255,0.85);
-    border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-    transition: transform .2s ease, box-shadow .2s ease;    
-  }
-
-  .two-box .left-box:hover,
-  .two-box .right-box:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-  }  
-  .container {
-    max-width: 1200px !important;
-    width: 100% !important;
   }
 }
 
-/* ------------------------------
-   🔥 모바일 반응형 최적화
------------------------------- */
+/* ============================
+   모바일 반응형
+============================ */
 @media (max-width: 768px) {
-   .quick-kakao {
-    padding: 16px 20px;
-    font-size: 18px;
-    bottom: 16px;
-    right: 16px;
+  .container {
+    width: 92%;
+    padding: 20px;
   }
-  .footer {
-    max-width: 480px;
-    margin: 0 auto;
-  }
-  .consult-call {
-    font-size: 20px;
-    padding: 4px 0;
-  }
-    .two-box {
-    display: grid !important;
+
+  .two-box {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 
-  .left-box, .right-box {
-    padding: 20px;
-    background: rgba(255,255,255,0.85);
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  }
-
   .calc-img {
     max-width: 140px;
   }
-
-  .calc-desc {
-    font-size: 16px;
-  }
-
-
-  /* 컨테이너 여백 축소 */
-  .container {
-    width: 92%;
-    margin: 20px auto;
-    padding: 20px;
-  }
-
-  /* 마퀴 텍스트 크기 축소 */
-  .v-marquee-inner div {
-    font-size: 14px;
-    height: 36px;
-    line-height: 36px;
-  }
-
-  /* 배너 높이 자동 조절 */
-  .banner-slider {
-    height: auto;
-  }
-
-  .banner-slider img.banner {
-    height: auto;
-    position: relative;
-  }
-
-  /* 배너 버튼 크기 축소 */
-  .banner-slider button {
-    width: 36px;
-    height: 36px;
-    font-size: 22px;
-  }
-
-  /* 계산기 버튼 세로 배치 */
-
-  .calc-btn {
-    font-size: 17px;
-    padding: 14px;
-  }
-
-  /* 텍스트 크기 조정 */
-  body {
-    font-size: 15px;
-  }
-
-  ul li a {
-    font-size: 15px;
-  }
-
-   .left-box, .right-box {
-    min-height: 200px;
-  }
-
-  .calc-img {
-    max-width: 140px;
-  }
-
 }
 
-/* ------------------------------
-   초소형 모바일 (아이폰 SE 등)
------------------------------- */
+/* ============================
+   초소형 모바일
+============================ */
 @media (max-width: 480px) {
-
-  .banner-slider button {
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
+  .calc-img {
+    max-width: 130px;
   }
-
-  .calc-btn {
-    font-size: 16px;
-    padding: 12px;
-  }
-
-  .v-marquee-inner div {
-    font-size: 13px;
-  }
- .btn-row {
-    flex-direction: column;
-  }
-  
-  /*--
-  계산결과
-    --*/
-  
-  .result-box {
-  margin-top: 32px;
-  padding: 20px;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  border-left: 6px solid #4A90E2;
-  transition: all 0.3s ease;
-  font-size: 17px;
-  line-height: 1.6;
-}
-
-.result-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-.result-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.result-item:last-child {
-  border-bottom: none;
-}
-
-.result-label {
-  font-weight: 600;
-  color: #555;
-}
-
-.result-value {
-  font-weight: 700;
-  color: #222;
-}
-
-.highlight {
-  color: #E74C3C;
-  font-size: 22px;
-}
-.call-fixed {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #ff4d4d;
-  color: white;
-  padding: 15px 0;
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  z-index: 9999;
-}
 }
