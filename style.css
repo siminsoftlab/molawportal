@@ -27,34 +27,6 @@ body {
 }
 
 /* ============================
-   서브페이지
-============================ */
-body.subpage {
-  padding-top: 120px;
-  padding-bottom: 160px !important;
-  background-image: url('/images/calculator-bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-body.subpage section {
-  padding: 0;
-}
-
-body.subpage section .inner {
-  background: rgba(255, 255, 255, 0.3);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  backdrop-filter: blur(4px);
-}
-
-/* ============================
    상단 정보바 / 시계
 ============================ */
 .top-info-bar {
@@ -82,19 +54,17 @@ body.subpage section .inner {
   padding: 14px 0;
   font-size: 22px;
   font-weight: 700;
-  letter-spacing: 1px;
   position: sticky;
   top: 0;
   z-index: 9999;
-  font-family: 'Pretendard', sans-serif;
 }
 
 /* ============================
-   컨테이너 (문의하기/커뮤니티 포함)
+   컨테이너
 ============================ */
 .container {
   width: 92%;
-  max-width: 800px; /* PC에서도 800px 유지 */
+  max-width: 800px;
   margin: 30px auto;
   padding: 25px;
   background: rgba(255,255,255,0.7);
@@ -104,7 +74,7 @@ body.subpage section .inner {
 }
 
 /* ============================
-   조회 & 서비스 소개 (two-box)
+   조회 & 서비스 소개
 ============================ */
 .two-box {
   display: grid;
@@ -152,43 +122,8 @@ body.subpage section .inner {
 }
 
 .site-footer .footer-inner {
-  max-width: 900px;
+  max-width: 480px;
   margin: 0 auto;
-}
-
-/* PC에서는 모바일처럼 좁게 */
-@media (min-width: 1024px) {
-  .site-footer .footer-inner {
-    max-width: 480px !important;
-  }
-}
-
-/* ============================
-   모바일 반응형
-============================ */
-@media (max-width: 768px) {
-  .container {
-    width: 92%;
-    padding: 20px;
-  }
-
-  .two-box {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .calc-img {
-    max-width: 140px;
-  }
-}
-
-/* ============================
-   초소형 모바일
-============================ */
-@media (max-width: 480px) {
-  .calc-img {
-    max-width: 130px;
-  }
 }
 
 /* ============================
@@ -211,13 +146,11 @@ body.subpage section .inner {
   font-size: 18px;
   font-weight: 900;
   text-decoration: none;
-  letter-spacing: 0.5px;
   text-shadow: 0 0 6px rgba(0,0,0,0.8);
-  display: block;
 }
 
 /* ============================
-   카톡 상담 버튼 — 무료상담 위
+   카톡 상담 버튼
 ============================ */
 .quick-kakao {
   position: fixed;
@@ -232,7 +165,6 @@ body.subpage section .inner {
   text-decoration: none;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
   z-index: 10000;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .quick-kakao:hover {
