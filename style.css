@@ -29,6 +29,9 @@ body {
 
 /* 모바일에서는 content 높이 문제 해결 */
 @media (max-width: 768px) {
+    body {
+    padding-bottom: 140px !important;
+  }
   .content {
     min-height: auto;
   }
@@ -145,9 +148,6 @@ body {
 
 /* ============================
    footer
-============================ */
-/* ============================
-   footer (디자인 업그레이드 + 다크모드 스타일)
 ============================ */
 .site-footer {
   background: #000; /* 검정 배경 */
