@@ -542,20 +542,27 @@ a.no-style {
 
 /* PC: 4개 카드형 그리드 */
 @media (min-width: 1024px) {
+  .site-footer {
+    width: 100% !important;
+    background: #f8f8f8 !important;
+    padding: 20px 16px !important;
+    text-align: center !important;
+  }
+
   .site-footer .footer-inner {
     max-width: 480px !important;
     margin: 0 auto !important;
-    text-align: center !important;
     display: block !important;
+    text-align: center !important;
   }
 
   .site-footer .footer-company,
   .site-footer .footer-info,
   .site-footer .footer-copy {
     display: block !important;
-    text-align: center !important;
     margin-bottom: 8px !important;
     line-height: 1.5 !important;
+    text-align: center !important;
   }
 
   .site-footer .footer-info {
