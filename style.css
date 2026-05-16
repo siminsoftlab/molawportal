@@ -590,11 +590,7 @@ a.no-style {
   .two-box .right-box:hover {
     transform: translateY(-6px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-  }
-  .footer {
-    max-width: 480px;
-    margin: 0 auto;
-  }
+  }  
 }
 
 /* ------------------------------
@@ -794,38 +790,6 @@ a.no-style {
   text-align: center;
   font-size: 14px;
 }*/
-  
-.footer {
-  background: #f8f8f8;
-  padding: 16px 12px;
-  text-align: center;
-  font-size: 13px;
-  line-height: 1.5;
-}
-.footer-info > div {
-  margin-bottom: 2px;
-}
-.footer-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
 
-.footer-company {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.footer-info {
-  opacity: 0.85;
-  margin-bottom: 12px;
-}
-
-.footer-copy {
-  font-size: 12px;
-  opacity: 0.6;
-  margin-top: 10px;
-}
 
 }
