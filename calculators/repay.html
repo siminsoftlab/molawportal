@@ -13,11 +13,7 @@
   <link rel="stylesheet" href="../style.css">
   <script src="../app.js" defer></script>
 </head>
-<body class="subpage">
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="/firebase-counter.js"></script>
-  
+<body class="subpage">  
 <header class="fixed-header">
   <h1>개인회생 변제금 계산기</h1>
   <a href="../index.html" class="home-btn">홈</a>
@@ -60,6 +56,7 @@
     📞 개인회생·파산 무료상담전화 02-595-5706  ← 클릭 시 전화 연결
   </a>
 </div>
+<!-- footer (페이지 끝에 붙음) -->
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-company">딱요만큼변제</div>
@@ -73,12 +70,24 @@
     <div class="footer-copy">© 2026 딱요만큼변제. All rights reserved.</div>
   </div>
 </footer>
-  <!-- 🔥 오른쪽 하단 고정 카톡 퀵링크 -->
+
+<!-- 🔥 하단 고정 상담바 -->
+<div class="call-fixed">
+  <a href="tel:025955706" class="consult-call">
+    📞 개인회생·파산 무료상담전화 02-595-5706 ← 클릭 시 전화 연결
+  </a>
+</div>
+
+<!-- 🔥 오른쪽 하단 고정 카톡 상담 -->
 <a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" 
-   target="_blank" 
-   rel="noopener noreferrer">
+   class="quick-kakao" target="_blank" rel="noopener noreferrer">
   💬 카톡 상담
 </a>
+
+<!-- JS -->
+<script src="/app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="/firebase-counter.js"></script>
 </body>
 </html>
