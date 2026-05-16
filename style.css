@@ -35,10 +35,10 @@ body.subpage {
   flex-direction: column;
   min-height: 100vh;
 }
-
+/*
 .content {
   flex: 1;
-}
+}*/
 
 body.subpage section {
   padding: 0; /* section 자체는 투명하게 */
