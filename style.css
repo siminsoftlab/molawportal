@@ -213,3 +213,17 @@ body {
   transform: scale(1.08);
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
+
+@media (max-width: 480px) {
+  .footer-info {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+/* ============================
+   모바일
+============================ */
+  .footer-company {
+    font-size: 18px;
+  }
+}
+
