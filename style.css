@@ -97,8 +97,9 @@ body {
 ============================ */
 body.subpage {
   display: block !important;     /* flex 완전 제거 */
-  min-height: auto !important;   /* 강제 높이 제거 */
-  height: auto !important;       /* flex 잔여 영향 제거 */
+  flex-direction: unset !important;
+  min-height: auto !important;
+  height: auto !important;
   padding-bottom: 200px !important; /* call-fixed 공간 확보 */
 }
 
@@ -110,8 +111,8 @@ body.subpage {
 /* footer는 문서 흐름의 끝으로 */
 body.subpage .site-footer {
   position: relative !important;
+  margin-top: 40px !important;
   bottom: auto !important;
-  margin-top: 60px !important;
 }
 .fixed-header {
   position: fixed;
