@@ -60,12 +60,12 @@ async function updateVisitorCount() {
       date: newDate
     });
 
-    // HTML 표시
-    const todayEl = document.getElementById("today-count");
-    const totalEl = document.getElementById("total-count");
+    // 화면 표시
+  const todayEl = document.getElementById("visitor-today");
+  const totalEl = document.getElementById("visitor-total");
 
-    if (todayEl) todayEl.textContent = `오늘 방문자: ${newToday}`;
-    if (totalEl) totalEl.textContent = `전체 방문자: ${newTotal}`;
+  if (todayEl) todayEl.textContent = newToday;
+  if (totalEl) totalEl.textContent = newTotal;
 
   } catch (error) {
     console.error("🔥 방문자 카운트 업데이트 오류:", error);
