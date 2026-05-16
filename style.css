@@ -253,4 +253,7 @@ body {
     font-size: 18px;
   }
 }
-
+/* 하위 페이지(subpage)에서 footer가 가려지는 문제 해결 */
+.subpage {
+  padding-bottom: 200px !important; /* 모바일에서도 footer 전체가 보이도록 */
+}
