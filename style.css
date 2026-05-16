@@ -526,6 +526,22 @@ a.no-style {
 
 /* PC: 4개 카드형 그리드 */
 @media (min-width: 1024px) {
+   footer,
+  .footer,
+  .footer-info,
+  .footer-kakao {
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+    display: block !important;
+    float: none !important;
+  }
+
+  .footer-info > div {
+    display: block !important;
+    margin-bottom: 4px !important;
+  }
+  
   .two-box {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr);
