@@ -714,4 +714,15 @@ a.no-style {
   color: #E74C3C;
   font-size: 22px;
 }
+  .site-footer {
+  width: 100%;
+  background: #2c2c2c;
+  color: #ffffff;
+  padding: 30px 20px;
+  padding-bottom: 80px; /* 무료상담전화 div 높이만큼 여백 추가 */
+  margin-top: 60px;
+  text-align: center;
+  font-size: 14px;
+}
+
 }
