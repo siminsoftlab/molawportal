@@ -94,21 +94,13 @@ body.subpage section .inner {
 ============================ */
 .container {
   width: 92%;
-  max-width: 800px;
+  max-width: 800px; /* PC에서도 800px 유지 */
   margin: 30px auto;
   padding: 25px;
   background: rgba(255,255,255,0.7);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   backdrop-filter: blur(4px);
-}
-
-/* PC에서는 넓게 */
-@media (min-width: 1024px) {
-  .container {
-    width: 100%;
-    max-width: 1200px !important;
-  }
 }
 
 /* ============================
@@ -199,7 +191,9 @@ body.subpage section .inner {
   }
 }
 
-/* 🔥 무료상담전화문의 — 화면 하단 고정 */
+/* ============================
+   무료상담전화문의 — 화면 하단 고정
+============================ */
 .fixed-consult-bar {
   position: fixed;
   bottom: 0;
@@ -222,10 +216,12 @@ body.subpage section .inner {
   display: block;
 }
 
-/* 🔥 카톡 상담 버튼 — 무료상담전화문의 위에 위치 */
+/* ============================
+   카톡 상담 버튼 — 무료상담전화문의 위
+============================ */
 .quick-kakao {
   position: fixed;
-  bottom: 80px;   /* 무료상담전화문의 위로 이동 */
+  bottom: 80px;
   right: 20px;
   background: #ffe812;
   color: #3c1e1e;
@@ -235,7 +231,7 @@ body.subpage section .inner {
   font-weight: 900;
   text-decoration: none;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  z-index: 10000; /* 무료상담전화문의보다 위 */
+  z-index: 10000;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -243,5 +239,3 @@ body.subpage section .inner {
   transform: scale(1.08);
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
-
-
