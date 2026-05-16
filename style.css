@@ -171,3 +171,7 @@ body {
   transform: scale(1.08);
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
+.footer-info {
+  white-space: pre-line;
+  line-height: 1.6;
+}
