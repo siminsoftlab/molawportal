@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>변제금 계산기 | 모두의로펌</title>
+    <title>딱요만큼 변제금 조회</title>
     <link>https://molawcalculator.com/</link>
-    <description>개인회생 변제금·이자 계산기 및 불법사채 피해구제·서류발급 대행 정보 블로그 RSS 피드</description>
+    <description>개인회생 변제금·연이자 계산기 및 불법사채 피해구제·서류발급 대행 정보 블로그 RSS 피드</description>
     <language>ko</language>
     <lastBuildDate>Tue, 05 May 2026 23:50:00 +0900</lastBuildDate>
 
@@ -24,7 +24,7 @@
     </item>
 
     <item>
-      <title><![CDATA[이자 계산기]]></title>
+      <title><![CDATA[연이자 계산기]]></title>
       <link>https://molawcalculator.com/calculators/interest.html</link>
       <description><![CDATA[원금, 이자율, 기간을 입력하면 연이자를 자동 계산해주는 계산기입니다.]]></description>
       <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
