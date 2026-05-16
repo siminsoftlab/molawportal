@@ -198,3 +198,50 @@ body.subpage section .inner {
     max-width: 130px;
   }
 }
+
+/* 🔥 무료상담전화문의 — 화면 하단 고정 */
+.fixed-consult-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #c40000;
+  padding: 14px 0;
+  text-align: center;
+  z-index: 9999;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
+}
+
+.consult-call {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+  display: block;
+}
+
+/* 🔥 카톡 상담 버튼 — 무료상담전화문의 위에 위치 */
+.quick-kakao {
+  position: fixed;
+  bottom: 80px;   /* 무료상담전화문의 위로 이동 */
+  right: 20px;
+  background: #ffe812;
+  color: #3c1e1e;
+  padding: 14px 18px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  z-index: 10000; /* 무료상담전화문의보다 위 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-kakao:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
+
+
