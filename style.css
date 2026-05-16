@@ -105,6 +105,7 @@ body.subpage {
 /* 컨텐츠가 footer를 아래로 밀도록 */
 .subpage .container {
   flex: 1; /* 핵심 */
+  margin-top: 100px; /* fixed-header와 겹치지 않도록 */
 }
 .fixed-header {
   position: fixed;
