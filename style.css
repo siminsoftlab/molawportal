@@ -124,21 +124,38 @@ body {
    footer
 ============================ */
 .site-footer {
-  background: #f8f8f8;
-  padding: 20px 16px;
-  text-align: center;
+  background: #f4f4f4;
+  padding: 30px 16px;
+  text-align: left;
+  border-top: 1px solid #ddd;
 }
 
-/* PC에서 footer 폭 넓혀 주소 줄바꿈 방지 */
 .site-footer .footer-inner {
-  max-width: 900px; /* 기존 480px → 900px */
+  max-width: 900px;
   margin: 0 auto;
 }
 
-/* footer 문단 줄바꿈 유지 + 주소 한 줄 유지 */
+.footer-company {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #222;
+}
+
 .footer-info {
   white-space: pre-line;
-  line-height: 1.6;
+  line-height: 1.7;
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 14px;
+}
+
+.footer-copy {
+  font-size: 14px;
+  color: #777;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 12px;
+  margin-top: 12px;
 }
 
 /* ============================
@@ -149,19 +166,29 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #c40000;
-  padding: 14px 0;
+  background: linear-gradient(90deg, #b80000, #d60000);
+  padding: 18px 0;
   text-align: center;
   z-index: 9999;
-  box-shadow: 0 -2px 6px rgba(0,0,0,0.25);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.35);
+  border-top: 1px solid rgba(255,255,255,0.25);
 }
 
 .call-fixed .consult-call {
   color: #fff;
-  font-size: 18px;
-  font-weight: 900;
+  font-size: 19px;
+  font-weight: 800;
   text-decoration: none;
-  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+  text-shadow: 0 0 8px rgba(0,0,0,0.6);
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.call-fixed .consult-call::before {
+  content: "📞";
+  font-size: 22px;
 }
 
 /* ============================
