@@ -95,6 +95,17 @@ body {
 /* ============================
    하위 페이지 상단 고정 헤더
 ============================ */
+body.subpage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-bottom: 200px !important; /* call-fixed 공간 확보 */
+}
+
+/* 컨텐츠가 footer를 아래로 밀도록 */
+.subpage .container {
+  flex: 1; /* 핵심 */
+}
 .fixed-header {
   position: fixed;
   top: 0;
