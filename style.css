@@ -573,10 +573,7 @@ a.no-style {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px; 
-  }
-  .container {
-    max-width: 1200px !important; /* 원하는 폭으로 변경 */
-  }
+  }  
 
   .two-box .left-box,
   .two-box .right-box {
@@ -594,6 +591,10 @@ a.no-style {
     transform: translateY(-6px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.18);
   }  
+  .container {
+    max-width: 1200px !important;
+    width: 100% !important;
+  }
 }
 
 /* ------------------------------
