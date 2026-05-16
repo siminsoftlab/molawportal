@@ -549,24 +549,24 @@ a.no-style {
     text-align: center !important;
   }
 
-  .footer-inner {
+  .site-footer .footer-inner {
     max-width: 480px !important;
     margin: 0 auto !important;
     text-align: center !important;
     display: block !important;
   }
 
-  .footer-company,
-  .footer-info,
-  .footer-copy {
+  .site-footer .footer-company,
+  .site-footer .footer-info,
+  .site-footer .footer-copy {
     display: block !important;
     text-align: center !important;
     margin-bottom: 8px !important;
     line-height: 1.5 !important;
   }
 
-  .footer-info {
-    white-space: pre-line !important; /* 줄바꿈 유지 */
+  .site-footer .footer-info {
+    white-space: pre-line !important;
   }
   
   .two-box {
