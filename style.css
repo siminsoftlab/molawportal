@@ -102,14 +102,15 @@ body {
   width: 100%;
   background: #222;
   color: #fff;
-  padding: 16px 20px;
-  font-size: 20px;
-  font-weight: 700;
+  padding: 18px 20px;
+  text-align: center; /* 중앙 정렬 */
   z-index: 9999;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+
+  display: flex;
+  flex-direction: column; /* 세로 배치 */
+  justify-content: center;
+  align-items: center;
 }
 
 .fixed-header h1 {
@@ -119,9 +120,10 @@ body {
 }
 
 .fixed-header .home-btn {
+  margin-top: 8px;
   color: #fff;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   background: #444;
   padding: 6px 12px;
