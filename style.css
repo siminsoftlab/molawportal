@@ -572,7 +572,10 @@ a.no-style {
   .two-box {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 20px; 
+  }
+    .container {
+    max-width: 1200px !important; /* 원하는 폭으로 변경 */
   }
 
   .two-box .left-box,
