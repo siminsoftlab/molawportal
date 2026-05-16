@@ -123,11 +123,15 @@ body {
 /* ============================
    footer
 ============================ */
+/* ============================
+   footer (디자인 업그레이드 + 다크모드 스타일)
+============================ */
 .site-footer {
-  background: #f4f4f4;
-  padding: 30px 16px;
+  background: #000; /* 검정 배경 */
+  padding: 32px 20px;
   text-align: left;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #333;
+  color: #fff; /* 전체 글자 흰색 */
 }
 
 .site-footer .footer-inner {
@@ -138,24 +142,24 @@ body {
 .footer-company {
   font-size: 20px;
   font-weight: 800;
-  margin-bottom: 12px;
-  color: #222;
+  margin-bottom: 14px;
+  color: #fff; /* 회사명 흰색 */
 }
 
 .footer-info {
   white-space: pre-line;
   line-height: 1.7;
   font-size: 15px;
-  color: #555;
-  margin-bottom: 14px;
+  color: #ddd; /* 본문은 약간 밝은 회색 */
+  margin-bottom: 18px;
 }
 
 .footer-copy {
   font-size: 14px;
-  color: #777;
-  border-top: 1px solid #e0e0e0;
-  padding-top: 12px;
-  margin-top: 12px;
+  color: #aaa; /* 저작권은 더 연한 회색 */
+  border-top: 1px solid #333;
+  padding-top: 14px;
+  margin-top: 14px;
 }
 
 /* ============================
