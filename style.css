@@ -96,18 +96,21 @@ body {
    하위 페이지 상단 고정 헤더
 ============================ */
 body.subpage {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 100vh !important;
+  display: block !important;   /* flex 제거 */
+  min-height: auto !important; /* 강제 높이 제거 */
+  padding-bottom: 200px !important; /* call-fixed 공간 확보 */
 }
 
+/* fixed-header 때문에 컨텐츠가 가려지지 않도록 */
 .subpage .container {
-  flex: 1 0 auto !important; /* footer를 아래로 밀어내는 핵심 */
-  margin-top: 120px !important; /* fixed-header 공간 확보 */
+  margin-top: 120px !important;
 }
 
+/* footer는 문서 흐름의 끝에 자연스럽게 위치 */
 .site-footer {
-  margin-top: auto !important; /* footer를 페이지 맨 아래로 고정 */
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: 40px !important;
 }
 .fixed-header {
   position: fixed;
