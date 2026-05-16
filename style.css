@@ -1,5 +1,5 @@
 /* ============================
-   기본 레이아웃 구조
+   기본 레이아웃
 ============================ */
 html, body {
   height: 100%;
@@ -7,93 +7,14 @@ html, body {
   padding: 0;
 }
 
-body {  
+body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: #f7f9fc;
+  background: #f7f9fc url('/images/calculator-bg.png') center/cover no-repeat;
   color: #333;
-  padding-bottom: 120px !important; /* call-fixed 공간 확보 */
-  background-image: url('/images/calculator-bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* footer를 아래로 밀기 위한 content 최소 높이 */
-.content {
-  min-height: calc(100vh - 300px);
-}
-
-/* 모바일에서는 content 높이 문제 해결 */
-@media (max-width: 768px) {
-    body {
-          padding-bottom: 200px !important; /* 기존 120px → 200px */
-  }
-  .content {
-    min-height: auto;
-  }
- .site-footer {
-    background: #000 !important;
-    color: #fff !important;
-    padding: 32px 20px;
-    text-align: left;
-  }
-
-  .site-footer .footer-inner {
-    max-width: 100% !important;
-  }
-
-  .footer-company {
-    color: #fff !important;
-  }
-
-  .footer-info {
-    color: #ddd !important;
-  }
-
-  .footer-copy {
-    color: #aaa !important;
-    border-top: 1px solid #333 !important;
-  }  
 }
 
 /* ============================
-   상단 정보바 / 시계
-============================ */
-.top-info-bar {
-  position: fixed;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #4a90e2;
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  text-align: center;
-  z-index: 9999;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-#live-clock {
-  width: 100%;
-  background-color: #222;
-  color: #fff;
-  text-align: center;
-  padding: 14px 0;
-  font-size: 22px;
-  font-weight: 700;
-  position: sticky;
-  top: 0;
-  z-index: 9999;
-}
-/* ============================
-   하위 페이지 상단 고정 헤더
+   하위 페이지 레이아웃 구조
 ============================ */
 body.subpage {
   display: flex;
@@ -101,19 +22,15 @@ body.subpage {
   min-height: 100vh;
 }
 
-/* container가 페이지 높이를 채우도록 */
-body.subpage .container {
-  flex: 1 0 auto !important;
-  margin-top: 140px !important; /* fixed-header 공간 확보 */
-}
+/* 콘텐츠 전체를 감싸는 영역 */
 .page-wrap {
   flex: 1; /* footer를 아래로 밀어내는 핵심 */
+  padding-top: 140px; /* fixed-header 높이 보정 */
 }
 
-.site-footer {
-  margin-top: auto;
-}
-
+/* ============================
+   상단 고정 헤더
+============================ */
 .fixed-header {
   position: fixed;
   top: 0;
@@ -122,13 +39,12 @@ body.subpage .container {
   background: #222;
   color: #fff;
   padding: 18px 20px;
-  text-align: center; /* 중앙 정렬 */
+  text-align: center;
   z-index: 9999;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 
   display: flex;
-  flex-direction: column; /* 세로 배치 */
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 
@@ -141,12 +57,12 @@ body.subpage .container {
 .fixed-header .home-btn {
   margin-top: 8px;
   color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
   background: #444;
   padding: 6px 12px;
   border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 /* ============================
@@ -155,7 +71,7 @@ body.subpage .container {
 .container {
   width: 92%;
   max-width: 800px;
-  margin: 30px auto;
+  margin: 0 auto 40px;
   padding: 25px;
   background: rgba(255,255,255,0.7);
   border-radius: 12px;
@@ -164,53 +80,16 @@ body.subpage .container {
 }
 
 /* ============================
-   조회 & 서비스 소개
-============================ */
-.two-box {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.left-box, .right-box {
-  padding: 18px;
-  border-radius: 12px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.calc-img {
-  width: 70%;
-  max-width: 120px;
-  height: auto;
-  margin-bottom: 10px;
-}
-
-.calc-desc {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-/* PC: 4열 */
-@media (min-width: 1024px) {
-  .two-box {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-}
-
-/* ============================
    footer
 ============================ */
 .site-footer {
-  background: #000; /* 검정 배경 */
+  background: #000;
   padding: 32px 20px;
   text-align: left;
   border-top: 1px solid #333;
-  color: #fff; /* 전체 글자 흰색 */
+  color: #fff;
+  margin-top: auto;
+  margin-bottom: 80px; /* call-fixed 높이만큼 확보 */
 }
 
 .site-footer .footer-inner {
@@ -222,27 +101,26 @@ body.subpage .container {
   font-size: 20px;
   font-weight: 800;
   margin-bottom: 14px;
-  color: #fff; /* 회사명 흰색 */
 }
 
 .footer-info {
   white-space: pre-line;
   line-height: 1.7;
   font-size: 15px;
-  color: #ddd; /* 본문은 약간 밝은 회색 */
+  color: #ddd;
   margin-bottom: 18px;
 }
 
 .footer-copy {
   font-size: 14px;
-  color: #aaa; /* 저작권은 더 연한 회색 */
+  color: #aaa;
   border-top: 1px solid #333;
   padding-top: 14px;
   margin-top: 14px;
 }
 
 /* ============================
-   무료상담전화 — 화면 하단 고정
+   하단 고정 상담바
 ============================ */
 .call-fixed {
   position: fixed;
@@ -254,7 +132,6 @@ body.subpage .container {
   text-align: center;
   z-index: 9999;
   box-shadow: 0 -4px 12px rgba(0,0,0,0.35);
-  border-top: 1px solid rgba(255,255,255,0.25);
 }
 
 .call-fixed .consult-call {
@@ -262,8 +139,6 @@ body.subpage .container {
   font-size: 19px;
   font-weight: 800;
   text-decoration: none;
-  text-shadow: 0 0 8px rgba(0,0,0,0.6);
-  letter-spacing: 0.3px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -292,15 +167,11 @@ body.subpage .container {
   z-index: 10000;
 }
 
-.quick-kakao:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
-}
 /* ============================
-   모바일
+   모바일 대응
 ============================ */
 @media (max-width: 480px) {
-   .fixed-header {
+  .fixed-header {
     padding: 14px 16px;
   }
 
@@ -312,17 +183,12 @@ body.subpage .container {
     font-size: 14px;
     padding: 5px 10px;
   }
+
   .footer-info {
     font-size: 14px;
-    line-height: 1.6;
   }
+
   .footer-company {
     font-size: 18px;
   }
-}
-/* ============================
-   하위 페이지(subpage)에서 footer가 가려지는 문제 해결
-============================ */
-.subpage {
-  padding-bottom: 200px !important; /* 모바일에서도 footer 전체가 보이도록 */
 }
