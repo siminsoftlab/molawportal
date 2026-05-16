@@ -11,7 +11,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   background: #f7f9fc;
   color: #333;
-  padding-bottom: 60px !important; /* call-fixed 공간 확보 */
+  padding-bottom: 120px !important; /* call-fixed 공간 확보 */
   background-image: url('/images/calculator-bg.png');
   background-size: cover;
   background-position: center;
