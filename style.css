@@ -92,6 +92,46 @@ body {
   top: 0;
   z-index: 9999;
 }
+/* ============================
+   하위 페이지 상단 고정 헤더
+============================ */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #222;
+  color: #fff;
+  padding: 16px 20px;
+  font-size: 20px;
+  font-weight: 700;
+  z-index: 9999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.fixed-header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.fixed-header .home-btn {
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  background: #444;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* 하위 페이지 컨테이너가 헤더와 겹치지 않도록 */
+.subpage .container {
+  margin-top: 100px;
+}
 
 /* ============================
    컨테이너
@@ -240,20 +280,33 @@ body {
   transform: scale(1.08);
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
-
+/* ============================
+   모바일
+============================ */
 @media (max-width: 480px) {
+   .fixed-header {
+    padding: 14px 16px;
+  }
+
+  .fixed-header h1 {
+    font-size: 16px;
+  }
+
+  .fixed-header .home-btn {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
   .footer-info {
     font-size: 14px;
     line-height: 1.6;
   }
-/* ============================
-   모바일
-============================ */
   .footer-company {
     font-size: 18px;
   }
 }
-/* 하위 페이지(subpage)에서 footer가 가려지는 문제 해결 */
+/* ============================
+   하위 페이지(subpage)에서 footer가 가려지는 문제 해결
+============================ */
 .subpage {
   padding-bottom: 200px !important; /* 모바일에서도 footer 전체가 보이도록 */
 }
