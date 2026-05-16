@@ -733,7 +733,7 @@ a.no-style {
   background: #000000; /* 검정색 */
   color: #ffffff;       /* 흰색 글자 */
   padding: 30px 20px;
-  padding-bottom: 90px; /* 무료상담전화 div 높이만큼 여백 확보 */
+  padding-bottom: 90px; /* 무료상담전화 div 높이만큼 여백 */
   margin-top: 60px;
   text-align: center;
   font-size: 14px;
@@ -761,4 +761,5 @@ a.no-style {
   opacity: 0.6;
   margin-top: 10px;
 }
+
 }
