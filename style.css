@@ -11,7 +11,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   background: #f7f9fc;
   color: #333;
-  padding-bottom: 60px !important;
+  padding-bottom: 60px !important; /* call-fixed 공간 확보 */
   background-image: url('/images/calculator-bg.png');
   background-size: cover;
   background-position: center;
@@ -22,8 +22,16 @@ body {
   min-height: 100vh;
 }
 
+/* footer를 아래로 밀기 위한 content 최소 높이 */
 .content {
-  min-height: calc(100vh - 300px); 
+  min-height: calc(100vh - 300px);
+}
+
+/* 모바일에서는 content 높이 문제 해결 */
+@media (max-width: 768px) {
+  .content {
+    min-height: auto;
+  }
 }
 
 /* ============================
@@ -121,13 +129,13 @@ body {
   text-align: center;
 }
 
-/* PC에서도 footer 폭을 넓혀 주소가 한 줄로 보이도록 수정 */
+/* PC에서 footer 폭 넓혀 주소 줄바꿈 방지 */
 .site-footer .footer-inner {
   max-width: 900px; /* 기존 480px → 900px */
   margin: 0 auto;
 }
 
-/* footer 문단 줄바꿈 유지 + 가독성 향상 */
+/* footer 문단 줄바꿈 유지 + 주소 한 줄 유지 */
 .footer-info {
   white-space: pre-line;
   line-height: 1.6;
@@ -177,8 +185,4 @@ body {
 .quick-kakao:hover {
   transform: scale(1.08);
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
-}
-.footer-info {
-  white-space: pre-line;
-  line-height: 1.6;
 }
