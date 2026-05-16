@@ -63,7 +63,7 @@ async function updateVisitorCount() {
     // 화면 표시
   const todayEl = document.getElementById("visitor-today");
   const totalEl = document.getElementById("visitor-total");
-
+  
   if (todayEl) todayEl.textContent = newToday;
   if (totalEl) totalEl.textContent = newTotal;
 
