@@ -291,7 +291,7 @@ body.subpage .container {
     z-index: 200000;
   }
   .top-info-bar {
-    top: 52px; /* 시계 바로 아래 */
+    top: 40px; /* 시계 바로 아래 */
     padding: 8px 0;
     font-size: 14px;
   }
