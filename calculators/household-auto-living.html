@@ -2,19 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>가구수 자동 생계비 계산기</title>
-
-  <meta name="description" content="가구수만 선택하면 법원 기준에 따라 생계비를 자동 계산하고 변제금을 산정하는 계산기입니다.">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="가구수 자동 생계비 계산기">
-  <meta property="og:description" content="가구수만 선택하면 법원 기준에 따라 생계비를 자동 계산하고 변제금을 산정하는 계산기입니다.">
-  <meta property="og:url" content="https://molawcalculator.com/calculators/household-auto-living.html">
-  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
-
   <link rel="stylesheet" href="../style.css">
 </head>
+
 <body class="subpage">
+
 <header class="fixed-header">
   <h1>가구수 자동 생계비 계산기</h1>
   <a href="../index.html" class="home-btn">홈</a>
@@ -52,8 +46,9 @@
     <div id="hl_summary" class="summary-card"></div>
 
     <div class="accordion">
-      <button class="accordion-btn" onclick="toggleAccordion('hl_accordion','hl_btn')"
-              id="hl_btn">계산 상세 보기 ▼</button>
+      <button id="hl_btn" class="accordion-btn" onclick="toggleAccordion('hl_accordion','hl_btn')">
+        계산 상세 보기 ▼
+      </button>
       <div id="hl_accordion" class="accordion-content"></div>
     </div>
 
@@ -62,104 +57,6 @@
   </div>
 </div>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-company">딱요만큼변제</div>
-    <div class="footer-info">
-      상호: 법무법인 영민 | 대표: 박희영 | 사업자등록번호: 425-88-00769  
-      주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
-      개인정보관리책임자: 박희영  
-      전화: 02-595-5706  
-      팩스: 02-525-7255
-    </div>
-    <div class="footer-copy">COPYRIGHT©2026 딱요만큼변제. ALL RIGHTS RESERVED.</div>
-  </div>
-</footer>
-
-<div class="call-fixed">
-  <a href="tel:025955706" class="consult-call">
-    개인회생·파산 무료상담전화 02-595-5706 ← 클릭 시 전화 연결
-  </a>
-</div>
-<a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" target="_blank" rel="noopener noreferrer">
-  💬 카톡 상담
-</a>
-
-<script>
-function toggleAccordion(contentId, btnId) {
-  const box = document.getElementById(contentId);
-  const btn = document.getElementById(btnId);
-  if (box.style.display === "block") {
-    box.style.display = "none";
-    btn.textContent = "계산 상세 보기 ▼";
-  } else {
-    box.style.display = "block";
-    btn.textContent = "계산 상세 접기 ▲";
-  }
-}
-
-function resetHouseholdLiving() {
-  document.getElementById('hl_income').value = "";
-  document.getElementById('hl_household').value = "1";
-  document.getElementById('hl_extra').value = "";
-  document.getElementById('hl_months').value = "36";
-  document.getElementById('hl_asset').value = "";
-  document.getElementById('hl_summary').style.display = "none";
-  document.getElementById('hl_accordion').style.display = "none";
-  document.getElementById('hl_seo').classList.remove('visible');
-  document.getElementById('hl_seo').innerHTML = "";
-}
-
-function calcHouseholdLiving() {
-  const income = Number(document.getElementById('hl_income').value || 0);
-  const household = Number(document.getElementById('hl_household').value || 1);
-  const extra = Number(document.getElementById('hl_extra').value || 0);
-  const months = Number(document.getElementById('hl_months').value || 0);
-  const asset = Number(document.getElementById('hl_asset').value || 0);
-
-  const baseLiving1 = 1538523;
-  const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
-  const weight = weights[household] || weights[5];
-  const living = Math.round(baseLiving1 * weight);
-
-  const totalLiving = living + extra;
-  const disposable = Math.max(income - totalLiving, 0);
-  const totalByIncome = disposable * months;
-  const finalTotal = Math.max(totalByIncome, asset);
-  const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
-
-  const summary = document.getElementById('hl_summary');
-  summary.innerHTML = `
-    총 변제금: ${finalTotal.toLocaleString()}원<br>
-    월 변제금: ${monthly.toLocaleString()}원
-  `;
-  summary.style.display = "block";
-
-  const acc = document.getElementById('hl_accordion');
-  acc.innerHTML = `
-    <div class="calc-step"><strong>1) 월 소득</strong><br>${income.toLocaleString()}원</div>
-    <div class="calc-step"><strong>2) 가구 수</strong><br>${household}인</div>
-    <div class="calc-step"><strong>3) 기본 생계비(법원 기준)</strong><br>${living.toLocaleString()}원</div>
-    <div class="calc-step"><strong>4) 추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-    <div class="calc-step"><strong>5) 총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>6) 월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
-    <div class="calc-step"><strong>7) 총 변제금(소득 기준)</strong><br>${totalByIncome.toLocaleString()}원</div>
-    <div class="calc-step"><strong>8) 청산가치</strong><br>${asset.toLocaleString()}원</div>
-    <div class="calc-step"><strong>9) 최종 총 변제금</strong><br>${finalTotal.toLocaleString()}원</div>
-    <div class="calc-step"><strong>10) 월 변제금</strong><br>${monthly.toLocaleString()}원</div>
-  `;
-  acc.style.display = "block";
-
-  const seo = document.getElementById('hl_seo');
-  seo.innerHTML = `
-    <h3>📌 가구수 자동 생계비 계산 설명</h3>
-    <p>가구 수 ${household}인 기준으로 1인 생계비 ${baseLiving1.toLocaleString()}원에 가중치 ${weight}를 적용하여 기본 생계비는 ${living.toLocaleString()}원으로 계산되었습니다.</p>
-    <p>추가 생계비 ${extra.toLocaleString()}원을 포함한 총 생계비는 ${totalLiving.toLocaleString()}원이며, 월 소득 ${income.toLocaleString()}원에서 이를 제외한 월 변제 가능 금액은 ${disposable.toLocaleString()}원입니다.</p>
-    <p>변제기간 ${months}개월 기준 소득에 따른 총 변제금은 ${totalByIncome.toLocaleString()}원이고, 청산가치 ${asset.toLocaleString()}원을 반영하여 최종 총 변제금은 ${finalTotal.toLocaleString()}원, 월 변제금은 ${monthly.toLocaleString()}원입니다.</p>
-  `;
-  setTimeout(() => seo.classList.add('visible'), 50);
-}
-</script>
+<script src="../household-auto-living.js"></script>
 </body>
 </html>
