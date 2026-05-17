@@ -1,5 +1,5 @@
 /****************************************************
- *  안전한 선택자 / 공통 함수
+ * 공통 함수
  ****************************************************/
 function $(id) {
   return document.getElementById(id);
@@ -102,14 +102,16 @@ function initBannerSlider() {
   }
 }
 
-// ========== 변제금 계산 ==========
+/****************************************************
+ * 변제금 계산
+ ****************************************************/
 function calcRepay() {
   try {
-    const income = toNumber($('income')?.value);
-    const living = toNumber($('living')?.value);
-    const extra  = toNumber($('extra')?.value);
-    const months = toNumber($('months')?.value);
-    const asset  = toNumber($('asset')?.value);
+    const income = toNumber($("income").value);
+    const living = toNumber($("living").value);
+    const extra = toNumber($("extra").value);
+    const months = toNumber($("months").value);
+    const asset = toNumber($("asset").value);
 
     const totalLiving = living + extra;
     const disposable = Math.max(income - totalLiving, 0);
@@ -117,14 +119,14 @@ function calcRepay() {
     const finalTotal = Math.max(totalByIncome, asset);
     const monthly = Math.ceil(finalTotal / months);
 
-    /* ⭐ 총 변제금 강조 카드 */
+    /* ⭐ 요약 카드 */
     setHTMLSafe("repaySummary", `
-      총 변제금: ${finalTotal.toLocaleString()}원<br>
-      월 변제금: ${monthly.toLocaleString()}원
+      <strong>총 변제금:</strong> ${finalTotal.toLocaleString()}원<br>
+      <strong>월 변제금:</strong> ${monthly.toLocaleString()}원
     `);
-    $('repaySummary').style.display = "block";
+    $("repaySummary").style.display = "block";
 
-    /* ⭐ 상세 계산 아코디언 */
+    /* ⭐ 상세 계산 */
     setHTMLSafe("repayAccordion", `
       <div class="calc-step"><strong>1) 월 소득</strong><br>${income.toLocaleString()}원</div>
       <div class="calc-step"><strong>2) 총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
@@ -136,21 +138,34 @@ function calcRepay() {
     `);
 
     /* ⭐ 자동 설명문 */
-    const seoBox = document.getElementById("repaySEO");
+    const seoBox = $("repaySEO");
     seoBox.innerHTML = `
       <h3>📌 개인회생 변제금 자동 설명</h3>
       <p>월 소득 ${income.toLocaleString()}원에서 생계비 ${totalLiving.toLocaleString()}원을 제외하여 월 변제 가능 금액은 ${disposable.toLocaleString()}원입니다.</p>
-      <p>변제기간 ${months}개월 기준 총 변제금은 ${finalTotal.toLocaleString()}원이며, 월 변제금은 ${monthly.toLocaleString()}원입니다.</p>
-      ${asset ? `<p>또한 청산가치 ${asset.toLocaleString()}원이 반영되었습니다.</p>` : ""}
+      <p>${months}개월 기준 총 변제금은 ${finalTotal.toLocaleString()}원이며, 월 변제금은 ${monthly.toLocaleString()}원입니다.</p>
+      ${asset ? `<p>청산가치 ${asset.toLocaleString()}원이 반영되었습니다.</p>` : ""}
     `;
 
-    /* ⭐ 애니메이션 등장 */
-    setTimeout(() => {
-      seoBox.classList.add("visible");
-    }, 50);
+    setTimeout(() => seoBox.classList.add("visible"), 50);
 
   } catch (e) {
     console.log("calcRepay error:", e);
+  }
+}
+
+/****************************************************
+ * 아코디언
+ ****************************************************/
+function toggleAccordionRepay() {
+  const box = $("repayAccordion");
+  const btn = document.querySelector(".accordion-btn");
+
+  if (box.style.display === "block") {
+    box.style.display = "none";
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.style.display = "block";
+    btn.textContent = "계산 상세 접기 ▲";
   }
 }
 
@@ -193,22 +208,15 @@ function generateRepaySEO(income, living, extra, months, asset, monthly, finalTo
 
 // ========== 변제금 리셋 ==========
 function resetRepayInputs() {
-  try {
-    const inputs = document.querySelectorAll("input[type='number']");
-    for (let i = 0; i < inputs.length; i++) inputs[i].value = "";
+  $("income").value = "";
+  $("extra").value = "";
+  $("months").value = 36;
+  $("asset").value = "";
+  $("living").selectedIndex = 0;
 
-    $('income').value = "";
-    $('extra').value = "";
-    $('months').value = 36;
-    $('asset').value = "";
-
-    const living = $('living');
-    if (living) living.selectedIndex = 0;
-
-    setHTMLSafe("repayResult", "");
-  } catch (e) {
-    console.log("resetRepay error:", e);
-  }
+  $("repaySummary").style.display = "none";
+  $("repayAccordion").innerHTML = "";
+  $("repaySEO").innerHTML = "";
 }
 
 // ========== 이자 계산 (실제 계산 과정 표시) ==========
