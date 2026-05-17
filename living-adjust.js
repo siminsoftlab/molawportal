@@ -10,13 +10,17 @@ function toggleLivingAccordion() {
   const isOpen = box.classList.contains("open");
 
   if (isOpen) {
+    // 닫기
     box.classList.remove("open");
     box.style.maxHeight = null;
     btn.textContent = "계산 상세 보기 ▼";
+    btn.classList.remove("active");
   } else {
+    // 열기
     box.classList.add("open");
     box.style.maxHeight = box.scrollHeight + "px";
     btn.textContent = "계산 상세 접기 ▲";
+    btn.classList.add("active");
   }
 }
 
@@ -89,9 +93,10 @@ function calcLivingAdjust() {
   /* 계산 후 자동으로 아코디언 열기 */
   acc.classList.add("open");
   acc.style.maxHeight = acc.scrollHeight + "px";
-
+  
   const btn = document.querySelector(".calc-acc-btn");
-  if (btn) btn.textContent = "계산 상세 접기 ▲";
+  btn.textContent = "계산 상세 접기 ▲";
+  btn.classList.add("active");
 
   /* SEO */
   const seo = document.getElementById('la_seo');
