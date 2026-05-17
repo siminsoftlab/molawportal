@@ -50,25 +50,23 @@
       <input id="asset" type="number">
       <p class="notice">※ 청산가치 = 보유재산 가치</p>
 
-      <div class="btn-row">
+     <div class="btn-row">
         <button onclick="calcRepay()">계산하기</button>
         <button onclick="resetRepayInputs()">초기화</button>
       </div>
 
-      <!-- ⭐ 총 변제금 강조 카드 -->
-     <!-- <div id="repaySummary" class="summary-card"></div> -->
+      <!-- ⭐ 총 변제금 요약 카드 -->
+      <div id="repaySummary" class="summary-card" style="display:none;"></div>
 
-      <!-- ⭐ 아코디언(상세 계산 결과) -->
+      <!-- ⭐ 상세 계산 아코디언 -->
       <div class="accordion">
         <button class="accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
         <div id="repayAccordion" class="accordion-content"></div>
       </div>
 
-      <!-- ⭐ 자동 설명문 (애니메이션 등장) -->
+      <!-- ⭐ 자동 설명문 -->
       <div id="repaySEO" class="seo-box-animated"></div>
-
     </div>
-
   </div>
 
   <!-- footer -->
