@@ -212,11 +212,15 @@ function toggleAccordion() {
   const box = document.getElementById("interestAccordion");
   const btn = document.querySelector(".accordion-btn");
 
-  if (box.style.display === "block") {
-    box.style.display = "none";
+  const isOpen = box.classList.contains("open");
+
+  if (isOpen) {
+    box.classList.remove("open");
+    box.style.maxHeight = null;
     btn.textContent = "계산 상세 보기 ▼";
   } else {
-    box.style.display = "block";
+    box.classList.add("open");
+    box.style.maxHeight = box.scrollHeight + "px";
     btn.textContent = "계산 상세 접기 ▲";
   }
 }
