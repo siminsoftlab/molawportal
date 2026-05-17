@@ -210,7 +210,7 @@ function toggleAccordionRepay() {
 // ========== 이자 계산 (실제 계산 과정 표시) ==========
 function toggleAccordion() {
   const box = document.getElementById("interestAccordion");
-  const btn = document.querySelector(".accordion-btn");
+  const btn = document.querySelector(".interest-accordion-btn");
 
   const isOpen = box.classList.contains("open");
 
