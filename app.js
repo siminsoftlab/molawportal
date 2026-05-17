@@ -447,7 +447,7 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
  *  DOM 로드 후 실행 (홈/서브 완전 분리)
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-  updateClock();
+  rollingClock();
   setInterval(rollingClock, 1000);
 
   initBannerSlider();
