@@ -34,11 +34,11 @@ function fixTargetsForWebView() {
 }
 
 /****************************************************
- *  실시간 시계
+ *  실시간 시계 (롤링 애니메이션 적용)
  ****************************************************/
-function updateClock() {
-  const el = $('live-clock');
-  if (!el) return;
+function rollingClock() {
+  const clock = document.getElementById("live-clock");
+  if (!clock) return;
 
   const now = new Date();
   const y = now.getFullYear();
@@ -48,7 +48,43 @@ function updateClock() {
   const mi = String(now.getMinutes()).padStart(2, "0");
   const s = String(now.getSeconds()).padStart(2, "0");
 
-  el.textContent = `${y}-${m}-${d} ${h}:${mi}:${s}`;
+  const timeString = `${y}-${m}-${d} ${h}:${mi}:${s}`;
+
+  // 기존 숫자 span이 없으면 처음 생성
+  if (!clock.dataset.initialized) {
+    clock.innerHTML = "";
+
+    [...timeString].forEach(char => {
+      const wrap = document.createElement("span");
+      wrap.className = "clock-digit-wrap";
+
+      const digit = document.createElement("span");
+      digit.className = "clock-digit";
+      digit.textContent = char;
+
+      wrap.appendChild(digit);
+      clock.appendChild(wrap);
+    });
+
+    clock.dataset.initialized = "1";
+    return;
+  }
+
+  // 기존 숫자 가져오기
+  const oldDigits = clock.querySelectorAll(".clock-digit");
+
+  [...timeString].forEach((char, i) => {
+    const digit = oldDigits[i];
+
+    if (digit.textContent !== char) {
+      digit.classList.add("roll");
+
+      setTimeout(() => {
+        digit.textContent = char;
+        digit.classList.remove("roll");
+      }, 350);
+    }
+  });
 }
 
 /****************************************************
@@ -414,7 +450,7 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   updateClock();
-  setInterval(updateClock, 1000);
+  setInterval(rollingClock, 1000);
 
   initBannerSlider();
 
