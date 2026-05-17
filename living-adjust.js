@@ -2,10 +2,18 @@
  * 법원 생계비 계산기 — 최종 안정 버전
  ****************************************************/
 
-/* 아코디언 토글 */
+/* 전역 변수: 계산 결과 저장 */
+let livingCalcResult = null;
+
+/****************************************************
+ * 아코디언 토글
+ ****************************************************/
 function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
   const btn = document.querySelector(".calc-acc-btn");
+
+  // 계산 결과가 없으면 아코디언 열지 않음
+  if (!livingCalcResult) return;
 
   const isOpen = box.classList.contains("open");
 
@@ -16,7 +24,8 @@ function toggleLivingAccordion() {
     box.style.padding = "0px";
     btn.textContent = "계산 상세 보기 ▼";
   } else {
-    // 열기
+    // 열기 + 상세 내용 채우기
+    box.innerHTML = livingCalcResult;
     box.classList.add("open");
     box.style.padding = "15px";
     box.style.maxHeight = box.scrollHeight + "px";
@@ -48,6 +57,8 @@ function resetLivingAdjust() {
   const seo = document.getElementById('la_seo');
   seo.classList.remove('visible');
   seo.innerHTML = "";
+
+  livingCalcResult = null; // 저장된 결과 초기화
 }
 
 /****************************************************
@@ -82,10 +93,9 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 상세 계산 아코디언 내용 (자동으로 열리지 않음)
+   * 상세 계산 HTML (저장만 하고 표시하지 않음)
    ****************************************************/
-  const acc = document.getElementById('la_accordion');
-  acc.innerHTML = `
+  livingCalcResult = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
     <div class="calc-step"><strong>입력 생계비</strong><br>${livingUser.toLocaleString()}원</div>
     <div class="calc-step"><strong>최종 인정 생계비</strong><br>${finalLiving.toLocaleString()}원</div>
@@ -95,7 +105,9 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
   `;
 
-  // ⭐ 자동으로 열리지 않도록 강제 닫기
+  // 아코디언은 자동으로 열리지 않음
+  const acc = document.getElementById('la_accordion');
+  acc.innerHTML = "";
   acc.classList.remove("open");
   acc.style.maxHeight = null;
   acc.style.padding = "0px";
@@ -104,7 +116,7 @@ function calcLivingAdjust() {
   btn.textContent = "계산 상세 보기 ▼";
 
   /****************************************************
-   * SEO 설명문 (계산하기 클릭 시 자동 표시)
+   * SEO 설명문 (자동 표시)
    ****************************************************/
   const seo = document.getElementById('la_seo');
   seo.innerHTML = `
