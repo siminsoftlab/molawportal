@@ -30,7 +30,7 @@ body {
 /* 방문자 div를 시계 바로 아래에 정확히 붙이기 (모바일 포함) */
 .top-info-bar {
   position: fixed;
-  top: 48px; /* 시계 높이만큼 */
+  top: 40px; /* 시계 높이만큼 */
   left: 0;
   width: 100%;
   text-align: center;
