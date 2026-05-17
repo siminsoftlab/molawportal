@@ -543,12 +543,18 @@ body.subpage .container {
   font-size: 15px;
   line-height: 1.6;
 }
+/* ============================
+   계산기 소개 아코디언 (최종 정리본)
+============================ */
+
+/* 제목 */
 .calc-title {
   margin-top: 40px;
   font-size: 22px;
   font-weight: 700;
 }
 
+/* 전체 펼치기/접기 버튼 */
 .toggle-all-btn {
   margin-bottom: 15px;
   padding: 10px 15px;
@@ -560,13 +566,12 @@ body.subpage .container {
   font-weight: 600;
 }
 
-.acc-icon {
-  width: 22px;
-  height: 22px;
-  margin-right: 8px;
-  vertical-align: middle;
+/* 아코디언 전체 영역 */
+.calc-info {
+  margin-top: 30px;
 }
 
+/* 아코디언 아이템 */
 .accordion-item {
   margin-bottom: 12px;
   border: 1px solid #ddd;
@@ -574,6 +579,7 @@ body.subpage .container {
   overflow: hidden;
 }
 
+/* 아코디언 버튼 */
 .accordion-btn {
   width: 100%;
   text-align: left;
@@ -585,21 +591,34 @@ body.subpage .container {
   font-weight: 600;
   display: flex;
   align-items: center;
+  transition: background 0.25s ease;
 }
 
+/* 버튼 활성화 */
 .accordion-btn.active {
   background: #e9f3ff;
 }
 
+/* 아이콘 */
+.acc-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* 아코디언 내용 (슬라이드 애니메이션) */
 .accordion-content {
   max-height: 0;
   overflow: hidden;
   padding: 0 15px;
   background: #fff;
+  font-size: 15px;
+  line-height: 1.6;
   transition: max-height 0.35s ease, padding 0.35s ease;
 }
 
+/* 펼쳐진 상태 */
 .accordion-content.open {
   padding: 15px;
 }
-
