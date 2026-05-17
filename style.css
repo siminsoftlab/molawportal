@@ -469,32 +469,13 @@ body.subpage .container {
   margin-top: 20px;
 }
 
-.accordion-btn {
-  width: 100%;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: 700;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.2s;
-}
+
 
 .accordion-btn:hover {
   background: #f0f0f0;
 }
 
-.accordion-content {
-  display: none;
-  margin-top: 12px;
-  padding: 20px;
-  background: rgba(255,255,255,0.65);
-  border-radius: 12px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+
 
 /* ============================
    자동 설명문 애니메이션
@@ -521,28 +502,12 @@ body.subpage .container {
   overflow: hidden;
 }
 
-.accordion-btn {
-  width: 100%;
-  text-align: left;
-  padding: 12px 15px;
-  font-size: 16px;
-  background: #f7f7f7;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
 
 .accordion-btn.active {
   background: #e9f3ff;
 }
 
-.accordion-content {
-  display: none;
-  padding: 15px;
-  background: #fff;
-  font-size: 15px;
-  line-height: 1.6;
-}
+
 /* ============================
    계산기 소개 아코디언 (최종 정리본)
 ============================ */
@@ -580,7 +545,7 @@ body.subpage .container {
 }
 
 /* 아코디언 버튼 */
-.accordion-btn {
+.intro-acc-btn {
   width: 100%;
   text-align: left;
   padding: 12px 15px;
@@ -595,7 +560,7 @@ body.subpage .container {
 }
 
 /* 버튼 활성화 */
-.accordion-btn.active {
+.intro-acc-btn.active {
   background: #e9f3ff;
 }
 
