@@ -57,10 +57,12 @@ body {
   background-color: #222;
   color: #fff;
   text-align: center;
-  padding: 14px 0;
+  height: 28px; /* 롤링 숫자 높이와 동일하게 고정 */
+  line-height: 28px;
+  padding: 10px 0; /* 위아래 여백 */
+  z-index: 200000; /* 방문자 div보다 위로 */
   font-size: 22px;
   font-weight: 700;
-  z-index: 99999;
 }
 
 /* ============================
