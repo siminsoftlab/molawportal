@@ -150,60 +150,6 @@ function initAccordion() {
   });
 
   // 전체 펼치기 / 접기
-  if (toggleAllBtn) {
-    let allOpen = false;
-
-    toggleAllBtn.addEventListener("click", () => {
-      allOpen = !allOpen;
-
-      if (allOpen) {
-        contents.forEach((c, i) => {
-          c.style.maxHeight = c.scrollHeight + "px";
-          c.classList.add("open");
-          buttons[i].classList.add("active");
-        });
-        toggleAllBtn.textContent = "전체 접기 ▲";
-      } else {
-        contents.forEach((c) => {
-          c.style.maxHeight = null;
-          c.classList.remove("open");
-        });
-        buttons.forEach((b) => b.classList.remove("active"));
-        toggleAllBtn.textContent = "전체 펼치기 ▼";
-      }
-    });
-  }
-}
-
-/****************************************************
- *  DOM 로드 후 실행
- ****************************************************/
-document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll(".intro-acc-btn");
-  const contents = document.querySelectorAll(".accordion-content");
-  const toggleAllBtn = document.getElementById("toggle-all");
-
-  // 개별 아코디언
-  buttons.forEach((btn, index) => {
-    btn.addEventListener("click", () => {
-      const content = contents[index];
-      const isOpen = content.style.maxHeight;
-
-      contents.forEach((c) => {
-        c.style.maxHeight = null;
-        c.classList.remove("open");
-      });
-      buttons.forEach((b) => b.classList.remove("active"));
-
-      if (!isOpen) {
-        content.style.maxHeight = content.scrollHeight + "px";
-        content.classList.add("open");
-        btn.classList.add("active");
-      }
-    });
-  });
-
-  // 전체 펼치기 / 접기
   let allOpen = false;
 
   toggleAllBtn.addEventListener("click", () => {
@@ -225,5 +171,16 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleAllBtn.textContent = "전체 펼치기 ▼";
     }
   });
+}
+
+/****************************************************
+ *  DOM 로드 후 실행
+ ****************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  initBannerSlider();
+  initAccordion();
 });
 
