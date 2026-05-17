@@ -232,20 +232,36 @@ function resetRepayInputs() {
 }
 
 // ========== 이자 계산 (실제 계산 과정 표시) ==========
+function toggleAccordion() {
+  const box = document.getElementById("interestAccordion");
+  const btn = document.querySelector(".accordion-btn");
+
+  if (box.style.display === "block") {
+    box.style.display = "none";
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.style.display = "block";
+    btn.textContent = "계산 상세 접기 ▲";
+  }
+}
+
 function calcInterest() {
   try {
-    const principal = toNumber($('principal')?.value); // 원금
-    const rate      = toNumber($('rate')?.value);      // 연이율(%)
-    const days      = toNumber($('days')?.value);      // 일수
+    const principal = toNumber($('principal')?.value);
+    const rate      = toNumber($('rate')?.value);
+    const days      = toNumber($('days')?.value);
 
-    // 계산식
     const interest = Math.floor(principal * (rate / 100) * (days / 365));
     const total = principal + interest;
 
-    // 🔥 실제 계산 과정 출력
-    setHTMLSafe("interestResult", `
-      <div class="result-title">📌 계산 결과</div>
+    /* ⭐ 총 상환액 강조 카드 */
+    setHTMLSafe("interestSummary", `
+      총 상환액: ${total.toLocaleString()}원
+    `);
+    $('interestSummary').style.display = "block";
 
+    /* ⭐ 아코디언 상세 계산 결과 */
+    setHTMLSafe("interestAccordion", `
       <div class="calc-step">
         <strong>1) 원금</strong><br>
         ${principal.toLocaleString()}원
@@ -253,7 +269,7 @@ function calcInterest() {
 
       <div class="calc-step">
         <strong>2) 연이율</strong><br>
-        ${rate}%  
+        ${rate}%
       </div>
 
       <div class="calc-step">
@@ -263,20 +279,30 @@ function calcInterest() {
 
       <div class="calc-step">
         <strong>4) 이자 계산식</strong><br>
-        원금 × (연이율 ÷ 100) × (일수 ÷ 365)<br>
-        = ${principal.toLocaleString()} × (${rate}/100) × (${days}/365)<br>
+        ${principal.toLocaleString()} × (${rate}/100) × (${days}/365)<br>
         = <strong>${interest.toLocaleString()}원</strong>
       </div>
-
-      <div class="calc-step highlight-box">
-        <strong>5) 총 상환액</strong><br>
-        원금 + 이자 =  
-        ${principal.toLocaleString()} + ${interest.toLocaleString()}  
-        = <strong class="highlight">${total.toLocaleString()}원</strong>
-      </div>
-
-     ${generateInterestSEO(principal, rate, days, interest, total)}
     `);
+
+    /* ⭐ 자동 설명문 */
+    const seoBox = document.getElementById("interestSEO");
+    seoBox.innerHTML = `
+      <h3>📌 연이자 계산기 자동 설명</h3>
+      <p>
+        원금 ${principal.toLocaleString()}원에 연이율 ${rate}%를 적용하고 
+        ${days}일 동안 계산한 이자는 ${interest.toLocaleString()}원이며,
+        최종 상환액은 ${total.toLocaleString()}원입니다.
+      </p>
+      <p>
+        연이자 계산 공식:<br>
+        <strong>원금 × (연이율 ÷ 100) × (일수 ÷ 365)</strong>
+      </p>
+    `;
+
+    /* ⭐ 애니메이션 등장 */
+    setTimeout(() => {
+      seoBox.classList.add("visible");
+    }, 50);
 
   } catch (e) {
     console.log("calcInterest error:", e);
