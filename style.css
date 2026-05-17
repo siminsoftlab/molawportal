@@ -32,7 +32,7 @@ body {
 ============================ */
 .top-info-bar {
   position: fixed;
-  top: 48px;   /* 시계 높이만큼 */
+  top: 48px;   /* 기존 60px → 48px */
   left: 50%;
   transform: translateX(-50%);
   background: #4a90e2;
