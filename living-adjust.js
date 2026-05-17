@@ -1,8 +1,24 @@
 /****************************************************
- * 법원 생계비 계산기 — 아코디언 충돌 제거 + 완전 호환 버전
+ * 법원 생계비 계산기 — 독립형 아코디언 시스템
  ****************************************************/
 
-/* 기존 toggleAccordion 제거 (app.js와 충돌하므로 사용 안 함) */
+/* 아코디언 토글 */
+function toggleLivingAccordion() {
+  const box = document.getElementById("la_accordion");
+  const btn = document.querySelector(".calc-acc-btn");
+
+  const isOpen = box.classList.contains("open");
+
+  if (isOpen) {
+    box.classList.remove("open");
+    box.style.maxHeight = null;
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.classList.add("open");
+    box.style.maxHeight = box.scrollHeight + "px";
+    btn.textContent = "계산 상세 접기 ▲";
+  }
+}
 
 /****************************************************
  * 초기화
@@ -14,16 +30,16 @@ function resetLivingAdjust() {
   document.getElementById('la_extra').value = "";
   document.getElementById('la_months').value = "36";
 
-  // 요약 숨기기
   document.getElementById('la_summary').style.display = "none";
 
-  // 아코디언 내용 초기화 (display 조작 금지)
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = "";
   acc.style.maxHeight = null;
   acc.classList.remove("open");
 
-  // SEO 초기화
+  const btn = document.querySelector(".calc-acc-btn");
+  if (btn) btn.textContent = "계산 상세 보기 ▼";
+
   const seo = document.getElementById('la_seo');
   seo.classList.remove('visible');
   seo.innerHTML = "";
@@ -39,22 +55,17 @@ function calcLivingAdjust() {
   const extra = Number(document.getElementById('la_extra').value || 0);
   const months = Number(document.getElementById('la_months').value || 0);
 
-  // 법원 기준 생계비 계산
   const baseLiving1 = 1538523;
   const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
   const courtLiving = Math.round(baseLiving1 * (weights[household] || 1));
 
-  // 최종 인정 생계비
   const finalLiving = Math.min(livingUser || courtLiving, courtLiving);
   const totalLiving = finalLiving + extra;
 
-  // 변제 가능 금액
   const disposable = Math.max(income - totalLiving, 0);
   const totalRepay = disposable * months;
 
-  /****************************************************
-   * 요약 카드
-   ****************************************************/
+  /* 요약 */
   const summary = document.getElementById('la_summary');
   summary.innerHTML = `
     조정 후 총 생계비: ${totalLiving.toLocaleString()}원<br>
@@ -63,9 +74,7 @@ function calcLivingAdjust() {
   `;
   summary.style.display = "block";
 
-  /****************************************************
-   * 상세 계산 아코디언 내용 (display 조작 금지)
-   ****************************************************/
+  /* 상세 계산 */
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -77,17 +86,14 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
   `;
 
-  // 아코디언 자동 열기 (app.js 방식)
+  /* 계산 후 자동으로 아코디언 열기 */
   acc.classList.add("open");
   acc.style.maxHeight = acc.scrollHeight + "px";
 
-  // 버튼 active 표시
   const btn = document.querySelector(".calc-acc-btn");
-  if (btn) btn.classList.add("active");
+  if (btn) btn.textContent = "계산 상세 접기 ▲";
 
-  /****************************************************
-   * SEO 설명문
-   ****************************************************/
+  /* SEO */
   const seo = document.getElementById('la_seo');
   seo.innerHTML = `
     <h3>📌 법원 생계비 자동 조정 설명</h3>
@@ -97,3 +103,11 @@ function calcLivingAdjust() {
   `;
   setTimeout(() => seo.classList.add('visible'), 50);
 }
+
+/****************************************************
+ * 버튼 클릭 이벤트 연결
+ ****************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.querySelector(".calc-acc-btn");
+  if (btn) btn.addEventListener("click", toggleLivingAccordion);
+});
