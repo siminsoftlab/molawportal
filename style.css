@@ -819,3 +819,23 @@ body.subpage .container {
 body.homepage .content {
   padding-top: 90px; /* 원하는 만큼 조절 가능 (기본 90px 추천) */
 }
+/* 숫자 롤링 컨테이너 */
+.clock-digit-wrap {
+  display: inline-block;
+  overflow: hidden;
+  height: 28px; /* 숫자 높이에 맞춤 */
+}
+
+/* 실제 숫자 */
+.clock-digit {
+  display: block;
+  transition: transform 0.35s ease-in-out;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* 롤링 애니메이션 */
+.clock-digit.roll {
+  transform: translateY(-28px);
+}
