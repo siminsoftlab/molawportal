@@ -48,7 +48,17 @@
         <button onclick="resetInterestInputs()">초기화</button>
       </div>
 
-      <div id="interestResult" class="result-box"></div>
+      <!-- ⭐ 총 상환액 강조 카드 -->
+      <div id="interestSummary" class="summary-card"></div>
+
+      <!-- ⭐ 아코디언(계산 상세 결과) -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
+        <div id="interestAccordion" class="accordion-content"></div>
+      </div>
+
+      <!-- ⭐ 자동 설명문 (애니메이션 등장) -->
+      <div id="interestSEO" class="seo-box-animated"></div>
 
     </div>
 
