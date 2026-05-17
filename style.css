@@ -277,9 +277,22 @@ body.subpage .container {
    모바일 대응
 ============================ */
 @media (max-width: 480px) {
-   body.homepage .content {
-    padding-top: 110px; /* 모바일은 시계+방문자 div가 더 크게 보이므로 여백을 더 줌 */
+   #live-clock {
+    padding: 12px 0;
+    font-size: 20px;
   }
+
+  .top-info-bar {
+    top: 52px; /* 시계 바로 아래 */
+    padding: 8px 0;
+    font-size: 14px;
+  }
+
+  /* 방문자 div 아래 여백 확보 */
+  body.homepage .content {
+    padding-top: 120px; /* 모바일은 시계+방문자 div가 더 큼 */
+  }
+   
   .fixed-header {
     padding: 14px 16px;
   }
@@ -294,7 +307,8 @@ body.subpage .container {
   }
 
   body.homepage .container {
-    padding: 22px;
+    margin-bottom: 28px;
+    padding: 20px;
   }
 
   body.homepage .two-box {
@@ -307,6 +321,25 @@ body.subpage .container {
 
   .footer-company {
     font-size: 18px;
+  }
+
+   ody.homepage .calc-img {
+    width: 60%;
+    max-width: 100px;
+  }
+
+  body.homepage .calc-desc {
+    font-size: 15px;
+  }
+
+   .acc-btn {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .acc-content {
+    font-size: 14px;
+    padding: 0 12px;
   }
 }
 
