@@ -683,6 +683,12 @@ body.subpage .container {
   align-items: center;
   gap: 6px;
   transition: background 0.2s ease, transform 0.15s ease;
+
+   /* 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .interest-accordion-btn:hover {
@@ -706,6 +712,12 @@ body.subpage .container {
   cursor: pointer;
   transition: background 0.25s ease, transform 0.15s ease;
   margin-top: 15px;
+
+   /* 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .la-acc-btn:hover {
@@ -732,6 +744,12 @@ body.subpage .container {
   cursor: pointer;
   transition: background 0.25s ease, transform 0.15s ease;
   margin-top: 15px;
+
+   /* 중앙 정렬 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .hl-acc-btn:hover {
