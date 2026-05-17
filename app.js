@@ -118,7 +118,7 @@ function updateVisitors(today, total) {
 }
 
 /****************************************************
- *  아코디언
+ *  아코디언 (홈/서브페이지 통합 안정판)
  ****************************************************/
 function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
   const buttons = document.querySelectorAll(buttonSelector);
@@ -133,12 +133,14 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
       const content = contents[index];
       const isOpen = content.style.maxHeight;
 
+      // 모두 닫기
       contents.forEach((c) => {
         c.style.maxHeight = null;
         c.classList.remove("open");
       });
       buttons.forEach((b) => b.classList.remove("active"));
 
+      // 클릭한 것만 열기
       if (!isOpen) {
         content.style.maxHeight = content.scrollHeight + "px";
         content.classList.add("open");
@@ -147,7 +149,7 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
     });
   });
 
-  // ⭐ 전체펼치기 버튼이 없으면 여기서 종료
+  // 전체펼치기 버튼이 없으면 종료 (서브페이지)
   if (!toggleAllBtn) return;
 
   let allOpen = false;
@@ -173,26 +175,23 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
   });
 }
 
+/****************************************************
+ *  DOM 로드 후 실행 (홈/서브 완전 분리)
+ ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   updateClock();
   setInterval(updateClock, 1000);
 
   initBannerSlider();
 
-  const hasHomeCalcToggle = document.getElementById("toggle-all");
-  const hasSiteToggle = document.getElementById("toggle-all-site");
+  const isHome = document.getElementById("toggle-all") !== null;
 
-  // ⭐ 홈 페이지: 전체펼치기 버튼이 존재함
-  if (hasHomeCalcToggle) {
+  if (isHome) {
+    // ⭐ 홈 페이지
     initAccordionGroup(".calc-acc-btn", ".calc-acc-content", "toggle-all");
+    initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
   } else {
-    // ⭐ 서브 페이지: 전체펼치기 버튼 없음 → 개별 아코디언만
+    // ⭐ 서브 페이지 (변제금/연이자/법원생계비/가구수생계비)
     initAccordionGroup(".calc-acc-btn", ".calc-acc-content", null);
   }
-
-  // ⭐ 사이트 소개 (홈에서만 존재)
-  if (hasSiteToggle) {
-    initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
-  }
 });
-
