@@ -147,7 +147,7 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
     });
   });
 
-  // 전체 펼치기 / 접기 (버튼 있을 때만)
+  // ⭐ 전체펼치기 버튼이 없으면 여기서 종료
   if (!toggleAllBtn) return;
 
   let allOpen = false;
@@ -182,14 +182,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const hasHomeCalcToggle = document.getElementById("toggle-all");
   const hasSiteToggle = document.getElementById("toggle-all-site");
 
-  // 홈 페이지: 계산기 소개 + 사이트 소개
+  // ⭐ 홈 페이지: 전체펼치기 버튼이 존재함
   if (hasHomeCalcToggle) {
     initAccordionGroup(".calc-acc-btn", ".calc-acc-content", "toggle-all");
   } else {
-    // 서브 페이지(법원생계비 / 가구수생계비): 전체펼치기 없이 개별만
+    // ⭐ 서브 페이지: 전체펼치기 버튼 없음 → 개별 아코디언만
     initAccordionGroup(".calc-acc-btn", ".calc-acc-content", null);
   }
 
+  // ⭐ 사이트 소개 (홈에서만 존재)
   if (hasSiteToggle) {
     initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
   }
