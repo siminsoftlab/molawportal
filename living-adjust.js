@@ -9,20 +9,20 @@ function toggleLivingAccordion() {
 
   const isOpen = box.classList.contains("open");
 
-  if (isOpen) {
-    // 닫기
-    box.classList.remove("open");
-    box.style.maxHeight = null;
-    box.style.padding = "0px";
-    btn.textContent = "계산 상세 보기 ▼";
-  } else {
-    // 열기
-    box.classList.add("open");
-    box.style.padding = "15px";
-    box.style.maxHeight = box.scrollHeight + "px";
-    btn.textContent = "계산 상세 접기 ▲";  
+    if (isOpen) {
+      // 닫기
+      box.classList.remove("open");
+      box.style.maxHeight = null;
+      box.style.padding = "0px";
+      btn.textContent = "계산 상세 보기 ▼";
+    } else {
+      // 열기
+      box.classList.add("open");
+      box.style.padding = "15px";
+      box.style.maxHeight = box.scrollHeight + "px";
+      btn.textContent = "계산 상세 접기 ▲";  
+  }
 }
-
 /****************************************************
  * 초기화
  ****************************************************/
