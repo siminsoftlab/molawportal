@@ -2,19 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>청산가치 자동 강조 계산기</title>
-
-  <meta name="description" content="소득 기준 변제금과 청산가치를 비교하여 더 큰 금액을 자동 강조하는 계산기입니다.">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="청산가치 자동 강조 계산기">
-  <meta property="og:description" content="소득 기준 변제금과 청산가치를 비교하여 더 큰 금액을 자동 강조하는 계산기입니다.">
-  <meta property="og:url" content="https://molawcalculator.com/calculators/asset-emphasis.html">
-  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
-
   <link rel="stylesheet" href="../style.css">
 </head>
+
 <body class="subpage">
+
 <header class="fixed-header">
   <h1>청산가치 자동 강조 계산기</h1>
   <a href="../index.html" class="home-btn">홈</a>
@@ -46,8 +40,9 @@
     <div id="ae_summary" class="summary-card"></div>
 
     <div class="accordion">
-      <button class="accordion-btn" onclick="toggleAccordion('ae_accordion','ae_btn')"
-              id="ae_btn">계산 상세 보기 ▼</button>
+      <button id="ae_btn" class="accordion-btn" onclick="toggleAccordion('ae_accordion','ae_btn')">
+        계산 상세 보기 ▼
+      </button>
       <div id="ae_accordion" class="accordion-content"></div>
     </div>
 
@@ -56,99 +51,6 @@
   </div>
 </div>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-company">딱요만큼변제</div>
-    <div class="footer-info">
-      상호: 법무법인 영민 | 대표: 박희영 | 사업자등록번호: 425-88-00769  
-      주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
-      개인정보관리책임자: 박희영  
-      전화: 02-595-5706  
-      팩스: 02-525-7255
-    </div>
-    <div class="footer-copy">COPYRIGHT©2026 딱요만큼변제. ALL RIGHTS RESERVED.</div>
-  </div>
-</footer>
-
-<div class="call-fixed">
-  <a href="tel:025955706" class="consult-call">
-    개인회생·파산 무료상담전화 02-595-5706 ← 클릭 시 전화 연결
-  </a>
-</div>
-<a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" target="_blank" rel="noopener noreferrer">
-  💬 카톡 상담
-</a>
-
-<script>
-function toggleAccordion(contentId, btnId) {
-  const box = document.getElementById(contentId);
-  const btn = document.getElementById(btnId);
-  if (box.style.display === "block") {
-    box.style.display = "none";
-    btn.textContent = "계산 상세 보기 ▼";
-  } else {
-    box.style.display = "block";
-    btn.textContent = "계산 상세 접기 ▲";
-  }
-}
-
-function resetAssetEmphasis() {
-  document.getElementById('ae_income').value = "";
-  document.getElementById('ae_living').value = "";
-  document.getElementById('ae_extra').value = "";
-  document.getElementById('ae_months').value = "36";
-  document.getElementById('ae_asset').value = "";
-  document.getElementById('ae_summary').style.display = "none";
-  document.getElementById('ae_accordion').style.display = "none";
-  document.getElementById('ae_seo').classList.remove('visible');
-  document.getElementById('ae_seo').innerHTML = "";
-}
-
-function calcAssetEmphasis() {
-  const income = Number(document.getElementById('ae_income').value || 0);
-  const living = Number(document.getElementById('ae_living').value || 0);
-  const extra  = Number(document.getElementById('ae_extra').value || 0);
-  const months = Number(document.getElementById('ae_months').value || 0);
-  const asset  = Number(document.getElementById('ae_asset').value || 0);
-
-  const totalLiving = living + extra;
-  const disposable = Math.max(income - totalLiving, 0);
-  const totalByIncome = disposable * months;
-  const finalTotal = Math.max(totalByIncome, asset);
-  const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
-
-  const isAssetDominant = asset > totalByIncome;
-
-  const summary = document.getElementById('ae_summary');
-  summary.innerHTML = `
-    총 변제금: ${finalTotal.toLocaleString()}원<br>
-    월 변제금: ${monthly.toLocaleString()}원<br>
-    ${isAssetDominant ? `<span style="font-size:16px;">(청산가치가 소득 기준 변제금보다 커서 청산가치 기준으로 결정되었습니다.)</span>` : `(소득 기준 변제금이 청산가치보다 커서 소득 기준으로 결정되었습니다.)`}
-  `;
-  summary.style.display = "block";
-
-  const acc = document.getElementById('ae_accordion');
-  acc.innerHTML = `
-    <div class="calc-step"><strong>1) 월 소득</strong><br>${income.toLocaleString()}원</div>
-    <div class="calc-step"><strong>2) 총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>3) 월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
-    <div class="calc-step"><strong>4) 총 변제금(소득 기준)</strong><br>${totalByIncome.toLocaleString()}원</div>
-    <div class="calc-step"><strong>5) 청산가치</strong><br>${asset.toLocaleString()}원</div>
-    <div class="calc-step"><strong>6) 최종 총 변제금</strong><br>${finalTotal.toLocaleString()}원</div>
-    <div class="calc-step"><strong>7) 월 변제금</strong><br>${monthly.toLocaleString()}원</div>
-  `;
-  acc.style.display = "block";
-
-  const seo = document.getElementById('ae_seo');
-  seo.innerHTML = `
-    <h3>📌 청산가치 자동 강조 설명</h3>
-    <p>월 소득 ${income.toLocaleString()}원에서 총 생계비 ${totalLiving.toLocaleString()}원을 제외한 월 변제 가능 금액은 ${disposable.toLocaleString()}원입니다.</p>
-    <p>변제기간 ${months}개월 기준 소득에 따른 총 변제금은 ${totalByIncome.toLocaleString()}원이며, 청산가치는 ${asset.toLocaleString()}원입니다.</p>
-    <p>최종 변제금은 두 금액 중 더 큰 금액인 ${finalTotal.toLocaleString()}원으로 결정되며, 월 변제금은 ${monthly.toLocaleString()}원입니다.</p>
-  `;
-  setTimeout(() => seo.classList.add('visible'), 50);
-}
-</script>
+<script src="../asset-emphasis.js"></script>
 </body>
 </html>
