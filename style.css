@@ -823,7 +823,7 @@ body.homepage .content {
 .clock-digit-wrap {
   display: inline-block;
   overflow: hidden;
-  height: 28px; /* 숫자 높이에 맞춤 */
+  height: 28px;
 }
 
 /* 실제 숫자 */
