@@ -102,7 +102,106 @@ function initBannerSlider() {
   }
 }
 
-/****************************************************/
+function calcRepay() {
+  const income = toNumber($("income").value);
+  const living = toNumber($("living").value);
+  const extra = toNumber($("extra").value);
+  const months = toNumber($("months").value);
+  const asset = toNumber($("asset").value);
+
+  const disposable = income - living - extra;
+  const monthlyPay = Math.max(disposable, 0);
+  const totalPay = monthlyPay * months;
+
+  const finalPay = Math.max(totalPay, asset);
+
+  // 요약 카드 표시
+  $("repaySummary").style.display = "block";
+  setHTMLSafe(
+    "repaySummary",
+    `<strong>총 변제금:</strong> ${finalPay.toLocaleString()}원`
+  );
+
+  // 상세 계산 표시
+  $("repayAccordion").style.display = "block";
+  setHTMLSafe(
+    "repayAccordion",
+    `
+      <div class="calc-step">
+        <strong>1) 월 소득</strong><br>${income.toLocaleString()}원
+      </div>
+
+      <div class="calc-step">
+        <strong>2) 생계비</strong><br>${living.toLocaleString()}원
+      </div>
+
+      <div class="calc-step">
+        <strong>3) 추가 생계비</strong><br>${extra.toLocaleString()}원
+      </div>
+
+      <div class="calc-step">
+        <strong>4) 가용소득</strong><br>
+        ${income.toLocaleString()} − ${living.toLocaleString()} − ${extra.toLocaleString()}<br>
+        = <strong>${monthlyPay.toLocaleString()}원</strong>
+      </div>
+
+      <div class="calc-step">
+        <strong>5) 변제기간</strong><br>${months}개월
+      </div>
+
+      <div class="calc-step">
+        <strong>6) 총 변제금</strong><br>
+        ${monthlyPay.toLocaleString()} × ${months} = ${totalPay.toLocaleString()}원
+      </div>
+
+      <div class="calc-step">
+        <strong>7) 청산가치 비교</strong><br>
+        청산가치: ${asset.toLocaleString()}원<br>
+        최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
+      </div>
+    `
+  );
+
+  // SEO 설명문
+  const seo = $("repaySEO");
+  seo.innerHTML = `
+    <h3>📌 개인회생 변제금 자동 설명</h3>
+    <p>
+      월 소득 ${income.toLocaleString()}원에서 생계비와 추가 생계비를 제외한 
+      가용소득은 ${monthlyPay.toLocaleString()}원이며, 
+      ${months}개월 동안 변제하면 총 ${totalPay.toLocaleString()}원이 됩니다.
+      청산가치와 비교하여 최종 변제금은 
+      <strong>${finalPay.toLocaleString()}원</strong>입니다.
+    </p>
+  `;
+
+  setTimeout(() => seo.classList.add("visible"), 50);
+}
+function resetRepayInputs() {
+  $("income").value = "";
+  $("living").value = "1538523";
+  $("extra").value = "";
+  $("months").value = "36";
+  $("asset").value = "";
+
+  $("repaySummary").style.display = "none";
+  $("repayAccordion").style.display = "none";
+  $("repaySEO").innerHTML = "";
+  $("repaySEO").classList.remove("visible");
+}
+function toggleAccordionRepay() {
+  const box = $("repayAccordion");
+  const btn = document.querySelector(".accordion-btn");
+
+  if (box.style.display === "block") {
+    box.style.display = "none";
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.style.display = "block";
+    btn.textContent = "계산 상세 접기 ▲";
+  }
+}
+
 
 // ========== 이자 계산 (실제 계산 과정 표시) ==========
 function toggleAccordion() {
