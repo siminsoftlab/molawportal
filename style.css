@@ -587,3 +587,55 @@ body.subpage .container {
 .accordion-content.open {
   padding: 15px;
 }
+/* 공통 아코디언 버튼 */
+.acc-btn {
+  width: 100%;
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 16px;
+  background: #f7f7f7;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  transition: background 0.25s ease;
+}
+
+.acc-btn.active {
+  background: #e9f3ff;
+}
+
+/* 아이콘 */
+.acc-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+}
+
+/* 공통 아코디언 내용 */
+.acc-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 15px;
+  background: #fff;
+  font-size: 15px;
+  line-height: 1.6;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+.acc-content.open {
+  padding: 15px;
+}
+
+/* 전체 펼치기 버튼 */
+.toggle-all-btn {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background: #e9f3ff;
+  border: 1px solid #bcd7ff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
