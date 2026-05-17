@@ -1,10 +1,4 @@
-/****************************************************
- *  Firebase Firestore 방문자 카운트 전용 JS
- *  - GitHub Pages에서 사용 가능
- *  - Firestore 컬렉션: visitors
- *  - 문서: counter
- *  - 필드: today(number), total(number), date(string)
- ****************************************************/
+// 🔥 중복 방문 방지 (세션 기반)
 function hasVisitedToday() {
   const today = new Date().toISOString().slice(0, 10);
   const saved = sessionStorage.getItem("visited-date");
@@ -15,6 +9,8 @@ function setVisitedToday() {
   const today = new Date().toISOString().slice(0, 10);
   sessionStorage.setItem("visited-date", today);
 }
+
+// 🔥 숫자 카운트업 애니메이션
 function animateCount(el, target) {
   let start = 0;
   const duration = 800;
@@ -30,8 +26,7 @@ function animateCount(el, target) {
   }, 16);
 }
 
-
-// 🔥 1. Firebase 설정
+// 🔥 Firebase 설정
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -42,16 +37,16 @@ const firebaseConfig = {
   measurementId: "G-D4W34NBWKT"
 };
 
-// 🔥 2. Firebase 초기화
+// 🔥 Firebase 초기화
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 🔥 3. 오늘 날짜 문자열 생성
+// 🔥 오늘 날짜
 function getTodayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// 🔥 4. 방문자 증가 (1회 실행)
+// 🔥 방문자 증가 (1회 실행)
 async function updateVisitorCount() {
   const docRef = db.collection("visitors").doc("counter");
 
@@ -84,7 +79,7 @@ async function updateVisitorCount() {
   }
 }
 
-// 🔥 5. 실시간 방문자 수 반영
+// 🔥 실시간 방문자 수 반영 + 카운트업
 function listenVisitorCount() {
   const docRef = db.collection("visitors").doc("counter");
 
@@ -96,17 +91,17 @@ function listenVisitorCount() {
     const todayEl = document.getElementById("visitor-today");
     const totalEl = document.getElementById("visitor-total");
 
-    if (todayEl) todayEl.textContent = data.today.toLocaleString();
-    if (totalEl) totalEl.textContent = data.total.toLocaleString();
+    if (todayEl && totalEl) {
+      animateCount(todayEl, data.today);
+      animateCount(totalEl, data.total);
+    }
   });
 }
 
-// 🔥 6. 실행
+// 🔥 실행
 if (!hasVisitedToday()) {
   updateVisitorCount();   // 방문자 1 증가
   setVisitedToday();
 }
 
-listenVisitorCount();   // 실시간 반영
-animateCount(document.getElementById("visitor-today"), data.today);
-animateCount(document.getElementById("visitor-total"), data.total);
+listenVisitorCount();   // 실시간 반영 + 카운트업
