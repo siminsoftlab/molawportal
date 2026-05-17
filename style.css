@@ -135,7 +135,7 @@ body.subpage {
 
 body.subpage .page-wrap {
   flex: 1;
-  padding-top: 80px;
+  padding-top: 120px; /* header + clock + info-bar 높이만큼 확보 */
 }
 
 body.subpage .container {
