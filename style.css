@@ -50,17 +50,18 @@ body {
    상단 시계
 ============================ */
 #live-clock {
-   position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+
   background-color: #222;
   color: #fff;
   text-align: center;
 
-  height: 28px;        /* 롤링 숫자 높이 */
-  line-height: 28px;   /* 숫자 수직 정렬 */
-  padding: 10px 0;     /* 여백 */
+  height: 40px;        /* 숫자가 보이도록 충분한 높이 */
+  line-height: 40px;   /* 숫자 수직 정렬 */
+  padding: 0;          /* padding 제거 */
 
   font-size: 22px;
   font-weight: 700;
