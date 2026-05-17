@@ -666,3 +666,30 @@ body.subpage .container {
 .repay-accordion-btn:active {
   transform: translateY(0);
 }
+/* 연이자 계산기 — 계산 상세 보기 버튼 */
+.interest-accordion-btn {
+  width: 100%;
+  background: #ffe812;
+  color: #3c1e1e;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.interest-accordion-btn:hover {
+  background: #ffdf00;
+  transform: translateY(-2px);
+}
+
+.interest-accordion-btn:active {
+  transform: translateY(0);
+}
