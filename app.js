@@ -190,7 +190,7 @@ function resetRepayInputs() {
   $("repaySEO").classList.remove("visible");
 }
 function toggleAccordionRepay() {
-  const box = $("repayAccordion");
+  const box = document.getElementById("repayAccordion");
   const btn = document.querySelector(".accordion-btn");
 
   const isOpen = box.classList.contains("open");
