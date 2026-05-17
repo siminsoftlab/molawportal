@@ -121,7 +121,7 @@ function updateVisitors(today, total) {
  *  아코디언 + 전체 펼치기/접기 + 슬라이드 애니메이션
  ****************************************************/
 function initAccordion() {
-  const buttons = document.querySelectorAll(".accordion-btn");
+  const buttons = document.querySelectorAll(".intro-acc-btn");
   const contents = document.querySelectorAll(".accordion-content");
   const toggleAllBtn = document.getElementById("toggle-all");
 
