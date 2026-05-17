@@ -114,6 +114,7 @@ function calcRepay() {
     const finalTotal = Math.max(totalByIncome, asset);
     const monthly = Math.ceil(finalTotal / months);
 
+    // 결과 HTML 삽입
     setHTMLSafe("repayResult", `
       <div class="result-title">📌 계산 결과</div>
 
@@ -162,11 +163,16 @@ function calcRepay() {
       ${generateRepaySEO(income, living, extra, months, asset, monthly, finalTotal)}
     `);
 
+    // 🔥 계산 결과 박스를 강제로 표시 (핵심 수정)
+    const box = $('repayResult');
+    if (box) {
+      box.style.display = "block";
+    }
+
   } catch (e) {
     console.log("calcRepay error:", e);
   }
 }
-
 // ========== 변제금 계산기 SEO 자동 설명문 ==========
 function generateRepaySEO(income, living, extra, months, asset, monthly, finalTotal) {
   return `
