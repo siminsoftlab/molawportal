@@ -191,7 +191,7 @@ function resetRepayInputs() {
 }
 function toggleAccordionRepay() {
   const box = document.getElementById("repayAccordion");
-  const btn = document.querySelector(".accordion-btn");
+  const btn = document.querySelector(".repay-accordion-btn");
 
   const isOpen = box.classList.contains("open");
 
