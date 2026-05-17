@@ -15,6 +15,21 @@ function setVisitedToday() {
   const today = new Date().toISOString().slice(0, 10);
   sessionStorage.setItem("visited-date", today);
 }
+function animateCount(el, target) {
+  let start = 0;
+  const duration = 800;
+  const step = Math.ceil(target / (duration / 16));
+
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) {
+      start = target;
+      clearInterval(timer);
+    }
+    el.textContent = start.toLocaleString();
+  }, 16);
+}
+
 
 // 🔥 1. Firebase 설정
 const firebaseConfig = {
@@ -93,3 +108,5 @@ if (!hasVisitedToday()) {
 }
 
 listenVisitorCount();   // 실시간 반영
+animateCount(document.getElementById("visitor-today"), data.today);
+animateCount(document.getElementById("visitor-total"), data.total);
