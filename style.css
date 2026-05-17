@@ -285,3 +285,78 @@ body.subpage .container {
     font-size: 18px;
   }
 }
+/* ============================
+   앱 스타일 입력 폼
+============================ */
+.container label {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #222;
+}
+
+.container input[type="number"],
+.container input[type="text"],
+.container select {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #f9f9f9;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  margin-bottom: 18px;
+}
+
+.container input:focus,
+.container select:focus {
+  border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.25);
+  outline: none;
+}
+
+.notice {
+  font-size: 13px;
+  color: #666;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+/* 버튼 영역 */
+.btn-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-row button {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 800;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 계산하기 버튼 */
+.btn-row button:first-child {
+  background: linear-gradient(90deg, #4a90e2, #357ABD);
+  color: #fff;
+}
+
+.btn-row button:first-child:hover {
+  background: linear-gradient(90deg, #357ABD, #2F6AA8);
+}
+
+/* 초기화 버튼 */
+.btn-row button:last-child {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+}
