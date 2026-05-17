@@ -6,7 +6,7 @@
  *  - 필드: today(number), total(number), date(string)
  ****************************************************/
 
-// 🔥 1. Firebase 설정 — 본인 프로젝트 값으로 교체
+// 🔥 1. Firebase 설정
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -21,12 +21,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 🔥 3. 오늘 날짜 문자열 생성 (YYYY-MM-DD)
+// 🔥 3. 오늘 날짜 문자열 생성
 function getTodayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// 🔥 4. 방문자 카운트 업데이트 함수
+// 🔥 4. 방문자 카운트 업데이트
 async function updateVisitorCount() {
   const docRef = db.collection("visitors").doc("counter");
 
@@ -60,12 +60,12 @@ async function updateVisitorCount() {
       date: newDate
     });
 
-    // 화면 표시
-  const todayEl = document.getElementById("visitor-today");
-  const totalEl = document.getElementById("visitor-total");
-  
-  if (todayEl) todayEl.textContent = newToday;
-  if (totalEl) totalEl.textContent = newTotal;
+    // ⭐ 화면 표시 — 천 단위 구분자 적용
+    const todayEl = document.getElementById("visitor-today");
+    const totalEl = document.getElementById("visitor-total");
+
+    if (todayEl) todayEl.textContent = newToday.toLocaleString();
+    if (totalEl) totalEl.textContent = newTotal.toLocaleString();
 
   } catch (error) {
     console.error("🔥 방문자 카운트 업데이트 오류:", error);
