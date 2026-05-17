@@ -158,7 +158,7 @@ function calcRepay() {
         ${finalTotal.toLocaleString()} ÷ ${months}개월  
         = <strong class="highlight">${monthly.toLocaleString()}원</strong>
       </div>
-
+      document.getElementById("repayResult").style.display = "block";
       ${generateRepaySEO(income, living, extra, months, asset, monthly, finalTotal)}
     `);
 
