@@ -444,4 +444,68 @@ body.subpage .container {
   opacity: 1;
   transform: translateY(0);
 }
+/* ============================
+   총 상환액 강조 카드
+============================ */
+.summary-card {
+  display: none;
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #4a90e2, #357ABD);
+  color: #fff;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+
+/* ============================
+   아코디언 스타일
+============================ */
+.accordion {
+  margin-top: 20px;
+}
+
+.accordion-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.accordion-btn:hover {
+  background: #f0f0f0;
+}
+
+.accordion-content {
+  display: none;
+  margin-top: 12px;
+  padding: 20px;
+  background: rgba(255,255,255,0.65);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ============================
+   자동 설명문 애니메이션
+============================ */
+.seo-box-animated {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+  margin-top: 20px;
+}
+
+.seo-box-animated.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
