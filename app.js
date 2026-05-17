@@ -37,7 +37,7 @@ function fixTargetsForWebView() {
  *  실시간 시계 (롤링 애니메이션 적용)
  ****************************************************/
 function rollingClock() {
-   const clock = document.getElementById("live-clock");
+  const clock = document.getElementById("live-clock");
   if (!clock) return;
 
   const now = new Date();
@@ -48,8 +48,10 @@ function rollingClock() {
   const mi = String(now.getMinutes()).padStart(2, "0");
   const s = String(now.getSeconds()).padStart(2, "0");
 
+  // 날짜와 시간 사이 공백 2칸
   const timeString = `${y}-${m}-${d}  ${h}:${mi}:${s}`;
 
+  // 최초 생성
   if (!clock.dataset.initialized) {
     clock.innerHTML = "";
 
@@ -59,7 +61,13 @@ function rollingClock() {
 
       const digit = document.createElement("span");
       digit.className = "clock-digit";
-      digit.textContent = char;
+
+      // 공백은 &nbsp;로 처리하여 실제 간격 확보
+      if (char === " ") {
+        digit.innerHTML = "&nbsp;";
+      } else {
+        digit.textContent = char;
+      }
 
       wrap.appendChild(digit);
       clock.appendChild(wrap);
@@ -69,21 +77,29 @@ function rollingClock() {
     return;
   }
 
+  // 기존 숫자 가져오기
   const oldDigits = clock.querySelectorAll(".clock-digit");
 
   [...timeString].forEach((char, i) => {
     const digit = oldDigits[i];
 
-    if (digit.textContent !== char) {
+    const newChar = (char === " ") ? "\u00A0" : char; // 공백 처리
+
+    if (digit.textContent !== newChar && digit.innerHTML !== "&nbsp;") {
       digit.classList.add("roll");
 
       setTimeout(() => {
-        digit.textContent = char;
+        if (char === " ") {
+          digit.innerHTML = "&nbsp;";
+        } else {
+          digit.textContent = char;
+        }
         digit.classList.remove("roll");
       }, 350);
     }
   });
 }
+
 
 /****************************************************
  *  배너 슬라이더
