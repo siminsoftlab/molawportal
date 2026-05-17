@@ -26,17 +26,13 @@ function getTodayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// 🔥 4. 방문자 카운트 업데이트
+// 🔥 4. 방문자 증가 (1회 실행)
 async function updateVisitorCount() {
   const docRef = db.collection("visitors").doc("counter");
 
   try {
     const docSnap = await docRef.get();
-
-    if (!docSnap.exists) {
-      console.error("❌ Firestore 문서가 존재하지 않습니다.");
-      return;
-    }
+    if (!docSnap.exists) return;
 
     const data = docSnap.data();
     const todayStr = getTodayString();
@@ -45,7 +41,6 @@ async function updateVisitorCount() {
     let newTotal = data.total + 1;
     let newDate = data.date;
 
-    // 날짜 변경 시 today 초기화
     if (data.date !== todayStr) {
       newToday = 1;
       newDate = todayStr;
@@ -53,24 +48,34 @@ async function updateVisitorCount() {
       newToday += 1;
     }
 
-    // Firestore 업데이트
     await docRef.update({
       today: newToday,
       total: newTotal,
       date: newDate
     });
 
-    // ⭐ 화면 표시 — 천 단위 구분자 적용
-    const todayEl = document.getElementById("visitor-today");
-    const totalEl = document.getElementById("visitor-total");
-
-    if (todayEl) todayEl.textContent = newToday.toLocaleString();
-    if (totalEl) totalEl.textContent = newTotal.toLocaleString();
-
-  } catch (error) {
-    console.error("🔥 방문자 카운트 업데이트 오류:", error);
+  } catch (e) {
+    console.error("🔥 방문자 증가 오류:", e);
   }
 }
 
-// 🔥 5. 페이지 로드 시 실행
-updateVisitorCount();
+// 🔥 5. 실시간 방문자 수 반영
+function listenVisitorCount() {
+  const docRef = db.collection("visitors").doc("counter");
+
+  docRef.onSnapshot((doc) => {
+    if (!doc.exists) return;
+
+    const data = doc.data();
+
+    const todayEl = document.getElementById("visitor-today");
+    const totalEl = document.getElementById("visitor-total");
+
+    if (todayEl) todayEl.textContent = data.today.toLocaleString();
+    if (totalEl) totalEl.textContent = data.total.toLocaleString();
+  });
+}
+
+// 🔥 6. 실행
+updateVisitorCount();   // 방문자 1 증가
+listenVisitorCount();   // 실시간 반영
