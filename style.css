@@ -451,7 +451,7 @@ body.subpage .container {
   display: none;
   margin-top: 20px;
   padding: 20px;
-  background: linear-gradient(135deg, #4a90e2, #357ABD);
+  background: linear-gradient(135deg, #2ecc71, #27ae60); /* 변경된 부분 */
   color: #fff;
   border-radius: 14px;
   font-size: 20px;
