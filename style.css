@@ -372,7 +372,7 @@ body.subpage .container {
   font-size: 16px;
   line-height: 1.6;
   color: #222;
-  display: none; /* 계산 전에는 숨김 */
+  /*display: none;*/ /* 계산 전에는 숨김 */
   animation: fadeIn 0.25s ease-out;
 }
 
