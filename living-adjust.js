@@ -1,5 +1,5 @@
 /****************************************************
- * 법원 생계비 계산기 — 독립형 아코디언 시스템
+ * 법원 생계비 계산기 — 최종 안정 버전
  ****************************************************/
 
 /* 아코디언 토글 */
@@ -9,25 +9,26 @@ function toggleLivingAccordion() {
 
   const isOpen = box.classList.contains("open");
 
-    if (isOpen) {
-      // 닫기
-      box.classList.remove("open");
-      box.style.maxHeight = null;
-      box.style.padding = "0px";
-      btn.textContent = "계산 상세 보기 ▼";
-    } else {
-      // 열기
-      box.classList.add("open");
-      box.style.padding = "15px";
-      box.style.maxHeight = box.scrollHeight + "px";
-      btn.textContent = "계산 상세 접기 ▲";  
+  if (isOpen) {
+    // 닫기
+    box.classList.remove("open");
+    box.style.maxHeight = null;
+    box.style.padding = "0px";
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    // 열기
+    box.classList.add("open");
+    box.style.padding = "15px";
+    box.style.maxHeight = box.scrollHeight + "px";
+    btn.textContent = "계산 상세 접기 ▲";
   }
 }
+
 /****************************************************
  * 초기화
  ****************************************************/
 function resetLivingAdjust() {
-   document.getElementById('la_income').value = "";
+  document.getElementById('la_income').value = "";
   document.getElementById('la_household').value = "1";
   document.getElementById('la_living_user').value = "";
   document.getElementById('la_extra').value = "";
@@ -81,7 +82,7 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 상세 계산 아코디언 내용 (버튼 클릭 시만 보임)
+   * 상세 계산 아코디언 내용 (자동으로 열리지 않음)
    ****************************************************/
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = `
@@ -94,8 +95,13 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
   `;
 
-  // 계산하기 클릭 시 아코디언은 자동으로 열리지 않음
-  // (요구사항에 맞게 버튼 클릭 시만 열리도록 유지)
+  // ⭐ 자동으로 열리지 않도록 강제 닫기
+  acc.classList.remove("open");
+  acc.style.maxHeight = null;
+  acc.style.padding = "0px";
+
+  const btn = document.querySelector(".calc-acc-btn");
+  btn.textContent = "계산 상세 보기 ▼";
 
   /****************************************************
    * SEO 설명문 (계산하기 클릭 시 자동 표시)
@@ -111,7 +117,7 @@ function calcLivingAdjust() {
 }
 
 /****************************************************
- * 버튼 클릭 이벤트 연결
+ * 버튼 이벤트 연결
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.querySelector(".calc-acc-btn");
