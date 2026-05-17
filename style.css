@@ -284,16 +284,25 @@ body.subpage .container {
 ============================ */
 @media (max-width: 480px) {
   #live-clock {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+
     height: 40px !important;
     line-height: 40px !important;
     padding: 0 !important;
-    font-size: 20px;
+
+    background: #222;
     z-index: 200000;
+
+    /* 모바일 fixed 밀림 방지 */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
+
   .top-info-bar {
-    top: 40px; /* 시계 바로 아래 */
-    padding: 8px 0;
-    font-size: 14px;
+    top: 40px !important; /* 시계와 완전히 붙임 */
   }
 
   /* 방문자 div 아래 여백 확보 */
