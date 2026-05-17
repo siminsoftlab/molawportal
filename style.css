@@ -45,6 +45,7 @@ body {
   z-index: 9999;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-top: 50px;
   margin-bottom: 25px;
 }
 
@@ -59,8 +60,9 @@ body {
   padding: 14px 0;
   font-size: 22px;
   font-weight: 700;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   z-index: 9999;
   margin-bottom: 10px;
 }
@@ -72,6 +74,7 @@ body.homepage {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-top: 50px;
 }
 
 body.homepage .page-wrap {
