@@ -114,66 +114,43 @@ function calcRepay() {
     const finalTotal = Math.max(totalByIncome, asset);
     const monthly = Math.ceil(finalTotal / months);
 
-    // 결과 HTML 삽입
-    setHTMLSafe("repayResult", `
-      <div class="result-title">
-       <h3>📌 계산 결과</h3>
-       </div>
-      <div class="calc-step">
-        <strong>1) 월 소득</strong><br>
-        ${income.toLocaleString()}원
-      </div>
+    /* ⭐ 총 변제금 강조 카드 */
+    setHTMLSafe("repaySummary", `
+      총 변제금: ${finalTotal.toLocaleString()}원<br>
+      월 변제금: ${monthly.toLocaleString()}원
+    `);
+    $('repaySummary').style.display = "block";
 
-      <div class="calc-step">
-        <strong>2) 생계비 계산</strong><br>
-        기본 생계비: ${living.toLocaleString()}원<br>
-        추가 생계비: ${extra.toLocaleString()}원<br>
-        👉 총 생계비 = ${totalLiving.toLocaleString()}원
-      </div>
-
-      <div class="calc-step">
-        <strong>3) 월 변제 가능 금액</strong><br>
-        ${income.toLocaleString()} − ${totalLiving.toLocaleString()}  
-        = <strong>${disposable.toLocaleString()}원</strong>
-      </div>
-
-      <div class="calc-step">
-        <strong>4) 총 변제금(소득 기준)</strong><br>
-        ${disposable.toLocaleString()} × ${months}개월  
-        = <strong>${totalByIncome.toLocaleString()}원</strong>
-      </div>
-
-      ${asset ? `
-      <div class="calc-step">
-        <strong>5) 청산가치</strong><br>
-        ${asset.toLocaleString()}원 (소득 기준과 비교하여 더 큰 금액 적용)
-      </div>
-      ` : ""}
-
-      <div class="calc-step">
-        <strong>6) 최종 총 변제금</strong><br>
-        <strong>${finalTotal.toLocaleString()}원</strong>
-      </div>
-
-      <div class="calc-step highlight-box">
-        <strong>7) 최종 월 변제금</strong><br>
-        ${finalTotal.toLocaleString()} ÷ ${months}개월  
-        = <strong class="highlight">${monthly.toLocaleString()}원</strong>
-      </div>
-     
-      ${generateRepaySEO(income, living, extra, months, asset, monthly, finalTotal)}
+    /* ⭐ 상세 계산 아코디언 */
+    setHTMLSafe("repayAccordion", `
+      <div class="calc-step"><strong>1) 월 소득</strong><br>${income.toLocaleString()}원</div>
+      <div class="calc-step"><strong>2) 총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
+      <div class="calc-step"><strong>3) 월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
+      <div class="calc-step"><strong>4) 총 변제금(소득 기준)</strong><br>${totalByIncome.toLocaleString()}원</div>
+      ${asset ? `<div class="calc-step"><strong>5) 청산가치</strong><br>${asset.toLocaleString()}원</div>` : ""}
+      <div class="calc-step"><strong>6) 최종 총 변제금</strong><br>${finalTotal.toLocaleString()}원</div>
+      <div class="calc-step"><strong>7) 월 변제금</strong><br>${monthly.toLocaleString()}원</div>
     `);
 
-    // 🔥 계산 결과 박스를 강제로 표시 (핵심 수정)
-    const box = $('repayResult');
-    if (box) {
-      box.style.display = "block";
-    }
+    /* ⭐ 자동 설명문 */
+    const seoBox = document.getElementById("repaySEO");
+    seoBox.innerHTML = `
+      <h3>📌 개인회생 변제금 자동 설명</h3>
+      <p>월 소득 ${income.toLocaleString()}원에서 생계비 ${totalLiving.toLocaleString()}원을 제외하여 월 변제 가능 금액은 ${disposable.toLocaleString()}원입니다.</p>
+      <p>변제기간 ${months}개월 기준 총 변제금은 ${finalTotal.toLocaleString()}원이며, 월 변제금은 ${monthly.toLocaleString()}원입니다.</p>
+      ${asset ? `<p>또한 청산가치 ${asset.toLocaleString()}원이 반영되었습니다.</p>` : ""}
+    `;
+
+    /* ⭐ 애니메이션 등장 */
+    setTimeout(() => {
+      seoBox.classList.add("visible");
+    }, 50);
 
   } catch (e) {
     console.log("calcRepay error:", e);
   }
 }
+
 // ========== 변제금 계산기 SEO 자동 설명문 ==========
 function generateRepaySEO(income, living, extra, months, asset, monthly, finalTotal) {
   return `
@@ -381,3 +358,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   sections.forEach((sec) => observer.observe(sec));
 });
+function toggleAccordionRepay() {
+  const box = document.getElementById("repayAccordion");
+  const btn = document.querySelector(".accordion-btn");
+
+  if (box.style.display === "block") {
+    box.style.display = "none";
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.style.display = "block";
+    btn.textContent = "계산 상세 접기 ▲";
+  }
+}
