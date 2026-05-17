@@ -3,7 +3,7 @@
   <channel>
     <title>딱요만큼변제</title>
     <link>https://molawcalculator.com/</link>
-    <description>딱요만큼변제 개인회생 변제금·연이자 계산기 및 불법사채 피해구제·서류발급 대행 정보 블로그 RSS 피드</description>
+    <description>딱요만큼변제 개인회생 변제금·연이자·생계비 계산기 및 불법사채 피해구제·서류발급 대행 정보 블로그 RSS 피드</description>
     <language>ko</language>
     <lastBuildDate>Tue, 05 May 2026 23:50:00 +0900</lastBuildDate>
 
@@ -26,7 +26,7 @@
     <item>
       <title><![CDATA[연이자 계산기]]></title>
       <link>https://molawcalculator.com/calculators/interest.html</link>
-      <description><![CDATA[원금, 이자율, 기간을 입력하면 연이자를 자동 계산해주는 계산기입니다.]]></description>
+      <description><![CDATA[원금·연이율·기간을 입력하면 정확한 이자 금액과 총 상환액을 산출합니다.]]></description>
       <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
       <guid>https://molawcalculator.com/calculators/interest.html</guid>
     </item>
@@ -34,9 +34,25 @@
     <item>
       <title><![CDATA[개인회생 변제금 계산기]]></title>
       <link>https://molawcalculator.com/calculators/repay.html</link>
-      <description><![CDATA[월 소득, 생계비, 변제 기간 등을 입력하면 개인회생 변제금을 계산해주는 계산기입니다.]]></description>
+      <description><![CDATA[개인회생 신청 시 산정되는 총 변제금·월 변제금을 자동 계산합니다.]]></description>
       <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
       <guid>https://molawcalculator.com/calculators/repay.html</guid>
+    </item>
+
+    <item>
+      <title><![CDATA[법원 생계비 계산기]]></title>
+      <link>https://molawcalculator.com/calculators/living-adjust.html</link>
+      <description><![CDATA[법원이 고시한 기준 중위소득을 기반으로 가구원 수별 생계비를 자동 산정합니다.]]></description>
+      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
+      <guid>https://molawcalculator.com/calculators/living-adjust.html</guid>
+    </item>
+
+    <item>
+      <title><![CDATA[가구 생계비 계산기]]></title>
+      <link>https://molawcalculator.com/calculators/household-auto-living.html</link>
+      <description><![CDATA[가구 구성에 따라 맞춤형 생계비를 계산합니다.]]></description>
+      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
+      <guid>https://molawcalculator.com/calculators/household-auto-living.html</guid>
     </item>
 
   </channel>
