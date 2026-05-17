@@ -177,10 +177,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initBannerSlider();
 
-  // 계산기 소개
+  // 홈페이지 계산기 소개
   initAccordionGroup(".calc-acc-btn", ".calc-acc-content", "toggle-all");
 
-  // 사이트 소개
+  // 홈페이지 사이트 소개
   initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
+
+  // ⭐ 계산기 페이지 (법원생계비 / 가구수생계비)
+  initAccordionGroup(".calc-acc-btn", ".calc-acc-content", null);
 });
 
