@@ -5,6 +5,16 @@
  *  - 문서: counter
  *  - 필드: today(number), total(number), date(string)
  ****************************************************/
+function hasVisitedToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  const saved = sessionStorage.getItem("visited-date");
+  return saved === today;
+}
+
+function setVisitedToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  sessionStorage.setItem("visited-date", today);
+}
 
 // 🔥 1. Firebase 설정
 const firebaseConfig = {
@@ -77,5 +87,9 @@ function listenVisitorCount() {
 }
 
 // 🔥 6. 실행
-updateVisitorCount();   // 방문자 1 증가
+if (!hasVisitedToday()) {
+  updateVisitorCount();   // 방문자 1 증가
+  setVisitedToday();
+}
+
 listenVisitorCount();   // 실시간 반영
