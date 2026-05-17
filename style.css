@@ -360,3 +360,31 @@ body.subpage .container {
   border: 1px solid #ccc;
   color: #333;
 }
+/* ============================
+   계산 결과 박스 (앱 스타일)
+============================ */
+.result-box {
+  margin-top: 28px;
+  padding: 20px 18px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  font-size: 16px;
+  line-height: 1.6;
+  color: #222;
+  display: none; /* 계산 전에는 숨김 */
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* 결과 텍스트 강조 */
+.result-box strong {
+  font-size: 18px;
+  font-weight: 800;
+  color: #357ABD;
+}
+
+/* 부드러운 등장 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
