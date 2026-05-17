@@ -237,4 +237,67 @@ document.addEventListener("DOMContentLoaded", () => {
   initAccordion();
   initSiteAccordion();
 });
+function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
+  const buttons = document.querySelectorAll(buttonSelector);
+  const contents = document.querySelectorAll(contentSelector);
+  const toggleAllBtn = document.getElementById(toggleSelector);
+
+  if (!buttons.length) return;
+
+  // 개별 아코디언
+  buttons.forEach((btn, index) => {
+    btn.addEventListener("click", () => {
+      const content = contents[index];
+      const isOpen = content.style.maxHeight;
+
+      contents.forEach((c) => {
+        c.style.maxHeight = null;
+        c.classList.remove("open");
+      });
+      buttons.forEach((b) => b.classList.remove("active"));
+
+      if (!isOpen) {
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.classList.add("open");
+        btn.classList.add("active");
+      }
+    });
+  });
+
+  // 전체 펼치기 / 접기
+  let allOpen = false;
+
+  toggleAllBtn.addEventListener("click", () => {
+    allOpen = !allOpen;
+
+    if (allOpen) {
+      contents.forEach((c, i) => {
+        c.style.maxHeight = c.scrollHeight + "px";
+        c.classList.add("open");
+        buttons[i].classList.add("active");
+      });
+      toggleAllBtn.textContent = "전체 접기 ▲";
+    } else {
+      contents.forEach((c) => {
+        c.style.maxHeight = null;
+        c.classList.remove("open");
+      });
+      buttons.forEach((b) => b.classList.remove("active"));
+      toggleAllBtn.textContent = "전체 펼치기 ▼";
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  initBannerSlider();
+
+  // 계산기 소개
+  initAccordionGroup(".calc-acc-btn", ".calc-acc-content", "toggle-all");
+
+  // 사이트 소개
+  initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
+});
 
