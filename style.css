@@ -167,13 +167,14 @@ body.subpage .container {
    footer (홈 + 하위 페이지 공통)
 ============================ */
 .site-footer {
-  background: #000;
+ background: #000;
   padding: 32px 20px;
+  padding-bottom: 120px; /* ← 기존 margin-bottom 대신 안전한 공간 확보 */
   text-align: left;
   border-top: 1px solid #333;
   color: #fff;
   margin-top: auto;
-  margin-bottom: 80px; /* call-fixed 높이만큼 확보 */
+  margin-bottom: 0; /* ← 기존 80px 제거 */
 }
 
 .site-footer .footer-inner {
