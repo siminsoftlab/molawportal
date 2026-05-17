@@ -55,8 +55,17 @@
         <button onclick="resetRepayInputs()">초기화</button>
       </div>
 
-      <div id="repayResult" class="result-box"></div>
-      <div id="repaySEO"></div>
+      <!-- ⭐ 총 변제금 강조 카드 -->
+      <div id="repaySummary" class="summary-card"></div>
+
+      <!-- ⭐ 아코디언(상세 계산 결과) -->
+      <div class="accordion">
+        <button class="accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
+        <div id="repayAccordion" class="accordion-content"></div>
+      </div>
+
+      <!-- ⭐ 자동 설명문 (애니메이션 등장) -->
+      <div id="repaySEO" class="seo-box-animated"></div>
 
     </div>
 
