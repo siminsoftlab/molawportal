@@ -13,24 +13,21 @@ function toggleLivingAccordion() {
     // 닫기
     box.classList.remove("open");
     box.style.maxHeight = null;
-    box.style.padding = "0px";   // ⭐ 반드시 필요
+    box.style.padding = "0px";
     btn.textContent = "계산 상세 보기 ▼";
-    btn.classList.remove("active");
   } else {
     // 열기
     box.classList.add("open");
-    box.style.padding = "15px";  // ⭐ CSS와 동일하게
+    box.style.padding = "15px";
     box.style.maxHeight = box.scrollHeight + "px";
-    btn.textContent = "계산 상세 접기 ▲";
-    btn.classList.add("active");
-  }
+    btn.textContent = "계산 상세 접기 ▲";  
 }
 
 /****************************************************
  * 초기화
  ****************************************************/
 function resetLivingAdjust() {
-  document.getElementById('la_income').value = "";
+   document.getElementById('la_income').value = "";
   document.getElementById('la_household').value = "1";
   document.getElementById('la_living_user').value = "";
   document.getElementById('la_extra').value = "";
@@ -41,6 +38,7 @@ function resetLivingAdjust() {
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = "";
   acc.style.maxHeight = null;
+  acc.style.padding = "0px";
   acc.classList.remove("open");
 
   const btn = document.querySelector(".calc-acc-btn");
@@ -71,7 +69,9 @@ function calcLivingAdjust() {
   const disposable = Math.max(income - totalLiving, 0);
   const totalRepay = disposable * months;
 
-  /* 요약 */
+  /****************************************************
+   * 요약 카드
+   ****************************************************/
   const summary = document.getElementById('la_summary');
   summary.innerHTML = `
     조정 후 총 생계비: ${totalLiving.toLocaleString()}원<br>
@@ -80,7 +80,9 @@ function calcLivingAdjust() {
   `;
   summary.style.display = "block";
 
-  /* 상세 계산 */
+  /****************************************************
+   * 상세 계산 아코디언 내용 (버튼 클릭 시만 보임)
+   ****************************************************/
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -92,15 +94,12 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
   `;
 
-  /* 계산 후 자동으로 아코디언 열기 */
-  acc.classList.add("open");
-  acc.style.maxHeight = acc.scrollHeight + "px";
-  
-  const btn = document.querySelector(".calc-acc-btn");
-  btn.textContent = "계산 상세 접기 ▲";
-  btn.classList.add("active");
+  // 계산하기 클릭 시 아코디언은 자동으로 열리지 않음
+  // (요구사항에 맞게 버튼 클릭 시만 열리도록 유지)
 
-  /* SEO */
+  /****************************************************
+   * SEO 설명문 (계산하기 클릭 시 자동 표시)
+   ****************************************************/
   const seo = document.getElementById('la_seo');
   seo.innerHTML = `
     <h3>📌 법원 생계비 자동 조정 설명</h3>
