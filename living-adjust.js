@@ -12,23 +12,29 @@ function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
   const btn = document.querySelector(".calc-acc-btn");
 
-  // 계산 결과가 없으면 아코디언 열지 않음
-  if (!livingCalcResult) return;
-
   const isOpen = box.classList.contains("open");
 
   if (isOpen) {
-    // 닫기
-    box.classList.remove("open");
-    box.style.maxHeight = null;
-    box.style.padding = "0px";
+    // ⭐ 닫기 애니메이션이 작동하도록 먼저 max-height를 0으로 설정
+    box.style.maxHeight = "0px";
+
+    // ⭐ transition이 적용되도록 약간의 지연 후 class 제거
+    setTimeout(() => {
+      box.classList.remove("open");
+      box.style.padding = "0px";
+    }, 200);
+
     btn.textContent = "계산 상세 보기 ▼";
+
   } else {
-    // 열기 + 상세 내용 채우기
-    box.innerHTML = livingCalcResult;
+    // 열기
+    box.innerHTML = livingCalcResult; // 저장된 상세 내용 삽입
     box.classList.add("open");
     box.style.padding = "15px";
+
+    // ⭐ scrollHeight 계산은 class 추가 후 해야 정확함
     box.style.maxHeight = box.scrollHeight + "px";
+
     btn.textContent = "계산 상세 접기 ▲";
   }
 }
