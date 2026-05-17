@@ -382,21 +382,51 @@ function updateVisitors(today, total) {
 }
 document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll(".accordion-btn");
+  const contents = document.querySelectorAll(".accordion-content");
+  const toggleAllBtn = document.getElementById("toggle-all");
 
-  buttons.forEach((btn) => {
+  // 개별 아코디언
+  buttons.forEach((btn, index) => {
     btn.addEventListener("click", () => {
-      const content = btn.nextElementSibling;
-      const isOpen = content.style.display === "block";
+      const content = contents[index];
+      const isOpen = content.style.maxHeight;
 
-      // 닫기
-      document.querySelectorAll(".accordion-content").forEach((c) => c.style.display = "none");
-      document.querySelectorAll(".accordion-btn").forEach((b) => b.classList.remove("active"));
+      // 모두 닫기
+      contents.forEach((c) => {
+        c.style.maxHeight = null;
+        c.classList.remove("open");
+      });
+      buttons.forEach((b) => b.classList.remove("active"));
 
-      // 열기
+      // 클릭한 항목 열기
       if (!isOpen) {
-        content.style.display = "block";
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.classList.add("open");
         btn.classList.add("active");
       }
     });
+  });
+
+  // 전체 펼치기 / 접기
+  let allOpen = false;
+
+  toggleAllBtn.addEventListener("click", () => {
+    allOpen = !allOpen;
+
+    if (allOpen) {
+      contents.forEach((c, i) => {
+        c.style.maxHeight = c.scrollHeight + "px";
+        c.classList.add("open");
+        buttons[i].classList.add("active");
+      });
+      toggleAllBtn.textContent = "전체 접기 ▲";
+    } else {
+      contents.forEach((c) => {
+        c.style.maxHeight = null;
+        c.classList.remove("open");
+      });
+      buttons.forEach((b) => b.classList.remove("active"));
+      toggleAllBtn.textContent = "전체 펼치기 ▼";
+    }
   });
 });
