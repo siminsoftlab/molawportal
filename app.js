@@ -380,3 +380,23 @@ function updateVisitors(today, total) {
   document.getElementById("visitor-today").textContent = formatNumberComma(today);
   document.getElementById("visitor-total").textContent = formatNumberComma(total);
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll(".accordion-btn");
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const content = btn.nextElementSibling;
+      const isOpen = content.style.display === "block";
+
+      // 닫기
+      document.querySelectorAll(".accordion-content").forEach((c) => c.style.display = "none");
+      document.querySelectorAll(".accordion-btn").forEach((b) => b.classList.remove("active"));
+
+      // 열기
+      if (!isOpen) {
+        content.style.display = "block";
+        btn.classList.add("active");
+      }
+    });
+  });
+});
