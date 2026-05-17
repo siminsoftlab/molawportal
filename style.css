@@ -277,6 +277,9 @@ body.subpage .container {
    모바일 대응
 ============================ */
 @media (max-width: 480px) {
+   body.homepage .content {
+    padding-top: 110px; /* 모바일은 시계+방문자 div가 더 크게 보이므로 여백을 더 줌 */
+  }
   .fixed-header {
     padding: 14px 16px;
   }
