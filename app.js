@@ -123,9 +123,9 @@ function updateVisitors(today, total) {
 function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
   const buttons = document.querySelectorAll(buttonSelector);
   const contents = document.querySelectorAll(contentSelector);
-  const toggleAllBtn = document.getElementById(toggleSelector);
+  const toggleAllBtn = toggleSelector ? document.getElementById(toggleSelector) : null;
 
-  if (!buttons.length) return;
+  if (!buttons.length || !contents.length) return;
 
   // 개별 아코디언
   buttons.forEach((btn, index) => {
@@ -147,10 +147,11 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
     });
   });
 
- // 전체 펼치기 / 접기
-let allOpen = false;
+  // 전체 펼치기 / 접기 (버튼 있을 때만)
+  if (!toggleAllBtn) return;
 
-if (toggleAllBtn) {
+  let allOpen = false;
+
   toggleAllBtn.addEventListener("click", () => {
     allOpen = !allOpen;
 
@@ -178,13 +179,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initBannerSlider();
 
-  // 홈페이지 계산기 소개
-  initAccordionGroup(".calc-acc-btn", ".calc-acc-content", "toggle-all");
+  const hasHomeCalcToggle = document.getElementById("toggle-all");
+  const hasSiteToggle = document.getElementById("toggle-all-site");
 
-  // 홈페이지 사이트 소개
-  initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
+  // 홈 페이지: 계산기 소개 + 사이트 소개
+  if (hasHomeCalcToggle) {
+    initAccordionGroup(".calc-acc-btn", ".calc-acc-content", "toggle-all");
+  } else {
+    // 서브 페이지(법원생계비 / 가구수생계비): 전체펼치기 없이 개별만
+    initAccordionGroup(".calc-acc-btn", ".calc-acc-content", null);
+  }
 
-  // ⭐ 계산기 페이지 (법원생계비 / 가구수생계비)
-  initAccordionGroup(".calc-acc-btn", ".calc-acc-content", null);
+  if (hasSiteToggle) {
+    initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
+  }
 });
 
