@@ -83,73 +83,52 @@
     </div>
   </div>
 <!-- ⭐ 계산기 소개 -->
-<div class="content">
-  <div class="container">
-    <h2 class="calc-title">계산기 소개</h2>
+<div class="container">
+  <h2 class="calc-title">계산기 소개</h2>
 
-    <button id="toggle-all" class="toggle-all-btn">전체 펼치기 ▼</button>
+  <button id="toggle-all" class="toggle-all-btn">전체 펼치기 ▼</button>
 
-    <div class="calc-info">
+  <div class="calc-info">
 
-      <!-- 변제금 계산기 -->
-      <div class="accordion-item">
-        <button class="intro-acc-btn">
-          <img src="images/repay_icon.png" class="acc-icon"> 변제금 계산기
-        </button>
-        <div class="accordion-content">
-          <p>
-            개인회생 신청 시 산정되는 <strong>총 변제금·월 변제금</strong>을 자동 계산합니다.  
-            소득·생계비·부양가족·청산가치 등 법원 기준 요소를 반영하여  
-            실제 심사에 가까운 결과를 제공합니다.
-          </p>
-        </div>
+    <div class="accordion-item">
+      <button class="acc-btn calc-acc-btn">
+        <img src="images/repay_icon.png" class="acc-icon"> 변제금 계산기
+      </button>
+      <div class="acc-content calc-acc-content">
+        <p>개인회생 신청 시 산정되는 총 변제금·월 변제금을 자동 계산합니다.</p>
       </div>
-
-      <!-- 연이자 계산기 -->
-      <div class="accordion-item">
-        <button class="intro-acc-btn">
-          <img src="images/interest_icon.png" class="acc-icon"> 연이자 계산기
-        </button>
-        <div class="accordion-content">
-          <p>
-            원금·연이율·기간을 입력하면 <strong>정확한 이자 금액과 총 상환액</strong>을 산출합니다.  
-            금융기관·대출·연체·손해배상 등 다양한 상황에서 활용 가능한  
-            표준 이자 계산 방식을 적용합니다.
-          </p>
-        </div>
-      </div>
-
-      <!-- 법원 생계비 계산기 -->
-      <div class="accordion-item">
-        <button class="intro-acc-btn">
-          <img src="images/living-adjust_icon.png" class="acc-icon"> 법원 생계비 계산기
-        </button>
-        <div class="accordion-content">
-          <p>
-            법원이 고시한 기준 중위소득을 기반으로 <strong>가구원 수별 생계비</strong>를 자동 산정합니다.  
-            개인회생 변제금 산정 시 필수 요소인 생계비를  
-            최신 기준에 맞춰 정확하게 제공합니다.
-          </p>
-        </div>
-      </div>
-
-      <!-- 가구수 생계비 계산기 -->
-      <div class="accordion-item">
-        <button class="intro-acc-btn">
-          <img src="images/household-auto-living_icon.png" class="acc-icon"> 가구수 생계비 계산기
-        </button>
-        <div class="accordion-content">
-          <p>
-            실제 가구 구성에 따라 <strong>맞춤형 생계비</strong>를 계산합니다.  
-            부양가족 수에 따라 자동으로 생계비가 조정되며  
-            변제금 산정 시 활용할 수 있는 현실적인 기준을 제공합니다.
-          </p>
-        </div>
-      </div>
-
     </div>
+
+    <div class="accordion-item">
+      <button class="acc-btn calc-acc-btn">
+        <img src="images/interest_icon.png" class="acc-icon"> 연이자 계산기
+      </button>
+      <div class="acc-content calc-acc-content">
+        <p>원금·연이율·기간을 입력하면 정확한 이자 금액과 총 상환액을 산출합니다.</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="acc-btn calc-acc-btn">
+        <img src="images/living-adjust_icon.png" class="acc-icon"> 법원 생계비 계산기
+      </button>
+      <div class="acc-content calc-acc-content">
+        <p>법원이 고시한 기준 중위소득을 기반으로 가구원 수별 생계비를 자동 산정합니다.</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="acc-btn calc-acc-btn">
+        <img src="images/household-auto-living_icon.png" class="acc-icon"> 가구수 생계비 계산기
+      </button>
+      <div class="acc-content calc-acc-content">
+        <p>가구 구성에 따라 맞춤형 생계비를 계산합니다.</p>
+      </div>
+    </div>
+
   </div>
 </div>
+  <!-- ⭐ 원스톱 법률 민원 · 서류 발급 대행 --> 
 <div class="container">
   <h2>원스톱 법률 민원 · 서류 발급 대행</h2>
   <div class="two-box">
@@ -177,7 +156,8 @@
 
   </div>
 </div>
-<!-- ⭐ 사이트 소개 (계산기 소개와 동일한 스타일) -->
+  
+<!-- ⭐ 사이트 소개 -->
 <div class="container">
   <h2 class="calc-title">사이트 소개</h2>
 
@@ -185,12 +165,11 @@
 
   <div class="calc-info">
 
-    <!-- 모두의로펌 -->
     <div class="accordion-item">
-      <button class="intro-acc-btn">
+      <button class="acc-btn site-acc-btn">
         <img src="images/dontworry_icon.png" class="acc-icon"> 모두의로펌
       </button>
-      <div class="accordion-content">
+      <div class="acc-content site-acc-content">
         <p>
           모두의로펌은 법무법인 영민이 직접 운영하는 
           <strong>채무 문제 해결 전문 법률 플랫폼</strong>입니다.<br><br>
@@ -208,12 +187,11 @@
       </div>
     </div>
 
-    <!-- 쏜살민원 -->
     <div class="accordion-item">
-      <button class="intro-acc-btn">
+      <button class="acc-btn site-acc-btn">
         <img src="images/rocketminwon_icon.png" class="acc-icon"> 쏜살민원
       </button>
-      <div class="accordion-content">
+      <div class="acc-content site-acc-content">
         <p>
           쏜살민원은 법무법인 영민이 운영하는 
           <strong>법원·관공서 서류 발급 전문 민원 대행 서비스</strong>입니다.<br><br>
