@@ -50,19 +50,22 @@ body {
    상단 시계
 ============================ */
 #live-clock {
-  position: fixed;
+   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   background-color: #222;
   color: #fff;
   text-align: center;
-  height: 28px; /* 롤링 숫자 높이와 동일하게 고정 */
-  line-height: 28px;
-  padding: 10px 0; /* 위아래 여백 */
-  z-index: 200000; /* 방문자 div보다 위로 */
+
+  height: 28px;        /* 롤링 숫자 높이 */
+  line-height: 28px;   /* 숫자 수직 정렬 */
+  padding: 10px 0;     /* 여백 */
+
   font-size: 22px;
   font-weight: 700;
+
+  z-index: 200000;     /* 방문자 div보다 위 */
 }
 
 /* ============================
