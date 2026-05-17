@@ -409,3 +409,26 @@ body.subpage .container {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+/* ============================
+   모두의로펌 페이지 콘텐츠 박스 스타일
+============================ */
+.inner {
+  width: 92%;
+  max-width: 800px;
+  margin: 0 auto 40px; /* 중앙 정렬 + 아래 여백 */
+  padding: 25px;
+  background: rgba(255,255,255,0.75); /* 흰색 투명 배경 */
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); /* iOS 대응 */
+  color: #222; /* 글자색 진하게 */
+  line-height: 1.7;
+}
+.inner h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
