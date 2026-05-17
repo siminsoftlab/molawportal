@@ -13,11 +13,13 @@ function toggleLivingAccordion() {
     // 닫기
     box.classList.remove("open");
     box.style.maxHeight = null;
+    box.style.padding = "0px";   // ⭐ 반드시 필요
     btn.textContent = "계산 상세 보기 ▼";
     btn.classList.remove("active");
   } else {
     // 열기
     box.classList.add("open");
+    box.style.padding = "15px";  // ⭐ CSS와 동일하게
     box.style.maxHeight = box.scrollHeight + "px";
     btn.textContent = "계산 상세 접기 ▲";
     btn.classList.add("active");
