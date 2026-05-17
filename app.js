@@ -147,9 +147,10 @@ function initAccordionGroup(buttonSelector, contentSelector, toggleSelector) {
     });
   });
 
-  // 전체 펼치기 / 접기
-  let allOpen = false;
+ // 전체 펼치기 / 접기
+let allOpen = false;
 
+if (toggleAllBtn) {
   toggleAllBtn.addEventListener("click", () => {
     allOpen = !allOpen;
 
