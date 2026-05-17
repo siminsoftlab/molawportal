@@ -283,11 +283,13 @@ body.subpage .container {
    모바일 대응
 ============================ */
 @media (max-width: 480px) {
-   #live-clock {
-    padding: 12px 0;
+  #live-clock {
+    height: 40px !important;
+    line-height: 40px !important;
+    padding: 0 !important;
     font-size: 20px;
+    z-index: 200000;
   }
-
   .top-info-bar {
     top: 52px; /* 시계 바로 아래 */
     padding: 8px 0;
