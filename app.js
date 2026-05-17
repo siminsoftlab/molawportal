@@ -116,8 +116,9 @@ function calcRepay() {
 
     // 결과 HTML 삽입
     setHTMLSafe("repayResult", `
-      <div class="result-title">📌 계산 결과</div>
-
+      <div class="result-title">
+       <h3>📌 계산 결과</h3>
+       </div>
       <div class="calc-step">
         <strong>1) 월 소득</strong><br>
         ${income.toLocaleString()}원
