@@ -48,7 +48,7 @@ function rollingClock() {
   const mi = String(now.getMinutes()).padStart(2, "0");
   const s = String(now.getSeconds()).padStart(2, "0");
 
-  const timeString = `${y}-${m}-${d} ${h}:${mi}:${s}`;
+  const timeString = `${y}-${m}-${d}  ${h}:${mi}:${s}`; 
 
   if (!clock.dataset.initialized) {
     clock.innerHTML = "";
