@@ -37,7 +37,7 @@ function fixTargetsForWebView() {
  *  실시간 시계 (롤링 애니메이션 적용)
  ****************************************************/
 function rollingClock() {
-  const clock = document.getElementById("live-clock");
+   const clock = document.getElementById("live-clock");
   if (!clock) return;
 
   const now = new Date();
@@ -50,7 +50,6 @@ function rollingClock() {
 
   const timeString = `${y}-${m}-${d} ${h}:${mi}:${s}`;
 
-  // 기존 숫자 span이 없으면 처음 생성
   if (!clock.dataset.initialized) {
     clock.innerHTML = "";
 
@@ -70,7 +69,6 @@ function rollingClock() {
     return;
   }
 
-  // 기존 숫자 가져오기
   const oldDigits = clock.querySelectorAll(".clock-digit");
 
   [...timeString].forEach((char, i) => {
