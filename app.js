@@ -370,15 +370,13 @@ function toggleAccordionRepay() {
     btn.textContent = "계산 상세 접기 ▲";
   }
 }
-// ========== 방문자 수 표시 ==========
-// 숫자에 천 단위 구분자(,) 추가
+// 천 단위 구분자(,) 적용
 function formatNumberComma(num) {
-  const n = toNumber(num);
-  return n.toLocaleString();
+  return Number(num).toLocaleString();
 }
 
 // 방문자 수 업데이트
 function updateVisitors(today, total) {
-  setHTMLSafe("visitor-today", formatNumberComma(today));
-  setHTMLSafe("visitor-total", formatNumberComma(total));
+  document.getElementById("visitor-today").textContent = formatNumberComma(today);
+  document.getElementById("visitor-total").textContent = formatNumberComma(total);
 }
