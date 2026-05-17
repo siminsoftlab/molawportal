@@ -762,3 +762,7 @@ body.subpage .container {
 .hl-acc-btn.active {
   background: #ffb700;
 }
+/* 방문자 div 아래 공간 확보 */
+body.homepage .content {
+  padding-top: 90px; /* 원하는 만큼 조절 가능 (기본 90px 추천) */
+}
