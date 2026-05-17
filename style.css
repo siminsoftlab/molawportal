@@ -28,11 +28,11 @@ body {
 }
 
 /* ============================
-   상단 접속자 정보바
+   방문자 정보바를 시계 바로 아래로
 ============================ */
 .top-info-bar {
   position: fixed;
-  top: 60px;
+  top: 48px;   /* 시계 높이만큼 */
   left: 50%;
   transform: translateX(-50%);
   background: #4a90e2;
@@ -45,14 +45,15 @@ body {
   z-index: 9999;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  margin-top: 50px;
-  margin-bottom: 25px;
 }
 
 /* ============================
    상단 시계
 ============================ */
 #live-clock {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   background-color: #222;
   color: #fff;
@@ -60,11 +61,7 @@ body {
   padding: 14px 0;
   font-size: 22px;
   font-weight: 700;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  margin-bottom: 10px;
+  z-index: 99999;
 }
 
 /* ============================
