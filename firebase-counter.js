@@ -9,15 +9,20 @@ async function sha256(text) {
 
 // 🔥 방문자 식별자 생성 (IP + UA → 해시)
 async function getVisitorKey() {
-  const res = await fetch("https://api.ipify.org?format=json");
-  const data = await res.json();
-  const ip = data.ip;
-
-  const ua = navigator.userAgent;
-  const raw = ip + "|" + ua;
-
-  const hash = await sha256(raw);
-  return hash.slice(0, 32);   // Firestore 필드명으로 안전한 32자리 해시
+  try {
+    const res = await fetch("https://api.ipify.org?format=json");
+    const data = await res.json();
+    const ip = data.ip;
+    const ua = navigator.userAgent;
+    const raw = ip + "|" + ua;
+    const hash = await sha256(raw);
+    return hash.slice(0, 32);
+  } catch (e) {
+    // IP 조회 실패 시 UA만으로 해시 생성
+    const ua = navigator.userAgent;
+    const hash = await sha256("NOIP|" + ua);
+    return hash.slice(0, 32);
+  }
 }
 
 // 🔥 숫자 카운트업 애니메이션
