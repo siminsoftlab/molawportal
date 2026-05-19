@@ -1,5 +1,3 @@
-getTodayString();
-
 // 🔥 SHA-256 해시 생성 함수
 async function sha256(text) {
   const encoder = new TextEncoder();
