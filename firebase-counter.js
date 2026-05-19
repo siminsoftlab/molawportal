@@ -1,10 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 완성본 (안정화 버전)
-   - Firestore 데이터 자동 복구
-   - 날짜 자동 초기화
-   - daily 문서 자동 생성
-   - 중복 방문자 방지
-   - NaN 방지
+   🔥 Firebase 방문자 카운터 최종 완성본 (안정화 버전)
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -52,19 +47,19 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* ============================================================
-   🔥 Firestore 데이터 자동 복구 함수
+   🔥 counter 문서 자동 복구 (NaN/문자열/undefined 방지)
    ============================================================ */
-async function restoreCounterIfBroken(counterRef, today) {
+async function restoreCounter(counterRef, today) {
   const snap = await counterRef.get();
 
   if (!snap.exists) {
-    await counterRef.set({ today: 0, total: 0, date: today });
-    return { today: 0, total: 0, date: today };
+    const init = { today: 0, total: 0, date: today };
+    await counterRef.set(init);
+    return init;
   }
 
   const data = snap.data();
 
-  // NaN, undefined, 문자열 등 비정상 값 자동 복구
   const fixed = {
     today: typeof data.today === "number" ? data.today : 0,
     total: typeof data.total === "number" ? data.total : 0,
@@ -76,6 +71,21 @@ async function restoreCounterIfBroken(counterRef, today) {
 }
 
 /* ============================================================
+   🔥 daily 문서 자동 생성
+   ============================================================ */
+async function ensureDaily(today) {
+  const dailyRef = db.collection("daily").doc(today);
+  const snap = await dailyRef.get();
+
+  if (!snap.exists) {
+    await dailyRef.set({ init: true });
+    console.log("🔥 daily 문서 자동 생성:", today);
+  }
+
+  return dailyRef;
+}
+
+/* ============================================================
    🔥 방문자 증가 + 날짜 자동 초기화
    ============================================================ */
 async function updateVisitorCount() {
@@ -83,27 +93,27 @@ async function updateVisitorCount() {
   const visitorKey = await getVisitorKey();
 
   const counterRef = db.collection("visitors").doc("counter");
-  const dailyRef = db.collection("daily").doc(today);
+  const dailyRef = await ensureDaily(today);
 
   try {
-    // 1) counter 문서 자동 복구
-    let counter = await restoreCounterIfBroken(counterRef, today);
+    // 1) counter 자동 복구
+    let counter = await restoreCounter(counterRef, today);
 
-    // 2) 날짜가 바뀌었으면 today 초기화
+    // 2) 날짜 자동 초기화
     if (counter.date !== today) {
       counter.today = 0;
       counter.date = today;
       await counterRef.update({ today: 0, date: today });
     }
 
-    // 3) daily 문서 가져오기
+    // 3) daily 데이터 가져오기
     const dailySnap = await dailyRef.get();
     const todayData = dailySnap.exists ? dailySnap.data() : {};
 
     // 4) 중복 방문자 체크
     if (todayData[visitorKey]) return;
 
-    // 5) 새 방문자 기록
+    // 5) daily에 방문자 기록
     todayData[visitorKey] = true;
     await dailyRef.set(todayData, { merge: true });
 
