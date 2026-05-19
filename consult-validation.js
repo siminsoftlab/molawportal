@@ -130,5 +130,22 @@ form.addEventListener("submit", function (e) {
 // ⭐ 페이지 로드 시 초기 유효성 검사 실행 (버튼 비활성화 강제)
 document.addEventListener("DOMContentLoaded", validateForm);
 
-console.log("JS loaded");
-console.log(document.getElementById("consultForm"));
+//console.log("JS loaded");
+//console.log(document.getElementById("consultForm"));
+console.log({
+  name: nameInput.value,
+  nameValid: nameInput.value.trim().length >= 2,
+
+  phone: phoneInput.value,
+  phoneDigits: phoneInput.value.replace(/[^0-9]/g, ""),
+  phoneValid: /^010\d{8}$/.test(phoneInput.value.replace(/[^0-9]/g, "")),
+
+  email: emailInput.value,
+  emailValid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim()),
+
+  message: messageInput.value,
+  messageValid: messageInput.value.replace(/\s/g, "").length > 0,
+
+  agreeChecked: agree.checked
+});
+
