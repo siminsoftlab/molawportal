@@ -48,10 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const openPrivacyModal = document.getElementById("openPrivacyModal");
   const closeModalBtn = document.querySelector(".close-modal");
 
-  // 문구 클릭 → 모달 열기
-  openPrivacyModal.addEventListener("click", (e) => {
-    e.preventDefault(); // label의 기본 체크박스 클릭 방지
-    e.stopPropagation(); // 이벤트 버블링 방지
+  // [보기] 클릭 → 모달 열기
+  openPrivacyModal.addEventListener("click", () => {
     privacyModal.style.display = "block";
   });
 
