@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const nameInput = form.elements["name"];
   const phoneInput = form.elements["phone"];
   const emailInput = form.elements["email"];
-  const typeSelect = form.elements["type"];
   const messageInput = document.getElementById("message");
   const messageCount = document.getElementById("messageCount");
 
@@ -79,13 +78,12 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
   });
 
-  // ⭐⭐⭐ validateForm — 모든 변수 선언 이후 정의
+  // ⭐⭐⭐ 상담유형(typeSelect) 완전 제외한 validateForm
   function validateForm() {
     const nameValid = nameInput.value.trim().length >= 2;
     const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
     const phoneValid = /^010\d{8}$/.test(phoneDigits);
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-    const typeValid = typeSelect.value.trim() !== "";
     const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
     const agreeChecked = agree.checked;
 
@@ -125,19 +123,20 @@ document.addEventListener("DOMContentLoaded", () => {
       markValidation(messageInput, messageValid);
     }
 
-    // 버튼 활성화 조건
-    const allValid = nameValid && phoneValid && emailValid && typeValid && messageValid;
+    // ⭐ 상담유형(typeSelect) 완전 제외
+    // const typeValid = typeSelect.value.trim() !== "";
+
+    // 버튼 활성화 조건 (typeValid 제거)
+    const allValid = nameValid && phoneValid && emailValid && messageValid;
+
     submitBtn.disabled = !(allValid && agreeChecked);
   }
 
   // 입력 이벤트 등록
-  [nameInput, phoneInput, emailInput, agree].forEach(el => {
+  [nameInput, phoneInput, emailInput, messageInput, agree].forEach(el => {
     el.addEventListener("input", validateForm);
     el.addEventListener("change", validateForm);
   });
-
-  // ⭐ select는 input 이벤트가 없음 → change만 등록
-  typeSelect.addEventListener("change", validateForm);
 
   // 제출 시
   form.addEventListener("submit", function (e) {
