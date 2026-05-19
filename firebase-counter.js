@@ -57,7 +57,7 @@ async function updateVisitorCount() {
   try {
     let counterSnap = await counterRef.get();
 
-    // counter 문서가 없으면 생성
+    // counter 문서 없으면 생성
     if (!counterSnap.exists) {
       await counterRef.set({
         today: 0,
@@ -67,28 +67,29 @@ async function updateVisitorCount() {
       counterSnap = await counterRef.get();
     }
 
-    const counter = counterSnap.data();
+    let counter = counterSnap.data();
 
-    // 🔥 날짜 자동 초기화 (가장 먼저 실행)
+    // 🔥 날짜 자동 초기화 (가장 먼저)
     if (counter.date !== today) {
       await counterRef.update({
         today: 0,
         date: today
       });
+      counter = { ...counter, today: 0, date: today };
     }
 
-    // daily 문서 가져오기
+    // 🔥 daily 문서 생성 (날짜 초기화 후)
     const dailySnap = await dailyRef.get();
     const todayData = dailySnap.exists ? dailySnap.data() : {};
 
-    // 🔥 방문자 중복 체크 (날짜 초기화 후 실행)
+    // 🔥 방문자 중복 체크 (가장 마지막)
     if (todayData[visitorKey]) return;
 
-    // 새 방문자 → daily에 저장
+    // 새 방문자 저장
     todayData[visitorKey] = true;
     await dailyRef.set(todayData, { merge: true });
 
-    // counter 업데이트
+    // counter 증가
     await counterRef.update({
       today: counter.today + 1,
       total: counter.total + 1,
@@ -99,6 +100,7 @@ async function updateVisitorCount() {
     console.error("🔥 방문자 증가 오류:", e);
   }
 }
+
 
 // 🔥 실시간 방문자 수 반영
 function listenVisitorCount() {
