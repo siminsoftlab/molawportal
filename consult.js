@@ -1,3 +1,5 @@
+console.log("consult.js loaded");
+
 document.addEventListener("DOMContentLoaded", () => {
 
   emailjs.init("5YL9lX5-PVDgImnkv");
@@ -157,3 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 페이지 로드 시 초기 검사
   validateForm();
 });
+
+console.log("validateForm 존재 여부:", typeof validateForm);
+
