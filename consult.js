@@ -44,9 +44,14 @@ form.addEventListener("submit", function (e) {
 // 개인정보 모달 요소
 document.addEventListener("DOMContentLoaded", () => {
 
+  // 모달 요소
   const privacyModal = document.getElementById("privacyModal");
   const openPrivacyModal = document.getElementById("openPrivacyModal");
   const closeModalBtn = document.querySelector(".close-modal");
+
+  // 상담신청 버튼
+  const agree = document.getElementById("agree");
+  const submitBtn = document.getElementById("submitBtn");
 
   // [보기] 클릭 → 모달 열기
   openPrivacyModal.addEventListener("click", () => {
@@ -62,6 +67,17 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("click", (e) => {
     if (e.target === privacyModal) {
       privacyModal.style.display = "none";
+    }
+  });
+
+  // 체크박스 체크 시 버튼 활성화
+  agree.addEventListener("change", () => {
+    if (agree.checked) {
+      submitBtn.disabled = false;
+      submitBtn.classList.add("active");
+    } else {
+      submitBtn.disabled = true;
+      submitBtn.classList.remove("active");
     }
   });
 
