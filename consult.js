@@ -1,4 +1,4 @@
-console.log("consult.js loaded");
+console.log("validateForm 실행됨");
 
 document.addEventListener("DOMContentLoaded", () => {
 
