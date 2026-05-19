@@ -42,26 +42,31 @@ form.addEventListener("submit", function (e) {
 
 
 // 개인정보 모달 요소
-const privacyModal = document.getElementById("privacyModal");
-const openPrivacyModal = document.getElementById("openPrivacyModal");
-const closeModalBtn = document.querySelector(".close-modal");
+document.addEventListener("DOMContentLoaded", () => {
 
-// 문구 클릭 → 모달 열기
-openPrivacyModal.addEventListener("click", (e) => {
-  e.preventDefault(); // 체크박스 클릭 방지
-  privacyModal.style.display = "block";
-});
+  const privacyModal = document.getElementById("privacyModal");
+  const openPrivacyModal = document.getElementById("openPrivacyModal");
+  const closeModalBtn = document.querySelector(".close-modal");
 
-// 닫기 버튼 → 모달 닫기
-closeModalBtn.addEventListener("click", () => {
-  privacyModal.style.display = "none";
-});
+  // 문구 클릭 → 모달 열기
+  openPrivacyModal.addEventListener("click", (e) => {
+    e.preventDefault(); // 체크박스 클릭 방지
+    privacyModal.style.display = "block";
+  });
 
-// 모달 바깥 클릭 → 닫기
-window.addEventListener("click", (e) => {
-  if (e.target === privacyModal) {
+  // 닫기 버튼 → 모달 닫기
+  closeModalBtn.addEventListener("click", () => {
     privacyModal.style.display = "none";
-  }
+  });
+
+  // 모달 바깥 클릭 → 닫기
+  window.addEventListener("click", (e) => {
+    if (e.target === privacyModal) {
+      privacyModal.style.display = "none";
+    }
+  });
+
 });
+
 
 
