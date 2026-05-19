@@ -1,10 +1,11 @@
-async function forceResetDate() {
+async function forceOverrideDate() {
   const today = getTodayString();
+
   const counterRef = db.collection("visitors").doc("counter");
   const dailyRef = db.collection("daily").doc(today);
 
   try {
-    // 🔥 counter.date를 무조건 오늘로 강제 변경
+    // 🔥 counter 문서 강제 덮어쓰기
     await counterRef.set(
       {
         today: 0,
@@ -13,7 +14,7 @@ async function forceResetDate() {
       { merge: true }
     );
 
-    // 🔥 daily 문서도 무조건 생성
+    // 🔥 daily 문서 강제 생성
     await dailyRef.set(
       {
         forced: true
@@ -21,12 +22,13 @@ async function forceResetDate() {
       { merge: true }
     );
 
-    console.log("🔥 강제 날짜 초기화 완료:", today);
+    console.log("🔥 날짜 강제 덮어쓰기 완료:", today);
 
   } catch (e) {
-    console.error("🔥 강제 초기화 오류:", e);
+    console.error("🔥 날짜 강제 덮어쓰기 오류:", e);
   }
 }
+
 
 
 // 🔥 SHA-256 해시 생성 함수
@@ -152,6 +154,6 @@ function listenVisitorCount() {
   });
 }
 // 1) 날짜 강제 초기화
-forceResetDate();
+forceOverrideDate();
 updateVisitorCount();
 listenVisitorCount();
