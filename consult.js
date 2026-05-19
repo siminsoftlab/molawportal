@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   emailjs.init("5YL9lX5-PVDgImnkv");
 
-  // 요소 선택
   const form = document.getElementById("consultForm");
   const submitBtn = document.getElementById("submitBtn");
   const agree = document.getElementById("agree");
@@ -17,26 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const MAX_LENGTH = 300;
 
-  // 개인정보 모달
-  const privacyModal = document.getElementById("privacyModal");
-  const openPrivacyModal = document.getElementById("openPrivacyModal");
-  const closeModalBtn = document.querySelector(".close-modal");
-
-  openPrivacyModal.addEventListener("click", () => {
-    privacyModal.style.display = "block";
-  });
-
-  closeModalBtn.addEventListener("click", () => {
-    privacyModal.style.display = "none";
-  });
-
-  window.addEventListener("click", (e) => {
-    if (e.target === privacyModal) {
-      privacyModal.style.display = "none";
-    }
-  });
-
-  // 테두리 색상 표시
   function markValidation(input, isValid) {
     if (input.value.trim() === "") {
       input.style.border = "1px solid #ccc";
@@ -53,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id).textContent = "";
   }
 
-  // 연락처 자동 하이픈
   phoneInput.addEventListener("input", () => {
     let value = phoneInput.value.replace(/[^0-9]/g, "");
     if (value.length > 11) value = value.substring(0, 11);
@@ -69,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
   });
 
-  // 상담 내용 글자 수 카운터
   messageInput.addEventListener("input", () => {
     if (messageInput.value.length > MAX_LENGTH) {
       messageInput.value = messageInput.value.substring(0, MAX_LENGTH);
@@ -78,17 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
   });
 
-  // ⭐⭐⭐ 상담유형 완전 제외한 validateForm
   function validateForm() {
     const nameValid = nameInput.value.trim().length >= 2;
     const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
     const phoneValid = /^010\d{8}$/.test(phoneDigits);
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-    //const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
     const messageValid = messageInput.value.trim().length > 0;
     const agreeChecked = agree.checked;
 
-    // 이름
     if (!nameValid && nameInput.value.trim() !== "") {
       showError("nameError", "이름은 2글자 이상 입력해주세요.");
       markValidation(nameInput, false);
@@ -97,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
       markValidation(nameInput, nameValid);
     }
 
-    // 연락처
     if (!phoneValid && phoneInput.value.trim() !== "") {
       showError("phoneError", "연락처는 010으로 시작하는 숫자 11자리여야 합니다.");
       markValidation(phoneInput, false);
@@ -106,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
       markValidation(phoneInput, phoneValid);
     }
 
-    // 이메일
     if (!emailValid && emailInput.value.trim() !== "") {
       showError("emailError", "올바른 이메일 형식이 아닙니다.");
       markValidation(emailInput, false);
@@ -115,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
       markValidation(emailInput, emailValid);
     }
 
-    // 상담 내용
     if (!messageValid && messageInput.value.trim() !== "") {
       showError("messageError", "상담 내용을 입력해주세요.");
       markValidation(messageInput, false);
@@ -124,19 +95,16 @@ document.addEventListener("DOMContentLoaded", () => {
       markValidation(messageInput, messageValid);
     }
 
-    // ⭐ 상담유형(type) 완전 제외
     const allValid = nameValid && phoneValid && emailValid && messageValid;
 
     submitBtn.disabled = !(allValid && agreeChecked);
   }
 
-  // 입력 이벤트 등록
   [nameInput, phoneInput, emailInput, messageInput, agree].forEach(el => {
     el.addEventListener("input", validateForm);
     el.addEventListener("change", validateForm);
   });
 
-  // 제출 시
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -156,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-  // 페이지 로드 시 초기 검사
   validateForm();
 });
 
