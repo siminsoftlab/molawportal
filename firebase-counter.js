@@ -24,22 +24,6 @@ async function getVisitorKey() {
   }
 }
 
-// 🔥 숫자 카운트업 애니메이션
-function animateCount(el, target) {
-  let start = 0;
-  const duration = 800;
-  const step = Math.ceil(target / (duration / 16));
-
-  const timer = setInterval(() => {
-    start += step;
-    if (start >= target) {
-      start = target;
-      clearInterval(timer);
-    }
-    el.textContent = start.toLocaleString();
-  }, 16);
-}
-
 // 🔥 Firebase 설정
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
@@ -51,7 +35,6 @@ const firebaseConfig = {
   measurementId: "G-D4W34NBWKT"
 };
 
-// 🔥 Firebase 초기화
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -72,20 +55,21 @@ async function updateVisitorCount() {
   const counterRef = db.collection("visitors").doc("counter");
 
   try {
-    const counterSnap = await counterRef.get();
+    let counterSnap = await counterRef.get();
 
+    // counter 문서가 없으면 생성
     if (!counterSnap.exists) {
-      // counter 문서가 없으면 생성
       await counterRef.set({
         today: 0,
         total: 0,
         date: today
       });
+      counterSnap = await counterRef.get();
     }
 
-    const counter = (await counterRef.get()).data();
+    const counter = counterSnap.data();
 
-    // 🔥 날짜가 바뀌었으면 자동 초기화
+    // 🔥 날짜 자동 초기화 (가장 먼저 실행)
     if (counter.date !== today) {
       await counterRef.update({
         today: 0,
@@ -97,7 +81,7 @@ async function updateVisitorCount() {
     const dailySnap = await dailyRef.get();
     const todayData = dailySnap.exists ? dailySnap.data() : {};
 
-    // 이미 방문한 사용자면 today 증가 X
+    // 🔥 방문자 중복 체크 (날짜 초기화 후 실행)
     if (todayData[visitorKey]) return;
 
     // 새 방문자 → daily에 저장
@@ -116,7 +100,7 @@ async function updateVisitorCount() {
   }
 }
 
-// 🔥 실시간 방문자 수 반영 + 카운트업
+// 🔥 실시간 방문자 수 반영
 function listenVisitorCount() {
   const docRef = db.collection("visitors").doc("counter");
 
@@ -129,12 +113,11 @@ function listenVisitorCount() {
     const totalEl = document.getElementById("visitor-total");
 
     if (todayEl && totalEl) {
-      animateCount(todayEl, data.today);
-      animateCount(totalEl, data.total);
+      todayEl.textContent = data.today.toLocaleString();
+      totalEl.textContent = data.total.toLocaleString();
     }
   });
 }
 
-// 🔥 실행
 updateVisitorCount();
 listenVisitorCount();
