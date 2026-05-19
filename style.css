@@ -1041,3 +1041,7 @@ body.homepage .content {
   margin-top: 4px;
 }
 
+#submitBtn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
