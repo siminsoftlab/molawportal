@@ -51,14 +51,20 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 🔥 오늘 날짜
+// 🔥 오늘 날짜 (KST 기준)
 function getTodayString() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+
+  // UTC → KST(UTC+9) 변환
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const kst = new Date(utc + (9 * 60 * 60 * 1000));
+
+  return kst.toISOString().slice(0, 10); // YYYY-MM-DD
 }
 
 // 🔥 방문자 증가 (해시 기반)
 async function updateVisitorCount() {
-  const today = getTodayString();
+  const today = getTodayString();   // ⭐ KST 기준 날짜
   const visitorKey = await getVisitorKey();
 
   const dailyRef = db.collection("daily").doc(today);
@@ -114,5 +120,5 @@ function listenVisitorCount() {
 }
 
 // 🔥 실행
-updateVisitorCount();   // 해시 기반 방문자 체크
+updateVisitorCount();   // 해시 기반 방문자 체크 (KST 기준)
 listenVisitorCount();   // 실시간 반영 + 카운트업
