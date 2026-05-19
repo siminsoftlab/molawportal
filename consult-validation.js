@@ -18,10 +18,7 @@ function markValidation(input, isValid) {
     input.style.border = "1px solid #ccc";
     return;
   }
-
-  input.style.border = isValid
-    ? "1px solid #28a745"
-    : "1px solid red";
+  input.style.border = isValid ? "1px solid #28a745" : "1px solid red";
 }
 
 // 오류 메시지 표시
@@ -37,12 +34,8 @@ function clearError(id) {
 phoneInput.addEventListener("input", () => {
   let value = phoneInput.value.replace(/[^0-9]/g, "");
 
-  // 최대 11자리 제한
-  if (value.length > 11) {
-    value = value.substring(0, 11);
-  }
+  if (value.length > 11) value = value.substring(0, 11);
 
-  // 하이픈 자동 삽입
   if (value.length < 4) {
     phoneInput.value = value;
   } else if (value.length < 8) {
@@ -56,12 +49,9 @@ phoneInput.addEventListener("input", () => {
 
 // 상담 내용 글자 수 카운터
 messageInput.addEventListener("input", () => {
-  const length = messageInput.value.length;
-
-  if (length > MAX_LENGTH) {
+  if (messageInput.value.length > MAX_LENGTH) {
     messageInput.value = messageInput.value.substring(0, MAX_LENGTH);
   }
-
   messageCount.textContent = `${messageInput.value.length} / ${MAX_LENGTH}자`;
   validateForm();
 });
@@ -70,13 +60,13 @@ messageInput.addEventListener("input", () => {
 function validateForm() {
   const nameValid = nameInput.value.trim().length >= 2;
 
-  // 연락처는 정확히 010 + 8자리 = 11자리
   const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
   const phoneValid = /^010\d{8}$/.test(phoneDigits);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
 
-  // 상담 내용은 공백 포함 모든 whitespace 제거 후 검사
+  const typeValid = typeSelect.value.trim() !== ""; // ⭐ 추가됨
+
   const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
 
   const agreeChecked = agree.checked;
@@ -117,4 +107,22 @@ function validateForm() {
     markValidation(messageInput, messageValid);
   }
 
-  //
+  // ⭐ 버튼 활성화 조건: 모든 입력값 유효 + 개인정보 동의 체크
+  const allValid = nameValid && phoneValid && emailValid && typeValid && messageValid;
+
+  submitBtn.disabled = !(allValid && agreeChecked);
+}
+
+// 입력 이벤트 등록
+[nameInput, phoneInput, emailInput, typeSelect, agree].forEach(el => {
+  el.addEventListener("input", validateForm);
+  el.addEventListener("change", validateForm);
+});
+
+// 제출 시 최종 체크
+form.addEventListener("submit", function (e) {
+  if (submitBtn.disabled) {
+    e.preventDefault();
+    alert("입력값을 다시 확인해주세요.");
+  }
+});
