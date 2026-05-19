@@ -856,3 +856,58 @@ body.homepage .content {
 .clock-digit.roll {
   transform: translateY(-28px);
 }
+/* 온라인상담신청 */
+.consult-app {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.consult-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.consult-guide {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.consult-app input,
+.consult-app select,
+.consult-app textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.agree-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.consult-submit {
+  width: 100%;
+  padding: 15px;
+  background: #ccc;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: not-allowed;
+}
+
+.consult-submit.active {
+  background: #0066ff;
+  cursor: pointer;
+}
