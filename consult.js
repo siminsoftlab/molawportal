@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
   });
 
-  // ⭐⭐⭐ 상담유형(typeSelect) 완전 제외한 validateForm
+  // ⭐⭐⭐ 상담유형 완전 제외한 validateForm
   function validateForm() {
     const nameValid = nameInput.value.trim().length >= 2;
     const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
@@ -123,10 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
       markValidation(messageInput, messageValid);
     }
 
-    // ⭐ 상담유형(typeSelect) 완전 제외
-    // const typeValid = typeSelect.value.trim() !== "";
-
-    // 버튼 활성화 조건 (typeValid 제거)
+    // ⭐ 상담유형(type) 완전 제외
     const allValid = nameValid && phoneValid && emailValid && messageValid;
 
     submitBtn.disabled = !(allValid && agreeChecked);
