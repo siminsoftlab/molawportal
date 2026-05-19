@@ -886,6 +886,13 @@ body.homepage .content {
   border-radius: 8px;
   border: 1px solid #ddd;
   font-size: 16px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.consult-app textarea {
+  height: 120px;
+  resize: vertical;
 }
 
 .agree-box {
