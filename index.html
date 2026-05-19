@@ -288,10 +288,10 @@
 <div class="container">
   <h2 class="calc-title">법무법인영민 오시는 길</h2>
   <!-- 지도 영역 -->
-    <div id="daumRoughmapContainer1779180009898"
-       class="root_daum_roughmap root_daum_roughmap_landing"
-       style="width:100%; height:360px;">
-  </div>
+  <div class="location-wrapper">
+    <div class="location-map">
+      <div id="daumRoughmapContainer1779180009898" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+    </div>
     
     <!-- 설치 스크립트 (이건 반드시 HTML에 있어야 함) -->
     <script charset="UTF-8" class="daum_roughmap_loader_script"
@@ -299,10 +299,11 @@
     
     <!-- 실행 스크립트는 제거하고, 외부 JS로 이동 -->
     <script src="map.js"></script>  
-    <div class="location-box">      
+    <div class="location-info">      
       <p><strong>업무시간</strong> : 평일 09:00 ~ 18:00 (주말/공휴일 온라인 상담신청 가능)</p>
       <p><strong>교통안내</strong> : 지하철 교대역 9번 출구 도보 3분</p>
     </div>  
+  </div>
   </div>
 <!-- ⭐ footer (페이지 끝에 붙음) -->
 <footer class="site-footer">
