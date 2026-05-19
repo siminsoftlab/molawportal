@@ -129,3 +129,6 @@ form.addEventListener("submit", function (e) {
 
 // ⭐ 페이지 로드 시 초기 유효성 검사 실행 (버튼 비활성화 강제)
 document.addEventListener("DOMContentLoaded", validateForm);
+
+console.log("JS loaded");
+console.log(document.getElementById("consultForm"));
