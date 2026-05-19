@@ -1,13 +1,23 @@
-// 🔥 중복 방문 방지 (세션 기반)
-function hasVisitedToday() {
-  const today = new Date().toISOString().slice(0, 10);
-  const saved = sessionStorage.getItem("visited-date");
-  return saved === today;
+// 🔥 SHA-256 해시 생성 함수
+async function sha256(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-function setVisitedToday() {
-  const today = new Date().toISOString().slice(0, 10);
-  sessionStorage.setItem("visited-date", today);
+// 🔥 방문자 식별자 생성 (IP + UA → 해시)
+async function getVisitorKey() {
+  const res = await fetch("https://api.ipify.org?format=json");
+  const data = await res.json();
+  const ip = data.ip;
+
+  const ua = navigator.userAgent;
+  const raw = ip + "|" + ua;
+
+  const hash = await sha256(raw);
+  return hash.slice(0, 32);   // Firestore 필드명으로 안전한 32자리 해시
 }
 
 // 🔥 숫자 카운트업 애니메이션
@@ -46,32 +56,37 @@ function getTodayString() {
   return new Date().toISOString().slice(0, 10);
 }
 
-// 🔥 방문자 증가 (1회 실행)
+// 🔥 방문자 증가 (해시 기반)
 async function updateVisitorCount() {
-  const docRef = db.collection("visitors").doc("counter");
+  const today = getTodayString();
+  const visitorKey = await getVisitorKey();
+
+  const dailyRef = db.collection("daily").doc(today);
+  const counterRef = db.collection("visitors").doc("counter");
 
   try {
-    const docSnap = await docRef.get();
-    if (!docSnap.exists) return;
+    const dailySnap = await dailyRef.get();
+    const counterSnap = await counterRef.get();
 
-    const data = docSnap.data();
-    const todayStr = getTodayString();
+    if (!counterSnap.exists) return;
 
-    let newToday = data.today;
-    let newTotal = data.total + 1;
-    let newDate = data.date;
+    const counter = counterSnap.data();
+    const todayData = dailySnap.exists ? dailySnap.data() : {};
 
-    if (data.date !== todayStr) {
-      newToday = 1;
-      newDate = todayStr;
-    } else {
-      newToday += 1;
+    // 이미 방문한 사용자면 today 증가 X
+    if (todayData[visitorKey]) {
+      return;
     }
 
-    await docRef.update({
-      today: newToday,
-      total: newTotal,
-      date: newDate
+    // 새 방문자 → daily에 저장
+    todayData[visitorKey] = true;
+    await dailyRef.set(todayData, { merge: true });
+
+    // counter 업데이트
+    await counterRef.update({
+      today: counter.today + 1,
+      total: counter.total + 1,
+      date: today
     });
 
   } catch (e) {
@@ -99,9 +114,5 @@ function listenVisitorCount() {
 }
 
 // 🔥 실행
-if (!hasVisitedToday()) {
-  updateVisitorCount();   // 방문자 1 증가
-  setVisitedToday();
-}
-
+updateVisitorCount();   // 해시 기반 방문자 체크
 listenVisitorCount();   // 실시간 반영 + 카운트업
