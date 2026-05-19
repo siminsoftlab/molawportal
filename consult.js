@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  emailjs.init("5YL9lX5-PVDgImnkv"); // ← Public Key
+  emailjs.init("5YL9lX5-PVDgImnkv");
 
   const agree = document.getElementById("agree");
   const submitBtn = document.getElementById("submitBtn");
@@ -10,18 +10,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const openPrivacyModal = document.getElementById("openPrivacyModal");
   const closeModalBtn = document.querySelector(".close-modal");
 
-  // 체크박스 체크 시 버튼 활성화
   agree.addEventListener("change", () => {
     submitBtn.disabled = !agree.checked;
     submitBtn.classList.toggle("active", agree.checked);
   });
 
-  // 모달 열기
   openPrivacyModal.addEventListener("click", () => {
     privacyModal.style.display = "block";
   });
 
-  // 모달 닫기
   closeModalBtn.addEventListener("click", () => {
     privacyModal.style.display = "none";
   });
@@ -32,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 폼 제출
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -41,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    emailjs.sendForm("service_wrskjfa", "template_m3qahy8", this) // ← Service ID / Template ID
+    emailjs.sendForm("service_wrskjfa", "template_m3qahy8", this)
       .then(() => {
         alert("상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.");
         form.reset();
