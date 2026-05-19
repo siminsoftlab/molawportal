@@ -113,9 +113,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 버튼 활성화 조건
-    const allValid = nameValid && phoneValid && emailValid && typeValid && messageValid;
+    const allValid = nameValid && phoneValid && emailValid && typeValid && messageValid && agreeChecked;
 
-    submitBtn.disabled = !(allValid && agreeChecked);
+    // disabled 제거 → 대신 CSS로 비활성화처럼 보이게 처리
+    submitBtn.classList.toggle("disabled", !allValid);
+
+    return allValid;
   }
 
   // 입력 이벤트 등록
@@ -128,8 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    const isValid = validateForm();
+
     // 입력값 부족 → alert
-    if (submitBtn.disabled) {
+    if (!isValid) {
       alert("항목을 입력하세요.");
       return;
     }
@@ -146,8 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(() => {
         alert("상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.");
         form.reset();
-        submitBtn.disabled = true;
         messageCount.textContent = `0 / ${MAX_LENGTH}자`;
+        validateForm();
       })
       .catch(() => {
         alert("전송 중 오류가 발생했습니다. 관리자에게 문의해주세요.");
