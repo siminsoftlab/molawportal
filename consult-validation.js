@@ -39,10 +39,12 @@ function clearError(id) {
 phoneInput.addEventListener("input", () => {
   let value = phoneInput.value.replace(/[^0-9]/g, "");
 
+  // 최대 11자리 제한
   if (value.length > 11) {
     value = value.substring(0, 11);
   }
 
+  // 하이픈 자동 삽입
   if (value.length < 4) {
     phoneInput.value = value;
   } else if (value.length < 8) {
@@ -69,9 +71,16 @@ messageInput.addEventListener("input", () => {
 // 전체 유효성 검사
 function validateForm() {
   const nameValid = nameInput.value.trim().length >= 2;
-  const phoneValid = phoneInput.value.replace(/[^0-9]/g, "").length === 11;
+
+  // 연락처는 정확히 010 + 8자리 = 11자리
+  const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
+  const phoneValid = /^010\d{8}$/.test(phoneDigits);
+
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-  const messageValid = messageInput.value.trim().length > 0;
+
+  // 상담 내용은 공백만 입력해도 invalid 처리
+  const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
+
   const agreeChecked = agree.checked;
 
   // 이름
@@ -85,7 +94,7 @@ function validateForm() {
 
   // 연락처
   if (!phoneValid && phoneInput.value.trim() !== "") {
-    showError("phoneError", "연락처는 숫자 11자리로 입력해주세요.");
+    showError("phoneError", "연락처는 010으로 시작하는 숫자 11자리여야 합니다.");
     markValidation(phoneInput, false);
   } else {
     clearError("phoneError");
