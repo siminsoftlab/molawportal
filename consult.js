@@ -41,13 +41,14 @@ form.addEventListener("submit", function (e) {
 });
 
 
-// 모달 요소
+// 개인정보 모달 요소
 const privacyModal = document.getElementById("privacyModal");
 const openPrivacyModal = document.getElementById("openPrivacyModal");
 const closeModalBtn = document.querySelector(".close-modal");
 
 // 문구 클릭 → 모달 열기
-openPrivacyModal.addEventListener("click", () => {
+openPrivacyModal.addEventListener("click", (e) => {
+  e.preventDefault(); // 체크박스 클릭 방지
   privacyModal.style.display = "block";
 });
 
@@ -62,4 +63,5 @@ window.addEventListener("click", (e) => {
     privacyModal.style.display = "none";
   }
 });
+
 
