@@ -3,12 +3,12 @@ document.addEventListener("DOMContentLoaded", () => {
   emailjs.init("5YL9lX5-PVDgImnkv");
 
   const form = document.getElementById("consultForm");
-  const submitBtn = document.getElementById("submitBtn");
 
   const nameInput = form.elements["name"];
   const phoneInput = form.elements["phone"];
   const emailInput = form.elements["email"];
   const messageInput = document.getElementById("message");
+  const agree = document.getElementById("agree");
 
   // 에러 표시 함수
   function setError(input, errorId, message) {
@@ -19,6 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function clearError(input, errorId) {
     document.getElementById(errorId).textContent = "";
     input.style.border = "1px solid #ddd";
+  }
+
+  // 체크박스 에러 표시
+  function setAgreeError(message) {
+    document.getElementById("agreeError").textContent = message;
+  }
+
+  function clearAgreeError() {
+    document.getElementById("agreeError").textContent = "";
   }
 
   // 제출 시 검증
@@ -57,6 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
       valid = false;
     } else {
       clearError(messageInput, "messageError");
+    }
+
+    // 개인정보 동의 체크
+    if (!agree.checked) {
+      setAgreeError("개인정보 수집·이용에 동의해야 합니다.");
+      valid = false;
+    } else {
+      clearAgreeError();
     }
 
     return valid;
