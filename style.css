@@ -979,11 +979,11 @@ body.homepage .content {
   cursor: not-allowed;
 }
 
-/* 활성화 상태 */
 .consult-submit.active {
   background: #0066ff;
   cursor: pointer;
 }
+
 /* label의 기본 동작 제거 */
 #openPrivacyModal {
   cursor: pointer;
