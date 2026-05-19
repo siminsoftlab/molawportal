@@ -71,7 +71,7 @@ function validateForm() {
   const nameValid = nameInput.value.trim().length >= 2;
   const phoneValid = phoneInput.value.replace(/[^0-9]/g, "").length === 11;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-  const messageValid = messageInput.value.trim().length > 0; // ⭐ 상담내용 필수
+  const messageValid = messageInput.value.trim().length > 0;
   const agreeChecked = agree.checked;
 
   // 이름
@@ -110,6 +110,7 @@ function validateForm() {
     markValidation(messageInput, messageValid);
   }
 
+  // ⭐ 버튼 활성화 조건: 모든 입력값 유효 + 개인정보 동의 체크
   submitBtn.disabled = !(nameValid && phoneValid && emailValid && messageValid && agreeChecked);
 }
 
