@@ -98,6 +98,7 @@ function listenVisitorCount() {
   const docRef = db.collection("visitors").doc("counter");
 
   docRef.onSnapshot((doc) => {
+    console.log("counter snapshot:", doc.exists, doc.data());  // ← 추가
     if (!doc.exists) return;
 
     const data = doc.data();
