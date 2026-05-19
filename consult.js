@@ -10,9 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const openPrivacyModal = document.getElementById("openPrivacyModal");
   const closeModalBtn = document.querySelector(".close-modal");
 
+  // ✔ 체크박스는 validateForm()만 호출하도록 변경
   agree.addEventListener("change", () => {
-    submitBtn.disabled = !agree.checked;
-    submitBtn.classList.toggle("active", agree.checked);
+    validateForm();
   });
 
   openPrivacyModal.addEventListener("click", () => {
