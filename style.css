@@ -1026,7 +1026,7 @@ body.homepage .content {
 .custom-map {
   flex: 2;
   min-width: 300px;
-  height: 300px;
+  height: 310px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
