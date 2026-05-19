@@ -57,7 +57,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // 🔥 오늘 날짜 (KST 기준)
-function () {
+function getTodayString() {
   const now = new Date();
 
   // UTC → KST(UTC+9) 변환
