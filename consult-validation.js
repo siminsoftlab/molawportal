@@ -1,9 +1,10 @@
+/*
 Object.defineProperty(submitBtn, "disabled", {
   set(value) {
     console.log("🚨 disabled 변경 감지됨:", value, new Error().stack);
   }
 });
-
+*/
 
 // 요소 선택
 const form = document.getElementById("consultForm");
@@ -134,10 +135,11 @@ form.addEventListener("submit", function (e) {
   }
 });
 
+/*
 setInterval(() => {
   console.log("disabled 상태:", submitBtn.disabled);
 }, 500);
-
+*/
 
 // ⭐ 페이지 로드 시 초기 유효성 검사 실행 (버튼 비활성화 강제)
 //document.addEventListener("DOMContentLoaded", validateForm);
