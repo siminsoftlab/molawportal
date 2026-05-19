@@ -166,3 +166,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // 페이지 로드 시 초기 검사
   validateForm();
 });
+
+console.log("검사 결과:", {
+  name: nameInput.value,
+  nameValid: nameInput.value.trim().length >= 2,
+
+  phone: phoneInput.value,
+  phoneDigits: phoneInput.value.replace(/[^0-9]/g, ""),
+  phoneValid: /^010\d{8}$/.test(phoneInput.value.replace(/[^0-9]/g, "")),
+
+  email: emailInput.value,
+  emailValid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim()),
+
+  type: typeSelect.value,
+  typeValid: typeSelect.value.trim() !== "",
+
+  message: messageInput.value,
+  messageValid: messageInput.value.replace(/\s/g, "").length > 0,
+
+  agreeChecked: agree.checked
+});
