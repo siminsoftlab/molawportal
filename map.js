@@ -1,5 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // 영욱님 사무실 좌표
+  new daum.roughmap.Lander({
+    "timestamp": "1779184856757",
+    "key": "no827uetjj8"
+    // mapWidth, mapHeight 제거 → CSS로 제어됨
+  }).render();
+});
+
+/*
+document.addEventListener("DOMContentLoaded", function () {
   var officeLat = 37.492314;
   var officeLng = 127.015022;
 
@@ -22,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // 주변 POI 제거
   map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADMAP);
 });
-
+*/
 //document.addEventListener("DOMContentLoaded", function () {
 //  new daum.roughmap.Lander({
 //    "timestamp": "1779180009898",
