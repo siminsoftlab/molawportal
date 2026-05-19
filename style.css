@@ -909,7 +909,10 @@ body.homepage .content {
 }
 
 .agree-box input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
   margin-right: 6px;
+  flex-shrink: 0;
 }
 
 /* 모달 기본 */
@@ -966,6 +969,7 @@ body.homepage .content {
   background: #0066ff;
   cursor: pointer;
 }
+/* label의 기본 동작 제거 */
 #openPrivacyModal {
   cursor: pointer;
   pointer-events: auto;
