@@ -84,7 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
     const phoneValid = /^010\d{8}$/.test(phoneDigits);
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-    const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
+    //const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
+    const messageValid = messageInput.value.trim().length > 0;
     const agreeChecked = agree.checked;
 
     // 이름
