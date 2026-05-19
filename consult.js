@@ -48,9 +48,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const openPrivacyModal = document.getElementById("openPrivacyModal");
   const closeModalBtn = document.querySelector(".close-modal");
 
+  if (!privacyModal || !openPrivacyModal || !closeModalBtn) {
+    console.log("모달 요소를 찾을 수 없습니다.");
+    return;
+  }
+
   // 문구 클릭 → 모달 열기
   openPrivacyModal.addEventListener("click", (e) => {
-    e.preventDefault(); // 체크박스 클릭 방지
+    e.preventDefault();
     privacyModal.style.display = "block";
   });
 
