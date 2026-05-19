@@ -168,10 +168,29 @@
 
     <!-- 개인정보 동의 -->
     <div class="agree-box">
-      <input type="checkbox" id="agree" />
-      <label for="agree">개인정보 수집·이용에 동의합니다.</label>
+      <input type="checkbox" id="agree">
+      <label for="agree" id="openPrivacyModal">개인정보 수집·이용에 동의합니다.</label>
     </div>
-
+    
+    <!-- 개인정보 처리방침 모달 -->
+    <div id="privacyModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h3>개인정보 수집·이용 안내</h3>
+    
+        <p><strong>1. 수집 항목</strong><br>
+        이름, 연락처, 상담 내용</p>
+    
+        <p><strong>2. 수집 목적</strong><br>
+        상담 요청 확인 및 상담 진행을 위한 연락</p>
+    
+        <p><strong>3. 보유 기간</strong><br>
+        상담 완료 후 1년 보관 후 즉시 파기</p>
+    
+        <p><strong>4. 동의 거부 권리</strong><br>
+        동의를 거부할 수 있으나, 이 경우 상담 신청이 제한될 수 있습니다.</p>
+      </div>
+    </div>
     <button type="submit" id="submitBtn" class="consult-submit" disabled>
       상담 신청하기
     </button>
