@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // 사무실 좌표 (교대역 근처)
-  var officeLat = 37.492;
-  var officeLng = 127.015;
+  // 영욱님 사무실 좌표
+  var officeLat = 37.492314;
+  var officeLng = 127.015022;
 
   var mapContainer = document.getElementById('map');
+
+  // ⭐ 여기서 kakao.maps.Map 선언이 반드시 필요함
   var mapOption = {
     center: new kakao.maps.LatLng(officeLat, officeLng),
     level: 3
@@ -17,10 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   marker.setMap(map);
 
-  // POI 제거 (주변 상가/사무실 숨김)
+  // 주변 POI 제거
   map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADMAP);
 });
-
 
 //document.addEventListener("DOMContentLoaded", function () {
 //  new daum.roughmap.Lander({
