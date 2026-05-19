@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  emailjs.init("5YL9lX5-PVDgImnkv");
+  emailjs.init("5YL9lX5-PVDgImnkv"); // Public Key
 
   const form = document.getElementById("consultForm");
 
   const nameInput = form.elements["name"];
   const phoneInput = form.elements["phone"];
   const emailInput = form.elements["email"];
+  const typeInput = form.elements["type"];
   const messageInput = document.getElementById("message");
   const agree = document.getElementById("agree");
 
@@ -79,17 +80,21 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    console.log("📨 이메일 전송 시도 중...");
+    const params = {
+      name: nameInput.value,
+      phone: phoneInput.value,
+      email: emailInput.value,
+      type: typeInput.value,
+      message: messageInput.value
+    };
 
-    emailjs.sendForm("service_wrskjfa", "template_m3qahy8", this)
-      .then((res) => {
-        console.log("✅ 이메일 전송 성공:", res);
+    emailjs.send("service_wrskjfa", "template_m3qahy8", params)
+      .then(() => {
         alert("상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.");
         form.reset();
       })
-      .catch((err) => {
-        console.error("❌ 이메일 전송 실패:", err);
-        alert("전송 중 오류가 발생했습니다. 콘솔을 확인해주세요.");
+      .catch(() => {
+        alert("전송 중 오류가 발생했습니다. 관리자에게 문의해주세요.");
       });
   });
 
