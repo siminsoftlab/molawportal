@@ -940,6 +940,7 @@ body.homepage .content {
   cursor: pointer;
 }
 
+
 /* 모달 애니메이션 */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
