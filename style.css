@@ -907,6 +907,10 @@ body.homepage .content {
   font-size: 14px;
 }
 
+.agree-box input[type="checkbox"] {
+  margin-right: 6px; /* 체크박스와 문구 사이 간격 */
+}
+
 /* 제출 버튼 */
 .consult-submit {
   width: 100%;
