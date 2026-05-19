@@ -913,11 +913,21 @@ body.homepage .content {
   display: flex;
   align-items: center;
   gap: 6px;
+  margin-bottom: 20px;
 }
 
 .agree-box input[type="checkbox"] {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+}
+
+.privacy-view {
+  margin-left: 6px;
+  color: #0066ff;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
 }
 
 /* 모달 기본 */
