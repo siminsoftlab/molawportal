@@ -1,3 +1,10 @@
+Object.defineProperty(submitBtn, "disabled", {
+  set(value) {
+    console.log("🚨 disabled 변경 감지됨:", value, new Error().stack);
+  }
+});
+
+
 // 요소 선택
 const form = document.getElementById("consultForm");
 const submitBtn = document.getElementById("submitBtn");
