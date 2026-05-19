@@ -1,37 +1,13 @@
-async function forceOverrideDate() {
-  const today = getTodayString();
+/* ============================================================
+   🔥 Firebase 방문자 카운터 완성본 (안정화 버전)
+   - Firestore 데이터 자동 복구
+   - 날짜 자동 초기화
+   - daily 문서 자동 생성
+   - 중복 방문자 방지
+   - NaN 방지
+   ============================================================ */
 
-  const counterRef = db.collection("visitors").doc("counter");
-  const dailyRef = db.collection("daily").doc(today);
-
-  try {
-    // 🔥 counter 문서 강제 덮어쓰기
-    await counterRef.set(
-      {
-        today: 0,
-        date: today
-      },
-      { merge: true }
-    );
-
-    // 🔥 daily 문서 강제 생성
-    await dailyRef.set(
-      {
-        forced: true
-      },
-      { merge: true }
-    );
-
-    console.log("🔥 날짜 강제 덮어쓰기 완료:", today);
-
-  } catch (e) {
-    console.error("🔥 날짜 강제 덮어쓰기 오류:", e);
-  }
-}
-
-
-
-// 🔥 SHA-256 해시 생성 함수
+// SHA-256 해시 생성
 async function sha256(text) {
   const encoder = new TextEncoder();
   const data = encoder.encode(text);
@@ -40,24 +16,28 @@ async function sha256(text) {
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// 🔥 방문자 식별자 생성 (IP + UA → 해시)
+// 방문자 식별자 생성 (IP + UA)
 async function getVisitorKey() {
   try {
     const res = await fetch("https://api.ipify.org?format=json");
     const data = await res.json();
-    const ip = data.ip;
-    const ua = navigator.userAgent;
-    const raw = ip + "|" + ua;
-    const hash = await sha256(raw);
-    return hash.slice(0, 32);
-  } catch (e) {
-    const ua = navigator.userAgent;
-    const hash = await sha256("NOIP|" + ua);
-    return hash.slice(0, 32);
+    const raw = data.ip + "|" + navigator.userAgent;
+    return (await sha256(raw)).slice(0, 32);
+  } catch {
+    const raw = "NOIP|" + navigator.userAgent;
+    return (await sha256(raw)).slice(0, 32);
   }
 }
 
-// 🔥 Firebase 설정
+// 오늘 날짜 (KST)
+function getTodayString() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const kst = new Date(utc + 9 * 60 * 60 * 1000);
+  return kst.toISOString().slice(0, 10);
+}
+
+// Firebase 설정
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -71,58 +51,63 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 🔥 오늘 날짜 (KST 기준)
-function getTodayString() {
-  const now = new Date();
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const kst = new Date(utc + (9 * 60 * 60 * 1000));
-  return kst.toISOString().slice(0, 10);
+/* ============================================================
+   🔥 Firestore 데이터 자동 복구 함수
+   ============================================================ */
+async function restoreCounterIfBroken(counterRef, today) {
+  const snap = await counterRef.get();
+
+  if (!snap.exists) {
+    await counterRef.set({ today: 0, total: 0, date: today });
+    return { today: 0, total: 0, date: today };
+  }
+
+  const data = snap.data();
+
+  // NaN, undefined, 문자열 등 비정상 값 자동 복구
+  const fixed = {
+    today: typeof data.today === "number" ? data.today : 0,
+    total: typeof data.total === "number" ? data.total : 0,
+    date: typeof data.date === "string" ? data.date : today
+  };
+
+  await counterRef.set(fixed, { merge: true });
+  return fixed;
 }
 
-// 🔥 날짜 자동 초기화 + 방문자 증가
+/* ============================================================
+   🔥 방문자 증가 + 날짜 자동 초기화
+   ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = await getVisitorKey();
 
-  const dailyRef = db.collection("daily").doc(today);
   const counterRef = db.collection("visitors").doc("counter");
+  const dailyRef = db.collection("daily").doc(today);
 
   try {
-    let counterSnap = await counterRef.get();
+    // 1) counter 문서 자동 복구
+    let counter = await restoreCounterIfBroken(counterRef, today);
 
-    // counter 문서 없으면 생성
-    if (!counterSnap.exists) {
-      await counterRef.set({
-        today: 0,
-        total: 0,
-        date: today
-      });
-      counterSnap = await counterRef.get();
-    }
-
-    let counter = counterSnap.data();
-
-    // 🔥 날짜 자동 초기화 (가장 먼저)
+    // 2) 날짜가 바뀌었으면 today 초기화
     if (counter.date !== today) {
-      await counterRef.update({
-        today: 0,
-        date: today
-      });
-      counter = { ...counter, today: 0, date: today };
+      counter.today = 0;
+      counter.date = today;
+      await counterRef.update({ today: 0, date: today });
     }
 
-    // 🔥 daily 문서 생성 (날짜 초기화 후)
+    // 3) daily 문서 가져오기
     const dailySnap = await dailyRef.get();
     const todayData = dailySnap.exists ? dailySnap.data() : {};
 
-    // 🔥 방문자 중복 체크 (가장 마지막)
+    // 4) 중복 방문자 체크
     if (todayData[visitorKey]) return;
 
-    // 새 방문자 저장
+    // 5) 새 방문자 기록
     todayData[visitorKey] = true;
     await dailyRef.set(todayData, { merge: true });
 
-    // counter 증가
+    // 6) counter 증가
     await counterRef.update({
       today: counter.today + 1,
       total: counter.total + 1,
@@ -130,30 +115,30 @@ async function updateVisitorCount() {
     });
 
   } catch (e) {
-    console.error("🔥 방문자 증가 오류:", e);
+    console.error("🔥 updateVisitorCount 오류:", e);
   }
 }
 
-
-// 🔥 실시간 방문자 수 반영
+/* ============================================================
+   🔥 실시간 반영
+   ============================================================ */
 function listenVisitorCount() {
-  const docRef = db.collection("visitors").doc("counter");
+  db.collection("visitors")
+    .doc("counter")
+    .onSnapshot((doc) => {
+      if (!doc.exists) return;
 
-  docRef.onSnapshot((doc) => {
-    if (!doc.exists) return;
+      const data = doc.data();
+      const todayEl = document.getElementById("visitor-today");
+      const totalEl = document.getElementById("visitor-total");
 
-    const data = doc.data();
-
-    const todayEl = document.getElementById("visitor-today");
-    const totalEl = document.getElementById("visitor-total");
-
-    if (todayEl && totalEl) {
-      todayEl.textContent = data.today.toLocaleString();
-      totalEl.textContent = data.total.toLocaleString();
-    }
-  });
+      if (todayEl) todayEl.textContent = data.today.toLocaleString();
+      if (totalEl) totalEl.textContent = data.total.toLocaleString();
+    });
 }
-// 1) 날짜 강제 초기화
-forceOverrideDate();
+
+/* ============================================================
+   🔥 실행
+   ============================================================ */
 updateVisitorCount();
 listenVisitorCount();
