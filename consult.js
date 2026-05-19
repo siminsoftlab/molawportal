@@ -128,8 +128,9 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    // 입력값 부족 → alert
     if (submitBtn.disabled) {
-      alert("입력값을 다시 확인해주세요.");
+      alert("항목을 입력하세요.");
       return;
     }
 
