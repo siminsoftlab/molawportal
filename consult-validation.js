@@ -35,9 +35,13 @@ function clearError(id) {
   document.getElementById(id).textContent = "";
 }
 
-// 연락처 자동 하이픈
+// 연락처 자동 하이픈 + 숫자만 입력 + 최대 11자리 제한
 phoneInput.addEventListener("input", () => {
   let value = phoneInput.value.replace(/[^0-9]/g, "");
+
+  if (value.length > 11) {
+    value = value.substring(0, 11);
+  }
 
   if (value.length < 4) {
     phoneInput.value = value;
@@ -59,13 +63,15 @@ messageInput.addEventListener("input", () => {
   }
 
   messageCount.textContent = `${messageInput.value.length} / ${MAX_LENGTH}자`;
+  validateForm();
 });
 
 // 전체 유효성 검사
 function validateForm() {
   const nameValid = nameInput.value.trim().length >= 2;
-  const phoneValid = phoneInput.value.replace(/[^0-9]/g, "").length >= 10;
+  const phoneValid = phoneInput.value.replace(/[^0-9]/g, "").length === 11;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+  const messageValid = messageInput.value.trim().length > 0; // ⭐ 상담내용 필수
   const agreeChecked = agree.checked;
 
   // 이름
@@ -79,7 +85,7 @@ function validateForm() {
 
   // 연락처
   if (!phoneValid && phoneInput.value.trim() !== "") {
-    showError("phoneError", "올바른 연락처를 입력해주세요.");
+    showError("phoneError", "연락처는 숫자 11자리로 입력해주세요.");
     markValidation(phoneInput, false);
   } else {
     clearError("phoneError");
@@ -95,7 +101,16 @@ function validateForm() {
     markValidation(emailInput, emailValid);
   }
 
-  submitBtn.disabled = !(nameValid && phoneValid && emailValid && agreeChecked);
+  // 상담 내용
+  if (!messageValid && messageInput.value.trim() !== "") {
+    showError("messageError", "상담 내용을 입력해주세요.");
+    markValidation(messageInput, false);
+  } else {
+    clearError("messageError");
+    markValidation(messageInput, messageValid);
+  }
+
+  submitBtn.disabled = !(nameValid && phoneValid && emailValid && messageValid && agreeChecked);
 }
 
 // 입력 이벤트 등록
