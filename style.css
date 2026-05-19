@@ -900,6 +900,7 @@ body.homepage .content {
 }
 
 /* 개인정보 동의 */
+/* 체크박스 간격 */
 .agree-box {
   display: flex;
   align-items: center;
@@ -908,8 +909,46 @@ body.homepage .content {
 }
 
 .agree-box input[type="checkbox"] {
-  margin-right: 6px; /* 체크박스와 문구 사이 간격 */
+  margin-right: 6px;
 }
+
+/* 모달 기본 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+/* 모달 내용 */
+.modal-content {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  margin: 120px auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  animation: fadeIn 0.25s ease;
+}
+
+/* 닫기 버튼 */
+.close-modal {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* 모달 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 /* 제출 버튼 */
 .consult-submit {
