@@ -19,11 +19,9 @@ function markValidation(input, isValid) {
     return;
   }
 
-  if (isValid) {
-    input.style.border = "1px solid #28a745"; // 초록색
-  } else {
-    input.style.border = "1px solid red"; // 빨간색
-  }
+  input.style.border = isValid
+    ? "1px solid #28a745"
+    : "1px solid red";
 }
 
 // 오류 메시지 표시
@@ -78,7 +76,7 @@ function validateForm() {
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
 
-  // 상담 내용은 공백만 입력해도 invalid 처리
+  // 상담 내용은 공백 포함 모든 whitespace 제거 후 검사
   const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
 
   const agreeChecked = agree.checked;
@@ -119,20 +117,4 @@ function validateForm() {
     markValidation(messageInput, messageValid);
   }
 
-  // ⭐ 버튼 활성화 조건: 모든 입력값 유효 + 개인정보 동의 체크
-  submitBtn.disabled = !(nameValid && phoneValid && emailValid && messageValid && agreeChecked);
-}
-
-// 입력 이벤트 등록
-[nameInput, phoneInput, emailInput, typeSelect, agree].forEach(el => {
-  el.addEventListener("input", validateForm);
-  el.addEventListener("change", validateForm);
-});
-
-// 제출 시 최종 체크
-form.addEventListener("submit", function (e) {
-  if (submitBtn.disabled) {
-    e.preventDefault();
-    alert("입력값을 다시 확인해주세요.");
-  }
-});
+  //
