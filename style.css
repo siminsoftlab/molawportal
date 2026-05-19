@@ -970,12 +970,16 @@ body.homepage .content {
 .consult-submit {
   width: 100%;
   padding: 15px;
-  background: #ccc;
+  background: #0066ff;   /* 활성화된 파란색 */
   color: #fff;
   border: none;
   border-radius: 10px;
   font-size: 18px;
   font-weight: 700;
+  cursor: pointer;       /* 활성화된 커서 */
+}
+.consult-submit.disabled {
+  background: #ccc;
   cursor: not-allowed;
 }
 
