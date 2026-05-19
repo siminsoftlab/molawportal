@@ -65,7 +65,7 @@ function validateForm() {
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
 
-  const typeValid = typeSelect.value.trim() !== ""; // ⭐ 추가됨
+  const typeValid = typeSelect.value.trim() !== "";
 
   const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
 
@@ -107,7 +107,7 @@ function validateForm() {
     markValidation(messageInput, messageValid);
   }
 
-  // ⭐ 버튼 활성화 조건: 모든 입력값 유효 + 개인정보 동의 체크
+  // ⭐ 버튼 활성화 조건
   const allValid = nameValid && phoneValid && emailValid && typeValid && messageValid;
 
   submitBtn.disabled = !(allValid && agreeChecked);
@@ -126,3 +126,6 @@ form.addEventListener("submit", function (e) {
     alert("입력값을 다시 확인해주세요.");
   }
 });
+
+// ⭐ 페이지 로드 시 초기 유효성 검사 실행 (버튼 비활성화 강제)
+document.addEventListener("DOMContentLoaded", validateForm);
