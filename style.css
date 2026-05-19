@@ -966,4 +966,8 @@ body.homepage .content {
   background: #0066ff;
   cursor: pointer;
 }
+#openPrivacyModal {
+  cursor: pointer;
+  pointer-events: auto;
+}
 
