@@ -295,13 +295,16 @@
     <p><strong>교통안내</strong> : 지하철 교대역 9번 출구 도보 3분</p>
   </div>
 
-  <div class="map-area" style="margin-top:20px;">
-    <iframe 
-      src="https://map.kakao.com/?q=서울특별시%20서초구%20반포대로30길%2070" 
-      style="width:100%;height:350px;border:0;">
-    </iframe>
+  <!-- 지도 영역 -->
+  <div id="daumRoughmapContainer1779180009898" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+  
+  <!-- 설치 스크립트 (이건 반드시 HTML에 있어야 함) -->
+  <script charset="UTF-8" class="daum_roughmap_loader_script"
+          src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+  
+  <!-- 실행 스크립트는 제거하고, 외부 JS로 이동 -->
+  <script src="map.js"></script>
   </div>
-</div>
 
 <!-- ⭐ footer (페이지 끝에 붙음) -->
 <footer class="site-footer">
