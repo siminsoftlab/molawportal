@@ -857,29 +857,32 @@ body.homepage .content {
   transform: translateY(-28px);
 }
 /* 온라인상담신청 */
-.consult-app {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 480px;
+/* 온라인 상담신청 전체 박스 */
+.container.consult-section {
+  max-width: 900px;          /* 계산기소개 div와 동일 */
   margin: 0 auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 40px 20px;
+  box-sizing: border-box;
+  margin-bottom: 80px;       /* 아래 공간 띄우기 */
 }
 
+/* 제목 */
 .consult-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   margin-bottom: 10px;
 }
 
+/* 안내 문구 */
 .consult-guide {
   color: #666;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
-.consult-app input,
-.consult-app select,
-.consult-app textarea {
+/* 모든 입력 요소 공통 스타일 */
+.container input,
+.container select,
+.container textarea {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
@@ -890,18 +893,21 @@ body.homepage .content {
   background: #fff;
 }
 
-.consult-app textarea {
+/* textarea 높이 */
+.container textarea {
   height: 120px;
   resize: vertical;
 }
 
+/* 개인정보 동의 */
 .agree-box {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   font-size: 14px;
 }
 
+/* 제출 버튼 */
 .consult-submit {
   width: 100%;
   padding: 15px;
@@ -914,7 +920,9 @@ body.homepage .content {
   cursor: not-allowed;
 }
 
+/* 활성화 상태 */
 .consult-submit.active {
   background: #0066ff;
   cursor: pointer;
 }
+
