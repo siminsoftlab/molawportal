@@ -1,4 +1,4 @@
-console.log("validateForm 실행됨");
+//console.log("consult.js loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
   });
 
-  // ⭐⭐⭐ validateForm은 반드시 모든 변수 선언 이후에 정의해야 함
+  // ⭐⭐⭐ validateForm — 모든 변수 선언 이후 정의
   function validateForm() {
     const nameValid = nameInput.value.trim().length >= 2;
     const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
@@ -131,10 +131,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 입력 이벤트 등록
-  [nameInput, phoneInput, emailInput, typeSelect, agree].forEach(el => {
+  [nameInput, phoneInput, emailInput, agree].forEach(el => {
     el.addEventListener("input", validateForm);
     el.addEventListener("change", validateForm);
   });
+
+  // ⭐ select는 input 이벤트가 없음 → change만 등록
+  typeSelect.addEventListener("change", validateForm);
 
   // 제출 시
   form.addEventListener("submit", function (e) {
@@ -160,5 +163,4 @@ document.addEventListener("DOMContentLoaded", () => {
   validateForm();
 });
 
-console.log("validateForm 존재 여부:", typeof validateForm);
-
+//console.log("validateForm 존재 여부:", typeof validateForm);
