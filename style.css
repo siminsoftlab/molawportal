@@ -901,18 +901,23 @@ body.homepage .content {
 
 /* 개인정보 동의 */
 /* 체크박스 간격 */
+.privacy-view {
+  margin-left: 8px;
+  color: #0066ff;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
 .agree-box {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
-  font-size: 14px;
+  gap: 6px;
 }
 
 .agree-box input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  margin-right: 6px;
-  flex-shrink: 0;
 }
 
 /* 모달 기본 */
