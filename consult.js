@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // EmailJS 초기화
-  emailjs.init("YOUR_PUBLIC_KEY");
+  emailjs.init("5YL9lX5-PVDgImnkv"); // ← Public Key
 
-  // 요소 가져오기
   const agree = document.getElementById("agree");
   const submitBtn = document.getElementById("submitBtn");
   const form = document.getElementById("consultForm");
@@ -12,39 +10,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const openPrivacyModal = document.getElementById("openPrivacyModal");
   const closeModalBtn = document.querySelector(".close-modal");
 
-  console.log("consult.js loaded", {
-    agree,
-    submitBtn,
-    form,
-    privacyModal,
-    openPrivacyModal,
-    closeModalBtn
-  });
-
   // 체크박스 체크 시 버튼 활성화
   agree.addEventListener("change", () => {
     submitBtn.disabled = !agree.checked;
     submitBtn.classList.toggle("active", agree.checked);
   });
 
-  // [보기] 클릭 → 모달 열기
+  // 모달 열기
   openPrivacyModal.addEventListener("click", () => {
     privacyModal.style.display = "block";
   });
 
-  // 닫기 버튼 → 모달 닫기
+  // 모달 닫기
   closeModalBtn.addEventListener("click", () => {
     privacyModal.style.display = "none";
   });
 
-  // 모달 바깥 클릭 → 닫기
   window.addEventListener("click", (e) => {
     if (e.target === privacyModal) {
       privacyModal.style.display = "none";
     }
   });
 
-  // 폼 제출 이벤트
+  // 폼 제출
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
@@ -53,15 +41,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    emailjs.sendForm("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", this)
+    emailjs.sendForm("service_wrskjfa", "template_m3qahy8", this) // ← Service ID / Template ID
       .then(() => {
-        alert("상담 신청이 접수되었습니다.");
+        alert("상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.");
         form.reset();
         submitBtn.disabled = true;
         submitBtn.classList.remove("active");
       })
       .catch(() => {
-        alert("전송 중 오류가 발생했습니다.");
+        alert("전송 중 오류가 발생했습니다. 다시 시도해주세요.");
       });
   });
 
