@@ -18,7 +18,6 @@ async function getVisitorKey() {
     const hash = await sha256(raw);
     return hash.slice(0, 32);
   } catch (e) {
-    // IP 조회 실패 시 UA만으로 해시 생성
     const ua = navigator.userAgent;
     const hash = await sha256("NOIP|" + ua);
     return hash.slice(0, 32);
@@ -59,35 +58,47 @@ const db = firebase.firestore();
 // 🔥 오늘 날짜 (KST 기준)
 function getTodayString() {
   const now = new Date();
-
-  // UTC → KST(UTC+9) 변환
   const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
   const kst = new Date(utc + (9 * 60 * 60 * 1000));
-
-  return kst.toISOString().slice(0, 10); // YYYY-MM-DD
+  return kst.toISOString().slice(0, 10);
 }
 
-// 🔥 방문자 증가 (해시 기반)
+// 🔥 날짜 자동 초기화 + 방문자 증가
 async function updateVisitorCount() {
-  const today = getTodayString();   // ⭐ KST 기준 날짜
+  const today = getTodayString();
   const visitorKey = await getVisitorKey();
 
   const dailyRef = db.collection("daily").doc(today);
   const counterRef = db.collection("visitors").doc("counter");
 
   try {
-    const dailySnap = await dailyRef.get();
     const counterSnap = await counterRef.get();
 
-    if (!counterSnap.exists) return;
+    if (!counterSnap.exists) {
+      // counter 문서가 없으면 생성
+      await counterRef.set({
+        today: 0,
+        total: 0,
+        date: today
+      });
+    }
 
-    const counter = counterSnap.data();
+    const counter = (await counterRef.get()).data();
+
+    // 🔥 날짜가 바뀌었으면 자동 초기화
+    if (counter.date !== today) {
+      await counterRef.update({
+        today: 0,
+        date: today
+      });
+    }
+
+    // daily 문서 가져오기
+    const dailySnap = await dailyRef.get();
     const todayData = dailySnap.exists ? dailySnap.data() : {};
 
     // 이미 방문한 사용자면 today 증가 X
-    if (todayData[visitorKey]) {
-      return;
-    }
+    if (todayData[visitorKey]) return;
 
     // 새 방문자 → daily에 저장
     todayData[visitorKey] = true;
@@ -125,5 +136,5 @@ function listenVisitorCount() {
 }
 
 // 🔥 실행
-updateVisitorCount();   // 해시 기반 방문자 체크 (KST 기준)
-listenVisitorCount();   // 실시간 반영 + 카운트업
+updateVisitorCount();
+listenVisitorCount();
