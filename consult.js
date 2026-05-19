@@ -44,14 +44,26 @@ form.addEventListener("submit", function (e) {
 // 개인정보 모달 요소
 document.addEventListener("DOMContentLoaded", () => {
 
-  // 모달 요소
   const privacyModal = document.getElementById("privacyModal");
   const openPrivacyModal = document.getElementById("openPrivacyModal");
   const closeModalBtn = document.querySelector(".close-modal");
-
-  // 상담신청 버튼
   const agree = document.getElementById("agree");
   const submitBtn = document.getElementById("submitBtn");
+
+  // 요소 확인 로그
+  console.log({
+    privacyModal,
+    openPrivacyModal,
+    closeModalBtn,
+    agree,
+    submitBtn
+  });
+
+  // 요소가 없으면 실행 중단
+  if (!privacyModal || !openPrivacyModal || !closeModalBtn || !agree || !submitBtn) {
+    console.error("❌ 모달 또는 체크박스 요소를 찾을 수 없습니다.");
+    return;
+  }
 
   // [보기] 클릭 → 모달 열기
   openPrivacyModal.addEventListener("click", () => {
