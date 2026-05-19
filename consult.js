@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // EmailJS 초기화
   emailjs.init("5YL9lX5-PVDgImnkv");
 
-  // 요소 선택
+  // 요소 선택 (validateForm보다 반드시 먼저 선언)
   const form = document.getElementById("consultForm");
   const submitBtn = document.getElementById("submitBtn");
   const agree = document.getElementById("agree");
@@ -54,10 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id).textContent = "";
   }
 
-  // 연락처 자동 하이픈 + 숫자만 입력 + 최대 11자리 제한
+  // 연락처 자동 하이픈
   phoneInput.addEventListener("input", () => {
     let value = phoneInput.value.replace(/[^0-9]/g, "");
-
     if (value.length > 11) value = value.substring(0, 11);
 
     if (value.length < 4) {
@@ -83,16 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // 전체 유효성 검사
   function validateForm() {
     const nameValid = nameInput.value.trim().length >= 2;
-
     const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
     const phoneValid = /^010\d{8}$/.test(phoneDigits);
-
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-
     const typeValid = typeSelect.value.trim() !== "";
-
     const messageValid = messageInput.value.replace(/\s/g, "").length > 0;
-
     const agreeChecked = agree.checked;
 
     // 이름
@@ -133,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 버튼 활성화 조건
     const allValid = nameValid && phoneValid && emailValid && typeValid && messageValid;
-
     submitBtn.disabled = !(allValid && agreeChecked);
   }
 
@@ -165,24 +158,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 페이지 로드 시 초기 검사
   validateForm();
-});
-
-console.log("검사 결과:", {
-  name: nameInput.value,
-  nameValid: nameInput.value.trim().length >= 2,
-
-  phone: phoneInput.value,
-  phoneDigits: phoneInput.value.replace(/[^0-9]/g, ""),
-  phoneValid: /^010\d{8}$/.test(phoneInput.value.replace(/[^0-9]/g, "")),
-
-  email: emailInput.value,
-  emailValid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim()),
-
-  type: typeSelect.value,
-  typeValid: typeSelect.value.trim() !== "",
-
-  message: messageInput.value,
-  messageValid: messageInput.value.replace(/\s/g, "").length > 0,
-
-  agreeChecked: agree.checked
 });
