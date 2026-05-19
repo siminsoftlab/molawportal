@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // EmailJS 초기화
   emailjs.init("5YL9lX5-PVDgImnkv");
 
-  // 요소 선택 (validateForm보다 반드시 먼저 선언)
+  // 요소 선택
   const form = document.getElementById("consultForm");
   const submitBtn = document.getElementById("submitBtn");
   const agree = document.getElementById("agree");
@@ -45,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     input.style.border = isValid ? "1px solid #28a745" : "1px solid red";
   }
 
-  // 오류 메시지 표시
   function showError(id, message) {
     document.getElementById(id).textContent = message;
   }
@@ -79,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     validateForm();
   });
 
-  // 전체 유효성 검사
+  // ⭐⭐⭐ validateForm은 반드시 모든 변수 선언 이후에 정의해야 함
   function validateForm() {
     const nameValid = nameInput.value.trim().length >= 2;
     const phoneDigits = phoneInput.value.replace(/[^0-9]/g, "");
