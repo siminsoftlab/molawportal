@@ -39,3 +39,27 @@ form.addEventListener("submit", function (e) {
       alert("전송 중 오류가 발생했습니다. 다시 시도해주세요.");
     });
 });
+
+
+// 모달 요소
+const privacyModal = document.getElementById("privacyModal");
+const openPrivacyModal = document.getElementById("openPrivacyModal");
+const closeModalBtn = document.querySelector(".close-modal");
+
+// 문구 클릭 → 모달 열기
+openPrivacyModal.addEventListener("click", () => {
+  privacyModal.style.display = "block";
+});
+
+// 닫기 버튼 → 모달 닫기
+closeModalBtn.addEventListener("click", () => {
+  privacyModal.style.display = "none";
+});
+
+// 모달 바깥 클릭 → 닫기
+window.addEventListener("click", (e) => {
+  if (e.target === privacyModal) {
+    privacyModal.style.display = "none";
+  }
+});
+
