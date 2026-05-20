@@ -34,7 +34,10 @@ body {
   left: 0;
   width: 100%;
   z-index: 9999;
-  background: #fff;
+  background: #ffffff;
+  padding: 10px 0;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 
   /* 모바일 고정 깨짐 방지 */
   -webkit-transform: translateZ(0);
@@ -42,7 +45,6 @@ body {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-
 
 /* 방문자 div를 시계 바로 아래에 정확히 붙이기 (모바일 포함) */
 .top-info-bar {
