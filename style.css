@@ -27,25 +27,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* 상단 고정 공통 스타일 */
-.fixed-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 9999;
-  background: #ffffff;
-  padding: 10px 0;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-
-  /* 모바일 고정 깨짐 방지 */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
 /* 방문자 div를 시계 바로 아래에 정확히 붙이기 (모바일 포함) */
 .top-info-bar {
   position: fixed;
@@ -1064,4 +1045,23 @@ body.homepage .content {
 #submitBtn.disabled {
   opacity: 0.5;
   pointer-events: none;
+}
+/* ============================
+   모바일에서도 100% 고정되는 헤더
+   ============================ */
+.fixed-top {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+  background: #ffffff;
+  padding: 12px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+  /* 모바일(iOS) 고정 깨짐 방지 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
