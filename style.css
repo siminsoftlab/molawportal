@@ -27,6 +27,19 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* 상단 고정 공통 스타일 */
+.fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: #ffffff;
+  padding: 10px 0;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
 /* 방문자 div를 시계 바로 아래에 정확히 붙이기 (모바일 포함) */
 .top-info-bar {
   position: fixed;
@@ -76,7 +89,7 @@ body.homepage {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding-top: 50px;
+  padding-top: 90px;
 }
 
 body.homepage .page-wrap {
@@ -131,6 +144,7 @@ body.subpage {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-top: 70px;
 }
 
 body.subpage .page-wrap {
