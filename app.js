@@ -498,3 +498,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   sections.forEach((sec) => observer.observe(sec));
 });
+document.addEventListener("DOMContentLoaded", function () {
+  const text = "안녕하세요! 찾으시는 계산기가 있으신가요?";
+  const typingTarget = document.getElementById("typing-text");
+  const bubble = document.querySelector(".calc-greeting-bubble");
+
+  let isTyping = false;
+
+  function startTyping() {
+    if (isTyping) return; // 중복 실행 방지
+    isTyping = true;
+
+    typingTarget.textContent = ""; // 초기화
+    let index = 0;
+
+    function typing() {
+      if (index < text.length) {
+        typingTarget.textContent += text.charAt(index);
+        index++;
+        setTimeout(typing, 60);
+      }
+    }
+    typing();
+  }
+
+  // 스크롤 감지 → 화면에 보이면 타이핑 재생
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isTyping = false; // 재실행 허용
+          startTyping();
+        }
+      });
+    },
+    { threshold: 0.6 } // 60% 보이면 실행
+  );
+
+  observer.observe(bubble);
+});
