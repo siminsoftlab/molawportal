@@ -3,46 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>법원·관공서 서류 발급 대행 – 쏜살민원</title>
-  
-  <meta name="description" content="법원·관공서 서류 발급을 빠르고 정확하게 대행하는 쏜살민원 공식 안내 페이지">
+
+  <!-- ⭐ SEO 최적화 Title -->
+  <title>쏜살민원 · 법원·관공서 서류 발급 대행 서비스 – 딱요만큼변제</title>
+
+  <!-- ⭐ SEO Description -->
+  <meta name="description" content="쏜살민원은 법무법인 영민이 직접 운영하는 공식 민원·서류 발급 대행 서비스입니다. 법원·관공서·금융기관 서류를 빠르고 정확하게 발급·제출합니다.">
+
+  <!-- ⭐ Canonical -->
+  <link rel="canonical" href="https://molawcalculator.com/blog/ssonsalminwon.html">
+
+  <!-- ⭐ 네이버 사이트 인증 -->
+  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
+  <!-- ⭐ 구글 사이트 인증 -->
+  <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="법원·관공서 서류 발급 대행 – 쏜살민원">
+  <meta property="og:title" content="쏜살민원 · 법원·관공서 서류 발급 대행 서비스 – 딱요만큼변제">
   <meta property="og:description" content="법원·관공서 서류 발급을 빠르고 정확하게 대행하는 쏜살민원 공식 안내 페이지">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/blog/ssonsalminwon.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
+  <!-- ⭐ 구조화 데이터 (Service + LegalService) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "쏜살민원",
+    "url": "https://molawcalculator.com/blog/ssonsalminwon.html",
+    "description": "법무법인 영민이 직접 운영하는 법원·관공서·금융기관 서류 발급 대행 서비스",
+    "serviceType": "민원 대행 서비스",
+    "provider": {
+      "@type": "LegalService",
+      "name": "법무법인 영민",
+      "url": "https://molawcalculator.com"
+    },
+    "keywords": "쏜살민원, 민원 대행, 법원 서류 발급, 관공서 서류 발급, 개인회생 서류"
+  }
+  </script>
+
   <link rel="stylesheet" href="../style.css">
   <script src="../app.js" defer></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="/firebase-counter.js"></script>
 </head>
 
 <body class="subpage">
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="/firebase-counter.js"></script>
-
-<header class="fixed-header">
+<header class="fixed-header fixed-top">
   <h1>쏜살민원</h1>
   <a href="../index.html" class="home-btn">홈</a>
 </header>
 
-<!-- ⭐ page-wrap 추가 (겹침 해결) -->
 <div class="page-wrap">
-
 <main>
 
+  <!-- ⭐ SEO 강화 H2 -->
   <section class="section-animate">
     <div class="inner">
       <h2>쏜살민원이란?</h2>
       <p>
-        쏜살민원은 <strong>법무법인 영민이 직접 운영하는 공식 민원·서류 발급 대행 플랫폼</strong>으로,<br>
-        개인회생·파산·면책 절차에 필요한 <strong>관공서·금융기관·법원 서류를 신속하게 발급·제출</strong>해주는 서비스입니다.<br>
-        일반 민원대행 업체와 달리 <strong>법무법인이 직접 위임을 받아 공식적으로 처리</strong>한다는 점이 가장 큰 특징입니다.
+        쏜살민원은 <strong>법무법인 영민이 직접 운영하는 공식 민원·서류 발급 대행 플랫폼</strong>입니다.<br>
+        개인회생·파산·면책 절차에 필요한 <strong>관공서·금융기관·법원 서류를 신속하게 발급·제출</strong>해드립니다.<br>
+        일반 민원대행 업체와 달리 <strong>법무법인이 직접 위임을 받아 공식적으로 처리</strong>하는 것이 가장 큰 차별점입니다.
       </p>
     </div>
   </section>
@@ -51,18 +79,9 @@
     <div class="inner">
       <h2>주요 서비스</h2>
       <ul>
-        <li>
-          <strong>관공서·금융기관·법원 민원업무 대행</strong><br>
-          소득·재산 증명, 가족관계 서류, 법원 제출 문서 발급 및 접수까지 법무법인 명의로 진행  
-        </li>
-        <li>
-          <strong>개인회생·파산·면책 관련 서류 처리</strong><br>
-          회생·파산 신청 준비 서류 발급, 면책 후 압류 취소 절차까지 지원  
-        </li>
-        <li>
-          <strong>맞춤형 민원 플랜 제공</strong><br>
-          베이직·스탠다드·프리미엄·압류취소 등 패키지 플랜과 단독 플랜 제공  
-        </li>
+        <li><strong>관공서·금융기관·법원 민원업무 대행</strong><br> 소득·재산 증명, 가족관계 서류, 법원 제출 문서 발급 및 접수</li>
+        <li><strong>개인회생·파산·면책 관련 서류 처리</strong><br> 회생·파산 신청 준비 서류 발급부터 면책 후 압류 취소 절차까지 지원</li>
+        <li><strong>맞춤형 민원 플랜 제공</strong><br> 베이직·스탠다드·프리미엄·압류취소 등 다양한 패키지 제공</li>
       </ul>
     </div>
   </section>
@@ -71,7 +90,7 @@
     <div class="inner">
       <h2>신청 비용</h2>
       <p>
-        쏜살민원은 신청비 <strong>9,900원</strong>으로 복잡한 법원·세무서·금융기관등 서류 발급 대행 서비스를 이용할 수 있습니다.
+        쏜살민원은 신청비 <strong>9,900원</strong>으로 복잡한 법원·세무서·금융기관 서류 발급 대행 서비스를 이용할 수 있습니다.
       </p>
     </div>
   </section>
@@ -100,9 +119,17 @@
     </div>
   </section>
 
-</main>
+  <!-- ⭐ SEO 자동 설명문 -->
+  <section class="section-animate">
+    <div class="inner seo-box-animated">
+      <p>쏜살민원은 법원·관공서·금융기관 서류를 빠르고 정확하게 발급받을 수 있는 공식 민원 대행 서비스입니다.</p>
+      <p>개인회생·파산·면책 절차에 필요한 서류를 법무법인이 직접 처리하여 신뢰성과 정확성을 보장합니다.</p>
+      <p>쏜살민원 검색 시 가장 많이 이용되는 민원 대행 서비스입니다.</p>
+    </div>
+  </section>
 
-</div> <!-- page-wrap 끝 -->
+</main>
+</div>
 
 <footer class="site-footer">
   <div class="footer-inner">
