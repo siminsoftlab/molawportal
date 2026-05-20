@@ -3,17 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>개인회생 변제금 계산기 – 딱요만큼변제</title>
 
-  <meta name="description" content="개인회생 변제금 계산을 정확히 제공하는 무료 변제금 계산기 서비스">
+  <!-- ⭐ SEO 최적화 Title -->
+  <title>변제금계산기 · 개인회생 변제금 계산기 – 딱요만큼변제</title>
+
+  <!-- ⭐ SEO Description -->
+  <meta name="description" content="변제금계산기 전문 서비스. 개인회생 변제금 계산을 정확하고 빠르게 제공합니다. 월 소득·생계비·청산가치 기반 자동 계산. 무료 개인회생 변제금 계산기.">
+
+  <!-- ⭐ Canonical -->
+  <link rel="canonical" href="https://molawcalculator.com/calculators/repay.html">
+
+  <!-- ⭐ 네이버 사이트 인증 (서치어드바이저 코드 입력) -->
+  <meta name="naver-site-verification" content="여기에_네이버_인증코드_입력">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="개인회생 변제금 계산기 – 딱요만큼변제">
-  <meta property="og:description" content="개인회생 변제금 계산을 정확히 제공하는 무료 변제금 계산기 서비스">
+  <meta property="og:title" content="변제금계산기 · 개인회생 변제금 계산기 – 딱요만큼변제">
+  <meta property="og:description" content="개인회생 변제금 계산을 정확하게 제공하는 무료 변제금 계산기 서비스">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/calculators/repay.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
+
+  <!-- ⭐ 구조화 데이터 (네이버/구글 모두 최적화) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "개인회생 변제금 계산기",
+    "url": "https://molawcalculator.com/calculators/repay.html",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "All",
+    "description": "개인회생 변제금 계산을 정확하게 제공하는 무료 변제금 계산기 서비스",
+    "keywords": "변제금계산기, 개인회생 변제금 계산기, 개인회생 계산기, 변제금 계산",
+    "provider": {
+      "@type": "LegalService",
+      "name": "법무법인 영민",
+      "url": "https://molawcalculator.com"
+    }
+  }
+  </script>
 
   <link rel="stylesheet" href="../style.css">
   <script src="../app.js" defer></script>
@@ -28,8 +56,10 @@
   </header>
 
   <div class="page-wrap">
-
     <div class="container">
+
+      <!-- ⭐ SEO 강화 H2 -->
+      <h2>변제금계산기 — 개인회생 변제금 계산 방법</h2>
 
       <label>월 소득(원)</label>
       <input id="income" type="number">
@@ -53,22 +83,27 @@
       <input id="asset" type="number">
       <p class="notice">※ 청산가치 = 보유재산 가치</p>
 
-     <div class="btn-row">
+      <div class="btn-row">
         <button onclick="calcRepay()">계산하기</button>
         <button onclick="resetRepayInputs()">초기화</button>
       </div>
 
-      <!-- ⭐ 총 변제금 요약 카드 -->
-     <div id="repaySummary" class="summary-card" style="display:none;"></div>
+      <!-- 총 변제금 요약 -->
+      <div id="repaySummary" class="summary-card" style="display:none;"></div>
 
-      <!-- ⭐ 상세 계산 아코디언 -->
+      <!-- 상세 계산 -->
       <div class="accordion">
-      <button class="repay-accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
-      <div id="repayAccordion" class="accordion-content"></div>
-    </div>
+        <button class="repay-accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
+        <div id="repayAccordion" class="accordion-content"></div>
+      </div>
 
-      <!-- ⭐ 자동 설명문 -->
-      <div id="repaySEO" class="seo-box-animated"></div>
+      <!-- ⭐ SEO 자동 설명문 -->
+      <div id="repaySEO" class="seo-box-animated">
+        <p>이 변제금계산기는 개인회생 절차에서 필요한 변제금 산정 기준을 기반으로 월 소득, 생계비, 청산가치를 자동 계산합니다.</p>
+        <p>개인회생 변제금 계산은 복잡하지만, 본 개인회생 변제금 계산기를 이용하면 누구나 쉽게 변제금 결과를 확인할 수 있습니다.</p>
+        <p>변제금계산기 검색 시 가장 많이 사용되는 무료 계산 서비스입니다.</p>
+      </div>
+
     </div>
   </div>
 
