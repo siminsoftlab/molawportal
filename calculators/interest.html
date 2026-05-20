@@ -3,18 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>연이자 계산기·총이자 계산 – 딱요만큼변제</title>
 
-  <meta name="description" content="연이자·총이자 계산을 빠르고 정확하게 제공하는 무료 이자 계산기">
+  <!-- ⭐ SEO 최적화 Title -->
+  <title>연이자 계산기 · 총이자 계산기 – 딱요만큼변제</title>
+
+  <!-- ⭐ SEO Description -->
+  <meta name="description" content="연이자 계산기, 총이자 계산기를 통해 원금·이자율·기간을 입력하면 자동으로 이자를 계산합니다. 무료 이자 계산기 서비스.">
+
+  <!-- ⭐ Canonical -->
+  <link rel="canonical" href="https://molawcalculator.com/calculators/interest.html">
+
+  <!-- ⭐ 네이버 사이트 인증 -->
+  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
+  <!-- ⭐ 구글 사이트 인증 -->
+  <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="연이자 계산기·총이자 계산 – 딱요만큼변제">
+  <meta property="og:title" content="연이자 계산기 · 총이자 계산기 – 딱요만큼변제">
   <meta property="og:description" content="연이자·총이자 계산을 빠르고 정확하게 제공하는 무료 이자 계산기">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/calculators/interest.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
+  <!-- ⭐ 구조화 데이터 (WebApplication + LegalService) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "연이자 계산기",
+    "url": "https://molawcalculator.com/calculators/interest.html",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "All",
+    "description": "연이자·총이자 계산을 빠르고 정확하게 제공하는 무료 이자 계산기",
+    "keywords": "연이자 계산기, 총이자 계산기, 이자 계산기, 연이자 계산, 이자 계산",
+    "provider": {
+      "@type": "LegalService",
+      "name": "법무법인 영민",
+      "url": "https://molawcalculator.com"
+    }
+  }
+  </script>
 
   <link rel="stylesheet" href="../style.css">
   <script src="../app.js" defer></script>
@@ -28,15 +57,16 @@
 <body class="subpage">
 
   <!-- 상단 고정 헤더 -->
-  <header class="fixed-header">
+  <header class="fixed-header fixed-top">
     <h1>연이자 계산기</h1>
     <a href="../index.html" class="home-btn">홈</a>
   </header>
 
-  <!-- ⭐ 페이지 전체를 아래로 밀어주는 wrapper -->
   <div class="page-wrap">
-
     <div class="container">
+
+      <!-- ⭐ SEO 강화 H2 -->
+      <h2>연이자 계산기 · 총이자 계산 방법</h2>
 
       <label>원금(원)</label>
       <input id="principal" type="number" value="">
@@ -52,21 +82,24 @@
         <button onclick="resetInterestInputs()">초기화</button>
       </div>
 
-      <!-- ⭐ 총 상환액 강조 카드 -->
+      <!-- 총 이자 요약 -->
       <div id="interestSummary" class="summary-card"></div>
 
-      <!-- ⭐ 아코디언(계산 상세 결과) -->
+      <!-- 상세 계산 -->
       <div class="accordion">
         <button class="interest-accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
         <div id="interestAccordion" class="accordion-content"></div>
       </div>
 
-      <!-- ⭐ 자동 설명문 (애니메이션 등장) -->
-      <div id="interestSEO" class="seo-box-animated"></div>
+      <!-- ⭐ SEO 자동 설명문 -->
+      <div id="interestSEO" class="seo-box-animated">
+        <p>연이자 계산기는 원금, 연 이자율, 기간(일수)을 입력하면 자동으로 총이자와 총 상환액을 계산해주는 무료 이자 계산 서비스입니다.</p>
+        <p>총이자 계산기 기능을 통해 대출 이자, 연체 이자, 투자 수익 등을 쉽게 계산할 수 있습니다.</p>
+        <p>연이자 계산기 검색 시 가장 많이 사용되는 무료 계산 서비스입니다.</p>
+      </div>
 
     </div>
-
-  </div> <!-- page-wrap 끝 -->
+  </div>
 
   <!-- footer -->
   <footer class="site-footer">
