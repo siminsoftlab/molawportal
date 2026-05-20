@@ -1055,7 +1055,7 @@ body.homepage .content {
   left: 0;
   width: 100%;
   z-index: 99999;
-  background: #ffffff;
+  background: #000000;
   padding: 12px 0;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 
