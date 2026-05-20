@@ -1093,3 +1093,63 @@ body.subpage .top-info-bar {
     transform: translateY(0);
   }
 }
+/* 💬 말풍선 스타일 */
+.calc-greeting-bubble {
+  display: inline-block;
+  background: #ffffff;
+  border: 2px solid #4a90e2;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 auto 20px auto;
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  animation: bubbleFade 1s ease-out forwards;
+}
+
+/* 말풍선 꼬리 */
+.calc-greeting-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 12px 10px 0 10px;
+  border-style: solid;
+  border-color: #4a90e2 transparent transparent transparent;
+}
+
+/* 말풍선 등장 애니메이션 */
+@keyframes bubbleFade {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ✨ 타이핑 효과 */
+#typing-text {
+  border-right: 2px solid #4a90e2;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  animation: caretBlink 0.7s infinite;
+}
+
+@keyframes caretBlink {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: #4a90e2; }
+}
+
+/* 📱 모바일 전용 크기 조정 */
+@media (max-width: 480px) {
+  .calc-greeting-bubble {
+    font-size: 16px;
+    padding: 10px 14px;
+    border-radius: 14px;
+  }
+  #typing-text {
+    font-size: 16px;
+  }
+}
