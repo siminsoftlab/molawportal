@@ -1065,3 +1065,8 @@ body.homepage .content {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
+/* 서브페이지에서는 시계/방문자바 제거 */
+body.subpage #live-clock,
+body.subpage .top-info-bar {
+  display: none !important;
+}
