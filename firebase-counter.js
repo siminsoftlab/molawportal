@@ -1,7 +1,6 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — 최종 안정화 통합본
+   🔥 Firebase 방문자 카운터 — 캐시 비활성화 + 날짜 오류 완전 해결 버전
    ============================================================ */
-firebase.firestore().settings({ cacheSizeBytes: 0 });
 
 // SHA-256 해시 생성
 async function sha256(text) {
@@ -45,6 +44,10 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
+// 🔥🔥🔥 캐시 완전 비활성화 (가장 중요한 부분)
+firebase.firestore().settings({ cacheSizeBytes: 0 });
+
 const db = firebase.firestore();
 
 /* ============================================================
