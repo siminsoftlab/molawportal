@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — 완전 재작성 안정화 버전
+   🔥 Firebase 방문자 카운터 — 최종 안정화 통합본
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -47,30 +47,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* ============================================================
-   🔥 counter 문서 자동 복구 (date는 절대 today로 덮어쓰지 않음)
-   ============================================================ */
-async function restoreCounter(counterRef) {
-  const snap = await counterRef.get();
-
-  if (!snap.exists) {
-    const init = { today: 0, total: 0, date: null };
-    await counterRef.set(init);
-    return init;
-  }
-
-  const data = snap.data();
-
-  const fixed = {
-    today: Number.isInteger(data.today) ? data.today : 0,
-    total: Number.isInteger(data.total) ? data.total : 0,
-    date: typeof data.date === "string" ? data.date : null
-  };
-
-  await counterRef.set(fixed, { merge: true });
-  return fixed;
-}
-
-/* ============================================================
    🔥 방문자 증가 + 날짜 자동 초기화 (트랜잭션 기반)
    ============================================================ */
 async function updateVisitorCount() {
@@ -107,11 +83,15 @@ async function updateVisitorCount() {
 
       // 2) 모든 쓰기
       tx.set(dailyRef, daily, { merge: true });
-      tx.set(counterRef, {
-        today: counter.today + 1,
-        total: counter.total + 1,
-        date: today
-      }, { merge: true });
+      tx.set(
+        counterRef,
+        {
+          today: counter.today + 1,
+          total: counter.total + 1,
+          date: today
+        },
+        { merge: true }
+      );
     });
   } catch (e) {
     console.error("🔥 updateVisitorCount 오류:", e);
