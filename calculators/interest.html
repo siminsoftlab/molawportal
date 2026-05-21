@@ -72,6 +72,36 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="/firebase-counter.js"></script>
   <script src="/date-calc.js" defer></script>
+
+  <!-- 아코디언 스타일 -->
+  <style>
+    .accordion-box {
+      margin-top: 25px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .accordion-toggle {
+      width: 100%;
+      text-align: left;
+      padding: 15px;
+      font-size: 1rem;
+      background: #f7f7f7;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .accordion-toggle:hover {
+      background: #ececec;
+    }
+    .accordion-content {
+      padding: 20px;
+      line-height: 1.6;
+      display: none;
+    }
+  </style>
+
 </head>
 
 <body class="subpage">
@@ -114,51 +144,54 @@
         <button class="interest-accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
         <div id="interestAccordion" class="accordion-content"></div>
       </div>
+
+      <!-- ⭐ 독립 아코디언 div: SEO 설명 -->
+      <div class="accordion-box">
+        <button class="accordion-toggle" onclick="toggleAccordionSection('seoAccordion')">
+          📌 연이자 계산기 사용 방법 보기 ▼
+        </button>
+
+        <div id="seoAccordion" class="accordion-content">
+          <h2>연이자 계산기 사용 방법</h2>
+          <p>연이자 계산기는 원금, 연 이자율, 기간(일수 또는 날짜)을 입력하면 총이자와 상환액을 자동 계산해주는 무료 서비스입니다.</p>
+          <p>대출이자, 연체이자, 투자 수익 등 다양한 상황에서 이자 부담을 미리 확인할 수 있습니다.</p>
+
+          <h3>1. 원금 입력</h3>
+          <p>대출받은 금액 또는 투자한 금액을 원 단위로 입력합니다.</p>
+
+          <h3>2. 연 이자율 입력</h3>
+          <p>연 이자율(%)을 입력합니다. 예: 연 15% → 15 입력</p>
+
+          <h3>3. 기간 설정</h3>
+          <p>시작일과 종료일을 선택하면 일수가 자동 계산되며, 직접 입력도 가능합니다.</p>
+
+          <h3>4. 총이자·총 상환액 확인</h3>
+          <p>계산하기 버튼을 누르면 총이자, 총 상환액, 일할 계산 과정이 상세히 표시됩니다.</p>
+        </div>
+      </div>
+
+      <!-- ⭐ 독립 아코디언 div: FAQ -->
+      <div class="accordion-box">
+        <button class="accordion-toggle" onclick="toggleAccordionSection('faqAccordion')">
+          ❓ 자주 묻는 질문(FAQ) 보기 ▼
+        </button>
+
+        <div id="faqAccordion" class="accordion-content">
+          <h2>연이자 계산기 자주 묻는 질문</h2>
+
+          <h3>Q. 대출이자 계산도 가능한가요?</h3>
+          <p>A. 네. 원금·이자율·기간을 입력하면 대출이자도 자동 계산됩니다.</p>
+
+          <h3>Q. 연체 이자 계산은 어떻게 하나요?</h3>
+          <p>A. 연체 기간과 연체 이자율을 입력하면 연체 이자도 일할 계산됩니다.</p>
+
+          <h3>Q. 법률 상담이 필요한 경우는?</h3>
+          <p>A. 과도한 이자나 불법 사채가 의심될 경우 하단 연락처로 무료 상담이 가능합니다.</p>
+        </div>
+      </div>
+
     </div>
   </div>
-  <!-- SEO 설명 아코디언 -->
-  <div class="accordion-box">
-  <button class="accordion-toggle" onclick="toggleAccordionSection('seoAccordion')">
-    📌 연이자 계산기 사용 방법 보기 ▼
-  </button>
-
-  <div id="seoAccordion" class="accordion-content" style="display:none;">
-    <h2>연이자 계산기 사용 방법</h2>
-    <p>연이자 계산기는 원금, 연 이자율, 기간(일수 또는 날짜)을 입력하면 총이자와 상환액을 자동 계산해주는 무료 서비스입니다.</p>
-    <p>대출이자, 연체이자, 투자 수익 등 다양한 상황에서 이자 부담을 미리 확인할 수 있습니다.</p>
-
-    <h3>1. 원금 입력</h3>
-    <p>대출받은 금액 또는 투자한 금액을 원 단위로 입력합니다.</p>
-
-    <h3>2. 연 이자율 입력</h3>
-    <p>연 이자율(%)을 입력합니다. 예: 연 15% → 15 입력</p>
-
-    <h3>3. 기간 설정</h3>
-    <p>시작일과 종료일을 선택하면 일수가 자동 계산되며, 직접 입력도 가능합니다.</p>
-
-    <h3>4. 총이자·총 상환액 확인</h3>
-    <p>계산하기 버튼을 누르면 총이자, 총 상환액, 일할 계산 과정이 상세히 표시됩니다.</p>
-  </div>
-</div>
-<!-- FAQ 아코디언 -->
-<div class="accordion-box">
-  <button class="accordion-toggle" onclick="toggleAccordionSection('faqAccordion')">
-    ❓ 자주 묻는 질문(FAQ) 보기 ▼
-  </button>
-
-  <div id="faqAccordion" class="accordion-content" style="display:none;">
-    <h2>연이자 계산기 자주 묻는 질문</h2>
-
-    <h3>Q. 대출이자 계산도 가능한가요?</h3>
-    <p>A. 네. 원금·이자율·기간을 입력하면 대출이자도 자동 계산됩니다.</p>
-
-    <h3>Q. 연체 이자 계산은 어떻게 하나요?</h3>
-    <p>A. 연체 기간과 연체 이자율을 입력하면 연체 이자도 일할 계산됩니다.</p>
-
-    <h3>Q. 법률 상담이 필요한 경우는?</h3>
-    <p>A. 과도한 이자나 불법 사채가 의심될 경우 하단 연락처로 무료 상담이 가능합니다.</p>
-  </div>
-</div>  
 
   <footer class="site-footer">
     <div class="footer-inner">
@@ -184,6 +217,15 @@
      class="quick-kakao" target="_blank" rel="noopener noreferrer">
     💬 카톡 상담
   </a>
+
+  <!-- 아코디언 스크립트 -->
+  <script>
+    function toggleAccordionSection(id) {
+      const box = document.getElementById(id);
+      const isOpen = box.style.display === "block";
+      box.style.display = isOpen ? "none" : "block";
+    }
+  </script>
 
 </body>
 </html>
