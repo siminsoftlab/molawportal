@@ -86,42 +86,37 @@ async function updateVisitorCount() {
       const counterSnap = await tx.get(counterRef);
       const dailySnap = await tx.get(dailyRef);
 
-      // counter 초기값 설정
+      // counter 초기값 설정 (문서가 없으면 생성하지 않음)
       let counter = counterSnap.exists
         ? counterSnap.data()
-        : { today: 0, total: 0, date: null };
+        : null;
 
       // daily 초기값 설정
       let daily = dailySnap.exists ? dailySnap.data() : {};
 
       // 날짜 변경 시 초기화
-      if (counter.date !== today) {
-        counter.today = 0;
-        counter.date = today;
+      if (!counter || counter.date !== today) {
+        counter = { today: 0, total: counter ? counter.total : 0, date: today };
       }
 
       // 중복 방문자 체크
       if (daily[visitorKey]) return;
 
-      // 2) 모든 쓰기 (읽기 이후에만)
+      // daily 기록
       daily[visitorKey] = true;
 
+      // 2) 모든 쓰기
       tx.set(dailyRef, daily, { merge: true });
-      tx.set(
-        counterRef,
-        {
-          today: counter.today + 1,
-          total: counter.total + 1,
-          date: today
-        },
-        { merge: true }
-      );
+      tx.set(counterRef, {
+        today: counter.today + 1,
+        total: counter.total + 1,
+        date: today
+      }, { merge: true });
     });
   } catch (e) {
     console.error("🔥 updateVisitorCount 오류:", e);
   }
 }
-
 
 /* ============================================================
    🔥 실시간 반영
