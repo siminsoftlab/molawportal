@@ -537,3 +537,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   observer.observe(bubble);
 });
+
+function toggleAccordionSection(id) {
+  const box = document.getElementById(id);
+  const isOpen = box.style.display === "block";
+  box.style.display = isOpen ? "none" : "block";
+}
