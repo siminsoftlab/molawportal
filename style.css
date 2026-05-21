@@ -1159,4 +1159,21 @@ body.subpage .top-info-bar {
   margin-top: -8px;
   margin-bottom: 12px;
 }
+/* ============================
+   계산기 박스 — PC 4열
+============================ */
+body.homepage .calc-box {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* PC: 4개 한 줄 */
+  gap: 16px;
+}
 
+/* ============================
+   모바일 — 2열
+============================ */
+@media (max-width: 480px) {
+  body.homepage .calc-box {
+    grid-template-columns: repeat(2, 1fr); /* 모바일: 2열 */
+    gap: 14px;
+  }
+}
