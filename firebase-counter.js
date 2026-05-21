@@ -82,38 +82,31 @@ async function updateVisitorCount() {
 
   try {
     await db.runTransaction(async (tx) => {
-      // counter 복구
-      let counterSnap = await tx.get(counterRef);
-      let counter = counterSnap.exists ? counterSnap.data() : null;
+      // 1) 모든 읽기 먼저
+      const counterSnap = await tx.get(counterRef);
+      const dailySnap = await tx.get(dailyRef);
 
-      if (!counter) {
-        counter = { today: 0, total: 0, date: today };
-        tx.set(counterRef, counter);
-      } else {
-        counter.today = Number.isInteger(counter.today) ? counter.today : 0;
-        counter.total = Number.isInteger(counter.total) ? counter.total : 0;
-        counter.date = typeof counter.date === "string" ? counter.date : null;
-      }
+      // counter 초기값 설정
+      let counter = counterSnap.exists
+        ? counterSnap.data()
+        : { today: 0, total: 0, date: null };
+
+      // daily 초기값 설정
+      let daily = dailySnap.exists ? dailySnap.data() : {};
 
       // 날짜 변경 시 초기화
       if (counter.date !== today) {
         counter.today = 0;
         counter.date = today;
-        tx.set(counterRef, { today: 0, date: today }, { merge: true });
       }
-
-      // daily 문서 가져오기
-      let dailySnap = await tx.get(dailyRef);
-      let daily = dailySnap.exists ? dailySnap.data() : {};
 
       // 중복 방문자 체크
       if (daily[visitorKey]) return;
 
-      // daily에 방문자 기록
+      // 2) 모든 쓰기 (읽기 이후에만)
       daily[visitorKey] = true;
-      tx.set(dailyRef, daily, { merge: true });
 
-      // counter 증가
+      tx.set(dailyRef, daily, { merge: true });
       tx.set(
         counterRef,
         {
@@ -128,6 +121,7 @@ async function updateVisitorCount() {
     console.error("🔥 updateVisitorCount 오류:", e);
   }
 }
+
 
 /* ============================================================
    🔥 실시간 반영
