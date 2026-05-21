@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — 캐시 비활성화 + 날짜 오류 완전 해결 버전
+   🔥 Firebase 방문자 카운터 — 캐시 문제 해결 + 날짜 오류 완전 해결 버전
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -45,8 +45,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// 🔥🔥🔥 캐시 완전 비활성화 (가장 중요한 부분)
-firebase.firestore().settings({ cacheSizeBytes: 0 });
+// 🔥 캐시 최소값 + 오프라인 저장 비활성화
+firebase.firestore().settings({ cacheSizeBytes: 1048576 });
+firebase.firestore().clearPersistence().catch(() => {});
 
 const db = firebase.firestore();
 
