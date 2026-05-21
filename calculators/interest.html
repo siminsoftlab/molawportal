@@ -4,23 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>연이자 계산기 · 대출이자 계산기 · 총이자 자동 계산 서비스</title>
+  <!-- ⭐ SEO 최적화 Title -->
+  <title>연이자 계산기·대출이자 계산기·이자 계산 자동 서비스</title>
 
-  <meta name="description" content="연이자 계산기, 대출이자 계산기, 연체이자 계산기 등 원금·이자율·기간으로 총이자와 상환액을 자동 계산하는 무료 서비스입니다.">
+  <!-- ⭐ SEO Description -->
+  <meta name="description" content="연이자 계산기, 대출이자 계산기, 이자 계산기 등 원금·이자율·기간으로 총이자와 상환액을 자동 계산하는 무료 서비스">
 
+  <!-- ⭐ Canonical -->
   <link rel="canonical" href="https://molawcalculator.com/calculators/interest.html">
 
+  <!-- ⭐ 네이버 사이트 인증 -->
   <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
+  <!-- ⭐ 구글 사이트 인증 -->
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
 
-  <meta property="og:title" content="연이자 계산기 · 대출이자 계산기 · 총이자 자동 계산">
-  <meta property="og:description" content="원금·이자율·기간으로 총이자와 상환액을 자동 계산하는 무료 연이자 계산 서비스">
+  <!-- Open Graph -->
+  <meta property="og:title" content="연이자 계산기·대출이자 계산기·이자 계산 자동 서비스">
+  <meta property="og:description" content="연이자 계산기, 대출이자 계산기, 이자 계산기 등 원금·이자율·기간으로 총이자와 상환액을 자동 계산하는 무료 서비스">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/calculators/interest.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- WebApplication Schema -->
+  <!-- ⭐ 구조화 데이터 (WebApplication + LegalService) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -29,8 +35,8 @@
     "url": "https://molawcalculator.com/calculators/interest.html",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "All",
-    "description": "연이자 계산기, 대출이자 계산기, 연체이자 계산기 등 원금·이자율·기간으로 총이자와 상환액을 자동 계산하는 무료 서비스",
-    "keywords": "연이자 계산기, 대출이자 계산기, 이자 계산기, 연체이자 계산기, 총이자 계산기",
+    "description": "연이자 계산기, 대출이자 계산기, 이자 계산기 등 원금·이자율·기간으로 총이자와 상환액을 자동 계산하는 무료 서비스",
+    "keywords": "연이자 계산기, 대출이자 계산기, 이자 계산기, 이자계산기, 총이자 계산기, 대출 이자",
     "provider": {
       "@type": "LegalService",
       "name": "법무법인 영민",
@@ -39,87 +45,19 @@
   }
   </script>
 
-  <!-- FAQ Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "연이자 계산은 어떻게 하나요?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "원금, 연 이자율, 기간(일수 또는 날짜)을 입력하면 총이자와 상환액이 자동 계산됩니다."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "대출이자와 연체이자도 계산할 수 있나요?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "네. 대출이자, 연체이자, 투자 수익 등 다양한 이자 계산을 모두 지원합니다."
-        }
-      }
-    ]
-  }
-  </script>
-
   <link rel="stylesheet" href="../style.css">
   <script src="../app.js" defer></script>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="/firebase-counter.js"></script>
   <script src="/date-calc.js" defer></script>
-
-  <!-- 아코디언 스타일 -->
-  <style>
-    .accordion-box {
-      margin-top: 25px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    .accordion-toggle {
-      width: 100%;
-      text-align: left;
-      padding: 15px;
-      font-size: 1rem;
-      background: #f7f7f7;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .accordion-toggle:hover {
-      background: #ececec;
-    }
-
-    .accordion-icon {
-      transition: transform 0.25s ease;
-    }
-
-    .accordion-icon.rotate {
-      transform: rotate(180deg);
-    }
-
-    .accordion-content {
-      padding: 20px;
-      line-height: 1.6;
-      display: none;
-    }
-  </style>
-
 </head>
 
 <body class="subpage">
 
+  <!-- 상단 고정 헤더 -->
   <header class="fixed-header fixed-top">
     <h1>연이자 계산기</h1>
     <a href="../index.html" class="home-btn">홈</a>
@@ -128,87 +66,50 @@
   <div class="page-wrap">
     <div class="container">
 
-      <h2>연이자 계산기 · 대출이자 · 연체이자 · 총이자 계산 방법</h2>
-      <h3>원금·이자율·기간으로 자동 계산되는 무료 이자 계산 서비스</h3>
+      <!-- ⭐ SEO 강화 H2 -->
+      <h2>연이자 계산기 · 총이자 계산 방법</h2>
 
       <label>원금(원)</label>
-      <input id="principal" type="number">
+      <input id="principal" type="number" value="">
 
       <label>연 이자율(%)</label>
       <input id="rate" type="number" value="20">
 
       <label>시작일 (From)</label>
       <input id="fromDate" type="date">
-
+      
       <label>종료일 (To)</label>
       <input id="toDate" type="date">
 
       <label>기간(일수)</label>
-      <input id="days" type="number">
-      <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
+      <input id="days" type="number" value="">
+      <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동으로 계산됩니다.</p>
 
       <div class="btn-row">
         <button onclick="calcInterest()">계산하기</button>
         <button onclick="resetInterestInputs()">초기화</button>
       </div>
 
+      <!-- 총 이자 요약 -->
       <div id="interestSummary" class="summary-card"></div>
 
+      <!-- 상세 계산 -->
       <div class="accordion">
         <button class="interest-accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
         <div id="interestAccordion" class="accordion-content"></div>
       </div>
 
-      <!-- ⭐ 독립 아코디언 div: SEO 설명 -->
-      <div class="accordion-box">
-        <button class="accordion-toggle" onclick="toggleAccordionSection('seoAccordion', this)">
-          <span>📌 연이자 계산기 사용 방법 보기</span>
-          <span class="accordion-icon">▼</span>
-        </button>
-
-        <div id="seoAccordion" class="accordion-content">
-          <h2>연이자 계산기 사용 방법</h2>
-          <p>연이자 계산기는 원금, 연 이자율, 기간(일수 또는 날짜)을 입력하면 총이자와 상환액을 자동 계산해주는 무료 서비스입니다.</p>
-          <p>대출이자, 연체이자, 투자 수익 등 다양한 상황에서 이자 부담을 미리 확인할 수 있습니다.</p>
-
-          <h3>1. 원금 입력</h3>
-          <p>대출받은 금액 또는 투자한 금액을 원 단위로 입력합니다.</p>
-
-          <h3>2. 연 이자율 입력</h3>
-          <p>연 이자율(%)을 입력합니다. 예: 연 15% → 15 입력</p>
-
-          <h3>3. 기간 설정</h3>
-          <p>시작일과 종료일을 선택하면 일수가 자동 계산되며, 직접 입력도 가능합니다.</p>
-
-          <h3>4. 총이자·총 상환액 확인</h3>
-          <p>계산하기 버튼을 누르면 총이자, 총 상환액, 일할 계산 과정이 상세히 표시됩니다.</p>
-        </div>
-      </div>
-
-      <!-- ⭐ 독립 아코디언 div: FAQ -->
-      <div class="accordion-box">
-        <button class="accordion-toggle" onclick="toggleAccordionSection('faqAccordion', this)">
-          <span>❓ 자주 묻는 질문(FAQ) 보기</span>
-          <span class="accordion-icon">▼</span>
-        </button>
-
-        <div id="faqAccordion" class="accordion-content">
-          <h2>연이자 계산기 자주 묻는 질문</h2>
-
-          <h3>Q. 대출이자 계산도 가능한가요?</h3>
-          <p>A. 네. 원금·이자율·기간을 입력하면 대출이자도 자동 계산됩니다.</p>
-
-          <h3>Q. 연체 이자 계산은 어떻게 하나요?</h3>
-          <p>A. 연체 기간과 연체 이자율을 입력하면 연체 이자도 일할 계산됩니다.</p>
-
-          <h3>Q. 법률 상담이 필요한 경우는?</h3>
-          <p>A. 과도한 이자나 불법 사채가 의심될 경우 하단 연락처로 무료 상담이 가능합니다.</p>
-        </div>
+      <!-- ⭐ SEO 자동 설명문 -->
+      <div id="interestSEO" class="seo-box-animated">
+        <p>연이자 계산기는 원금, 연 이자율, 기간(일수)을 입력하면 자동으로 총이자와 총 상환액을 계산해주는 무료 이자 계산 서비스입니다.</p>
+        <p>총이자 계산기 기능을 통해 대출 이자, 연체 이자, 투자 수익 등을 쉽게 계산할 수 있습니다.</p>
+        <p>연이자 계산기 검색 시 가장 많이 사용되는 무료 계산 서비스입니다.</p>
       </div>
 
     </div>
   </div>
 
+  <!-- footer -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-company">딱요만큼변제</div>
@@ -223,33 +124,18 @@
     </div>
   </footer>
 
+  <!-- 하단 고정 상담바 -->
   <div class="call-fixed">
     <a href="tel:025955706" class="consult-call">
       무료 상담 02-595-5706 ← 클릭 시 전화 연결
     </a>
   </div>
 
+  <!-- 카톡 상담 -->
   <a href="http://pf.kakao.com/_wAqxen/chat" 
      class="quick-kakao" target="_blank" rel="noopener noreferrer">
     💬 카톡 상담
   </a>
-
-  <!-- 아코디언 스크립트 -->
-  <script>
-    function toggleAccordionSection(id, btn) {
-      const content = document.getElementById(id);
-      const icon = btn.querySelector(".accordion-icon");
-
-      const isOpen = content.style.display === "block";
-      content.style.display = isOpen ? "none" : "block";
-
-      if (isOpen) {
-        icon.classList.remove("rotate");
-      } else {
-        icon.classList.add("rotate");
-      }
-    }
-  </script>
 
 </body>
 </html>
