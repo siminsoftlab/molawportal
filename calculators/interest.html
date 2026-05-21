@@ -82,6 +82,7 @@
       overflow: hidden;
       background: #fff;
     }
+
     .accordion-toggle {
       width: 100%;
       text-align: left;
@@ -91,10 +92,23 @@
       border: none;
       cursor: pointer;
       font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
     .accordion-toggle:hover {
       background: #ececec;
     }
+
+    .accordion-icon {
+      transition: transform 0.25s ease;
+    }
+
+    .accordion-icon.rotate {
+      transform: rotate(180deg);
+    }
+
     .accordion-content {
       padding: 20px;
       line-height: 1.6;
@@ -147,8 +161,9 @@
 
       <!-- ⭐ 독립 아코디언 div: SEO 설명 -->
       <div class="accordion-box">
-        <button class="accordion-toggle" onclick="toggleAccordionSection('seoAccordion')">
-          📌 연이자 계산기 사용 방법 보기 ▼
+        <button class="accordion-toggle" onclick="toggleAccordionSection('seoAccordion', this)">
+          <span>📌 연이자 계산기 사용 방법 보기</span>
+          <span class="accordion-icon">▼</span>
         </button>
 
         <div id="seoAccordion" class="accordion-content">
@@ -172,8 +187,9 @@
 
       <!-- ⭐ 독립 아코디언 div: FAQ -->
       <div class="accordion-box">
-        <button class="accordion-toggle" onclick="toggleAccordionSection('faqAccordion')">
-          ❓ 자주 묻는 질문(FAQ) 보기 ▼
+        <button class="accordion-toggle" onclick="toggleAccordionSection('faqAccordion', this)">
+          <span>❓ 자주 묻는 질문(FAQ) 보기</span>
+          <span class="accordion-icon">▼</span>
         </button>
 
         <div id="faqAccordion" class="accordion-content">
@@ -220,10 +236,18 @@
 
   <!-- 아코디언 스크립트 -->
   <script>
-    function toggleAccordionSection(id) {
-      const box = document.getElementById(id);
-      const isOpen = box.style.display === "block";
-      box.style.display = isOpen ? "none" : "block";
+    function toggleAccordionSection(id, btn) {
+      const content = document.getElementById(id);
+      const icon = btn.querySelector(".accordion-icon");
+
+      const isOpen = content.style.display === "block";
+      content.style.display = isOpen ? "none" : "block";
+
+      if (isOpen) {
+        icon.classList.remove("rotate");
+      } else {
+        icon.classList.add("rotate");
+      }
     }
   </script>
 
