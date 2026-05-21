@@ -1159,3 +1159,59 @@ body.subpage .top-info-bar {
   margin-top: -8px;
   margin-bottom: 12px;
 }
+/* ============================
+   계산기 박스 번호 스타일 (홈페이지)
+============================ */
+
+/* 번호 초기화 */
+body.homepage .two-box {
+  counter-reset: calcnum;
+}
+
+/* 공통 스타일 */
+body.homepage .two-box > div {
+  position: relative;
+}
+
+/* 번호 기본 스타일 */
+body.homepage .two-box > div::before {
+  counter-increment: calcnum;
+  content: counter(calcnum);
+
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 28px;
+  height: 28px;
+  border-radius: 6px; /* 사각형 */
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 0 6px rgba(0,0,0,0.18);
+}
+
+/* 1번 박스 색상 */
+body.homepage .two-box > div:nth-of-type(1)::before {
+  background: #4a6cf7; /* 파랑 */
+}
+
+/* 2번 박스 색상 */
+body.homepage .two-box > div:nth-of-type(2)::before {
+  background: #2ecc71; /* 초록 */
+}
+
+/* 3번 박스 색상 */
+body.homepage .two-box > div:nth-of-type(3)::before {
+  background: #9b59b6; /* 보라 */
+}
+
+/* 4번 박스 색상 */
+body.homepage .two-box > div:nth-of-type(4)::before {
+  background: #ff7a00; /* 주황 */
+}
