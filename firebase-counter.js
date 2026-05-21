@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — 캐시 문제 해결 + 날짜 오류 완전 해결 버전
+   🔥 Firebase 방문자 카운터 — visitors/daily/날짜 구조 자동 생성 버전
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -52,32 +52,39 @@ firebase.firestore().clearPersistence().catch(() => {});
 const db = firebase.firestore();
 
 /* ============================================================
-   🔥 방문자 증가 + 날짜 자동 초기화 (트랜잭션 기반)
+   🔥 visitors/daily/날짜 구조로 정확히 생성되는 트랜잭션
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = await getVisitorKey();
 
   const counterRef = db.collection("visitors").doc("counter");
-  const dailyRef = db.collection("daily").doc(today);
+
+  // 🔥 daily 컬렉션을 visitors 안에 정확히 생성
+  const dailyRef = db
+    .collection("visitors")
+    .doc("daily")
+    .collection("days")
+    .doc(today);
 
   try {
     await db.runTransaction(async (tx) => {
-      // 1) 모든 읽기 먼저
       const counterSnap = await tx.get(counterRef);
       const dailySnap = await tx.get(dailyRef);
 
-      // counter 초기값 설정 (문서가 없으면 생성하지 않음)
       let counter = counterSnap.exists
         ? counterSnap.data()
         : null;
 
-      // daily 초기값 설정
       let daily = dailySnap.exists ? dailySnap.data() : {};
 
       // 날짜 변경 시 초기화
       if (!counter || counter.date !== today) {
-        counter = { today: 0, total: counter ? counter.total : 0, date: today };
+        counter = {
+          today: 0,
+          total: counter ? counter.total : 0,
+          date: today
+        };
       }
 
       // 중복 방문자 체크
@@ -86,7 +93,7 @@ async function updateVisitorCount() {
       // daily 기록
       daily[visitorKey] = true;
 
-      // 2) 모든 쓰기
+      // 쓰기
       tx.set(dailyRef, daily, { merge: true });
       tx.set(
         counterRef,
