@@ -1160,7 +1160,7 @@ body.subpage .top-info-bar {
   margin-bottom: 12px;
 }
 /* ============================
-   계산기 박스 번호 스타일 (홈페이지)
+   계산기 박스 번호 — 좌측 상단 + 큰 숫자
 ============================ */
 
 /* 번호 초기화 */
@@ -1173,27 +1173,29 @@ body.homepage .two-box > div {
   position: relative;
 }
 
-/* 번호 기본 스타일 */
+/* 번호 스타일 (좌측 상단 + 큰 숫자) */
 body.homepage .two-box > div::before {
   counter-increment: calcnum;
   content: counter(calcnum);
 
   position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: -10px;     /* 좌측 상단 모서리 */
+  left: -10px;
 
-  width: 28px;
-  height: 28px;
-  border-radius: 6px; /* 사각형 */
+  width: 40px;    /* 숫자 박스 크게 */
+  height: 40px;
+  border-radius: 8px; /* 사각형 */
   color: #fff;
+
   display: flex;
   justify-content: center;
   align-items: center;
 
-  font-size: 14px;
-  font-weight: 800;
-  box-shadow: 0 0 6px rgba(0,0,0,0.18);
+  font-size: 22px;   /* 숫자 크게 */
+  font-weight: 900;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 10;
 }
 
 /* 1번 박스 색상 */
@@ -1215,3 +1217,4 @@ body.homepage .two-box > div:nth-of-type(3)::before {
 body.homepage .two-box > div:nth-of-type(4)::before {
   background: #ff7a00; /* 주황 */
 }
+
