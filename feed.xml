@@ -3,18 +3,18 @@
      xmlns:atom="http://www.w3.org/2005/Atom">
 
   <channel>
-    <title>딱요만큼변제 공식 RSS</title>
-    <link>https://molawcalculator.com/</link>
-    <description>개인회생 계산기·법률 서비스 최신 업데이트 RSS</description>
-    <language>ko</language>
-    <atom:link href="https://molawcalculator.com/feed.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Tue, 05 May 2026 23:50:00 +0900</lastBuildDate>
-    <ttl>180</ttl>
-    <managingEditor>info@molawcalculator.com</managingEditor>
-    <webMaster>info@molawcalculator.com</webMaster>
-    <copyright>
-      <![CDATA[Copyright © 2026 딱요만큼변제. All Rights Reserved.]]>
-    </copyright>
+   <title>딱요만큼변제 RSS｜개인회생 변제금·계산기 업데이트</title>
+     <link>https://molawcalculator.com/</link>
+     <description>개인회생 변제금 계산기, 개인회생 변제금계산기, 월 변제금 등 최신 계산기 업데이트 RSS</description>
+     <language>ko</language>
+     <atom:link href="https://molawcalculator.com/feed.xml" rel="self" type="application/rss+xml" />
+     <lastBuildDate>Tue, 05 May 2026 23:50:00 +0900</lastBuildDate>
+     <ttl>180</ttl>
+     <managingEditor>info@molawcalculator.com</managingEditor>
+     <webMaster>info@molawcalculator.com</webMaster>
+     <copyright>
+       <![CDATA[Copyright © 2026 딱요만큼변제. All Rights Reserved.]]>
+     </copyright>
 
     <!-- 쏜살민원 -->
     <item>
@@ -47,14 +47,14 @@
     </item>
 
     <!-- 변제금 계산기 -->
-    <item>
-      <title><![CDATA[개인회생 변제금 계산기]]></title>
-      <link>https://molawcalculator.com/calculators/repay.html</link>
-      <description><![CDATA[월 소득·생계비 기반 개인회생 변제금을 자동 계산하는 무료 서비스]]></description>
-      <category>계산기</category>
-      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
-      <guid>https://molawcalculator.com/calculators/repay.html</guid>
-    </item>
+   <item>
+       <title><![CDATA[개인회생 변제금 계산기]]></title>
+       <link>https://molawcalculator.com/calculators/repay.html</link>
+       <description><![CDATA[개인회생 변제금 계산기, 개인회생 변제금계산기, 월 변제금을 자동 계산하는 무료 개인회생 계산 서비스]]></description>
+       <category>계산기</category>
+       <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
+       <guid>https://molawcalculator.com/calculators/repay.html</guid>
+     </item>
 
     <!-- 법원 생계비 계산기 -->
     <item>
