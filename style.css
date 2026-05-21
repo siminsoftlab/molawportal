@@ -1159,3 +1159,30 @@ body.subpage .top-info-bar {
   margin-top: -8px;
   margin-bottom: 12px;
 }
+.accordion-box {
+  margin-top: 25px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.accordion-toggle {
+  width: 100%;
+  text-align: left;
+  padding: 15px;
+  font-size: 1rem;
+  background: #f7f7f7;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.accordion-toggle:hover {
+  background: #ececec;
+}
+
+.accordion-content {
+  padding: 20px;
+  line-height: 1.6;
+}
