@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 최종 완성본 (안정화 버전)
+   🔥 Firebase 방문자 카운터 — 완전 재작성 안정화 버전
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -47,13 +47,13 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* ============================================================
-   🔥 counter 문서 자동 복구 (NaN/문자열/undefined 방지)
+   🔥 counter 문서 자동 복구 (date는 절대 today로 덮어쓰지 않음)
    ============================================================ */
-async function restoreCounter(counterRef, today) {
+async function restoreCounter(counterRef) {
   const snap = await counterRef.get();
 
   if (!snap.exists) {
-    const init = { today: 0, total: 0, date: today };
+    const init = { today: 0, total: 0, date: null };
     await counterRef.set(init);
     return init;
   }
@@ -61,9 +61,9 @@ async function restoreCounter(counterRef, today) {
   const data = snap.data();
 
   const fixed = {
-    today: typeof data.today === "number" ? data.today : 0,
-    total: typeof data.total === "number" ? data.total : 0,
-    date: typeof data.date === "string" ? data.date : today
+    today: Number.isInteger(data.today) ? data.today : 0,
+    total: Number.isInteger(data.total) ? data.total : 0,
+    date: typeof data.date === "string" ? data.date : null
   };
 
   await counterRef.set(fixed, { merge: true });
@@ -71,59 +71,59 @@ async function restoreCounter(counterRef, today) {
 }
 
 /* ============================================================
-   🔥 daily 문서 자동 생성
-   ============================================================ */
-async function ensureDaily(today) {
-  const dailyRef = db.collection("daily").doc(today);
-  const snap = await dailyRef.get();
-
-  if (!snap.exists) {
-    await dailyRef.set({ init: true });
-    console.log("🔥 daily 문서 자동 생성:", today);
-  }
-
-  return dailyRef;
-}
-
-/* ============================================================
-   🔥 방문자 증가 + 날짜 자동 초기화
+   🔥 방문자 증가 + 날짜 자동 초기화 (트랜잭션 기반)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = await getVisitorKey();
 
   const counterRef = db.collection("visitors").doc("counter");
-  const dailyRef = await ensureDaily(today);
+  const dailyRef = db.collection("daily").doc(today);
 
   try {
-    // 1) counter 자동 복구
-    let counter = await restoreCounter(counterRef, today);
+    await db.runTransaction(async (tx) => {
+      // counter 복구
+      let counterSnap = await tx.get(counterRef);
+      let counter = counterSnap.exists ? counterSnap.data() : null;
 
-    // 2) 날짜 자동 초기화
-    if (counter.date !== today) {
-      counter.today = 0;
-      counter.date = today;
-      await counterRef.update({ today: 0, date: today });
-    }
+      if (!counter) {
+        counter = { today: 0, total: 0, date: today };
+        tx.set(counterRef, counter);
+      } else {
+        counter.today = Number.isInteger(counter.today) ? counter.today : 0;
+        counter.total = Number.isInteger(counter.total) ? counter.total : 0;
+        counter.date = typeof counter.date === "string" ? counter.date : null;
+      }
 
-    // 3) daily 데이터 가져오기
-    const dailySnap = await dailyRef.get();
-    const todayData = dailySnap.exists ? dailySnap.data() : {};
+      // 날짜 변경 시 초기화
+      if (counter.date !== today) {
+        counter.today = 0;
+        counter.date = today;
+        tx.set(counterRef, { today: 0, date: today }, { merge: true });
+      }
 
-    // 4) 중복 방문자 체크
-    if (todayData[visitorKey]) return;
+      // daily 문서 가져오기
+      let dailySnap = await tx.get(dailyRef);
+      let daily = dailySnap.exists ? dailySnap.data() : {};
 
-    // 5) daily에 방문자 기록
-    todayData[visitorKey] = true;
-    await dailyRef.set(todayData, { merge: true });
+      // 중복 방문자 체크
+      if (daily[visitorKey]) return;
 
-    // 6) counter 증가
-    await counterRef.update({
-      today: counter.today + 1,
-      total: counter.total + 1,
-      date: today
+      // daily에 방문자 기록
+      daily[visitorKey] = true;
+      tx.set(dailyRef, daily, { merge: true });
+
+      // counter 증가
+      tx.set(
+        counterRef,
+        {
+          today: counter.today + 1,
+          total: counter.total + 1,
+          date: today
+        },
+        { merge: true }
+      );
     });
-
   } catch (e) {
     console.error("🔥 updateVisitorCount 오류:", e);
   }
