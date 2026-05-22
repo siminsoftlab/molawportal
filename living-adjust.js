@@ -102,14 +102,21 @@ function calcLivingAdjust() {
    * 상세 계산 HTML (저장만 하고 표시하지 않음)
    ****************************************************/
   livingCalcResult = `
-    <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>입력 생계비</strong><br>${livingUser.toLocaleString()}원</div>
-    <div class="calc-step"><strong>최종 인정 생계비</strong><br>${finalLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-    <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
-    <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
-  `;
+  <div class="explain-box">
+    <h3>📌 법원 생계비 자동 조정 설명</h3>
+    <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
+    <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
+    <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
+  </div>
+
+  <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
+  <div class="calc-step"><strong>입력 생계비</strong><br>${livingUser.toLocaleString()}원</div>
+  <div class="calc-step"><strong>최종 인정 생계비</strong><br>${finalLiving.toLocaleString()}원</div>
+  <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
+  <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
+  <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
+  <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
+`;
 
   // 아코디언은 자동으로 열리지 않음
   const acc = document.getElementById('la_accordion');
