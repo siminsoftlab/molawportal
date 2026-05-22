@@ -1,0 +1,40 @@
+.faq-section {
+  margin-top: 40px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 10px;
+}
+
+.faq-section h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.faq-item {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.faq-question {
+  width: 100%;
+  text-align: left;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.faq-question:hover {
+  background: #f0f0f0;
+}
+
+.faq-answer {
+  display: none;
+  padding: 10px 15px 20px;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.5;
+}
