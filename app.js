@@ -314,8 +314,9 @@ function calcInterest() {
       </div>
     `);
 
-    /* ⭐ 자동 설명문 */
+   /* ⭐ 자동 설명문 */
 const seoBox = document.getElementById("interestSEO");
+
 seoBox.innerHTML = `
   <h3>📌 연이자 계산기 자동 설명</h3>
   <p>
@@ -328,6 +329,10 @@ seoBox.innerHTML = `
     <strong>원금 × (연이율 ÷ 100) × (일수 ÷ 365)</strong>
   </p>
 `;
+
+/* ⭐ 설명 표시 (유사페이지와 동일) */
+seoBox.style.display = "block";   // 또는 seoBox.classList.add("visible");
+
     /* ⭐ 애니메이션 등장 */
     setTimeout(() => {
       seoBox.classList.add("visible");
