@@ -15,10 +15,8 @@ function toggleLivingAccordion() {
   const isOpen = box.classList.contains("open");
 
   if (isOpen) {
-    // ⭐ 닫기 애니메이션이 작동하도록 먼저 max-height를 0으로 설정
     box.style.maxHeight = "0px";
 
-    // ⭐ transition이 적용되도록 약간의 지연 후 class 제거
     setTimeout(() => {
       box.classList.remove("open");
       box.style.padding = "0px";
@@ -27,12 +25,9 @@ function toggleLivingAccordion() {
     btn.textContent = "계산 상세 보기 ▼";
 
   } else {
-    // 열기
-    box.innerHTML = livingCalcResult; // 저장된 상세 내용 삽입
+    box.innerHTML = livingCalcResult; 
     box.classList.add("open");
     box.style.padding = "15px";
-
-    // ⭐ scrollHeight 계산은 class 추가 후 해야 정확함
     box.style.maxHeight = box.scrollHeight + "px";
 
     btn.textContent = "계산 상세 접기 ▲";
@@ -60,11 +55,12 @@ function resetLivingAdjust() {
   const btn = document.querySelector(".calc-acc-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 
+  // SEO 설명문은 UI에서 제거 (중복 표시 방지)
   const seo = document.getElementById('la_seo');
   seo.classList.remove('visible');
   seo.innerHTML = "";
 
-  livingCalcResult = null; // 저장된 결과 초기화
+  livingCalcResult = null;
 }
 
 /****************************************************
@@ -99,26 +95,26 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 상세 계산 HTML (저장만 하고 표시하지 않음)
+   * 상세 계산 HTML (아코디언 내부에만 표시)
    ****************************************************/
   livingCalcResult = `
-  <div class="explain-box">
-    <h3>📌 법원 생계비 자동 조정 설명</h3>
-    <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
-    <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
-    <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
-  </div>
+    <div class="explain-box">
+      <h3>📌 법원 생계비 자동 조정 설명</h3>
+      <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
+      <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
+      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
+    </div>
 
-  <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
-  <div class="calc-step"><strong>입력 생계비</strong><br>${livingUser.toLocaleString()}원</div>
-  <div class="calc-step"><strong>최종 인정 생계비</strong><br>${finalLiving.toLocaleString()}원</div>
-  <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-  <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
-  <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
-  <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
-`;
+    <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>입력 생계비</strong><br>${livingUser.toLocaleString()}원</div>
+    <div class="calc-step"><strong>최종 인정 생계비</strong><br>${finalLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
+    <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
+    <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
+  `;
 
-  // 아코디언은 자동으로 열리지 않음
+  // 아코디언 초기화
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = "";
   acc.classList.remove("open");
@@ -129,16 +125,10 @@ function calcLivingAdjust() {
   btn.textContent = "계산 상세 보기 ▼";
 
   /****************************************************
-   * SEO 설명문 (자동 표시)
+   * SEO 설명문 제거 (UI 중복 방지)
    ****************************************************/
   const seo = document.getElementById('la_seo');
-  seo.innerHTML = `
-    <h3>📌 법원 생계비 자동 조정 설명</h3>
-    <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
-    <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
-    <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
-  `;
-  setTimeout(() => seo.classList.add('visible'), 50);
+  seo.innerHTML = ""; // UI에 표시하지 않음
 }
 
 /****************************************************
