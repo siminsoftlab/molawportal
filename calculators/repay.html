@@ -46,7 +46,7 @@
 
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../faq.css">
-  <script src="../app.js" defer></script>
+  <script src="../repay.js" defer></script>
   <script src="../faq.js" defer></script>
 </head>
 
@@ -97,11 +97,9 @@
       <!-- 상세 계산 -->
       <div class="accordion">
         <button class="repay-accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
-        <div id="repayAccordion" class="accordion-content">
-          <div id="repayExplain" class="explain-box"></div>  <!-- 자동계산설명 위치 -->
-        </div>
+        <div id="repayAccordion" class="accordion-content"></div>
       </div>
-
+       <div id="repayExplain" class="explain-box"></div>  <!-- 자동계산설명 위치 -->
       <!-- ⭐ SEO 자동 설명문 -->
       <div id="repaySEO" class="seo-box-animated">
         <p>이 변제금계산기는 개인회생 절차에서 필요한 변제금 산정 기준을 기반으로 월 소득, 생계비, 청산가치를 자동 계산합니다.</p>
