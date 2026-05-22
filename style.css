@@ -1201,3 +1201,6 @@ body.homepage .calc-box {
 .calc-acc-content.open {
   padding: 15px;
 }
+#la_explain {
+  display: none;
+}
