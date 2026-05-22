@@ -1,12 +1,11 @@
 /****************************************************
- * 법원 생계비 계산기 — 유사 페이지와 동일한 구조
+ * 법원 생계비 계산기 — 유사 페이지와 동일한 동작
  ****************************************************/
 
-/* 전역 변수 */
 let livingCalcResult = null;
 
 /****************************************************
- * 아코디언 토글
+ * 아코디언 토글 (계산결과만 열고 닫음)
  ****************************************************/
 function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
@@ -26,7 +25,8 @@ function toggleLivingAccordion() {
     btn.textContent = "계산 상세 보기 ▼";
 
   } else {
-    // 열기
+    // 열기 (계산결과 표시)
+    box.innerHTML = livingCalcResult;
     box.classList.add("open");
     box.style.padding = "15px";
     box.style.maxHeight = box.scrollHeight + "px";
@@ -47,11 +47,17 @@ function resetLivingAdjust() {
 
   document.getElementById('la_summary').style.display = "none";
 
+  // 계산결과 초기화
   const acc = document.getElementById('la_accordion');
-  acc.innerHTML = `<div id="la_explain" class="explain-box"></div>`;
+  acc.innerHTML = "";
   acc.style.maxHeight = null;
   acc.style.padding = "0px";
   acc.classList.remove("open");
+
+  // 설명 초기화
+  const explain = document.getElementById('la_explain');
+  explain.innerHTML = "";
+  explain.style.display = "none";
 
   const btn = document.querySelector(".la-acc-btn");
   btn.textContent = "계산 상세 보기 ▼";
@@ -91,9 +97,10 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 설명 div (아코디언 내부)
+   * 설명 (아코디언 밖)
    ****************************************************/
   const explain = document.getElementById('la_explain');
+  explain.style.display = "block";
   explain.innerHTML = `
     <h3>📌 법원 생계비 자동 조정 설명</h3>
     <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
@@ -102,7 +109,7 @@ function calcLivingAdjust() {
   `;
 
   /****************************************************
-   * 상세 계산 HTML (아코디언 내부)
+   * 계산결과 HTML (아코디언 내부)
    ****************************************************/
   livingCalcResult = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -114,8 +121,9 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
   `;
 
-  // 아코디언은 자동으로 열리지 않음
+  // 계산 후 아코디언은 닫힌 상태 유지
   const acc = document.getElementById('la_accordion');
+  acc.innerHTML = "";
   acc.classList.remove("open");
   acc.style.maxHeight = null;
   acc.style.padding = "0px";
