@@ -1207,6 +1207,9 @@ body.homepage .calc-box {
   box-shadow: none !important;
   padding: 0 !important;
 }
-#la_accordion {
-  display: none;
+#la_accordion:not(.open) {
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-left: none !important;
 }
