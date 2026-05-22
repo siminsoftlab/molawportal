@@ -137,3 +137,6 @@ function resetRepayInputs() {
   const btn = document.querySelector(".repay-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
+#repayExplain {
+  display: none;
+}
