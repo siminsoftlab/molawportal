@@ -1177,3 +1177,16 @@ body.homepage .calc-box {
     gap: 14px;
   }
 }
+.explain-box {
+  margin-top: 15px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  border-left: 6px solid #4a90e2;
+  animation: fadeIn 0.3s ease-out;
+}
+
