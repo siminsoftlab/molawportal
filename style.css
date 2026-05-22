@@ -1191,3 +1191,13 @@ body.homepage .calc-box {
   animation: fadeIn 0.3s ease-out;
 }
 
+.calc-acc-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 15px;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+.calc-acc-content.open {
+  padding: 15px;
+}
