@@ -68,6 +68,9 @@ function resetLivingAdjust() {
 /****************************************************
  * 계산
  ****************************************************/
+/****************************************************
+ * 계산
+ ****************************************************/
 function calcLivingAdjust() {
   const income = Number(document.getElementById('la_income').value || 0);
   const household = Number(document.getElementById('la_household').value || 1);
@@ -97,10 +100,10 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 설명 (아코디언 밖)
+   * 설명 div 표시 (핵심 수정)
    ****************************************************/
   const explain = document.getElementById('la_explain');
-  explain.style.display = "block";
+  explain.style.display = "block";   // ← 이것만 있으면 설명이 무조건 보임
   explain.innerHTML = `
     <h3>📌 법원 생계비 자동 조정 설명</h3>
     <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
