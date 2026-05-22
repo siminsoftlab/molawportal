@@ -1,9 +1,9 @@
 /* FAQ 섹션을 .container와 동일한 폭으로 맞춤 */
 .faq-section {
-  width: 92%;
+  width: 100%;
   max-width: 800px;
   margin: 0 auto 40px;
-  padding: 25px;
+  padding: 20px;
   background: rgba(255,255,255,0.75);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
