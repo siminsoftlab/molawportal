@@ -1,5 +1,5 @@
 /****************************************************
- * 법원 생계비 계산기 — 최종 정상 버전
+ * 법원 생계비 계산기 — 유사 페이지와 동일한 구조
  ****************************************************/
 
 /* 전역 변수 */
@@ -114,7 +114,7 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
   `;
 
-  // 아코디언 초기화 (닫힌 상태 유지)
+  // 아코디언은 자동으로 열리지 않음
   const acc = document.getElementById('la_accordion');
   acc.classList.remove("open");
   acc.style.maxHeight = null;
