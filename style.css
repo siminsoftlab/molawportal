@@ -1179,6 +1179,7 @@ body.homepage .calc-box {
 }
 .explain-box {
   margin-top: 15px;
+  margin-bottom: 30px; /* FAQ와 겹치지 않도록 여백 추가 */
   padding: 18px 20px;
   background: rgba(255,255,255,0.9);
   border-radius: 14px;
