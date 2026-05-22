@@ -1201,15 +1201,3 @@ body.homepage .calc-box {
 .calc-acc-content.open {
   padding: 15px;
 }
-.acc-content:not(.open) {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-#la_accordion:not(.open) {
-  padding: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
-  border-left: none !important;
-}
