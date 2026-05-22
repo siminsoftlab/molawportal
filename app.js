@@ -281,3 +281,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
   observer.observe(bubble);
 });
+/****************************************************
+ * 보기 모달
+ ****************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  const openBtn  = document.getElementById("openPrivacyModal");
+  const modal    = document.getElementById("privacyModal");
+  const closeBtn = modal ? modal.querySelector(".close-modal") : null;
+
+  if (!openBtn || !modal) return;
+
+  // [보기] 클릭 → 모달 열기
+  openBtn.addEventListener("click", () => {
+    modal.style.display = "block";
+  });
+
+  // 닫기 버튼(X) → 모달 닫기
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+  }
+
+  // 모달 바깥 클릭 → 모달 닫기
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+});
