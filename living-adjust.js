@@ -25,7 +25,7 @@ function toggleLivingAccordion() {
     btn.textContent = "계산 상세 보기 ▼";
 
   } else {
-    box.innerHTML = livingCalcResult; // 상세 계산만 삽입
+    box.innerHTML = livingCalcResult; 
     box.classList.add("open");
     box.style.padding = "15px";
     box.style.maxHeight = box.scrollHeight + "px";
@@ -55,9 +55,8 @@ function resetLivingAdjust() {
   const btn = document.querySelector(".calc-acc-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 
-  const seo = document.getElementById('la_seo');
-  seo.classList.remove('visible');
-  seo.innerHTML = "";
+  // 자동계산설명 제거
+  document.getElementById('la_explain').innerHTML = "";
 
   livingCalcResult = null;
 }
@@ -94,7 +93,20 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 상세 계산 HTML (아코디언 내부용)
+   * 자동계산설명 (계산 상세 보기 버튼 바로 아래)
+   ****************************************************/
+  const explain = document.getElementById('la_explain');
+  explain.innerHTML = `
+    <div class="explain-box">
+      <h3>📌 법원 생계비 자동 조정 설명</h3>
+      <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
+      <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
+      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
+    </div>
+  `;
+
+  /****************************************************
+   * 상세 계산 HTML (아코디언 내부)
    ****************************************************/
   livingCalcResult = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -115,20 +127,6 @@ function calcLivingAdjust() {
 
   const btn = document.querySelector(".calc-acc-btn");
   btn.textContent = "계산 상세 보기 ▼";
-
-  /****************************************************
-   * 법원 생계비 자동 조정 설명 (아코디언 밖, 계산하기 클릭 시 표시)
-   ****************************************************/
-  const seo = document.getElementById('la_seo');
-  seo.innerHTML = `
-    <div class="explain-box">
-      <h3>📌 법원 생계비 자동 조정 설명</h3>
-      <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
-      <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
-      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
-    </div>
-  `;
-  setTimeout(() => seo.classList.add('visible'), 50);
 }
 
 /****************************************************
