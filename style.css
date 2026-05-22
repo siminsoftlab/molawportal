@@ -1207,3 +1207,6 @@ body.homepage .calc-box {
   box-shadow: none !important;
   padding: 0 !important;
 }
+#la_accordion {
+  display: none;
+}
