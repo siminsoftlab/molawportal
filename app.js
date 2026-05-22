@@ -315,20 +315,19 @@ function calcInterest() {
     `);
 
     /* ⭐ 자동 설명문 */
-    const seoBox = document.getElementById("interestSEO");
-    seoBox.innerHTML = `
-      <h3>📌 연이자 계산기 자동 설명</h3>
-      <p>
-        원금 ${principal.toLocaleString()}원에 연이율 ${rate}%를 적용하고 
-        ${days}일 동안 계산한 이자는 ${interest.toLocaleString()}원이며,
-        최종 상환액은 ${total.toLocaleString()}원입니다.
-      </p>
-      <p>
-        연이자 계산 공식:<br>
-        <strong>원금 × (연이율 ÷ 100) × (일수 ÷ 365)</strong>
-      </p>
-    `;
-
+const seoBox = document.getElementById("interestSEO");
+seoBox.innerHTML = `
+  <h3>📌 연이자 계산기 자동 설명</h3>
+  <p>
+    원금 ${principal.toLocaleString()}원에 연이율 ${rate}%를 적용하고 
+    ${days}일 동안 계산한 이자는 ${interest.toLocaleString()}원이며,
+    최종 상환액은 ${total.toLocaleString()}원입니다.
+  </p>
+  <p>
+    연이자 계산 공식:<br>
+    <strong>원금 × (연이율 ÷ 100) × (일수 ÷ 365)</strong>
+  </p>
+`;
     /* ⭐ 애니메이션 등장 */
     setTimeout(() => {
       seoBox.classList.add("visible");
