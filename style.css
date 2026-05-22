@@ -1210,3 +1210,17 @@ body.homepage .calc-box {
 #repayExplain {
   display: none;
 }
+.calc-link-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #0056ff;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.calc-link-btn:hover {
+  background: #003fcc;
+}
