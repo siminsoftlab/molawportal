@@ -1,129 +1,139 @@
-/****************************************************
- * 법원 생계비 계산기 — 최종 안정 버전
- ****************************************************/
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* 전역 변수: 계산 결과 저장 */
-let livingCalcResult = null;
+  <!-- ⭐ SEO 최적화 Title -->
+  <title>법원 생계비 계산기｜중위소득 기준 자동 계산</title>
 
-/****************************************************
- * 아코디언 토글
- ****************************************************/
-function toggleLivingAccordion() {
-  const box = document.getElementById("la_accordion");
-  const btn = document.querySelector(".calc-acc-btn");
+  <!-- ⭐ SEO Description -->
+  <meta name="description" content="중위소득 기준으로 법원 생계비와 변제 가능 금액을 자동 계산하는 무료 생계비 계산기">
 
-  const isOpen = box.classList.contains("open");
+  <!-- ⭐ Canonical -->
+  <link rel="canonical" href="https://molawcalculator.com/calculators/living-adjust.html">
 
-  if (isOpen) {
-    box.style.maxHeight = "0px";
+ <!-- ⭐ 네이버 사이트 인증 -->
+  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
+  <!-- ⭐ 구글 사이트 인증 -->
+  <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
 
-    setTimeout(() => {
-      box.classList.remove("open");
-      box.style.padding = "0px";
-    }, 200);
+  <!-- Open Graph -->
+  <meta property="og:title" content="법원 생계비 계산기｜중위소득 기준 자동 계산">
+  <meta property="og:description" content="중위소득 기준으로 법원 생계비와 변제 가능 금액을 자동 계산하는 무료 생계비 계산기">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="딱요만큼변제">
+  <meta property="og:url" content="https://molawcalculator.com/calculators/living-adjust.html">
+  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
-    btn.textContent = "계산 상세 보기 ▼";
-
-  } else {
-    box.innerHTML = livingCalcResult; 
-    box.classList.add("open");
-    box.style.padding = "15px";
-    box.style.maxHeight = box.scrollHeight + "px";
-
-    btn.textContent = "계산 상세 접기 ▲";
+  <!-- ⭐ 구조화 데이터 (WebApplication + LegalService) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "법원 생계비 계산기",
+    "url": "https://molawcalculator.com/calculators/living-adjust.html",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "All",
+    "description": "법원 기준 중위소득을 기반으로 생계비를 자동 계산하는 무료 법원 생계비 계산기",
+    "keywords": "법원 생계비 계산기, 중위소득 생계비, 개인회생 생계비 계산기, 생계비 계산",
+    "provider": {
+      "@type": "LegalService",
+      "name": "법무법인 영민",
+      "url": "https://molawcalculator.com"
+    }
   }
-}
+  </script>
 
-/****************************************************
- * 초기화
- ****************************************************/
-function resetLivingAdjust() {
-  document.getElementById('la_income').value = "";
-  document.getElementById('la_household').value = "1";
-  document.getElementById('la_living_user').value = "";
-  document.getElementById('la_extra').value = "";
-  document.getElementById('la_months').value = "36";
+  <link rel="stylesheet" href="../style.css">
+</head>
 
-  document.getElementById('la_summary').style.display = "none";
+<body class="subpage">
 
-  const acc = document.getElementById('la_accordion');
-  acc.innerHTML = "";
-  acc.style.maxHeight = null;
-  acc.style.padding = "0px";
-  acc.classList.remove("open");
+<header class="fixed-header fixed-top">
+  <h1>법원 생계비 계산기</h1>
+  <a href="../index.html" class="home-btn">홈</a>
+</header>
 
-  const btn = document.querySelector(".calc-acc-btn");
-  if (btn) btn.textContent = "계산 상세 보기 ▼";
+<div class="page-wrap">
+  <div class="container">
 
-  livingCalcResult = null;
-}
+    <!-- ⭐ SEO 강화 H2 -->
+    <h2>중위소득 기준 법원 생계비 계산 방법</h2>
 
-/****************************************************
- * 계산
- ****************************************************/
-function calcLivingAdjust() {
-  const income = Number(document.getElementById('la_income').value || 0);
-  const household = Number(document.getElementById('la_household').value || 1);
-  const livingUser = Number(document.getElementById('la_living_user').value || 0);
-  const extra = Number(document.getElementById('la_extra').value || 0);
-  const months = Number(document.getElementById('la_months').value || 0);
+    <label>월 소득(원)</label>
+    <input id="la_income" type="number">
 
-  const baseLiving1 = 1538523;
-  const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
-  const courtLiving = Math.round(baseLiving1 * (weights[household] || 1));
+    <label>가구 수</label>
+    <select id="la_household">
+      <option value="1">1인 가구</option>
+      <option value="2">2인 가구</option>
+      <option value="3">3인 가구</option>
+      <option value="4">4인 가구</option>
+      <option value="5">5인 가구</option>
+    </select>
 
-  const finalLiving = Math.min(livingUser || courtLiving, courtLiving);
-  const totalLiving = finalLiving + extra;
+    <label>사용자가 입력한 생계비(원)</label>
+    <input id="la_living_user" type="number">
 
-  const disposable = Math.max(income - totalLiving, 0);
-  const totalRepay = disposable * months;
+    <label>추가 생계비(원)</label>
+    <input id="la_extra" type="number">
 
-  /****************************************************
-   * 요약 카드
-   ****************************************************/
-  const summary = document.getElementById('la_summary');
-  summary.innerHTML = `
-    조정 후 총 생계비: ${totalLiving.toLocaleString()}원<br>
-    월 변제 가능 금액: ${disposable.toLocaleString()}원<br>
-    총 변제금: ${totalRepay.toLocaleString()}원
-  `;
-  summary.style.display = "block";
+    <label>변제기간(개월)</label>
+    <input id="la_months" type="number" value="36">
 
-  /****************************************************
-   * 상세 계산 + 자동계산설명 (아코디언 내부)
-   ****************************************************/
-  livingCalcResult = `
-    <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>입력 생계비</strong><br>${livingUser.toLocaleString()}원</div>
-    <div class="calc-step"><strong>최종 인정 생계비</strong><br>${finalLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-    <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
-    <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
-
-    <div id="la_explain" class="explain-box">
-      <h3>📌 법원 생계비 자동 조정 설명</h3>
-      <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
-      <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
-      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
+    <div class="btn-row">
+      <button onclick="calcLivingAdjust()">계산하기</button>
+      <button onclick="resetLivingAdjust()">초기화</button>
     </div>
-  `;
 
-  // 아코디언 초기화
-  const acc = document.getElementById('la_accordion');
-  acc.innerHTML = "";
-  acc.classList.remove("open");
-  acc.style.maxHeight = null;
-  acc.style.padding = "0px";
+    <div id="la_summary" class="summary-card"></div>
 
-  const btn = document.querySelector(".calc-acc-btn");
-  btn.textContent = "계산 상세 보기 ▼";
-}
+    <div class="accordion-item">
+      <button class="calc-acc-btn la-acc-btn">
+        계산 상세 보기 ▼
+      </button>
+      <div class="calc-acc-content" id="la_accordion"></div>
+    </div>
 
-/****************************************************
- * 버튼 이벤트 연결
- ****************************************************/
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector(".calc-acc-btn");
-  if (btn) btn.addEventListener("click", toggleLivingAccordion);
-});
+    <!-- ⭐ SEO 자동 설명문 -->
+    <div id="la_seo" class="seo-box-animated">
+      <p>법원 생계비 계산기는 중위소득 기준을 기반으로 개인회생 절차에서 필요한 생계비를 자동 계산해주는 무료 서비스입니다.</p>
+      <p>가구 수, 월 소득, 추가 생계비 등을 입력하면 법원 기준 생계비와 변제 가능 금액을 쉽게 확인할 수 있습니다.</p>
+      <p>법원 생계비 계산기 검색 시 가장 많이 사용되는 무료 계산 서비스입니다.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-company">딱요만큼변제</div>
+    <div class="footer-info">
+      상호: 법무법인 영민 | 대표: 박희영 | 사업자등록번호: 425-88-00769  
+      주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
+      개인정보관리책임자: 박희영  
+      전화: 02-595-5706  
+      팩스: 02-525-7255
+    </div>
+    <div class="footer-copy">COPYRIGHT©2026 딱요만큼변제. ALL RIGHTS RESERVED.</div>
+  </div>
+</footer>
+
+<!-- 하단 고정 상담바 -->
+<div class="call-fixed">
+  <a href="tel:025955706" class="consult-call">
+    무료 상담 02-595-5706 ← 클릭 시 전화 연결
+  </a>
+</div>
+
+<!-- 카톡 상담 -->
+<a href="http://pf.kakao.com/_wAqxen/chat" 
+   class="quick-kakao" target="_blank" rel="noopener noreferrer">
+  💬 카톡 상담
+</a>
+
+<script src="../living-adjust.js"></script>
+</body>
+</html>
