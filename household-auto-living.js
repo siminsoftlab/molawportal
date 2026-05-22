@@ -124,12 +124,14 @@ function calcHouseholdLiving() {
    * SEO 설명문
    ****************************************************/
   const seo = document.getElementById('hl_seo');
-  seo.innerHTML = `
+ seo.innerHTML = `
+  <div class="explain-box">
     <h3>📌 가구수 생계비 자동 계산 설명</h3>
     <p>${household}인 가구 기준 법원 생계비는 ${living.toLocaleString()}원입니다.</p>
     <p>추가 생계비를 포함한 총 생계비는 ${totalLiving.toLocaleString()}원입니다.</p>
     <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 최종 변제금은 ${finalTotal.toLocaleString()}원입니다.</p>
-  `;
+  </div>
+`;
   setTimeout(() => seo.classList.add('visible'), 50);
 }
 
