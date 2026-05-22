@@ -1,5 +1,5 @@
 /****************************************************
- * 법원 생계비 계산기 — 요구사항 반영 버전
+ * 법원 생계비 계산기 — 요구사항 반영 최종 버전
  ****************************************************/
 
 /* 전역 변수: 계산 결과 저장 */
@@ -29,14 +29,18 @@ function resetLivingAdjust() {
 
   document.getElementById('la_summary').style.display = "none";
 
+  // 계산결과 박스 숨김
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = "";
-  acc.style.display = "none";   // 완전 숨김
+  acc.style.display = "none";
 
+  // 상세보기 버튼 초기화
   const btn = document.querySelector(".calc-acc-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 
+  // 설명 숨김
   document.getElementById('la_explain').innerHTML = "";
+  document.getElementById('la_explain').style.display = "none";
 
   livingCalcResult = null;
 }
@@ -73,9 +77,10 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 자동 설명 (아코디언 밖)
+   * 자동 설명 (계산하기 클릭 시 보임)
    ****************************************************/
   const explain = document.getElementById('la_explain');
+  explain.style.display = "block";
   explain.innerHTML = `
     <div class="explain-box">
       <h3>📌 법원 생계비 자동 조정 설명</h3>
@@ -86,7 +91,7 @@ function calcLivingAdjust() {
   `;
 
   /****************************************************
-   * 상세 계산 HTML (계산하기 클릭 시 바로 표시)
+   * 상세 계산 HTML (계산하기 클릭 시 즉시 표시)
    ****************************************************/
   livingCalcResult = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -103,7 +108,7 @@ function calcLivingAdjust() {
    ****************************************************/
   const acc = document.getElementById('la_accordion');
   acc.innerHTML = livingCalcResult;
-  acc.style.display = "block";   // 계산하기 → 보임
+  acc.style.display = "block";
 
   const btn = document.querySelector(".calc-acc-btn");
   btn.textContent = "계산 상세 숨기기 ▲";
