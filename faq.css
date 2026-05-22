@@ -1,9 +1,17 @@
+/* FAQ 섹션을 .container와 동일한 폭으로 맞춤 */
 .faq-section {
-  margin-top: 40px;
-  padding: 20px;
-  background: #fafafa;
-  border-radius: 10px;
+  width: 92%;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  padding: 25px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-sizing: border-box;
 }
+
 
 .faq-section h2 {
   font-size: 20px;
