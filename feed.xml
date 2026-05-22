@@ -3,77 +3,110 @@
      xmlns:atom="http://www.w3.org/2005/Atom">
 
   <channel>
-   <title>딱요만큼변제 RSS｜개인회생 변제금·계산기 업데이트</title>
-     <link>https://molawcalculator.com/</link>
-     <description>개인회생 변제금 계산기, 개인회생 변제금계산기, 월 변제금 등 최신 계산기 업데이트 RSS</description>
-     <language>ko</language>
-     <atom:link href="https://molawcalculator.com/feed.xml" rel="self" type="application/rss+xml" />
-     <lastBuildDate>Tue, 05 May 2026 23:50:00 +0900</lastBuildDate>
-     <ttl>180</ttl>
-     <managingEditor>info@molawcalculator.com</managingEditor>
-     <webMaster>info@molawcalculator.com</webMaster>
-     <copyright>
-       <![CDATA[Copyright © 2026 딱요만큼변제. All Rights Reserved.]]>
-     </copyright>
+
+    <!-- 기본 정보 -->
+    <title><![CDATA[딱요만큼변제 RSS｜개인회생 변제금·연이자·생계비 계산기 업데이트]]></title>
+    <link>https://molawcalculator.com/</link>
+    <atom:link href="https://molawcalculator.com/feed.xml" rel="self" type="application/rss+xml" />
+    <description><![CDATA[
+      개인회생 변제금 계산기, 연이자 계산기, 법원 생계비 계산기 등
+      최신 업데이트 정보를 제공하는 공식 RSS 피드입니다.
+    ]]></description>
+    <language>ko</language>
+
+    <!-- ⭐ 오늘 날짜로 업데이트됨 -->
+    <lastBuildDate>Fri, 22 May 2026 20:49:00 +0900</lastBuildDate>
+
+    <ttl>180</ttl>
+    <generator>molawcalculator.com RSS Generator</generator>
+    <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+
+    <!-- 대표 이미지 -->
+    <image>
+      <url>https://molawcalculator.com/images/og_main.png</url>
+      <title>딱요만큼변제</title>
+      <link>https://molawcalculator.com/</link>
+    </image>
+
+    <!-- ============================
+         콘텐츠 목록
+    ============================ -->
 
     <!-- 쏜살민원 -->
     <item>
-      <title><![CDATA[쏜살민원]]></title>
+      <title><![CDATA[쏜살민원 — 법원·관공서 서류 발급 대행]]></title>
       <link>https://molawcalculator.com/blog/ssonsalminwon.html</link>
-      <description><![CDATA[법원·관공서 서류 발급을 빠르게 대행하는 쏜살민원 안내]]></description>
-      <category>민원대행</category>
-      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
-      <guid>https://molawcalculator.com/blog/ssonsalminwon.html</guid>
+      <guid isPermaLink="true">https://molawcalculator.com/blog/ssonsalminwon.html</guid>
+      <description><![CDATA[
+        법원·관공서 서류 발급을 빠르게 대행하는 쏜살민원 서비스 안내.
+      ]]></description>
+      <category><![CDATA[민원대행]]></category>
+      <category><![CDATA[법률서비스]]></category>
+      <pubDate>Fri, 22 May 2026 20:49:00 +0900</pubDate>
     </item>
 
     <!-- 모두의로펌 -->
     <item>
-      <title><![CDATA[모두의로펌]]></title>
+      <title><![CDATA[모두의로펌 — 불법사채·불법추심 대응 전문]]></title>
       <link>https://molawcalculator.com/blog/modoolawfirm.html</link>
-      <description><![CDATA[불법사채·불법추심 대응 및 개인회생·파산 지원 서비스]]></description>
-      <category>법률서비스</category>
-      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
-      <guid>https://molawcalculator.com/blog/modoolawfirm.html</guid>
+      <guid isPermaLink="true">https://molawcalculator.com/blog/modoolawfirm.html</guid>
+      <description><![CDATA[
+        불법사채·불법추심 대응 및 개인회생·파산 지원 서비스 소개.
+      ]]></description>
+      <category><![CDATA[법률서비스]]></category>
+      <pubDate>Fri, 22 May 2026 20:49:00 +0900</pubDate>
     </item>
 
     <!-- 연이자 계산기 -->
     <item>
-      <title><![CDATA[연이자 계산기]]></title>
+      <title><![CDATA[연이자 계산기 — 대출이자·총상환액 자동 계산]]></title>
       <link>https://molawcalculator.com/calculators/interest.html</link>
-      <description><![CDATA[연이자 계산기, 대출이자 계산기, 이자 계산기 등 원금·이자율·기간으로 총이자와 상환액을 자동 계산하는 무료 서비스]]></description>
-      <category>계산기</category>
-      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
-      <guid>https://molawcalculator.com/calculators/interest.html</guid>
+      <guid isPermaLink="true">https://molawcalculator.com/calculators/interest.html</guid>
+      <description><![CDATA[
+        원금·이자율·기간을 입력하면 총이자와 총상환액을 자동 계산하는 연이자 계산기.
+      ]]></description>
+      <category><![CDATA[계산기]]></category>
+      <category><![CDATA[이자계산]]></category>
+      <pubDate>Fri, 22 May 2026 20:49:00 +0900</pubDate>
     </item>
 
     <!-- 변제금 계산기 -->
-   <item>
-       <title><![CDATA[개인회생 변제금 계산기]]></title>
-       <link>https://molawcalculator.com/calculators/repay.html</link>
-       <description><![CDATA[개인회생 변제금 계산기, 변제금계산기, 월 변제금을 자동 계산하는 무료 개인회생 계산 서비스]]></description>
-       <category>계산기</category>
-       <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
-       <guid>https://molawcalculator.com/calculators/repay.html</guid>
-     </item>
+    <item>
+      <title><![CDATA[개인회생 변제금 계산기 — 월 변제금 자동 산정]]></title>
+      <link>https://molawcalculator.com/calculators/repay.html</link>
+      <guid isPermaLink="true">https://molawcalculator.com/calculators/repay.html</guid>
+      <description><![CDATA[
+        월 소득·생계비·청산가치를 기반으로 개인회생 변제금을 자동 계산하는 무료 서비스.
+      ]]></description>
+      <category><![CDATA[계산기]]></category>
+      <category><![CDATA[개인회생]]></category>
+      <pubDate>Fri, 22 May 2026 20:49:00 +0900</pubDate>
+    </item>
 
     <!-- 법원 생계비 계산기 -->
     <item>
-      <title><![CDATA[법원 생계비 계산기]]></title>
+      <title><![CDATA[법원 생계비 계산기 — 중위소득 기반 자동 산정]]></title>
       <link>https://molawcalculator.com/calculators/living-adjust.html</link>
-      <description><![CDATA[중위소득 기준으로 법원 생계비를 자동 산정하는 무료 계산기]]></description>
-      <category>계산기</category>
-      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
-      <guid>https://molawcalculator.com/calculators/living-adjust.html</guid>
+      <guid isPermaLink="true">https://molawcalculator.com/calculators/living-adjust.html</guid>
+      <description><![CDATA[
+        가구 수에 따라 법원 기준 생계비를 자동 산정하는 계산기.
+      ]]></description>
+      <category><![CDATA[계산기]]></category>
+      <category><![CDATA[생계비]]></category>
+      <pubDate>Fri, 22 May 2026 20:49:00 +0900</pubDate>
     </item>
 
     <!-- 가구수 생계비 계산기 -->
     <item>
-      <title><![CDATA[가구수 생계비 계산기]]></title>
+      <title><![CDATA[가구수 생계비 계산기 — 맞춤형 생활비 산정]]></title>
       <link>https://molawcalculator.com/calculators/household-auto-living.html</link>
-      <description><![CDATA[가구 구성에 맞춘 맞춤형 생계비를 자동 계산하는 무료 계산기]]></description>
-      <category>계산기</category>
-      <pubDate>Tue, 05 May 2026 23:50:00 +0900</pubDate>
-      <guid>https://molawcalculator.com/calculators/household-auto-living.html</guid>
+      <guid isPermaLink="true">https://molawcalculator.com/calculators/household-auto-living.html</guid>
+      <description><![CDATA[
+        성인·아동 수를 입력하면 가구 구성에 맞춘 맞춤형 생계비를 자동 계산합니다.
+      ]]></description>
+      <category><![CDATA[계산기]]></category>
+      <category><![CDATA[생계비]]></category>
+      <pubDate>Fri, 22 May 2026 20:49:00 +0900</pubDate>
     </item>
 
   </channel>
