@@ -57,7 +57,7 @@ function resetLivingAdjust() {
   // 설명 초기화
   const explain = document.getElementById('la_explain');
   explain.innerHTML = "";
-  explain.style.display = "none";
+  explain.style.display = "block";
 
   const btn = document.querySelector(".la-acc-btn");
   btn.textContent = "계산 상세 보기 ▼";
