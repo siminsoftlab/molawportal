@@ -1,20 +1,38 @@
 /****************************************************
- * 법원 생계비 계산기 — 요구사항 반영 최종 버전
+ * 법원 생계비 계산기 — 최종 정상 버전
  ****************************************************/
 
-/* 전역 변수: 계산 결과 저장 */
+/* 전역 변수 */
 let livingCalcResult = null;
 
 /****************************************************
- * 상세보기 버튼 = 계산결과 숨기기
+ * 아코디언 토글
  ****************************************************/
 function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
-  const btn = document.querySelector(".calc-acc-btn");
+  const btn = document.querySelector(".la-acc-btn");
 
-  // 상세보기 버튼은 "닫기" 역할
-  box.style.display = "none";
-  btn.textContent = "계산 상세 보기 ▼";
+  const isOpen = box.classList.contains("open");
+
+  if (isOpen) {
+    // 닫기
+    box.style.maxHeight = "0px";
+
+    setTimeout(() => {
+      box.classList.remove("open");
+      box.style.padding = "0px";
+    }, 200);
+
+    btn.textContent = "계산 상세 보기 ▼";
+
+  } else {
+    // 열기
+    box.classList.add("open");
+    box.style.padding = "15px";
+    box.style.maxHeight = box.scrollHeight + "px";
+
+    btn.textContent = "계산 상세 접기 ▲";
+  }
 }
 
 /****************************************************
@@ -29,18 +47,14 @@ function resetLivingAdjust() {
 
   document.getElementById('la_summary').style.display = "none";
 
-  // 계산결과 박스 숨김
   const acc = document.getElementById('la_accordion');
-  acc.innerHTML = "";
-  acc.style.display = "none";
+  acc.innerHTML = `<div id="la_explain" class="explain-box"></div>`;
+  acc.style.maxHeight = null;
+  acc.style.padding = "0px";
+  acc.classList.remove("open");
 
-  // 상세보기 버튼 초기화
-  const btn = document.querySelector(".calc-acc-btn");
-  if (btn) btn.textContent = "계산 상세 보기 ▼";
-
-  // 설명 숨김
-  document.getElementById('la_explain').innerHTML = "";
-  document.getElementById('la_explain').style.display = "none";
+  const btn = document.querySelector(".la-acc-btn");
+  btn.textContent = "계산 상세 보기 ▼";
 
   livingCalcResult = null;
 }
@@ -77,21 +91,18 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 자동 설명 (계산하기 클릭 시 보임)
+   * 설명 div (아코디언 내부)
    ****************************************************/
   const explain = document.getElementById('la_explain');
-  explain.style.display = "block";
   explain.innerHTML = `
-    <div class="explain-box">
-      <h3>📌 법원 생계비 자동 조정 설명</h3>
-      <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
-      <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
-      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
-    </div>
+    <h3>📌 법원 생계비 자동 조정 설명</h3>
+    <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
+    <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
+    <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
   `;
 
   /****************************************************
-   * 상세 계산 HTML (계산하기 클릭 시 즉시 표시)
+   * 상세 계산 HTML (아코디언 내부)
    ****************************************************/
   livingCalcResult = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -103,21 +114,20 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
   `;
 
-  /****************************************************
-   * 계산하기 클릭 시 → 계산결과 즉시 표시
-   ****************************************************/
+  // 아코디언 초기화 (닫힌 상태 유지)
   const acc = document.getElementById('la_accordion');
-  acc.innerHTML = livingCalcResult;
-  acc.style.display = "block";
+  acc.classList.remove("open");
+  acc.style.maxHeight = null;
+  acc.style.padding = "0px";
 
-  const btn = document.querySelector(".calc-acc-btn");
-  btn.textContent = "계산 상세 숨기기 ▲";
+  const btn = document.querySelector(".la-acc-btn");
+  btn.textContent = "계산 상세 보기 ▼";
 }
 
 /****************************************************
  * 버튼 이벤트 연결
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector(".calc-acc-btn");
+  const btn = document.querySelector(".la-acc-btn");
   if (btn) btn.addEventListener("click", toggleLivingAccordion);
 });
