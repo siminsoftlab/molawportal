@@ -55,9 +55,6 @@ function resetLivingAdjust() {
   const btn = document.querySelector(".calc-acc-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 
-  // 자동계산설명 제거
-  document.getElementById('la_explain').innerHTML = "";
-
   livingCalcResult = null;
 }
 
@@ -93,20 +90,7 @@ function calcLivingAdjust() {
   summary.style.display = "block";
 
   /****************************************************
-   * 자동계산설명 (계산 상세 보기 버튼 바로 아래)
-   ****************************************************/
-  const explain = document.getElementById('la_explain');
-  explain.innerHTML = `
-    <div class="explain-box">
-      <h3>📌 법원 생계비 자동 조정 설명</h3>
-      <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
-      <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
-      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
-    </div>
-  `;
-
-  /****************************************************
-   * 상세 계산 HTML (아코디언 내부)
+   * 상세 계산 + 자동계산설명 (아코디언 내부)
    ****************************************************/
   livingCalcResult = `
     <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -116,6 +100,13 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
     <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
     <div class="calc-step"><strong>총 변제금</strong><br>${totalRepay.toLocaleString()}원</div>
+
+    <div class="explain-box">
+      <h3>📌 법원 생계비 자동 조정 설명</h3>
+      <p>가구 수 ${household}인 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
+      <p>입력한 생계비와 비교하여 더 낮은 금액인 ${finalLiving.toLocaleString()}원이 최종 인정됩니다.</p>
+      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 총 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
+    </div>
   `;
 
   // 아코디언 초기화
