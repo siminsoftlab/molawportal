@@ -1224,3 +1224,38 @@ body.homepage .calc-box {
 .calc-link-btn:hover {
   background: #003fcc;
 }
+.accordion-box {
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .accordion-box button {
+    width: 100%;
+    background: #f8f8f8;
+    border: none;
+    outline: none;
+    padding: 16px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .accordion-box button.active {
+    background: #e9f3ff;
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    background: #fff;
+    transition: max-height 0.3s ease;
+    padding: 0 16px;
+  }
+
+  .accordion-content p {
+    padding: 16px 0;
+    margin: 0;
+    line-height: 1.6;
+  }
