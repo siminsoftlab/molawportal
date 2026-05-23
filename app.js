@@ -215,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isHome) {
     initAccordionGroup(".calc-acc-btn", ".calc-acc-content", "toggle-all");
     initAccordionGroup(".site-acc-btn", ".site-acc-content", "toggle-all-site");
+    initAccordionGroup(".info-acc-btn", ".info-acc-content", "toggle-all-info");
   } else {
     initAccordionGroup(".calc-acc-btn", ".calc-acc-content", null);
   }
