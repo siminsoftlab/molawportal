@@ -181,100 +181,142 @@
 </div>
   
 <!-- ⭐ 추가 아코디언 전용 박스 (container 동일한 폭 유지) -->
+<<!-- ⭐ 개인회생·파산 필수 안내 -->
 <div class="container">  
-  <h2>개인회생·파산 필수 안내</h2>
-   <button id="toggle-all" class="toggle-all-btn">전체 펼치기 ▼</button>
+  <h2 class="info-title">개인회생·파산 필수 안내</h2>
+
+  <!-- ⭐ 전체 펼치기 버튼 -->
+  <button id="toggle-all-info" class="toggle-all-btn">전체 펼치기 ▼</button>
+
   <div class="calc-info extra-info">
+
+    <!-- 1) 개인회생파산 제도 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">개인회생파산 제도</button>
-      <div class="acc-content calc-acc-content">
+      <button class="acc-btn info-acc-btn">개인회생·파산 제도</button>
+      <div class="acc-content info-acc-content">
         <p>
-          개인회생과 파산은 채무자가 경제적으로 회복할 수 있도록 돕는 법적 제도입니다.  
-          소득이 있으면 개인회생, 소득이 없거나 변제가 불가능하면 파산을 고려합니다.
+          개인회생과 파산은 「채무자 회생 및 파산에 관한 법률」에 따라 채무자의 경제적 갱생을 목적으로 마련된 절차입니다. 
+          지속적·반복적 소득이 존재하는 경우에는 개인회생 절차가, 소득이 없거나 변제 능력이 전혀 없는 경우에는 파산·면책 절차가 적용됩니다.
         </p>
       </div>
     </div>
 
+    <!-- 2) 개인회생파산 절차 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">개인회생파산절차</button>
-      <div class="acc-content calc-acc-content">
+      <button class="acc-btn info-acc-btn">개인회생·파산 절차</button>
+      <div class="acc-content info-acc-content">
         <p>
-          개인회생은 신청 → 보정 → 개시결정 → 변제계획 인가 → 변제 수행,  
-          파산은 신청 → 조사 → 파산선고 → 면책 심사 순으로 진행됩니다.
+          개인회생은 <strong>신청 → 보정명령 → 개시결정 → 변제계획 인가 → 변제 수행</strong> 순으로 진행됩니다.<br>
+          파산은 <strong>신청 → 조사 및 심문 → 파산선고 → 면책 심사 및 면책결정</strong> 절차로 처리되며, 
+          법원의 심리와 채권자 의견을 반영하여 최종 결정됩니다.
         </p>
       </div>
     </div>
 
+    <!-- 3) 개인회생파산 신청 조건 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">개인회생파산 신청 조건</button>
-      <div class="acc-content calc-acc-content">
+      <button class="acc-btn info-acc-btn">개인회생·파산 신청 요건</button>
+      <div class="acc-content info-acc-content">
         <p>
-          개인회생은 일정한 소득이 있고 채무가 법적 기준을 충족해야 하며,  
-          파산은 변제 능력이 전혀 없을 때 신청 가능합니다.
+          개인회생은 일정한 수입이 지속적으로 발생하고, 채무액이 법정 기준(무담보 5억, 담보 10억 이하)을 충족해야 합니다.<br>
+          파산은 채무자가 지급불능 상태에 이르러 채무 전액을 변제할 수 없는 경우 신청할 수 있습니다.
         </p>
       </div>
     </div>
 
+    <!-- 4) 변제금 계산 방식 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">변제금 계산 방식</button>
-      <div class="acc-content calc-acc-content">
+      <button class="acc-btn info-acc-btn">변제금 산정 방식</button>
+      <div class="acc-content info-acc-content">
         <p>
-          소득에서 법원 생계비를 제외한 금액을 기준으로 변제금이 산정되며,  
-          청산가치보다 적게 변제할 수 없습니다.
+          개인회생 변제금은 채무자의 <strong>월 평균 소득에서 법원이 정한 생계비를 공제한 금액</strong>을 기준으로 산정됩니다.<br>
+          또한 변제금 총액은 채무자의 재산가치를 기준으로 하는 <strong>청산가치 보장 원칙</strong>을 충족해야 합니다.
         </p>
       </div>
     </div>
 
+    <!-- 5) 2026년 최저 생계비 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">2026 최저 생계비 표</button>
-      <div class="acc-content calc-acc-content">
+      <button class="acc-btn info-acc-btn">2026년 최저 생계비 기준</button>
+      <div class="acc-content info-acc-content">
         <p>
-          2026년 기준 중위소득을 기반으로 가구수별 최저 생계비가 산정되며  
-          개인회생 변제금 계산의 핵심 요소입니다.
+          2026년 최저 생계비는 보건복지부 고시 기준 중위소득의 <strong>60%</strong>를 적용하여 산정되며, 
+          개인회생 변제금 산정 시 법원이 인정하는 필수 생계비로 사용됩니다.
+        </p>
+
+        <p><strong>📌 2026년 가구원 수별 법원 인정 생계비</strong></p>
+        <p>1인 가구: <strong>1,537,800원</strong></p>
+        <p>2인 가구: <strong>2,531,400원</strong></p>
+        <p>3인 가구: <strong>3,258,000원</strong></p>
+        <p>4인 가구: <strong>3,978,000원</strong></p>
+        <p>5인 가구: <strong>4,680,000원</strong></p>
+
+        <p>※ 실제 변제금 산정 시에는 추가 생계비, 부양가족, 의료비 등 개별 사정이 반영될 수 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- 6) 준비서류 및 발급대행 -->
+    <div class="accordion-item">
+      <button class="acc-btn info-acc-btn">준비서류 및 발급대행</button>
+      <div class="acc-content info-acc-content">
+        <p>
+          개인회생·파산 신청 시 필요한 서류는 법원, 행정기관, 금융기관, 
+          <strong>손해보험협회</strong>, 신용정보원 등에서 발급되며, 
+          채무자의 소득·재산·채무·보험·거래내역을 입증하는 자료가 포함됩니다.
+        </p>
+
+        <p>
+          또한 <strong>쏜살민원</strong>에서는 개인회생·파산 신청에 필요한 주요 서류를 
+          <strong>대행 발급 서비스</strong>로 신속하게 준비할 수 있습니다.
+        </p>
+
+        <a href="https://ssminwon.com" class="calc-link-btn">서류 발급대행 바로가기 →</a>
+      </div>
+    </div>
+
+    <!-- 7) 압류 해제 시점 -->
+    <div class="accordion-item">
+      <button class="acc-btn info-acc-btn">압류 해제 시점</button>
+      <div class="acc-content info-acc-content">
+        <p>
+          개인회생은 <strong>개시결정 이후</strong>, 파산은 <strong>파산선고 이후</strong> 
+          보전처분·중지명령·금지명령 등에 따라 급여·통장·재산에 대한 압류가 해제되거나 효력이 정지됩니다.
         </p>
       </div>
     </div>
 
+    <!-- 8) 채무불이행 등재 말소 시점 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">준비서류와 발급대행</button>
-      <div class="acc-content calc-acc-content">
+      <button class="acc-btn info-acc-btn">채무불이행 등재 말소 시점</button>
+      <div class="acc-content info-acc-content">
         <p>
-          개인회생·파산 신청 시 필요한 서류는 법원·관공서·금융기관에서 발급되며,  
-          발급대행 서비스를 통해 빠르게 준비할 수 있습니다.
+          개인회생은 변제계획 인가 이후 일부 신용정보가 완화되며, 
+          면책 결정이 확정되면 금융기관 및 신용정보원에 등록된 채무불이행 정보가 순차적으로 말소됩니다.
         </p>
+
+        <p><strong>📌 말소 소요기간</strong></p>
+        <p>· 면책 결정 후 약 <strong>5~7일 내 1차 반영</strong></p>
+        <p>· 신용정보원 전체 반영까지 <strong>약 2~4주 소요</strong></p>
+        <p>· 금융기관 내부 시스템 반영은 기관별로 상이</p>
       </div>
     </div>
 
+    <!-- 9) 상담신청방법 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">압류해제 시점</button>
-      <div class="acc-content calc-acc-content">
+      <button class="acc-btn info-acc-btn">상담 신청 방법</button>
+      <div class="acc-content info-acc-content">
         <p>
-          개인회생은 개시결정 이후 압류가 해제되며,  
-          파산은 파산선고 이후 절차에 따라 해제됩니다.
+          개인회생·파산 상담은 온라인 상담 신청, 전화 상담, 방문 상담 외에도 
+          <strong>카카오톡 상담</strong>을 통해 실시간으로 진행할 수 있습니다.
         </p>
+
+        <a href="https://pf.kakao.com" class="calc-link-btn">카톡 상담하기 →</a>
       </div>
     </div>
+
   </div>
-    <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">채무불이행등재말소 시점</button>
-      <div class="acc-content calc-acc-content">
-        <p>
-          개인회생은 변제계획 인가 후 일부 완화되며,  
-          면책 결정 후 신용정보가 단계적으로 회복됩니다.
-        </p>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn">상담신청방법</button>
-      <div class="acc-content calc-acc-content">
-        <p>
-          온라인 상담 신청, 전화 상담, 방문 상담 등 다양한 방식으로  
-          개인회생·파산 관련 상담을 받을 수 있습니다.
-        </p>
-      </div>
-    </div>
 </div>
+
   
  <!-- ⭐ 온라인 상담 신청 --> 
 <div class="container">
