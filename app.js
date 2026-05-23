@@ -311,3 +311,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+/****************************************************
+ * 온라인 상담 말풍선 타이핑 효과
+ ****************************************************/
+document.addEventListener("DOMContentLoaded", function () {
+  const text2 = "회원가입 필요없고 상담비 무료!";
+  const typingTarget2 = document.getElementById("consult-typing");
+  const bubble2 = document.querySelector(".consult-section .calc-greeting-bubble");
+
+  if (!typingTarget2 || !bubble2) return;
+
+  let isTyping2 = false;
+
+  function startTyping2() {
+    if (isTyping2) return;
+    isTyping2 = true;
+
+    typingTarget2.textContent = "";
+    let index = 0;
+
+    function typing() {
+      if (index < text2.length) {
+        typingTarget2.textContent += text2.charAt(index);
+        index++;
+        setTimeout(typing, 60);
+      }
+    }
+    typing();
+  }
+
+  const observer2 = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isTyping2 = false;
+          startTyping2();
+        }
+      });
+    },
+    { threshold: 0.6 }
+  );
+
+  observer2.observe(bubble2);
+});
