@@ -312,45 +312,25 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 /****************************************************
- * 온라인 상담 말풍선 타이핑 효과
+ * 온라인 상담 말풍선 타이핑 효과 (확정 작동 버전)
  ****************************************************/
 document.addEventListener("DOMContentLoaded", function () {
   const text2 = "회원가입 필요없고 상담비 무료!";
   const typingTarget2 = document.getElementById("consult-typing");
-  const bubble2 = document.querySelector(".consult-section .calc-greeting-bubble");
 
-  if (!typingTarget2 || !bubble2) return;
+  if (!typingTarget2) return;
 
-  let isTyping2 = false;
+  let index = 0;
 
-  function startTyping2() {
-    if (isTyping2) return;
-    isTyping2 = true;
-
-    typingTarget2.textContent = "";
-    let index = 0;
-
-    function typing() {
-      if (index < text2.length) {
-        typingTarget2.textContent += text2.charAt(index);
-        index++;
-        setTimeout(typing, 60);
-      }
+  function typing2() {
+    if (index < text2.length) {
+      typingTarget2.textContent += text2.charAt(index);
+      index++;
+      setTimeout(typing2, 60);
     }
-    typing();
   }
 
-  const observer2 = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          isTyping2 = false;
-          startTyping2();
-        }
-      });
-    },
-    { threshold: 0.6 }
-  );
-
-  observer2.observe(bubble2);
+  // 페이지 로드 후 바로 타이핑 시작
+  typing2();
 });
+
