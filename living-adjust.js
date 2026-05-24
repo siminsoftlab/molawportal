@@ -167,4 +167,16 @@ document.querySelectorAll('.faq-question').forEach(btn => {
     }
   });
 });
+// ▼ ↔ ▲ 자동 전환 기능
+document.querySelectorAll('.toggle-arrow').forEach(btn => {
+  btn.addEventListener('click', function () {
+    if (this.classList.contains('active')) {
+      this.textContent = this.textContent.replace('▲', '▼');
+      this.classList.remove('active');
+    } else {
+      this.textContent = this.textContent.replace('▼', '▲');
+      this.classList.add('active');
+    }
+  });
+});
 
