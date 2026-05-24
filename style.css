@@ -1224,17 +1224,33 @@ body.homepage .calc-box {
 .calc-link-btn:hover {
   background: #003fcc;
 }
-/* 설명 아코디언도 FAQ와 동일한 배경색 적용 */
+/* FAQ 스타일 통일 */
 .faq-item {
-  background-color: #f9f9f9;   /* FAQ 배경색 */
+  background-color: #f9f9f9;
   border-radius: 8px;
   padding: 10px 15px;
   margin-bottom: 12px;
 }
 
+.faq-question {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
 .faq-answer {
-  background-color: #ffffff;   /* FAQ 답변 영역 배경 */
+  background-color: #ffffff;
   padding: 12px 15px;
   border-radius: 6px;
   margin-top: 8px;
+  display: none;
+}
+
+/* FAQ 열림 애니메이션 */
+.faq-answer.open {
+  display: block;
 }
