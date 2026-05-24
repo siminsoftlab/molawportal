@@ -137,3 +137,15 @@ function resetRepayInputs() {
   const btn = document.querySelector(".repay-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
+// ▼ ↔ ▲ 자동 전환 기능
+document.querySelectorAll('.toggle-arrow').forEach(btn => {
+  btn.addEventListener('click', function () {
+    if (this.classList.contains('active')) {
+      this.textContent = this.textContent.replace('▲', '▼');
+      this.classList.remove('active');
+    } else {
+      this.textContent = this.textContent.replace('▼', '▲');
+      this.classList.add('active');
+    }
+  });
+});
