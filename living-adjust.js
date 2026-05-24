@@ -154,3 +154,17 @@ document.querySelectorAll('.toggle-arrow').forEach(btn => {
     }
   });
 });
+// FAQ 열림/닫힘 기능
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const answer = this.nextElementSibling;
+
+    // 열림/닫힘 토글
+    if (answer.style.display === "block") {
+      answer.style.display = "none";
+    } else {
+      answer.style.display = "block";
+    }
+  });
+});
+
