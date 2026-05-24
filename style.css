@@ -1224,3 +1224,17 @@ body.homepage .calc-box {
 .calc-link-btn:hover {
   background: #003fcc;
 }
+/* 설명 아코디언도 FAQ와 동일한 배경색 적용 */
+.faq-item {
+  background-color: #f9f9f9;   /* FAQ 배경색 */
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 12px;
+}
+
+.faq-answer {
+  background-color: #ffffff;   /* FAQ 답변 영역 배경 */
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
