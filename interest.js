@@ -107,3 +107,28 @@ function resetInterestInputs() {
   const btn = document.querySelector(".interest-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
+/****************************************************
+ * 날짜 선택 시 자동으로 일수 계산
+ ****************************************************/
+function updateDays() {
+  const from = document.getElementById("fromDate").value;
+  const to = document.getElementById("toDate").value;
+
+  if (!from || !to) return;
+
+  const start = new Date(from);
+  const end = new Date(to);
+
+  // 밀리초 → 일수 변환
+  const diffTime = end - start;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays >= 0) {
+    document.getElementById("days").value = diffDays;
+  }
+}
+
+// 날짜 변경 이벤트 연결
+document.getElementById("fromDate").addEventListener("change", updateDays);
+document.getElementById("toDate").addEventListener("change", updateDays);
+
