@@ -2,40 +2,40 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ⭐ SEO 최적화 Title (40자 이내) -->
-  <title>연이자 계산기·불법사채 이자 계산기·총상환금액·월변제금 조회</title>
-  
-  <!-- ⭐ SEO Description (80자 이내) -->
-  <meta name="description" content="연이자·대출이자·불법사채 이자 계산을 지원하며 총상환금액과 월변제금을 자동 계산하는 이자 계산 서비스">
-  
+  <!-- ⭐ SEO 최적화 Title -->
+  <title>연이자 계산기 - 대출이자·일할계산·총이자 자동 계산</title>
+
+  <!-- ⭐ SEO Description (네이버 80자 이내) -->
+  <meta name="description" content="연이자 계산기로 원금·이자율·기간 입력 시 총이자와 총상환금액을 자동 계산합니다.">
+
   <!-- Canonical -->
   <link rel="canonical" href="https://molawcalculator.com/calculators/interest.html">
-  
+
   <!-- 네이버/구글 인증 -->
   <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
-  
+
   <!-- Open Graph -->
-  <meta property="og:title" content="연이자 계산기·불법사채 이자 계산기·총상환금액·월변제금 조회">
-  <meta property="og:description" content="연이자·대출이자·불법사채 이자 계산을 지원하며 총상환금액과 월변제금을 자동 계산하는 이자 계산 서비스">
+  <meta property="og:title" content="연이자 계산기 - 대출이자·일할계산·총이자 자동 계산">
+  <meta property="og:description" content="연이자 계산기로 원금·이자율·기간 입력 시 총이자와 총상환금액을 자동 계산합니다.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/calculators/interest.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
-  
-  <!-- ⭐ 구조화 데이터 (WebApplication + LegalService) -->
+
+  <!-- ⭐ 구조화 데이터 (WebApplication) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "연이자 계산기·불법사채 이자 계산기",
+    "name": "연이자 계산기",
     "url": "https://molawcalculator.com/calculators/interest.html",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "All",
-    "description": "연이자 계산기, 불법사채 이자계산, 총상환금액 조회, 월변제금 계산을 지원하는 자동 이자 계산 서비스",
-    "keywords": "연이자 계산기, 불법사채 이자계산, 총상환금액 조회, 월변제금조회, 대출이자 계산기, 연체이자 계산기",
+    "description": "연이자 계산기에서 원금·이자율·기간을 입력하면 총이자와 총상환금액을 자동 계산합니다.",
+    "keywords": "연이자 계산기, 대출이자 계산기, 일할계산, 총상환금액, 연체이자 계산",
     "provider": {
       "@type": "LegalService",
       "name": "법무법인 영민",
@@ -43,159 +43,155 @@
     }
   }
   </script>
+
   <link rel="icon" href="../images/favicon.ico">
   <link rel="stylesheet" href="../style.css">
   <script src="../interest.js" defer></script>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="/firebase-counter.js"></script>
-  <script src="/date-calc.js" defer></script>
   <script src="../block-right-click.js"></script>
 </head>
 
 <body class="subpage">
 
-  <!-- 상단 고정 헤더 -->
-  <header class="fixed-header fixed-top">
-    <h1>연이자 계산기 · 불법사채 이자 계산기</h1>
-    <a href="../index.html" class="home-btn">홈</a>
-  </header>
+<header class="fixed-header fixed-top">
+  <h1>연이자 계산기</h1>
+  <a href="../index.html" class="home-btn">홈</a>
+</header>
 
-  <div class="page-wrap">
-    <div class="container">      
-      <!-- ⭐ SEO 강화 H2 -->
-      <h2>연이자 · 대출이자 · 불법사채 이자 계산 통합 서비스</h2>
-       <!-- ⭐ 설명 아코디언 (같은 폭으로 정렬됨) -->
+<div class="page-wrap">
+  <div class="container">
+
+    <!-- ⭐ SEO 강화 H2 -->
+    <h2>연이자 계산 방법과 총이자 계산 공식</h2>
+
+    <!-- 설명 아코디언 -->
+    <div class="faq-item">
+      <button class="faq-question toggle-arrow">연이자 계산기 설명 보기 ▼</button>
+      <div class="faq-answer">
+        <p>
+          연이자 계산기는 원금·연이율·기간을 입력하면<br>
+          해당 기간 동안 발생하는 <strong>총이자</strong>와<br>
+          최종 상환해야 하는 <strong>총상환금액</strong>을 자동 계산합니다.<br>
+          연이자 공식(원금 × 연이율 ÷ 100 × 일수 ÷ 365)을 기반으로<br>
+          복잡한 계산 없이 이자 부담을 빠르게 확인할 수 있습니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- 입력 영역 -->
+    <label>원금(원)</label>
+    <input id="principal" type="number">
+
+    <label>연 이자율(%)</label>
+    <input id="rate" type="number" value="20">
+
+    <label>시작일 (From)</label>
+    <input id="fromDate" type="date">
+
+    <label>종료일 (To)</label>
+    <input id="toDate" type="date">
+
+    <label>기간(일수)</label>
+    <input id="days" type="number">
+    <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
+
+    <div class="btn-row">
+      <button onclick="calcInterest()">계산하기</button>
+      <button onclick="resetInterestInputs()">초기화</button>
+    </div>
+
+    <!-- 요약 -->
+    <div id="interestSummary" class="summary-card"></div>
+
+    <!-- 상세 계산 -->
+    <div class="accordion">
+      <button class="interest-accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
+      <div id="interestAccordion" class="accordion-content"></div>
+    </div>
+
+    <!-- 설명 -->
+    <div id="interestExplain" class="explain-box"></div>
+
+    <!-- ⭐ SEO 설명문 -->
+    <div id="interestSEO" class="seo-box-animated">
+      <h3>연이자 계산 공식</h3>
+      <p>연이자 계산 공식은 원금 × 연이율 ÷ 100 × 일수 ÷ 365이며, 이 공식을 기반으로 총이자를 산정합니다.</p>
+
+      <h3>연이자 계산 예시</h3>
+      <p>예시) 원금 1,000,000원, 연 12%, 90일 → 이자 29,589원, 총상환액 1,029,589원</p>
+
+      <h3>일할 계산 지원</h3>
+      <p>일 단위로 계산되는 일할계산을 지원하여 정확한 기간별 이자 산정이 가능합니다.</p>
+
+      <h3>총상환금액 확인</h3>
+      <p>총상환금액은 원금 + 총이자로 계산되며 대출 계획 수립에 활용할 수 있습니다.</p>
+    </div>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+      <h2>연이자 계산기 FAQ</h2>
+
       <div class="faq-item">
-        <button class="faq-question toggle-arrow">연이자 계산기 설명 보기 ▼</button>
+        <button class="faq-question">연이자는 어떻게 계산하나요?</button>
         <div class="faq-answer">
-          <p>
-            연이자 계산기는 <strong>원금·연이율·일수</strong>를 입력하면<br>
-            해당 기간 동안 발생하는 <strong>이자 금액</strong>과<br>
-            최종 상환해야 하는 <strong>총 상환액</strong>을 자동으로 계산해 주는 도구입니다.<br>
-            연이자 공식(원금 × 연이율 ÷ 100 × 일수 ÷ 365)에 따라<br>
-            복잡한 계산 없이 이자 부담을 빠르게 확인할 수 있습니다.
-          </p>
+          <p>원금 × 연이율 ÷ 100 × 일수 ÷ 365 공식으로 계산됩니다.</p>
         </div>
       </div>
-      <label>원금(원)</label>
-      <input id="principal" type="number">
 
-      <label>연 이자율(%)</label>
-      <input id="rate" type="number" value="20">
-
-      <label>시작일 (From)</label>
-      <input id="fromDate" type="date">
-      
-      <label>종료일 (To)</label>
-      <input id="toDate" type="date">
-
-      <label>기간(일수)</label>
-      <input id="days" type="number">
-      <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
-
-      <div class="btn-row">
-        <button onclick="calcInterest()">계산하기</button>
-        <button onclick="resetInterestInputs()">초기화</button>
+      <div class="faq-item">
+        <button class="faq-question">일할 계산이란 무엇인가요?</button>
+        <div class="faq-answer">
+          <p>일수 기준으로 계산하는 방식으로, 기간이 짧을 때 정확한 이자 산정이 가능합니다.</p>
+        </div>
       </div>
 
-      <!-- 총 이자 요약 -->
-      <div id="interestSummary" class="summary-card"></div>
-
-      <!-- 상세 계산 -->
-      <div class="accordion">
-        <button class="interest-accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
-        <div id="interestAccordion" class="accordion-content"></div>
+      <div class="faq-item">
+        <button class="faq-question">연체이자도 계산되나요?</button>
+        <div class="faq-answer">
+          <p>연체이자율을 입력하면 동일한 방식으로 계산할 수 있습니다.</p>
+        </div>
       </div>
-       <!-- 설명은 반드시 아코디언 밖에 있어야 함 -->
-      <div id="interestExplain" class="explain-box"></div>
 
-      <!-- ⭐ SEO 설명문 (키워드 강화) -->
-      <div id="interestSEO" class="seo-box-animated">
-        <h3>연이자 계산기 · 불법사채 이자 계산기 기능 안내</h3>
-        <p>이 서비스는 연이자 계산기와 불법사채 이자 계산 기능을 제공하며, 원금·이자율·기간을 입력하면 총이자와 총상환금액을 자동 계산합니다.</p>
-        <p>대출이자 계산, 연체이자 계산, 일할 계산, 고금리 사채 이자 계산까지 모두 지원하여 정확한 이자 산정이 가능합니다.</p>
-
-        <h3>불법사채 이자율 계산이 필요한 이유</h3>
-        <p>불법사채는 법정 최고이자율을 초과하는 경우가 많아, 실제 상환해야 할 금액이 과도하게 높아질 수 있습니다. 본 계산기는 불법사채 이자율이 적정한지 확인하는 데 도움을 줍니다.</p>
-
-        <h3>총상환금액 조회의 중요성</h3>
-        <p>총상환금액 조회 기능을 통해 대출 상환 계획을 세우거나 불법사채 피해를 예방할 수 있습니다. 정확한 계산은 분쟁 예방에 매우 중요합니다.</p>
+      <div class="faq-item">
+        <button class="faq-question">총상환금액은 어떻게 계산되나요?</button>
+        <div class="faq-answer">
+          <p>총상환금액 = 원금 + 총이자이며 계산 결과에서 자동으로 확인할 수 있습니다.</p>
+        </div>
       </div>
-      <!-- ⭐ 별도 FAQ 섹션 -->
-<section class="faq-section">
-  <h2>연이자 계산기 · 불법사채 이자 계산기 FAQ</h2>
+    </section>
 
-  <div class="faq-item">
-    <button class="faq-question">
-      불법사채 이자율은 어떻게 계산하나요?
-    </button>
-    <div class="faq-answer">
-      <p>불법사채는 법정 최고이자율(연 20%)을 초과하는 경우 불법입니다. 본 계산기를 통해 실제 적용된 이자율이 법정 기준을 초과하는지 확인할 수 있습니다.</p>
-    </div>
   </div>
+</div>
 
-  <div class="faq-item">
-    <button class="faq-question">
-      이자는 이용 기간이 자동으로 계산되나요?
-    </button>
-    <div class="faq-answer">
-      <p>시작일과 종료일을 입력하면 연체 기간 자동 계산됩니다.</p>
+<!-- footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-company">딱요만큼변제</div>
+    <div class="footer-info">
+      상호: 법무법인 영민 | 대표: 박희영 | 사업자등록번호: 425-88-00769  
+      주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
+      개인정보관리책임자: 박희영  
+      전화: 02-595-5706  
+      팩스: 02-525-7255
     </div>
+    <div class="footer-copy">COPYRIGHT©2026 딱요만큼변제. ALL RIGHTS RESERVED.</div>
   </div>
+</footer>
 
-  <div class="faq-item">
-    <button class="faq-question">
-      총상환금액 조회는 어떤 기준으로 계산되나요?
-    </button>
-    <div class="faq-answer">
-      <p>총상환금액은 원금 + 이자 + 연체이자(해당 시)를 기준으로 계산됩니다.</p>
-    </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-question">
-      일할 계산도 지원하나요?
-    </button>
-    <div class="faq-answer">
-      <p>네. 일 단위 이자 계산(일할 계산)을 지원하며, 정확한 일수 기반 이자 산정이 가능합니다.</p>
-    </div>
-  </div>
-</section>
-    </div>
-  </div>
-
-  <!-- footer -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-company">딱요만큼변제</div>
-      <div class="footer-info">
-        상호: 법무법인 영민 | 대표: 박희영 | 사업자등록번호: 425-88-00769  
-        주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
-        개인정보관리책임자: 박희영  
-        전화: 02-595-5706  
-        팩스: 02-525-7255
-      </div>
-      <div class="footer-copy">COPYRIGHT©2026 딱요만큼변제. ALL RIGHTS RESERVED.</div>
-    </div>
-  </footer>
-
-  <!-- 하단 고정 상담바 -->
-  <div class="call-fixed">
-    <a href="tel:025955706" class="consult-call">
-      무료 상담 02-595-5706 ← 클릭 시 전화 연결
-    </a>
-  </div>
-
-  <!-- 카톡 상담 -->
-  <a href="http://pf.kakao.com/_wAqxen/chat" 
-     class="quick-kakao" target="_blank" rel="noopener noreferrer">
-    💬 카톡 상담
+<!-- 하단 고정 상담바 -->
+<div class="call-fixed">
+  <a href="tel:025955706" class="consult-call">
+    무료 상담 02-595-5706 ← 클릭 시 전화 연결
   </a>
-<!-- FAQ 전용 CSS & JS 연결 -->
+</div>
+
+<!-- 카톡 상담 -->
+<a href="http://pf.kakao.com/_wAqxen/chat" 
+   class="quick-kakao" target="_blank" rel="noopener noreferrer">
+  💬 카톡 상담
+</a>
+
 <link rel="stylesheet" href="../faq.css">
 <script src="../faq.js" defer></script>
+
 </body>
 </html>
