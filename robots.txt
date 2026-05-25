@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Allow: /images/
 
 Sitemap: https://molawcalculator.com/sitemap.xml
+Sitemap: https://molawcalculator.com/feed.xml
