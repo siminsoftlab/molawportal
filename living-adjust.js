@@ -1,10 +1,19 @@
 /****************************************************
- * 법원 생계비 계산기 — 최종 안정화 버전 (2026)
+ * 법원 생계비 계산기 — 최종 안정화 버전 (정규식 숫자 처리 적용)
  ****************************************************/
 
-/* 가구 수 선택 시 법원 생계비 자동 계산 */
+/* 정규식 기반 숫자 처리 — 1원 빠짐 문제 완전 해결 */
+function getInt(id) {
+  return parseInt(
+    (document.getElementById(id).value || "0").replace(/[^\d]/g, "")
+  ) || 0;
+}
+
+/****************************************************
+ * 가구 수 선택 시 법원 생계비 자동 계산
+ ****************************************************/
 function updateCourtLiving() {
-  const household = Number(document.getElementById('la_household').value || 1);
+  const household = getInt('la_household');
 
   const baseLiving1 = 1538523;
   const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
@@ -14,7 +23,9 @@ function updateCourtLiving() {
   document.getElementById('la_court_living').value = courtLiving;
 }
 
-/* 상세 계산 아코디언 */
+/****************************************************
+ * 상세 계산 아코디언
+ ****************************************************/
 function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
   const btn = document.querySelector(".la-acc-btn");
@@ -32,7 +43,9 @@ function toggleLivingAccordion() {
   }
 }
 
-/* 초기화 */
+/****************************************************
+ * 초기화
+ ****************************************************/
 function resetLivingAdjust() {
   ["la_income","la_extra","la_debt","la_asset"].forEach(id=>{
     document.getElementById(id).value = "";
@@ -56,14 +69,16 @@ function resetLivingAdjust() {
   updateCourtLiving();
 }
 
-/* 계산 */
+/****************************************************
+ * 계산
+ ****************************************************/
 function calcLivingAdjust() {
-  const income    = Number(document.getElementById('la_income').value || 0);
-  const courtLiving = Number(document.getElementById('la_court_living').value || 0);
-  const extra     = Number(document.getElementById('la_extra').value || 0);
-  const months    = Number(document.getElementById('la_months').value || 0);
-  const debt      = Number(document.getElementById('la_debt').value || 0);
-  const asset     = Number(document.getElementById('la_asset').value || 0);
+  const income       = getInt('la_income');
+  const courtLiving  = getInt('la_court_living');
+  const extra        = getInt('la_extra');
+  const months       = getInt('la_months');
+  const debt         = getInt('la_debt');
+  const asset        = getInt('la_asset');
 
   const totalLiving = courtLiving + extra;
   const disposable = Math.max(income - totalLiving, 0);
