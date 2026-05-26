@@ -1,5 +1,5 @@
 /****************************************************
- * 개인회생 변제금 계산기 — PV 포함 최신본 repay.js
+ * 개인회생 변제금 계산기 — 법원 생계비 UI 버전
  ****************************************************/
 
 /* 공통 유틸 */
@@ -16,7 +16,7 @@ function toNumber(v) {
  ****************************************************/
 function calcRepay() {
 
-  const debt   = toNumber($("debt").value);   // 총 부채
+  const debt   = toNumber($("debt").value);
   const income = toNumber($("income").value);
   const living = toNumber($("living").value);
   const extra  = toNumber($("extra").value);
@@ -27,60 +27,79 @@ function calcRepay() {
   const monthlyPay = Math.max(disposable, 0);
   const totalPay = monthlyPay * months;
 
-  // ⭐ 최종 변제금 = 총 변제금 vs 청산가치 중 큰 값
+  // 최종 변제금 = 총 변제금 vs 청산가치 중 큰 값
   const finalPay = Math.max(totalPay, asset);
 
-  // ⭐ 변제율 = 최종 변제금 ÷ 총 부채 × 100
-  const repayRate = debt > 0 
-    ? ((finalPay / debt) * 100).toFixed(1)
-    : 0;
+  // 변제율·탕감률
+  const repayRate = debt > 0 ? ((finalPay / debt) * 100).toFixed(1) : "0.0";
+  const reliefRate = (100 - Number(repayRate)).toFixed(1);
 
-  // ⭐ 탕감률 = 100 - 변제율
-  const reliefRate = (100 - repayRate).toFixed(1);
-
-  /****************************************************
-   * ⭐ 현재가치(PV) 계산
-   ****************************************************/
-  const discountRate = 0.03; // 3% 할인율
+  // 현재가치(PV)
+  const discountRate = 0.03;
   const years = months / 12;
+  const presentValue = finalPay > 0
+    ? (finalPay / Math.pow(1 + discountRate, years))
+    : 0;
+  const presentValueRounded = Math.round(presentValue);
 
-  const presentValue = (finalPay / Math.pow(1 + discountRate, years)).toFixed(0);
-
-  // ⭐ 청산가치 충족 여부
-  const meetsAssetRequirement = presentValue >= asset;
+  const meetsAssetRequirement = presentValueRounded >= asset && asset > 0;
 
   /****************************************************
-   * 요약 카드
+   * 요약 카드 — 법원 생계비 UI 스타일
    ****************************************************/
   const summary = $("repaySummary");
   summary.style.display = "block";
 
   summary.innerHTML = `
     <div class="repay-highlight-box">
+
       <div class="row">
         <div class="label">총 부채</div>
         <div class="value">${debt.toLocaleString()}원</div>
       </div>
 
       <div class="row">
-        <div class="label">총 변제금</div>
+        <div class="label">월 변제 가능 금액(가용소득)</div>
+        <div class="value">${monthlyPay.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">총 변제예정액(유보액)</div>
+        <div class="value">${totalPay.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">최종 변제금(청산가치 반영)</div>
         <div class="value">${finalPay.toLocaleString()}원</div>
       </div>
 
       <div class="row">
         <div class="label">변제율</div>
-        <div class="value">${repayRate}% (실제로 갚는 비율)</div>
+        <div class="value">${repayRate}%</div>
       </div>
 
       <div class="rate-big">
         탕감률 ${reliefRate}%<br>
         <span style="font-size:0.9rem; font-weight:600;">(법원에서 탕감되는 비율)</span>
       </div>
+
+      <div class="row">
+        <div class="label">현재가치(PV)</div>
+        <div class="value">${presentValueRounded.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">청산가치 충족 여부</div>
+        <div class="value" style="color:${meetsAssetRequirement ? '#008000' : '#d60000'};">
+          ${meetsAssetRequirement ? "✔ 충족" : "✘ 미충족"}
+        </div>
+      </div>
+
     </div>
   `;
 
   /****************************************************
-   * 상세 계산 (아코디언)
+   * 상세 계산 — 법원 생계비 calc-step 스타일
    ****************************************************/
   const acc = $("repayAccordion");
   acc.innerHTML = `
@@ -95,26 +114,22 @@ function calcRepay() {
     <div class="calc-step"><strong>5) 가용소득</strong><br>
       ${income.toLocaleString()} − ${living.toLocaleString()}
       ${extra > 0 ? ` − ${extra.toLocaleString()}` : ""}
-      <br>
-      = <strong>${monthlyPay.toLocaleString()}원</strong>
+      <br>= <strong>${monthlyPay.toLocaleString()}원</strong>
     </div>
 
     <div class="calc-step"><strong>6) 변제기간</strong><br>${months}개월</div>
 
     <div class="calc-step"><strong>7) 총 변제예정액(유보액)</strong><br>
-      ${monthlyPay.toLocaleString()} × ${months} = <strong>${totalPay.toLocaleString()}원</strong>
+      ${monthlyPay.toLocaleString()} × ${months} = ${totalPay.toLocaleString()}원
     </div>
 
-    <div class="calc-step"><strong>8) 현재가치(PV)</strong><br>
-      할인율 3% 적용 → <strong>${Number(presentValue).toLocaleString()}원</strong>
-    </div>
-
-    <div class="calc-step"><strong>9) 청산가치 비교</strong><br>
+    <div class="calc-step"><strong>8) 청산가치 비교</strong><br>
       청산가치: ${asset.toLocaleString()}원<br>
-      현재가치(PV): ${Number(presentValue).toLocaleString()}원<br>
-      <strong style="color:${meetsAssetRequirement ? '#008000' : '#d60000'};">
-        ${meetsAssetRequirement ? "✔ 청산가치 충족" : "✘ 청산가치 미충족 → 변제금 상향 필요"}
-      </strong>
+      최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
+    </div>
+
+    <div class="calc-step"><strong>9) 현재가치(PV)</strong><br>
+      ${presentValueRounded.toLocaleString()}원
     </div>
 
     <div class="calc-step"><strong>10) 변제율·탕감률</strong><br>
@@ -123,57 +138,38 @@ function calcRepay() {
     </div>
   `;
 
+  acc.classList.remove("open");
+  acc.style.maxHeight = null;
+
+  const btn = document.querySelector(".repay-accordion-btn");
+  btn.textContent = "계산 상세 보기 ▼";
+
   /****************************************************
-   * 자동 설명
+   * 자동 설명 — 법원 생계비 스타일
    ****************************************************/
   const explain = $("repayExplain");
   explain.style.display = "block";
-  explain.innerHTML = `
-    <h3>📌 변제율·탕감률 자동 설명</h3>
-    <p>
-      총 부채 중 <strong>${repayRate}%는 실제로 갚아야 하는 금액</strong>이며,<br>
-      나머지 <strong>${reliefRate}%는 법원에서 탕감받게 되는 금액</strong>입니다.<br><br>
 
-      현재가치(PV)는 <strong>${Number(presentValue).toLocaleString()}원</strong>이며,<br>
-      청산가치 <strong>${asset.toLocaleString()}원</strong>과 비교했을 때<br>
-      <strong>${meetsAssetRequirement ? "충족합니다." : "충족하지 못합니다."}</strong>
+  explain.innerHTML = `
+    <h3>📌 변제금·변제율·탕감률 자동 설명</h3>
+
+    <p>
+      총 부채 <strong>${debt.toLocaleString()}원</strong> 중<br>
+      <strong>${repayRate}%</strong>는 실제로 갚아야 하는 금액이며,<br>
+      나머지 <strong>${reliefRate}%</strong>는 법원에서 탕감받게 되는 금액입니다.
+    </p>
+
+    <p>
+      최종 변제금의 현재가치(PV)는<br>
+      <strong>${presentValueRounded.toLocaleString()}원</strong>이며,<br>
+      이는 청산가치 <strong>${asset.toLocaleString()}원</strong>을<br>
+      <strong style="color:${meetsAssetRequirement ? '#008000' : '#d60000'};">
+        ${meetsAssetRequirement ? "충족합니다." : "충족하지 못합니다."}
+      </strong>
     </p>
   `;
 
   setTimeout(() => explain.classList.add("visible"), 50);
-
-  acc.classList.remove("open");
-  acc.style.maxHeight = null;
-
-  const btn = document.querySelector(".repay-accordion-btn");
-  btn.textContent = "계산 상세 보기 ▼";
-}
-
-/****************************************************
- * 초기화
- ****************************************************/
-function resetRepayInputs() {
-  $("debt").value = "";
-  $("income").value = "";
-  $("living").value = "1538523";
-  $("extra").value = "";
-  $("months").value = "36";
-  $("asset").value = "";
-
-  $("repaySummary").style.display = "none";
-
-  const acc = $("repayAccordion");
-  acc.innerHTML = "";
-  acc.classList.remove("open");
-  acc.style.maxHeight = null;
-
-  const explain = $("repayExplain");
-  explain.innerHTML = "";
-  explain.style.display = "none";
-  explain.classList.remove("visible");
-
-  const btn = document.querySelector(".repay-accordion-btn");
-  btn.textContent = "계산 상세 보기 ▼";
 }
 
 /****************************************************
