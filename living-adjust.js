@@ -183,30 +183,22 @@ function calcLivingAdjust() {
    ****************************************************/
   const acc = document.getElementById("la_accordion");
   acc.innerHTML = `
-  <p><strong>월 소득</strong>은 ${income.toLocaleString()}원입니다.</p>
-
-  <p><strong>법원 생계비(${getHouseholdLabel(household)})</strong>는  
-  ${courtLiving.toLocaleString()}원이며,  
-  <strong>추가 생계비(인정)</strong>은 ${allowedExtra.toLocaleString()}원입니다.</p>
-
-  <p>따라서 <strong>총 생계비</strong>는  
-  ${totalLiving.toLocaleString()}원입니다.</p>
-
-  <p><strong>월 변제 가능 금액</strong>은  
-  ${disposable.toLocaleString()}원이며,  
-  <strong>총 변제예정액</strong>은  
-  ${totalRepay.toLocaleString()}원입니다.</p>
-
-  <p><strong>PV 충족 최소 변제금</strong>은  
-  ${requiredFinalPay.toLocaleString()}원이며,  
-  <strong>최종 변제금</strong>은  
-  ${finalPay.toLocaleString()}원입니다.</p>
-
-  <p><strong>현재가치(PV)</strong>는  
-  ${presentValue.toLocaleString()}원이며,  
-  청산가치 <strong>${asset.toLocaleString()}원</strong>을  
-  ${meetsPV ? "<span style='color:#008000;'>충족합니다.</span>" : "<span style='color:#d60000;'>충족하지 못합니다.</span>"}</p>
-`;
+    <div class="calc-step"><strong>월 소득</strong><br>${income.toLocaleString()}원</div>
+    <div class="calc-step"><strong>법원 생계비(${getHouseholdLabel(household)})</strong><br>${courtLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>추가 생계비(입력)</strong><br>${extraInput.toLocaleString()}원</div>
+    <div class="calc-step"><strong>추가 생계비(인정)</strong><br>${allowedExtra.toLocaleString()}원</div>
+    <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
+    <div class="calc-step"><strong>총 변제예정액</strong><br>${totalRepay.toLocaleString()}원</div>
+    <div class="calc-step"><strong>PV 충족 최소 변제금</strong><br>${requiredFinalPay.toLocaleString()}원</div>
+    <div class="calc-step"><strong>최종 변제금</strong><br>${finalPay.toLocaleString()}원</div>
+    <div class="calc-step"><strong>현재가치(PV)</strong><br>${presentValue.toLocaleString()}원</div>
+    <div class="calc-step"><strong>청산가치 충족 여부</strong><br>
+      <span style="color:${meetsPV ? '#008000' : '#d60000'};">
+        ${meetsPV ? "✔ 충족" : "✘ 미충족"}
+      </span>
+    </div>
+  `;
 
   acc.classList.remove("open");
   acc.style.maxHeight = null;
