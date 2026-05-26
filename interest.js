@@ -1,11 +1,27 @@
 /****************************************************
- * 연이자 계산기 — 표형 UI 적용 최종본
+ * 연이자 계산기 — 표형 UI + 필수입력 체크 적용 최종본
  ****************************************************/
 
 function calcInterest() {
-  const principal = Number(document.getElementById("principal").value || 0);
-  const rate      = Number(document.getElementById("rate").value || 0);
-  const days      = Number(document.getElementById("days").value || 0);
+
+  /****************************************************
+   * ⭐ 필수 입력값 체크
+   ****************************************************/
+  const principalInput = document.getElementById("principal").value.trim();
+  const rateInput      = document.getElementById("rate").value.trim();
+  const daysInput      = document.getElementById("days").value.trim();
+
+  if (principalInput === "" || rateInput === "" || daysInput === "") {
+    alert("원금, 연 이자율, 기간(일수)을 모두 입력해주세요.");
+    return; // ← 계산 중단
+  }
+
+  /****************************************************
+   * 숫자 변환
+   ****************************************************/
+  const principal = Number(principalInput);
+  const rate      = Number(rateInput);
+  const days      = Number(daysInput);
 
   const interest = Math.floor(principal * (rate / 100) * (days / 365));
   const total = principal + interest;
