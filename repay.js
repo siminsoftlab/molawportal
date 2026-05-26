@@ -45,22 +45,20 @@ function updateLivingCost() {
  ****************************************************/
 function calcRepay() {
   /****************************************************
- * 입력값 검증 — 하나라도 비어 있으면 계산 중단
+ * 입력값 검증 — 필수 입력만 체크 (extra, asset 제외)
  ****************************************************/
   if (
     $("debt").value.trim() === "" ||
     $("income").value.trim() === "" ||
-    $("living").value.trim() === "" ||    
-    $("asset").value.trim() === ""
+    $("living").value.trim() === "" ||
+    $("months").value.trim() === ""
   ) {
-    // 결과창 숨기기
     $("repaySummary").style.display = "none";
-    $("repayAccordion").innerHTML = "";  
+    $("repayAccordion").innerHTML = "";
+    $("repayExplain").innerHTML = "";
     $("repayExplain").style.display = "none";
-  
-    return; // 계산 중단
+    return;
   }
-
   const debt   = toNumber($("debt").value);
   const income = toNumber($("income").value);
   const living = toNumber($("living").value);
