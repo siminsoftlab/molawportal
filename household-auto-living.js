@@ -106,14 +106,49 @@ function calcHouseholdLiving() {
    ****************************************************/
   const summary = document.getElementById('hl_summary');
   summary.innerHTML = `
-    <p><strong>월 소득:</strong> ${income.toLocaleString()}원</p>
-    <p><strong>가구 수:</strong> ${household}인</p>
-    <p><strong>법원 기준 생계비:</strong> ${living.toLocaleString()}원</p>
-    <p><strong>추가 생계비:</strong> ${extra.toLocaleString()}원</p>
-    <p><strong>총 생계비:</strong> ${totalLiving.toLocaleString()}원</p>
-    <p><strong>가용소득:</strong> ${disposable.toLocaleString()}원</p>
-    <p><strong>월 변제금:</strong> ${monthly.toLocaleString()}원</p>
-    <p><strong>총 변제금:</strong> ${finalTotal.toLocaleString()}원</p>
+    <div class="repay-highlight-box">
+  
+      <div class="row">
+        <div class="label">월 소득</div>
+        <div class="value">${income.toLocaleString()}원</div>
+      </div>
+  
+      <div class="row">
+        <div class="label">가구 수</div>
+        <div class="value">${household}인</div>
+      </div>
+  
+      <div class="row">
+        <div class="label">법원 기준 생계비</div>
+        <div class="value">${living.toLocaleString()}원</div>
+      </div>
+  
+      <div class="row">
+        <div class="label">추가 생계비</div>
+        <div class="value">${extra.toLocaleString()}원</div>
+      </div>
+  
+      <div class="row">
+        <div class="label">총 생계비</div>
+        <div class="value">${totalLiving.toLocaleString()}원</div>
+      </div>
+  
+      <div class="row">
+        <div class="label">가용소득</div>
+        <div class="value">${disposable.toLocaleString()}원</div>
+      </div>
+  
+      <div class="row">
+        <div class="label">월 변제금</div>
+        <div class="value">${monthly.toLocaleString()}원</div>
+      </div>
+  
+      <div class="row">
+        <div class="label">총 변제금 (${months}개월)</div>
+        <div class="value">${finalTotal.toLocaleString()}원</div>
+      </div>
+  
+    </div>
   `;
   summary.style.display = "block";
 
