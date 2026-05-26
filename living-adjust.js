@@ -1,8 +1,9 @@
 /****************************************************
- * 법원 생계비 계산기 — 전용 버전 (개인회생 요소 제거)
+ * 법원 생계비 계산기 — 전용 버전 (2026 최종)
  * - 정규식 숫자 처리
  * - 법원 생계비 자동 계산
- * - 추가 생계비 인정 한도(법원 기준)
+ * - 법원 생계비(가구수) 표기
+ * - 추가 생계비 입력값 보존 + 인정값 별도 계산
  * - PV·청산가치 충족
  * - 개인회생 계산기 항목 완전 제거
  ****************************************************/
@@ -12,6 +13,11 @@ function getInt(id) {
   return parseInt(
     (document.getElementById(id).value || "0").replace(/[^\d]/g, "")
   ) || 0;
+}
+
+/* 가구수 텍스트 */
+function getHouseholdLabel(household) {
+  return `${household}인`;
 }
 
 /****************************************************
@@ -80,10 +86,10 @@ function resetLivingAdjust() {
  ****************************************************/
 function calcLivingAdjust() {
   const income       = getInt('la_income');
+  const household    = getInt('la_household');
   const courtLiving  = getInt('la_court_living');
   const extraInput   = getInt('la_extra');   // 입력값 그대로 유지
   const months       = getInt('la_months');
-  const debt         = getInt('la_debt');
   const asset        = getInt('la_asset');
 
   /****************************************************
@@ -126,7 +132,7 @@ function calcLivingAdjust() {
       <div class="row"><div class="label">월 소득</div>
         <div class="value">${income.toLocaleString()}원</div></div>
 
-      <div class="row"><div class="label">법원 생계비</div>
+      <div class="row"><div class="label">법원 생계비(${getHouseholdLabel(household)})</div>
         <div class="value">${courtLiving.toLocaleString()}원</div></div>
 
       <div class="row"><div class="label">추가 생계비(입력)</div>
@@ -170,7 +176,7 @@ function calcLivingAdjust() {
   explain.innerHTML = `
     <h3>📌 법원 생계비 계산 설명</h3>
     <p>월 소득: ${income.toLocaleString()}원</p>
-    <p>법원 생계비: ${courtLiving.toLocaleString()}원</p>
+    <p>법원 생계비(${getHouseholdLabel(household)}): ${courtLiving.toLocaleString()}원</p>
     <p>추가 생계비(입력): ${extraInput.toLocaleString()}원</p>
     <p>추가 생계비(인정): ${allowedExtra.toLocaleString()}원</p>
     <p>총 생계비: ${totalLiving.toLocaleString()}원</p>
@@ -190,7 +196,7 @@ function calcLivingAdjust() {
   const acc = document.getElementById("la_accordion");
   acc.innerHTML = `
     <div class="calc-step"><strong>월 소득</strong><br>${income.toLocaleString()}원</div>
-    <div class="calc-step"><strong>법원 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>법원 생계비(${getHouseholdLabel(household)})</strong><br>${courtLiving.toLocaleString()}원</div>
     <div class="calc-step"><strong>추가 생계비(입력)</strong><br>${extraInput.toLocaleString()}원</div>
     <div class="calc-step"><strong>추가 생계비(인정)</strong><br>${allowedExtra.toLocaleString()}원</div>
     <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
@@ -248,17 +254,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-// 설명보기 아코디언 전용
-const explainBtn = document.querySelector(".toggle-arrow.explain-btn");
-if (explainBtn) {
-  explainBtn.addEventListener("click", function () {
-    const box = document.getElementById("explain_box");
-
-    const isOpen = box.style.display === "block";
-    box.style.display = isOpen ? "none" : "block";
-
-    this.textContent = isOpen
-      ? "법원 생계비 계산기 설명 보기 ▼"
-      : "법원 생계비 계산기 설명 접기 ▲";
-  });
-}
