@@ -150,3 +150,22 @@ function resetRepayInputs() {
   const btn = document.querySelector(".repay-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
+/****************************************************
+ * 상세보기 토글 (⭐ 반드시 추가)
+ ****************************************************/
+function toggleAccordionRepay() {
+  const box = $("repayAccordion");
+  const btn = document.querySelector(".repay-accordion-btn");
+
+  const isOpen = box.classList.contains("open");
+
+  if (isOpen) {
+    box.classList.remove("open");
+    box.style.maxHeight = null;
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.classList.add("open");
+    box.style.maxHeight = box.scrollHeight + "px";
+    btn.textContent = "계산 상세 접기 ▲";
+  }
+}
