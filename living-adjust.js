@@ -1,5 +1,11 @@
 /****************************************************
- * 법원 생계비 계산기 — 최종 안정화 버전 (정규식 숫자 처리 + PV 충족 로직)
+ * 법원 생계비 계산기 — 실무 보정 완전판 (붙여넣기 버전)
+ * - 정규식 숫자 처리
+ * - 법원 생계비 자동 계산
+ * - 추가 생계비 인정 한도
+ * - 최저 변제금
+ * - 최소 변제율
+ * - PV·청산가치 충족
  ****************************************************/
 
 /* 정규식 기반 숫자 처리 */
@@ -13,7 +19,7 @@ function getInt(id) {
  * 가구 수 선택 시 법원 생계비 자동 계산
  ****************************************************/
 function updateCourtLiving() {
-  const household = getInt('la_household');
+  const household = getInt('la_household') || 1;
 
   const baseLiving1 = 1538523;
   const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
@@ -64,7 +70,8 @@ function resetLivingAdjust() {
   explain.innerHTML = "";
   explain.style.display = "none";
 
-  document.querySelector(".la-acc-btn").textContent = "계산 상세 보기 ▼";
+  const btn = document.querySelector(".la-acc-btn");
+  if (btn) btn.textContent = "계산 상세 보기 ▼";
 
   updateCourtLiving();
 }
@@ -75,35 +82,54 @@ function resetLivingAdjust() {
 function calcLivingAdjust() {
   const income       = getInt('la_income');
   const courtLiving  = getInt('la_court_living');
-  const extra        = getInt('la_extra');
+  const extraInput   = getInt('la_extra');
   const months       = getInt('la_months');
   const debt         = getInt('la_debt');
   const asset        = getInt('la_asset');
 
-  const totalLiving = courtLiving + extra;
-  const disposable = Math.max(income - totalLiving, 0);
-  const totalRepay = disposable * months;
+  // 추가 생계비 인정 한도 (예: 법원 생계비의 30%)
+  const extraLimit   = Math.round(courtLiving * 0.3);
+  const allowedExtra = Math.min(extraInput, extraLimit);
 
-  /****************************************************
-   * PV 충족을 위한 최소 변제금 계산
-   ****************************************************/
+  const totalLiving  = courtLiving + allowedExtra;
+  const disposable   = Math.max(income - totalLiving, 0);
+  const totalRepay   = disposable * months;
+
+  // 할인율·기간
   const discountRate = 0.03;
-  const years = months / 12;
+  const years        = months / 12;
 
-  // PV 충족을 위한 최소 변제금(FV)
-  const requiredFinalPay = Math.round(asset * Math.pow(1 + discountRate, years));
+  // PV 충족 최소 변제금 (청산가치의 미래가치)
+  const requiredFinalPay = asset > 0
+    ? Math.round(asset * Math.pow(1 + discountRate, years))
+    : 0;
 
-  // 최종 변제금 = 총 변제예정액, 청산가치, PV 충족금 중 가장 큰 값
-  const finalPay = Math.max(totalRepay, asset, requiredFinalPay);
+  // 최저 변제금 (예: 월 50,000원)
+  const minMonthlyPay = 50000;
+  const minTotalPay   = months > 0 ? minMonthlyPay * months : 0;
+
+  // 최소 변제율 (예: 5%)
+  const minRatePay    = debt > 0 ? Math.round(debt * 0.05) : 0;
+
+  // 최종 변제금 = 모든 조건 중 가장 큰 값
+  const finalPay = Math.max(
+    totalRepay,
+    asset,
+    requiredFinalPay,
+    minTotalPay,
+    minRatePay
+  );
 
   // 현재가치(PV)
-  const presentValue = Math.round(finalPay / Math.pow(1 + discountRate, years));
+  const presentValue = finalPay > 0
+    ? Math.round(finalPay / Math.pow(1 + discountRate, years))
+    : 0;
 
   // 변제율·탕감률
-  const repayRate = debt > 0 ? ((finalPay / debt) * 100).toFixed(1) : "0.0";
+  const repayRate  = debt > 0 ? ((finalPay / debt) * 100).toFixed(1) : "0.0";
   const reliefRate = (100 - Number(repayRate)).toFixed(1);
 
-  const meetsPV = presentValue >= asset;
+  const meetsPV = asset > 0 ? presentValue >= asset : true;
 
   /******** 요약 카드 ********/
   const summary = document.getElementById("la_summary");
@@ -114,8 +140,17 @@ function calcLivingAdjust() {
       <div class="row"><div class="label">총 부채</div>
         <div class="value">${debt.toLocaleString()}원</div></div>
 
+      <div class="row"><div class="label">월 소득</div>
+        <div class="value">${income.toLocaleString()}원</div></div>
+
       <div class="row"><div class="label">법원 생계비</div>
         <div class="value">${courtLiving.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">추가 생계비(입력)</div>
+        <div class="value">${extraInput.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">추가 생계비(인정)</div>
+        <div class="value">${allowedExtra.toLocaleString()}원</div></div>
 
       <div class="row"><div class="label">총 생계비</div>
         <div class="value">${totalLiving.toLocaleString()}원</div></div>
@@ -125,6 +160,15 @@ function calcLivingAdjust() {
 
       <div class="row"><div class="label">총 변제예정액</div>
         <div class="value">${totalRepay.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">최저 변제금</div>
+        <div class="value">${minTotalPay.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">최소 변제율 기준 변제금(5%)</div>
+        <div class="value">${minRatePay.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">PV 충족 최소 변제금</div>
+        <div class="value">${requiredFinalPay.toLocaleString()}원</div></div>
 
       <div class="row"><div class="label">최종 변제금</div>
         <div class="value">${finalPay.toLocaleString()}원</div></div>
@@ -152,10 +196,15 @@ function calcLivingAdjust() {
   explain.innerHTML = `
     <h3>📌 법원 생계비 계산 설명</h3>
     <p>총 부채: ${debt.toLocaleString()}원</p>
+    <p>월 소득: ${income.toLocaleString()}원</p>
     <p>법원 생계비: ${courtLiving.toLocaleString()}원</p>
+    <p>추가 생계비(입력): ${extraInput.toLocaleString()}원</p>
+    <p>추가 생계비(인정): ${allowedExtra.toLocaleString()}원</p>
     <p>총 생계비: ${totalLiving.toLocaleString()}원</p>
     <p>월 변제 가능 금액: ${disposable.toLocaleString()}원</p>
     <p>총 변제예정액: ${totalRepay.toLocaleString()}원</p>
+    <p>최저 변제금: ${minTotalPay.toLocaleString()}원</p>
+    <p>최소 변제율 기준 변제금(5%): ${minRatePay.toLocaleString()}원</p>
     <p>PV 충족 최소 변제금: ${requiredFinalPay.toLocaleString()}원</p>
     <p>최종 변제금: ${finalPay.toLocaleString()}원</p>
     <p>현재가치(PV): ${presentValue.toLocaleString()}원</p>
@@ -169,11 +218,15 @@ function calcLivingAdjust() {
   const acc = document.getElementById("la_accordion");
   acc.innerHTML = `
     <div class="calc-step"><strong>총 부채</strong><br>${debt.toLocaleString()}원</div>
+    <div class="calc-step"><strong>월 소득</strong><br>${income.toLocaleString()}원</div>
     <div class="calc-step"><strong>법원 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
+    <div class="calc-step"><strong>추가 생계비(입력)</strong><br>${extraInput.toLocaleString()}원</div>
+    <div class="calc-step"><strong>추가 생계비(인정)</strong><br>${allowedExtra.toLocaleString()}원</div>
     <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
     <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
     <div class="calc-step"><strong>총 변제예정액</strong><br>${totalRepay.toLocaleString()}원</div>
+    <div class="calc-step"><strong>최저 변제금</strong><br>${minTotalPay.toLocaleString()}원</div>
+    <div class="calc-step"><strong>최소 변제율 기준 변제금(5%)</strong><br>${minRatePay.toLocaleString()}원</div>
     <div class="calc-step"><strong>PV 충족 최소 변제금</strong><br>${requiredFinalPay.toLocaleString()}원</div>
     <div class="calc-step"><strong>최종 변제금</strong><br>${finalPay.toLocaleString()}원</div>
     <div class="calc-step"><strong>현재가치(PV)</strong><br>${presentValue.toLocaleString()}원</div>
@@ -191,7 +244,8 @@ function calcLivingAdjust() {
   acc.classList.remove("open");
   acc.style.maxHeight = null;
 
-  document.querySelector(".la-acc-btn").textContent = "계산 상세 보기 ▼";
+  const btn = document.querySelector(".la-acc-btn");
+  if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
 
 /****************************************************
@@ -200,29 +254,30 @@ function calcLivingAdjust() {
 document.addEventListener("DOMContentLoaded", () => {
 
   updateCourtLiving();
-  document.getElementById('la_household').addEventListener('change', updateCourtLiving);
+  const hh = document.getElementById('la_household');
+  if (hh) hh.addEventListener('change', updateCourtLiving);
 
   const accBtn = document.querySelector(".la-acc-btn");
   if (accBtn) accBtn.addEventListener("click", toggleLivingAccordion);
 
-  /* 설명 아코디언 */
+  /* 설명 아코디언 (상단 설명보기 버튼) */
   document.querySelectorAll(".toggle-arrow").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
+      if (!answer) return;
       const isOpen = answer.style.display === "block";
-
       answer.style.display = isOpen ? "none" : "block";
-
       this.textContent = isOpen
         ? this.textContent.replace("▲", "▼")
         : this.textContent.replace("▼", "▲");
     });
   });
 
-  /* FAQ */
+  /* FAQ 아코디언 */
   document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
+      if (!answer) return;
       const isOpen = answer.style.display === "block";
       answer.style.display = isOpen ? "none" : "block";
     });
