@@ -94,30 +94,47 @@
         <option value="4534031">5인 가구 — 4,534,031원</option>
       </select>
 
+      <label>총 부채(원)</label>
+      <input id="debt" type="number">
+      
+      <label>월 소득(원)</label>
+      <input id="income" type="number">
+      
+      <label>기본 생계비(원)</label>
+      <select id="living">
+        <option value="1538523">1인 가구 — 1,538,523원</option>
+        <option value="2519575">2인 가구 — 2,519,575원</option>
+        <option value="3215422">3인 가구 — 3,215,422원</option>
+        <option value="3896843">4인 가구 — 3,896,843원</option>
+        <option value="4534031">5인 가구 — 4,534,031원</option>
+      </select>
+      
       <label>추가 생계비(원)</label>
       <input id="extra" type="number">
-
+      
       <label>변제기간(개월)</label>
       <input id="months" type="number" value="36">
-
+      
       <label>청산가치(원, 선택)</label>
       <input id="asset" type="number">
       <p class="notice">※ 청산가치 = 보유재산 가치</p>
-
+      
       <div class="btn-row">
         <button onclick="calcRepay()">계산하기</button>
         <button onclick="resetRepayInputs()">초기화</button>
       </div>
-
+      
       <!-- 총 변제금 요약 -->
       <div id="repaySummary" class="summary-card" style="display:none;"></div>
-
+      
       <!-- 상세 계산 -->
       <div class="accordion">
         <button class="repay-accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
         <div id="repayAccordion" class="accordion-content"></div>
       </div>
-       <div id="repayExplain" class="explain-box"></div>  <!-- 자동계산설명 위치 -->
+      
+      <div id="repayExplain" class="explain-box"></div>
+  <!-- 자동계산설명 위치 -->
       <!-- ⭐ SEO 자동 설명문 -->
       <div id="repaySEO" class="seo-box-animated">
         <p>이 변제금계산기는 개인회생 절차에서 필요한 변제금 산정 기준을 기반으로 월 소득, 생계비, 청산가치를 자동 계산합니다.</p>
