@@ -10,7 +10,7 @@
 
   <link rel="canonical" href="https://molawcalculator.com/calculators/repay.html">
 
-  <!-- ⭐ OG 태그 (40자/80자 규격 준수) -->
+  <!-- ⭐ OG 태그 -->
   <meta property="og:title" content="개인회생 변제금 계산기·변제율·탕감률 조회">
   <meta property="og:description" content="개인회생 변제금·변제율·탕감률·청산가치를 자동 계산하는 무료 개인회생 계산기입니다.">
   <meta property="og:type" content="website">
@@ -76,8 +76,17 @@
     <label>월 소득(원)</label>
     <input id="income" type="number">
 
-    <label>법원 생계비(원)</label>
-    <input id="living" type="number" value="1538523">
+    <label>가구 수</label>
+    <select id="household">
+      <option value="1">1인 가구</option>
+      <option value="2">2인 가구</option>
+      <option value="3">3인 가구</option>
+      <option value="4">4인 가구</option>
+      <option value="5">5인 가구</option>
+    </select>
+
+    <label>법원 생계비(자동 계산)</label>
+    <input id="living" type="number" readonly>
 
     <label>추가 생계비(원)</label>
     <input id="extra" type="number">
@@ -94,7 +103,7 @@
       <button onclick="resetRepayInputs()">초기화</button>
     </div>
 
-    <!-- ⭐ 요약 카드 (법원 생계비 UI 스타일) -->
+    <!-- ⭐ 요약 카드 -->
     <div id="repaySummary" class="summary-card" style="display:none;"></div>
 
     <!-- ⭐ 상세 계산 아코디언 -->
