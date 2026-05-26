@@ -196,3 +196,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 });
+window.debugExplain = function () {
+  const box = document.getElementById("la_explain");
+
+  console.log("=== DEBUG START ===");
+  console.log("Element:", box);
+  console.log("display:", getComputedStyle(box).display);
+  console.log("visibility:", getComputedStyle(box).visibility);
+  console.log("opacity:", getComputedStyle(box).opacity);
+  console.log("height:", getComputedStyle(box).height);
+  console.log("z-index:", getComputedStyle(box).zIndex);
+  console.log("position:", getComputedStyle(box).position);
+
+  box.style.display = "block";
+  box.style.visibility = "visible";
+  box.style.opacity = "1";
+  box.style.position = "relative";
+  box.style.zIndex = "999999";
+  box.style.minHeight = "200px";
+  box.style.background = "yellow";
+  box.style.border = "3px solid red";
+
+  box.innerHTML = "<h2>디버그 출력 성공!</h2><p>이 박스가 보이면 CSS 문제 아님</p>";
+
+  console.log("=== DEBUG END ===");
+};
