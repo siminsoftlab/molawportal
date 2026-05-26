@@ -1,5 +1,5 @@
 /****************************************************
- * 개인회생 변제금 계산기 — 독립 repay.js
+ * 개인회생 변제금 계산기 — 최종본 repay.js
  ****************************************************/
 
 /* 공통 유틸 */
@@ -10,17 +10,13 @@ function toNumber(v) {
   const n = Number(v);
   return isNaN(n) ? 0 : n;
 }
-function setHTMLSafe(id, html) {
-  const el = $(id);
-  if (el) el.innerHTML = html;
-}
 
 /****************************************************
  * 계산하기
  ****************************************************/
 function calcRepay() {
 
-  const debt   = toNumber($("debt").value);   // ⭐ 추가: 총 부채
+  const debt   = toNumber($("debt").value);   // 총 부채
   const income = toNumber($("income").value);
   const living = toNumber($("living").value);
   const extra  = toNumber($("extra").value);
@@ -31,16 +27,41 @@ function calcRepay() {
   const monthlyPay = Math.max(disposable, 0);
   const totalPay = monthlyPay * months;
 
-  // ⭐ 총 부채를 최종 변제금 비교 조건에 포함
+  // 총 부채, 청산가치, 총 변제금 중 가장 큰 값이 최종 변제금
   const finalPay = Math.max(totalPay, asset, debt);
 
+  // 변제율 계산
+  const repayRate = debt > 0 
+    ? ((finalPay / debt) * 100).toFixed(1)
+    : 0;
+
   /****************************************************
-   * 요약 카드 표시
+   * 요약 카드 — 첨부 이미지 동일 UI
    ****************************************************/
   const summary = $("repaySummary");
   summary.style.display = "block";
+
   summary.innerHTML = `
-    <strong>총 변제금:</strong> ${finalPay.toLocaleString()}원
+    <div class="repay-highlight-box">
+      <div class="row">
+        <div class="label">총 부채</div>
+        <div class="value">${debt.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">총 변제금</div>
+        <div class="value">${finalPay.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">변제율</div>
+        <div class="value">${repayRate}%</div>
+      </div>
+
+      <div class="rate-big">
+        탕감률 ${(100 - repayRate).toFixed(1)}%
+      </div>
+    </div>
   `;
 
   /****************************************************
@@ -65,10 +86,13 @@ function calcRepay() {
       총 부채: ${debt.toLocaleString()}원<br>
       최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
     </div>
+    <div class="calc-step"><strong>9) 변제율</strong><br>
+      최종 변제금 ÷ 총 부채 × 100 = <strong>${repayRate}%</strong>
+    </div>
   `;
 
   /****************************************************
-   * 설명 div 표시 (아코디언 밖)
+   * 자동 설명
    ****************************************************/
   const explain = $("repayExplain");
   explain.style.display = "block";
@@ -80,7 +104,9 @@ function calcRepay() {
       가용소득은 ${monthlyPay.toLocaleString()}원입니다.<br>
       ${months}개월 동안 변제하면 총 ${totalPay.toLocaleString()}원이 되며,<br>
       청산가치와 총 부채를 비교하여 최종 변제금은 
-      <strong>${finalPay.toLocaleString()}원</strong>입니다.
+      <strong>${finalPay.toLocaleString()}원</strong>입니다.<br>
+      총 부채 대비 변제율은 <strong>${repayRate}%</strong>이며,
+      탕감률은 <strong>${(100 - repayRate).toFixed(1)}%</strong>입니다.
     </p>
   `;
 
@@ -97,7 +123,7 @@ function calcRepay() {
  * 초기화
  ****************************************************/
 function resetRepayInputs() {
-  $("debt").value = "";   // ⭐ 추가
+  $("debt").value = "";
   $("income").value = "";
   $("living").value = "1538523";
   $("extra").value = "";
@@ -119,16 +145,3 @@ function resetRepayInputs() {
   const btn = document.querySelector(".repay-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
-
-// ▼ ↔ ▲ 자동 전환 기능
-document.querySelectorAll('.toggle-arrow').forEach(btn => {
-  btn.addEventListener('click', function () {
-    if (this.classList.contains('active')) {
-      this.textContent = this.textContent.replace('▲', '▼');
-      this.classList.remove('active');
-    } else {
-      this.textContent = this.textContent.replace('▼', '▲');
-      this.classList.add('active');
-    }
-  });
-});
