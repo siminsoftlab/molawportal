@@ -1,5 +1,5 @@
 /****************************************************
- * 연이자 계산기 — 독립 interest.js
+ * 연이자 계산기 — 표형 UI 적용 최종본
  ****************************************************/
 
 function calcInterest() {
@@ -11,28 +11,83 @@ function calcInterest() {
   const total = principal + interest;
 
   /****************************************************
-   * 요약 카드
+   * 요약 카드 (표형 UI)
    ****************************************************/
   const summary = document.getElementById("interestSummary");
-  summary.innerHTML = `총 상환액: ${total.toLocaleString()}원`;
+  summary.innerHTML = `
+    <div class="repay-highlight-box">
+
+      <div class="row">
+        <div class="label">원금</div>
+        <div class="value">${principal.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">연 이자율</div>
+        <div class="value">${rate}%</div>
+      </div>
+
+      <div class="row">
+        <div class="label">기간(일수)</div>
+        <div class="value">${days}일</div>
+      </div>
+
+      <div class="row">
+        <div class="label">총 이자</div>
+        <div class="value">${interest.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">총 상환금액</div>
+        <div class="value">${total.toLocaleString()}원</div>
+      </div>
+
+    </div>
+  `;
   summary.style.display = "block";
 
   /****************************************************
-   * 상세 계산 (아코디언 내부)
+   * 상세 계산 (표형 UI)
    ****************************************************/
   const acc = document.getElementById("interestAccordion");
   acc.innerHTML = `
-    <div class="calc-step"><strong>1) 원금</strong><br>${principal.toLocaleString()}원</div>
-    <div class="calc-step"><strong>2) 연이율</strong><br>${rate}%</div>
-    <div class="calc-step"><strong>3) 기간</strong><br>${days}일</div>
-    <div class="calc-step"><strong>4) 이자 계산식</strong><br>
-      ${principal.toLocaleString()} × (${rate}/100) × (${days}/365)
-      = <strong>${interest.toLocaleString()}원</strong>
+    <div class="repay-highlight-box">
+
+      <div class="row">
+        <div class="label">이자 계산식</div>
+        <div class="value">원금 × (연이율 ÷ 100) × (일수 ÷ 365)</div>
+      </div>
+
+      <div class="row">
+        <div class="label">원금</div>
+        <div class="value">${principal.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">연 이자율</div>
+        <div class="value">${rate}%</div>
+      </div>
+
+      <div class="row">
+        <div class="label">기간(일수)</div>
+        <div class="value">${days}일</div>
+      </div>
+
+      <div class="row">
+        <div class="label">총 이자</div>
+        <div class="value">${interest.toLocaleString()}원</div>
+      </div>
+
+      <div class="row">
+        <div class="label">총 상환금액</div>
+        <div class="value">${total.toLocaleString()}원</div>
+      </div>
+
     </div>
   `;
 
   /****************************************************
-   * 설명 div 표시 (아코디언 밖)
+   * 설명 div 표시
    ****************************************************/
   const explain = document.getElementById("interestExplain");
   explain.style.display = "block";
@@ -40,8 +95,8 @@ function calcInterest() {
     <h3>📌 연이자 계산기 자동 설명</h3>
     <p>
       원금 ${principal.toLocaleString()}원에 연이율 ${rate}%를 적용하고 
-      ${days}일 동안 계산한 이자는 ${interest.toLocaleString()}원이며,
-      최종 상환액은 ${total.toLocaleString()}원입니다.
+      ${days}일 동안 계산한 이자는 <strong>${interest.toLocaleString()}원</strong>이며,
+      최종 상환액은 <strong>${total.toLocaleString()}원</strong>입니다.
     </p>
     <p>
       연이자 계산 공식:<br>
@@ -49,13 +104,10 @@ function calcInterest() {
     </p>
   `;
 
-  /****************************************************
-   * 설명 애니메이션
-   ****************************************************/
   setTimeout(() => explain.classList.add("visible"), 50);
 
   /****************************************************
-   * 아코디언은 계산하기 후 자동으로 닫힘
+   * 아코디언 초기화
    ****************************************************/
   acc.classList.remove("open");
   acc.style.maxHeight = null;
@@ -107,6 +159,7 @@ function resetInterestInputs() {
   const btn = document.querySelector(".interest-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
+
 /****************************************************
  * 날짜 선택 시 자동으로 일수 계산
  ****************************************************/
@@ -119,7 +172,6 @@ function updateDays() {
   const start = new Date(from);
   const end = new Date(to);
 
-  // 밀리초 → 일수 변환
   const diffTime = end - start;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
@@ -128,7 +180,5 @@ function updateDays() {
   }
 }
 
-// 날짜 변경 이벤트 연결
 document.getElementById("fromDate").addEventListener("change", updateDays);
 document.getElementById("toDate").addEventListener("change", updateDays);
-
