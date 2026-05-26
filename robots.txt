@@ -2,5 +2,9 @@ User-agent: *
 Allow: /
 Allow: /images/
 
+# 사이트맵 등록
 Sitemap: https://molawcalculator.com/sitemap.xml
 Sitemap: https://molawcalculator.com/feed.xml
+
+# 크롤링 지연 없음
+Crawl-delay: 1
