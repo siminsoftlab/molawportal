@@ -70,7 +70,7 @@ function resetHouseholdLiving() {
 /****************************************************
  * 가구 수 선택 시 법원 기준 생계비 자동 계산
  ****************************************************/
-document.getElementById("hl_household").addEventListener("change", () => {
+function updateCourtLiving() {
   const household = Number(document.getElementById('hl_household').value || 1);
 
   const baseLiving1 = 1538523;
@@ -78,7 +78,9 @@ document.getElementById("hl_household").addEventListener("change", () => {
   const living = Math.round(baseLiving1 * (weights[household] || 1));
 
   document.getElementById("hl_court_living").value = living;
-});
+}
+
+document.getElementById("hl_household").addEventListener("change", updateCourtLiving);
 
 /****************************************************
  * 계산
@@ -116,17 +118,17 @@ function calcHouseholdLiving() {
   summary.style.display = "block";
 
   /****************************************************
-   * 상세 계산 HTML (저장만 하고 표시하지 않음)
+   * 상세 계산 HTML (법원생계비 스타일)
    ****************************************************/
   householdCalcResult = `
-    <div class="calc-step"><strong>법원 기준 생계비</strong><br>${living.toLocaleString()}원</div>
-    <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-    <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
-    <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
-    <div class="calc-step"><strong>소득 기준 총 변제금</strong><br>${totalByIncome.toLocaleString()}원</div>
-    <div class="calc-step"><strong>청산가치</strong><br>${asset.toLocaleString()}원</div>
-    <div class="calc-step"><strong>최종 변제금</strong><br>${finalTotal.toLocaleString()}원</div>
-    <div class="calc-step"><strong>월 변제금</strong><br>${monthly.toLocaleString()}원</div>
+    <p><strong>법원 기준 생계비:</strong> ${living.toLocaleString()}원</p>
+    <p><strong>추가 생계비:</strong> ${extra.toLocaleString()}원</p>
+    <p><strong>총 생계비:</strong> ${totalLiving.toLocaleString()}원</p>
+    <p><strong>월 변제 가능 금액:</strong> ${disposable.toLocaleString()}원</p>
+    <p><strong>소득 기준 총 변제금:</strong> ${totalByIncome.toLocaleString()}원</p>
+    <p><strong>청산가치:</strong> ${asset.toLocaleString()}원</p>
+    <p><strong>최종 변제금:</strong> ${finalTotal.toLocaleString()}원</p>
+    <p><strong>월 변제금:</strong> ${monthly.toLocaleString()}원</p>
   `;
 
   // 아코디언 초기화
@@ -155,9 +157,12 @@ function calcHouseholdLiving() {
 }
 
 /****************************************************
- * 버튼 이벤트 연결
+ * 페이지 로드시 자동 실행
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.querySelector(".hl-acc-btn");
   if (btn) btn.addEventListener("click", toggleHouseholdAccordion);
+
+  // 🔥 페이지 로드시 법원 기준 생계비 자동 표시
+  updateCourtLiving();
 });
