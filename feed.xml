@@ -4,15 +4,15 @@
 
   <channel>
 
-    <title><![CDATA[딱요만큼변제 RSS｜개인회생 변제금·생계비·연이자·불법사채 이자조회 업데이트]]></title>
+    <title><![CDATA[딱요만큼변제 공식 RSS｜개인회생 변제금·생계비·연이자·불법사채 이자조회 업데이트]]></title>
     <link>https://molawcalculator.com/</link>
     <atom:link href="https://molawcalculator.com/feed.xml" rel="self" type="application/rss+xml" />
-    <description><![CDATA[
-      개인회생 변제금 계산기, 생계비 계산기, 연이자 계산기, 불법사채 이자조회 등
-      채무 문제 해결을 위한 최신 업데이트 정보를 제공하는 공식 RSS 피드입니다.
-    ]]></description>
-    <language>ko</language>
 
+    <description><![CDATA[
+      개인회생 변제금·생계비·연이자·불법사채 이자조회 등 채무 해결 계산기 업데이트를 제공하는 공식 RSS 피드입니다.
+    ]]></description>
+
+    <language>ko</language>
     <lastBuildDate>Mon, 25 May 2026 17:04:00 +0900</lastBuildDate>
     <ttl>180</ttl>
     <generator>molawcalculator.com RSS Generator</generator>
@@ -34,8 +34,7 @@
        <link>https://molawcalculator.com/calculators/interest.html</link>
        <guid isPermaLink="true">https://molawcalculator.com/calculators/interest.html</guid>
        <description><![CDATA[
-         원금·이자율·기간을 입력하면 총이자와 총상환금액을 자동 계산하는 연이자 계산기입니다.
-         민법 기간 계산 규정을 반영하여 정확한 일할계산을 제공합니다.
+         연이자 계산기 — 원금·이자율·기간 입력 시 총이자와 총상환금액을 자동 계산합니다. 민법 기간 계산 규정을 반영하여 정확한 일할계산을 제공합니다.
        ]]></description>
        <category><![CDATA[연이자계산기]]></category>
        <pubDate>Mon, 25 May 2026 17:03:00 +0900</pubDate>
@@ -47,8 +46,7 @@
       <link>https://molawcalculator.com/blog/ssonsalminwon.html</link>
       <guid isPermaLink="true">https://molawcalculator.com/blog/ssonsalminwon.html</guid>
       <description><![CDATA[
-        법원·관공서·금융기관 서류 발급 대행 및 개인회생 준비서류 지원 서비스 안내.
-        채무 문제 해결을 위한 필수 서류를 빠르고 정확하게 준비할 수 있도록 도와드립니다.
+        쏜살민원 — 법원·관공서·금융기관 서류 발급 대행 및 개인회생 준비서류 지원 서비스 안내. 채무 문제 해결을 위한 필수 서류를 빠르고 정확하게 준비할 수 있습니다.
       ]]></description>
       <category><![CDATA[서류발급대행]]></category>
       <pubDate>Mon, 25 May 2026 17:02:00 +0900</pubDate>
@@ -60,8 +58,7 @@
       <link>https://molawcalculator.com/blog/modoolawfirm.html</link>
       <guid isPermaLink="true">https://molawcalculator.com/blog/modoolawfirm.html</guid>
       <description><![CDATA[
-        불법사채·불법추심 대응부터 개인회생·파산·채무조정까지 종합적으로 지원하는 채무 해결 서비스.
-        실제 사례 기반의 전문적인 대응 전략을 제공합니다.
+        모두의로펌 — 불법사채·불법추심 대응부터 개인회생·파산·채무조정까지 종합적으로 지원하는 채무 해결 서비스. 실제 사례 기반의 전문 대응 전략을 제공합니다.
       ]]></description>
       <category><![CDATA[개인회생파산지원]]></category>
       <pubDate>Mon, 25 May 2026 17:01:00 +0900</pubDate>
@@ -73,8 +70,7 @@
       <link>https://molawcalculator.com/calculators/repay.html</link>
       <guid isPermaLink="true">https://molawcalculator.com/calculators/repay.html</guid>
       <description><![CDATA[
-        소득·생계비·청산가치를 기반으로 개인회생 월변제금을 자동 계산하는 변제금 계산기입니다.
-        법원 기준을 반영하여 실제 변제금과 유사한 결과를 제공합니다.
+        개인회생 변제금 계산기 — 소득·생계비·청산가치를 기반으로 월변제금을 자동 산정합니다. 법원 기준을 반영하여 실제 변제금과 유사한 결과를 제공합니다.
       ]]></description>
       <category><![CDATA[개인회생변제금계산기]]></category>
       <pubDate>Mon, 25 May 2026 17:00:00 +0900</pubDate>
@@ -86,8 +82,7 @@
       <link>https://molawcalculator.com/calculators/living-adjust.html</link>
       <guid isPermaLink="true">https://molawcalculator.com/calculators/living-adjust.html</guid>
       <description><![CDATA[
-        중위소득 기준으로 법원 생계비와 개인회생 생계비를 자동 산정하는 계산기입니다.
-        최신 보건복지부 고시 기준을 반영하여 정확한 생계비 산정이 가능합니다.
+        법원 생계비 계산기 — 중위소득 기준으로 법원 생계비와 개인회생 생계비를 자동 산정합니다. 최신 보건복지부 고시 기준을 반영하여 정확한 생계비 산정이 가능합니다.
       ]]></description>
       <category><![CDATA[법원생계비계산기]]></category>
       <pubDate>Mon, 25 May 2026 16:59:00 +0900</pubDate>
@@ -99,8 +94,7 @@
       <link>https://molawcalculator.com/calculators/household-auto-living.html</link>
       <guid isPermaLink="true">https://molawcalculator.com/calculators/household-auto-living.html</guid>
       <description><![CDATA[
-        성인·아동 구성에 따라 맞춤형 생계비와 개인회생 월변제금을 자동 계산하는 가구수 생계비 계산기입니다.
-        실제 가구 구성에 맞춘 정확한 생계비 산정이 가능합니다.
+        가구수 생계비 계산기 — 성인·아동 구성에 따라 맞춤형 생계비와 개인회생 월변제금을 자동 산정합니다. 실제 가구 구성에 맞춘 정확한 생계비 계산이 가능합니다.
       ]]></description>
       <category><![CDATA[가구수생계비계산기]]></category>
       <pubDate>Mon, 25 May 2026 16:58:00 +0900</pubDate>
