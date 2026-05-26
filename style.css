@@ -1202,7 +1202,13 @@ transition: max-height 0.35s ease, padding 0.35s ease;
 padding: 15px;
 }
 #la_explain {
-display: none;
+ display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 12px;
 }
 #interestExplain {
 display: none;
