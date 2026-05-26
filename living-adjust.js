@@ -1,15 +1,15 @@
 /****************************************************
- * 법원 생계비 계산기 — 오차 제거 버전 (2026 최종)
+ * 법원 생계비 계산기 — 2026 최종 정리본
  ****************************************************/
 
-/* 정규식 기반 숫자 처리 */
+/* 숫자 처리 */
 function getInt(id) {
   return parseInt(
     (document.getElementById(id).value || "0").replace(/[^\d]/g, "")
   ) || 0;
 }
 
-/* 부동소수점 오차 제거 */
+/* 오차 제거 */
 function preciseRound(num) {
   return Math.round((num + Number.EPSILON));
 }
@@ -81,7 +81,7 @@ function resetLivingAdjust() {
 }
 
 /****************************************************
- * 계산 (법원 생계비 계산기 전용)
+ * 계산 (법원 생계비 계산기)
  ****************************************************/
 function calcLivingAdjust() {
   const income       = getInt('la_income');
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 
-  /* 설명 아코디언 (개인회생과 동일 구조) */
+  /* 설명 아코디언 + FAQ 아코디언 (개인회생과 동일) */
   document.querySelectorAll(".faq-question.toggle-arrow").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
@@ -229,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* FAQ 아코디언 */
   document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
