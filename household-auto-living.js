@@ -91,10 +91,17 @@ function calcHouseholdLiving() {
    ****************************************************/
   const summary = document.getElementById('hl_summary');
   summary.innerHTML = `
-    총 변제금: ${finalTotal.toLocaleString()}원<br>
-    월 변제금: ${monthly.toLocaleString()}원
-  `;
-  summary.style.display = "block";
+  <p><strong>월 소득:</strong> ${income.toLocaleString()}원</p>
+  <p><strong>가구 수:</strong> ${household}인</p>
+  <p><strong>법원 기준 생계비:</strong> ${living.toLocaleString()}원</p>
+  <p><strong>추가 생계비:</strong> ${extra.toLocaleString()}원</p>
+  <p><strong>총 생계비:</strong> ${totalLiving.toLocaleString()}원</p>
+  <p><strong>가용소득:</strong> ${disposable.toLocaleString()}원</p>
+  <p><strong>월 변제금:</strong> ${monthly.toLocaleString()}원</p>
+  <p><strong>총 변제금:</strong> ${finalTotal.toLocaleString()}원</p>
+`;
+summary.style.display = "block";
+
 
   /****************************************************
    * 상세 계산 HTML (저장만 하고 표시하지 않음)
