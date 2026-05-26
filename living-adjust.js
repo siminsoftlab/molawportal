@@ -148,9 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
     /****************************************************
      * 자동 설명
      ****************************************************/
-    const explain = document.getElementById("la_explain");
-    explain.style.display = "block";
-    explain.innerHTML = `
+    /****************************************************
+     * 상세 계산
+     ****************************************************/
+    const acc = document.getElementById("la_accordion");
+    acc.innerHTML = `
       <p>입력한 생계비는 <strong>${userLiving.toLocaleString()}원</strong>이며,  
       법원 기준(${getHouseholdLabel(household)}) 생계비는 <strong>${courtLiving.toLocaleString()}원</strong>입니다.</p>
 
@@ -162,21 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <p>변제기간 ${months}개월 기준 총 변제예정액은  
       <strong>${totalRepay.toLocaleString()}원</strong>으로 계산되었습니다.</p>
-    `;
-
-    /****************************************************
-     * 상세 계산
-     ****************************************************/
-    const acc = document.getElementById("la_accordion");
-    acc.innerHTML = `
-      <p><strong>월 소득</strong>: ${income.toLocaleString()}원</p>
-      <p><strong>법원 생계비(${getHouseholdLabel(household)})</strong>: ${courtLiving.toLocaleString()}원</p>
-      <p><strong>사용자 입력 생계비</strong>: ${userLiving.toLocaleString()}원</p>
-      <p><strong>추가 생계비(입력)</strong>: ${extraInput.toLocaleString()}원</p>
-      <p><strong>추가 생계비(인정)</strong>: ${allowedExtra.toLocaleString()}원</p>
-      <p><strong>총 생계비</strong>: ${totalLiving.toLocaleString()}원</p>
-      <p><strong>월 변제 가능 금액</strong>: ${disposable.toLocaleString()}원</p>
-      <p><strong>총 변제예정액</strong>: ${totalRepay.toLocaleString()}원</p>
     `;
 
     acc.classList.remove("open");
