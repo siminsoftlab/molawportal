@@ -1310,5 +1310,22 @@ display: block;
   color: #2a5f9e;
   border-radius: 4px;
 }
+.required {
+  background: #ff4d4d;
+  color: white;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.optional {
+  background: #6fa8dc;
+  color: white;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  margin-left: 6px;
+}
 
 
