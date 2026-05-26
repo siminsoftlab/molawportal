@@ -102,7 +102,7 @@
       <option value="5">5인 가구</option>
     </select>
     
-    <label>법원 기준 생계비(가구 수 선택시 자동 계산)</label>
+    <label>최저 생계비(가구 수 선택시 자동 계산)</label>
     <input id="hl_court_living" type="number" readonly>
     
     <label>추가 생계비(원)</label>
@@ -116,6 +116,7 @@
 
     <div class="btn-row">
       <button onclick="calcHouseholdLiving()">계산하기</button>
+      <p class="notice">※ 월 소득, 가구수, 최저 생계비, 변제기간(개월) 항목은 필수 입력입니다.</p>
       <button onclick="resetHouseholdLiving()">초기화</button>
     </div>
 
