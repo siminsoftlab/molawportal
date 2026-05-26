@@ -1,14 +1,8 @@
 /****************************************************
  * 법원 생계비 계산기 — 최종 안정화 버전 (2026)
- * - 가구 수 선택 시 법원 생계비 자동 표시
- * - 법원 생계비 textbox는 readonly
- * - 계산은 textbox 값만 사용
- * - 설명/FAQ/상세보기 아코디언 정상화
  ****************************************************/
 
-/****************************************************
- * 법원 생계비 자동 계산 (가구 수 변경 시)
- ****************************************************/
+/* 가구 수 선택 시 법원 생계비 자동 계산 */
 function updateCourtLiving() {
   const household = Number(document.getElementById('la_household').value || 1);
 
@@ -20,14 +14,10 @@ function updateCourtLiving() {
   document.getElementById('la_court_living').value = courtLiving;
 }
 
-/****************************************************
- * 상세 계산 아코디언
- ****************************************************/
+/* 상세 계산 아코디언 */
 function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
   const btn = document.querySelector(".la-acc-btn");
-
-  if (!box || !btn) return;
 
   if (box.classList.contains("open")) {
     box.classList.remove("open");
@@ -40,11 +30,9 @@ function toggleLivingAccordion() {
   }
 }
 
-/****************************************************
- * 초기화
- ****************************************************/
+/* 초기화 */
 function resetLivingAdjust() {
-  ["la_income","la_living_user","la_extra","la_debt","la_asset"].forEach(id=>{
+  ["la_income","la_extra","la_debt","la_asset"].forEach(id=>{
     document.getElementById(id).value = "";
   });
 
@@ -66,51 +54,29 @@ function resetLivingAdjust() {
   updateCourtLiving();
 }
 
-/****************************************************
- * 계산
- ****************************************************/
+/* 계산 */
 function calcLivingAdjust() {
   const income    = Number(document.getElementById('la_income').value || 0);
-  const household = Number(document.getElementById('la_household').value || 1);
-
-  // 🔥 법원 생계비 textbox 값만 사용
   const courtLiving = Number(document.getElementById('la_court_living').value || 0);
-
   const extra     = Number(document.getElementById('la_extra').value || 0);
   const months    = Number(document.getElementById('la_months').value || 0);
   const debt      = Number(document.getElementById('la_debt').value || 0);
   const asset     = Number(document.getElementById('la_asset').value || 0);
 
-  // 최종 인정 생계비 = 법원 생계비 그대로 사용
-  const finalLiving = courtLiving;
-
-  // 총 생계비
-  const totalLiving = finalLiving + extra;
-
-  // 가용소득
+  const totalLiving = courtLiving + extra;
   const disposable = Math.max(income - totalLiving, 0);
-
-  // 총 변제예정액
   const totalRepay = disposable * months;
-
-  // 최종 변제금
   const finalPay = Math.max(totalRepay, asset);
 
-  // 변제율·탕감률
   const repayRate = debt > 0 ? ((finalPay / debt) * 100).toFixed(1) : "0.0";
   const reliefRate = (100 - Number(repayRate)).toFixed(1);
 
-  // PV 계산
   const discountRate = 0.03;
   const years = months / 12;
   const presentValue = finalPay > 0 ? finalPay / Math.pow(1 + discountRate, years) : 0;
   const presentValueRounded = Math.round(presentValue);
 
-  const meetsAssetRequirement = presentValueRounded >= asset && asset > 0;
-
-  /****************************************************
-   * 요약 카드
-   ****************************************************/
+  /******** 요약 카드 ********/
   const summary = document.getElementById("la_summary");
   summary.style.display = "block";
   summary.innerHTML = `
@@ -143,22 +109,18 @@ function calcLivingAdjust() {
     </div>
   `;
 
-  /****************************************************
-   * 설명 박스
-   ****************************************************/
+  /******** 설명 박스 ********/
   const explain = document.getElementById("la_explain");
   explain.style.display = "block";
   explain.innerHTML = `
-    <h3>📌 법원 생계비 자동 계산 설명</h3>
-    <p>가구 수 ${household}인 기준 법원 생계비는 <strong>${courtLiving.toLocaleString()}원</strong>입니다.</p>
-    <p>총 생계비는 <strong>${totalLiving.toLocaleString()}원</strong>이며,</p>
-    <p>월 변제 가능 금액은 <strong>${disposable.toLocaleString()}원</strong>입니다.</p>
-    <p>총 변제예정액은 <strong>${totalRepay.toLocaleString()}원</strong>입니다.</p>
+    <h3>📌 법원 생계비 계산 설명</h3>
+    <p>법원 생계비: ${courtLiving.toLocaleString()}원</p>
+    <p>총 생계비: ${totalLiving.toLocaleString()}원</p>
+    <p>월 변제 가능 금액: ${disposable.toLocaleString()}원</p>
+    <p>총 변제예정액: ${totalRepay.toLocaleString()}원</p>
   `;
 
-  /****************************************************
-   * 상세 계산 아코디언 내용 생성
-   ****************************************************/
+  /******** 상세 계산 ********/
   const acc = document.getElementById("la_accordion");
   acc.innerHTML = `
     <div class="calc-step"><strong>법원 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
@@ -167,15 +129,6 @@ function calcLivingAdjust() {
     <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
     <div class="calc-step"><strong>총 변제예정액</strong><br>${totalRepay.toLocaleString()}원</div>
     <div class="calc-step"><strong>최종 변제금</strong><br>${finalPay.toLocaleString()}원</div>
-    ${asset > 0 ? `
-    <div class="calc-step"><strong>현재가치(PV)</strong><br>${presentValueRounded.toLocaleString()}원</div>
-    ` : ``}
-    ${debt > 0 ? `
-    <div class="calc-step"><strong>변제율·탕감률</strong><br>
-      변제율: ${repayRate}%<br>
-      탕감률: ${reliefRate}%
-    </div>
-    ` : ``}
   `;
 
   acc.classList.remove("open");
@@ -189,13 +142,12 @@ function calcLivingAdjust() {
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
 
-  updateCourtLiving(); // 초기 자동 계산
+  updateCourtLiving();
   document.getElementById('la_household').addEventListener('change', updateCourtLiving);
 
-  const btn = document.querySelector(".la-acc-btn");
-  if (btn) btn.addEventListener("click", toggleLivingAccordion);
+  document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 
-  /* 설명보기 아코디언 */
+  /* 설명 아코디언 */
   document.querySelectorAll(".toggle-arrow").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
@@ -209,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* FAQ 아코디언 */
+  /* FAQ */
   document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
