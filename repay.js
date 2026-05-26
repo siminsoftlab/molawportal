@@ -87,11 +87,11 @@ function calcRepay() {
   const presentValue = Math.round(finalPay / Math.pow(1 + discountRate, years));
 
   /****************************************************
-   * 요약 카드
+   * 요약 카드 (초록 박스 유지)
    ****************************************************/
   const summary = $("repaySummary");
   summary.style.display = "block";
-  summary.style.marginBottom = "25px"; // ← 여백 추가
+  summary.style.marginBottom = "25px";
 
   summary.innerHTML = `
     <div class="repay-highlight-box">
@@ -132,48 +132,63 @@ function calcRepay() {
   `;
 
   /****************************************************
-   * 상세 계산
+   * 상세 계산 (연이자 계산기 스타일 — 빨간 테두리 표형 UI)
    ****************************************************/
   const acc = $("repayAccordion");
   acc.innerHTML = `
-    <div class="calc-step"><strong>1) 총 부채</strong><br>${debt.toLocaleString()}원</div>
-    <div class="calc-step"><strong>2) 월 소득</strong><br>${income.toLocaleString()}원</div>
-    <div class="calc-step"><strong>3) 법원 생계비</strong><br>${living.toLocaleString()}원</div>
-    <div class="calc-step"><strong>4) 추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-    <div class="calc-step"><strong>5) 가용소득</strong><br>
-      ${income.toLocaleString()} − ${living.toLocaleString()}
-      ${extra > 0 ? ` − ${extra.toLocaleString()}` : ""}
-      <br>= <strong>${monthlyPay.toLocaleString()}원</strong>
-    </div>
-    <div class="calc-step"><strong>6) 변제기간</strong><br>${months}개월</div>
-    <div class="calc-step"><strong>7) 총 변제예정액(유보액)</strong><br>
-      ${monthlyPay.toLocaleString()} × ${months} = <strong>${totalPay.toLocaleString()}원</strong>
-    </div>
-    <div class="calc-step"><strong>8) PV 충족 최소 변제금(FV)</strong><br>
-      <strong>${requiredFinalPay.toLocaleString()}원</strong>
-    </div>
-    <div class="calc-step"><strong>9) 현재가치(PV)</strong><br>
-      <strong>${presentValue.toLocaleString()}원</strong>
-    </div>
-    <div class="calc-step"><strong>10) 청산가치 비교</strong><br>
-      청산가치: ${asset.toLocaleString()}원<br>
-      PV: ${presentValue.toLocaleString()}원<br>
-      <strong style="color:#008000;">✔ 충족</strong>
-    </div>
-    <div class="calc-step"><strong>11) 변제율·탕감률</strong><br>
-      변제율: ${repayRate}%<br>
-      탕감률: ${reliefRate}%
-    </div>
+    <div class="repay-highlight-box-red">
 
-    ${autoAdjusted ? `
-      <div class="calc-step"><strong>12) 자동 조정 사유</strong><br>
-        ⚙️ PV ≥ 청산가치를 충족하기 위해 변제금이 자동 상향되었습니다.
-      </div>
-    ` : ""}
+      <div class="row"><div class="label">총 부채</div>
+        <div class="value">${debt.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">월 소득</div>
+        <div class="value">${income.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">법원 생계비</div>
+        <div class="value">${living.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">추가 생계비</div>
+        <div class="value">${extra.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">가용소득</div>
+        <div class="value">${monthlyPay.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">변제기간</div>
+        <div class="value">${months}개월</div></div>
+
+      <div class="row"><div class="label">총 변제예정액(유보액)</div>
+        <div class="value">${totalPay.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">PV 충족 최소 변제금(FV)</div>
+        <div class="value">${requiredFinalPay.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">현재가치(PV)</div>
+        <div class="value">${presentValue.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">청산가치</div>
+        <div class="value">${asset.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">최종 변제금</div>
+        <div class="value">${finalPay.toLocaleString()}원</div></div>
+
+      <div class="row"><div class="label">변제율</div>
+        <div class="value">${repayRate}%</div></div>
+
+      <div class="row"><div class="label">탕감률</div>
+        <div class="value">${reliefRate}%</div></div>
+
+      ${autoAdjusted ? `
+        <div class="row">
+          <div class="label">자동 조정</div>
+          <div class="value" style="color:#2a5f9e;">PV 충족 위해 자동 조정됨</div>
+        </div>
+      ` : ""}
+
+    </div>
   `;
 
   /****************************************************
-   * 자동 설명
+   * 설명
    ****************************************************/
   const explain = $("repayExplain");
   explain.style.display = "block";
@@ -200,6 +215,7 @@ function calcRepay() {
   const btn = document.querySelector(".repay-accordion-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
+
 
 /****************************************************
  * 상세보기 토글
