@@ -1330,3 +1330,34 @@ display: block;
 #repaySummary {
   margin-bottom: 20px;
 }
+.repay-highlight-box-red {
+  background: #ffecec;
+  border: 2px solid #ff6b6b;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-top: 15px;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  color: #222;
+  line-height: 1.55;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.repay-highlight-box-red .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #ffd4d4;
+}
+
+.repay-highlight-box-red .row:last-child {
+  border-bottom: none;
+}
+
+.repay-highlight-box-red .label {
+  font-weight: 600;
+  color: #c0392b;
+}
+
+.repay-highlight-box-red .value {
+  font-weight: 700;
+}
