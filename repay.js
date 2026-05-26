@@ -1,5 +1,5 @@
 /****************************************************
- * 개인회생 변제금 계산기 — PV 충족 + 자동조정 안내 포함 최신본
+ * 개인회생 변제금 계산기 — PV 충족 + 자동조정 + FAQ 아코디언 통합본
  ****************************************************/
 
 /* 공통 유틸 */
@@ -255,9 +255,46 @@ function toggleAccordionRepay() {
 }
 
 /****************************************************
- * 페이지 로드 시 자동 생계비 계산
+ * FAQ + 설명 아코디언
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
+
+  /* 법원 생계비 자동 계산 */
   updateLivingCost();
   $("household").addEventListener("change", updateLivingCost);
+
+  /* FAQ 아코디언 */
+  const faqButtons = document.querySelectorAll(".faq-question");
+
+  faqButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const answer = btn.nextElementSibling;
+      const isOpen = answer.style.display === "block";
+
+      if (isOpen) {
+        answer.style.display = "none";
+        btn.innerHTML = btn.innerHTML.replace("▲", "▼");
+      } else {
+        answer.style.display = "block";
+        btn.innerHTML = btn.innerHTML.replace("▼", "▲");
+      }
+    });
+  });
+
+  /* 설명 아코디언 */
+  const toggleBtn = document.querySelector(".toggle-arrow");
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      const answer = toggleBtn.nextElementSibling;
+      const isOpen = answer.style.display === "block";
+
+      if (isOpen) {
+        answer.style.display = "none";
+        toggleBtn.innerHTML = "개인회생 변제금 계산기 설명 보기 ▼";
+      } else {
+        answer.style.display = "block";
+        toggleBtn.innerHTML = "개인회생 변제금 계산기 설명 접기 ▲";
+      }
+    });
+  }
 });
