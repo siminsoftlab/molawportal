@@ -86,14 +86,29 @@ document.getElementById("hl_household").addEventListener("change", updateCourtLi
  * 계산
  ****************************************************/
 function calcHouseholdLiving() {
-  const income = Number(document.getElementById('hl_income').value || 0);
+
+  /****************************************************
+   * ⭐ 필수 입력값 체크 (월소득, 법원 기준 생계비, 변제기간)
+   ****************************************************/
+  const incomeInput = document.getElementById('hl_income').value.trim();
+  const livingInput = document.getElementById('hl_court_living').value.trim();
+  const monthsInput = document.getElementById('hl_months').value.trim();
+
+  if (incomeInput === "" || livingInput === "" || monthsInput === "") {
+    alert("월 소득, 법원 기준 생계비, 변제기간을 모두 입력해주세요.");
+    return; // ← 계산 중단
+  }
+
+  /****************************************************
+   * 기존 계산 로직
+   ****************************************************/
+  const income = Number(incomeInput);
   const household = Number(document.getElementById('hl_household').value || 1);
   const extra = Number(document.getElementById('hl_extra').value || 0);
-  const months = Number(document.getElementById('hl_months').value || 0);
+  const months = Number(monthsInput);
   const asset = Number(document.getElementById('hl_asset').value || 0);
 
-  // 🔥 법원 기준 생계비는 입력창에서 직접 가져옴
-  const living = Number(document.getElementById('hl_court_living').value || 0);
+  const living = Number(livingInput);
 
   const totalLiving = living + extra;
   const disposable = Math.max(income - totalLiving, 0);
@@ -102,7 +117,7 @@ function calcHouseholdLiving() {
   const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
 
   /****************************************************
-   * 요약 카드 (법원생계비 스타일)
+   * 요약 카드
    ****************************************************/
   const summary = document.getElementById('hl_summary');
   summary.innerHTML = `
@@ -134,11 +149,10 @@ function calcHouseholdLiving() {
 
   </div>
 `;
-
   summary.style.display = "block";
 
   /****************************************************
-   * 상세 계산 HTML (법원생계비 스타일)
+   * 상세 계산 (빨강 박스)
    ****************************************************/
   householdCalcResult = `
   <div class="repay-highlight-box-red">
@@ -170,7 +184,6 @@ function calcHouseholdLiving() {
   </div>
 `;
 
-
   // 아코디언 초기화
   const acc = document.getElementById('hl_accordion');
   acc.innerHTML = "";
@@ -195,6 +208,7 @@ function calcHouseholdLiving() {
   `;
   setTimeout(() => seo.classList.add('visible'), 50);
 }
+
 
 /****************************************************
  * 페이지 로드시 자동 실행
