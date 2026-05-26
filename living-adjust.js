@@ -19,6 +19,8 @@ function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
   const btn = document.querySelector(".la-acc-btn");
 
+  if (!box || !btn) return;
+
   if (box.classList.contains("open")) {
     box.classList.remove("open");
     box.style.maxHeight = null;
@@ -145,7 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCourtLiving();
   document.getElementById('la_household').addEventListener('change', updateCourtLiving);
 
-  document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
+  const accBtn = document.querySelector(".la-acc-btn");
+  if (accBtn) accBtn.addEventListener("click", toggleLivingAccordion);
 
   /* 설명 아코디언 */
   document.querySelectorAll(".toggle-arrow").forEach(btn => {
