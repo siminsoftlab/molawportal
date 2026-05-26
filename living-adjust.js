@@ -2,7 +2,7 @@
  * 법원 생계비 계산기 — 최종 안정화 버전
  ****************************************************/
 
-/* 아코디언 토글 */
+/* 상세 계산 아코디언 */
 function toggleLivingAccordion() {
   const box = document.getElementById("la_accordion");
   const btn = document.querySelector(".la-acc-btn");
@@ -125,10 +125,28 @@ function calcLivingAdjust() {
   `;
 
   /****************************************************
-   * 상세 계산 아코디언 초기화
+   * 상세 계산 아코디언 내용 생성
    ****************************************************/
   const acc = document.getElementById("la_accordion");
-  acc.innerHTML = "";
+  acc.innerHTML = `
+    <div class="calc-step"><strong>법원 기준 생계비</strong><br>${courtLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>최종 인정 생계비</strong><br>${finalLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>추가 생계비</strong><br>${extra.toLocaleString()}원</div>
+    <div class="calc-step"><strong>총 생계비</strong><br>${totalLiving.toLocaleString()}원</div>
+    <div class="calc-step"><strong>월 변제 가능 금액</strong><br>${disposable.toLocaleString()}원</div>
+    <div class="calc-step"><strong>총 변제예정액</strong><br>${totalRepay.toLocaleString()}원</div>
+    <div class="calc-step"><strong>최종 변제금</strong><br>${finalPay.toLocaleString()}원</div>
+    ${asset > 0 ? `
+    <div class="calc-step"><strong>현재가치(PV)</strong><br>${presentValueRounded.toLocaleString()}원</div>
+    ` : ``}
+    ${debt > 0 ? `
+    <div class="calc-step"><strong>변제율·탕감률</strong><br>
+      변제율: ${repayRate}%<br>
+      탕감률: ${reliefRate}%
+    </div>
+    ` : ``}
+  `;
+
   acc.classList.remove("open");
   acc.style.maxHeight = null;
 
