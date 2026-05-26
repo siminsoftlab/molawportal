@@ -1327,5 +1327,8 @@ display: block;
   border-radius: 4px;
   margin-left: 6px;
 }
+#repaySummary {
+  margin-bottom: 20px;
+}
 
 
