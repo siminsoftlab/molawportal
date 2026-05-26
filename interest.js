@@ -92,7 +92,7 @@ function calcInterest() {
   const explain = document.getElementById("interestExplain");
   explain.style.display = "block";
   explain.innerHTML = `
-    <h3>📌 연이자 계산기 자동 설명</h3>
+    <h3>📌 연이자 계산기 계산 설명</h3>
     <p>
       원금 ${principal.toLocaleString()}원에 연이율 ${rate}%를 적용하고 
       ${days}일 동안 계산한 이자는 <strong>${interest.toLocaleString()}원</strong>이며,
