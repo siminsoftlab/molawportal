@@ -1,14 +1,36 @@
 /****************************************************
- * 개인회생 변제금 계산기 — PV 충족 + 자동조정 + FAQ 아코디언 통합본
+ * 개인회생 변제금 계산기 — 최종 통합본 (2026)
+ * - PV 충족 자동조정
+ * - 자동조정 안내
+ * - 상세 계산 자동조정 사유
+ * - FAQ 아코디언
+ * - 설명 아코디언
+ * - 콤마 자동포맷
  ****************************************************/
 
 /* 공통 유틸 */
 function $(id) {
   return document.getElementById(id);
 }
+
 function toNumber(v) {
+  if (typeof v === "string") {
+    v = v.replace(/,/g, "");
+  }
   const n = Number(v);
   return isNaN(n) ? 0 : n;
+}
+
+/****************************************************
+ * 숫자 입력 콤마 자동 포맷
+ ****************************************************/
+function formatNumberInput(el) {
+  let val = el.value.replace(/,/g, "").replace(/[^\d]/g, "");
+  if (val === "") {
+    el.value = "";
+    return;
+  }
+  el.value = Number(val).toLocaleString();
 }
 
 /****************************************************
@@ -22,7 +44,7 @@ function calcCourtLiving(household) {
 
 function updateLivingCost() {
   const household = Number($("household").value || 1);
-  $("living").value = calcCourtLiving(household);
+  $("living").value = calcCourtLiving(household).toLocaleString();
 }
 
 /****************************************************
@@ -81,25 +103,17 @@ function calcRepay() {
   summary.innerHTML = `
     <div class="repay-highlight-box">
 
-      <div class="row">
-        <div class="label">총 부채</div>
-        <div class="value">${debt.toLocaleString()}원</div>
-      </div>
+      <div class="row"><div class="label">총 부채</div>
+        <div class="value">${debt.toLocaleString()}원</div></div>
 
-      <div class="row">
-        <div class="label">월 변제 가능 금액</div>
-        <div class="value">${monthlyPay.toLocaleString()}원</div>
-      </div>
+      <div class="row"><div class="label">월 변제 가능 금액</div>
+        <div class="value">${monthlyPay.toLocaleString()}원</div></div>
 
-      <div class="row">
-        <div class="label">총 변제예정액(유보액)</div>
-        <div class="value">${totalPay.toLocaleString()}원</div>
-      </div>
+      <div class="row"><div class="label">총 변제예정액(유보액)</div>
+        <div class="value">${totalPay.toLocaleString()}원</div></div>
 
-      <div class="row">
-        <div class="label">최종 변제금</div>
-        <div class="value">${finalPay.toLocaleString()}원</div>
-      </div>
+      <div class="row"><div class="label">최종 변제금</div>
+        <div class="value">${finalPay.toLocaleString()}원</div></div>
 
       ${autoAdjusted ? `
         <div class="auto-adjust-msg">
@@ -107,27 +121,19 @@ function calcRepay() {
         </div>
       ` : ""}
 
-      <div class="row">
-        <div class="label">변제율</div>
-        <div class="value">${repayRate}%</div>
-      </div>
+      <div class="row"><div class="label">변제율</div>
+        <div class="value">${repayRate}%</div></div>
 
       <div class="rate-big">
         탕감률 ${reliefRate}%<br>
         <span style="font-size:0.9rem; font-weight:600;">(법원에서 탕감되는 비율)</span>
       </div>
 
-      <div class="row">
-        <div class="label">현재가치(PV)</div>
-        <div class="value">${presentValue.toLocaleString()}원</div>
-      </div>
+      <div class="row"><div class="label">현재가치(PV)</div>
+        <div class="value">${presentValue.toLocaleString()}원</div></div>
 
-      <div class="row">
-        <div class="label">청산가치 충족 여부</div>
-        <div class="value" style="color:#008000;">
-          ✔ 충족
-        </div>
-      </div>
+      <div class="row"><div class="label">청산가치 충족 여부</div>
+        <div class="value" style="color:#008000;">✔ 충족</div></div>
 
     </div>
   `;
@@ -255,13 +261,22 @@ function toggleAccordionRepay() {
 }
 
 /****************************************************
- * FAQ + 설명 아코디언
+ * FAQ + 설명 아코디언 + 콤마 자동포맷
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
 
   /* 법원 생계비 자동 계산 */
   updateLivingCost();
   $("household").addEventListener("change", updateLivingCost);
+
+  /* 숫자 입력 콤마 자동 포맷 */
+  const numberInputs = ["debt", "income", "living", "extra", "asset"];
+  numberInputs.forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener("input", () => formatNumberInput(el));
+    el.addEventListener("blur", () => formatNumberInput(el));
+  });
 
   /* FAQ 아코디언 */
   const faqButtons = document.querySelectorAll(".faq-question");
