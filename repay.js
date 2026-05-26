@@ -1,5 +1,5 @@
 /****************************************************
- * 개인회생 변제금 계산기 — 최종본 repay.js
+ * 개인회생 변제금 계산기 — 최신 완성본 repay.js
  ****************************************************/
 
 /* 공통 유틸 */
@@ -77,18 +77,25 @@ function calcRepay() {
     <div class="calc-step"><strong>2) 월 소득</strong><br>${income.toLocaleString()}원</div>
     <div class="calc-step"><strong>3) 생계비</strong><br>${living.toLocaleString()}원</div>
     <div class="calc-step"><strong>4) 추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-   <div class="calc-step"><strong>5) 가용소득</strong><br>
-      ${income.toLocaleString()} − ${living.toLocaleString()} − ${extra.toLocaleString()}<br>
+
+    <div class="calc-step"><strong>5) 가용소득</strong><br>
+      ${income.toLocaleString()} − ${living.toLocaleString()}
+      ${extra > 0 ? ` − ${extra.toLocaleString()}` : ""}
+      <br>
       = <strong>${monthlyPay.toLocaleString()}원</strong>
     </div>
+
     <div class="calc-step"><strong>6) 변제기간</strong><br>${months}개월</div>
+
     <div class="calc-step"><strong>7) 총 변제금</strong><br>
       ${monthlyPay.toLocaleString()} × ${months} = ${totalPay.toLocaleString()}원
     </div>
+
     <div class="calc-step"><strong>8) 청산가치 비교</strong><br>
       청산가치: ${asset.toLocaleString()}원<br>
       최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
     </div>
+
     <div class="calc-step"><strong>9) 변제율·탕감률</strong><br>
       변제율: ${repayRate}% (실제로 갚는 비율)<br>
       탕감률: ${reliefRate}% (법원에서 탕감되는 비율)
@@ -150,8 +157,9 @@ function resetRepayInputs() {
   const btn = document.querySelector(".repay-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
+
 /****************************************************
- * 상세보기 토글 (⭐ 반드시 추가)
+ * 상세보기 토글
  ****************************************************/
 function toggleAccordionRepay() {
   const box = $("repayAccordion");
