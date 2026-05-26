@@ -286,4 +286,18 @@ document.addEventListener("DOMContentLoaded", () => {
       : "법원 생계비 계산기 설명 접기 ▲";
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.querySelector(".explain-question");
+  const box = document.querySelector(".explain-answer");
+
+  btn.addEventListener("click", () => {
+    const isOpen = box.style.display === "block";
+
+    box.style.display = isOpen ? "none" : "block";
+
+    btn.textContent = isOpen
+      ? "법원 생계비 계산기 설명 보기 ▼"
+      : "법원 생계비 계산기 설명 접기 ▲";
+  });
+});
 
