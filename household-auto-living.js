@@ -156,15 +156,50 @@ function calcHouseholdLiving() {
    * 상세 계산 HTML (법원생계비 스타일)
    ****************************************************/
   householdCalcResult = `
-    <p><strong>법원 기준 생계비:</strong> ${living.toLocaleString()}원</p>
-    <p><strong>추가 생계비:</strong> ${extra.toLocaleString()}원</p>
-    <p><strong>총 생계비:</strong> ${totalLiving.toLocaleString()}원</p>
-    <p><strong>월 변제 가능 금액:</strong> ${disposable.toLocaleString()}원</p>
-    <p><strong>소득 기준 총 변제금:</strong> ${totalByIncome.toLocaleString()}원</p>
-    <p><strong>청산가치:</strong> ${asset.toLocaleString()}원</p>
-    <p><strong>최종 변제금:</strong> ${finalTotal.toLocaleString()}원</p>
-    <p><strong>월 변제금:</strong> ${monthly.toLocaleString()}원</p>
-  `;
+  <div class="repay-highlight-box-red">
+
+    <div class="row">
+      <div class="label">법원 기준 생계비</div>
+      <div class="value">${living.toLocaleString()}원</div>
+    </div>
+
+    <div class="row">
+      <div class="label">추가 생계비</div>
+      <div class="value">${extra.toLocaleString()}원</div>
+    </div>
+
+    <div class="row">
+      <div class="label">총 생계비</div>
+      <div class="value">${totalLiving.toLocaleString()}원</div>
+    </div>
+
+    <div class="row">
+      <div class="label">월 변제 가능 금액</div>
+      <div class="value">${disposable.toLocaleString()}원</div>
+    </div>
+
+    <div class="row">
+      <div class="label">소득 기준 총 변제금</div>
+      <div class="value">${totalByIncome.toLocaleString()}원</div>
+    </div>
+
+    <div class="row">
+      <div class="label">청산가치</div>
+      <div class="value">${asset.toLocaleString()}원</div>
+    </div>
+
+    <div class="row">
+      <div class="label">최종 변제금</div>
+      <div class="value">${finalTotal.toLocaleString()}원</div>
+    </div>
+
+    <div class="row">
+      <div class="label">월 변제금</div>
+      <div class="value">${monthly.toLocaleString()}원</div>
+    </div>
+
+  </div>
+`;
 
   // 아코디언 초기화
   const acc = document.getElementById('hl_accordion');
