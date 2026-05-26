@@ -88,14 +88,14 @@ document.getElementById("hl_household").addEventListener("change", updateCourtLi
 function calcHouseholdLiving() {
 
   /****************************************************
-   * ⭐ 필수 입력값 체크 (월소득, 법원 기준 생계비, 변제기간)
+   * ⭐ 필수 입력값 체크 (월소득, 최저 생계비, 변제기간)
    ****************************************************/
   const incomeInput = document.getElementById('hl_income').value.trim();
   const livingInput = document.getElementById('hl_court_living').value.trim();
   const monthsInput = document.getElementById('hl_months').value.trim();
 
   if (incomeInput === "" || livingInput === "" || monthsInput === "") {
-    alert("월 소득, 법원 기준 생계비, 변제기간을 모두 입력해주세요.");
+    alert("월 소득, 최저 생계비, 변제기간을 모두 입력해주세요.");
     return; // ← 계산 중단
   }
 
