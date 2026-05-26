@@ -27,15 +27,15 @@ function calcRepay() {
   const monthlyPay = Math.max(disposable, 0);
   const totalPay = monthlyPay * months;
 
-  // 총 부채, 청산가치, 총 변제금 중 가장 큰 값이 최종 변제금
-  const finalPay = Math.max(totalPay, asset, debt);
+  // ⭐ 최종 변제금 = 총 변제금 vs 청산가치 중 큰 값
+  const finalPay = Math.max(totalPay, asset);
 
-  // 변제율 계산
+  // ⭐ 변제율 = 최종 변제금 ÷ 총 부채 × 100
   const repayRate = debt > 0 
     ? ((finalPay / debt) * 100).toFixed(1)
     : 0;
 
-  // 탕감률 계산
+  // ⭐ 탕감률 = 100 - 변제율
   const reliefRate = (100 - repayRate).toFixed(1);
 
   /****************************************************
@@ -85,9 +85,8 @@ function calcRepay() {
     <div class="calc-step"><strong>7) 총 변제금</strong><br>
       ${monthlyPay.toLocaleString()} × ${months} = ${totalPay.toLocaleString()}원
     </div>
-    <div class="calc-step"><strong>8) 청산가치·총부채 비교</strong><br>
+    <div class="calc-step"><strong>8) 청산가치 비교</strong><br>
       청산가치: ${asset.toLocaleString()}원<br>
-      총 부채: ${debt.toLocaleString()}원<br>
       최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
     </div>
     <div class="calc-step"><strong>9) 변제율·탕감률</strong><br>
