@@ -1337,5 +1337,8 @@ display: block;
 #repaySummary {
   margin-bottom: 20px;
 }
-
+#la_explain {
+  position: relative;
+  z-index: 9999;
+}
 
