@@ -1,5 +1,5 @@
 /****************************************************
- * 개인회생 변제금 계산기 — 최신 완성본 repay.js
+ * 개인회생 변제금 계산기 — PV 포함 최신본 repay.js
  ****************************************************/
 
 /* 공통 유틸 */
@@ -39,7 +39,18 @@ function calcRepay() {
   const reliefRate = (100 - repayRate).toFixed(1);
 
   /****************************************************
-   * 요약 카드 — 첨부 이미지 동일 UI
+   * ⭐ 현재가치(PV) 계산
+   ****************************************************/
+  const discountRate = 0.03; // 3% 할인율
+  const years = months / 12;
+
+  const presentValue = (finalPay / Math.pow(1 + discountRate, years)).toFixed(0);
+
+  // ⭐ 청산가치 충족 여부
+  const meetsAssetRequirement = presentValue >= asset;
+
+  /****************************************************
+   * 요약 카드
    ****************************************************/
   const summary = $("repaySummary");
   summary.style.display = "block";
@@ -69,13 +80,16 @@ function calcRepay() {
   `;
 
   /****************************************************
-   * 상세 계산 (아코디언 내부)
+   * 상세 계산 (아코디언)
    ****************************************************/
   const acc = $("repayAccordion");
   acc.innerHTML = `
     <div class="calc-step"><strong>1) 총 부채</strong><br>${debt.toLocaleString()}원</div>
+
     <div class="calc-step"><strong>2) 월 소득</strong><br>${income.toLocaleString()}원</div>
+
     <div class="calc-step"><strong>3) 생계비</strong><br>${living.toLocaleString()}원</div>
+
     <div class="calc-step"><strong>4) 추가 생계비</strong><br>${extra.toLocaleString()}원</div>
 
     <div class="calc-step"><strong>5) 가용소득</strong><br>
@@ -87,23 +101,30 @@ function calcRepay() {
 
     <div class="calc-step"><strong>6) 변제기간</strong><br>${months}개월</div>
 
-    <div class="calc-step"><strong>7) 총 변제금</strong><br>
-      ${monthlyPay.toLocaleString()} × ${months} = ${totalPay.toLocaleString()}원
+    <div class="calc-step"><strong>7) 총 변제예정액(유보액)</strong><br>
+      ${monthlyPay.toLocaleString()} × ${months} = <strong>${totalPay.toLocaleString()}원</strong>
     </div>
 
-    <div class="calc-step"><strong>8) 청산가치 비교</strong><br>
+    <div class="calc-step"><strong>8) 현재가치(PV)</strong><br>
+      할인율 3% 적용 → <strong>${Number(presentValue).toLocaleString()}원</strong>
+    </div>
+
+    <div class="calc-step"><strong>9) 청산가치 비교</strong><br>
       청산가치: ${asset.toLocaleString()}원<br>
-      최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
+      현재가치(PV): ${Number(presentValue).toLocaleString()}원<br>
+      <strong style="color:${meetsAssetRequirement ? '#008000' : '#d60000'};">
+        ${meetsAssetRequirement ? "✔ 청산가치 충족" : "✘ 청산가치 미충족 → 변제금 상향 필요"}
+      </strong>
     </div>
 
-    <div class="calc-step"><strong>9) 변제율·탕감률</strong><br>
-      변제율: ${repayRate}% (실제로 갚는 비율)<br>
-      탕감률: ${reliefRate}% (법원에서 탕감되는 비율)
+    <div class="calc-step"><strong>10) 변제율·탕감률</strong><br>
+      변제율: ${repayRate}%<br>
+      탕감률: ${reliefRate}%
     </div>
   `;
 
   /****************************************************
-   * 자동 설명 — 변제율·탕감률 문구 자동 생성
+   * 자동 설명
    ****************************************************/
   const explain = $("repayExplain");
   explain.style.display = "block";
@@ -113,12 +134,9 @@ function calcRepay() {
       총 부채 중 <strong>${repayRate}%는 실제로 갚아야 하는 금액</strong>이며,<br>
       나머지 <strong>${reliefRate}%는 법원에서 탕감받게 되는 금액</strong>입니다.<br><br>
 
-      현재 입력하신 소득과 생계비 기준으로 산정된 변제율은 <strong>${repayRate}%</strong>입니다.<br>
-      이는 전체 부채 중 <strong>${repayRate}%만 변제하면 되고</strong>,<br>
-      <strong>${reliefRate}%는 변제 의무가 없어지는 금액</strong>입니다.<br><br>
-
-      총 부채 대비 실제 변제 비율은 <strong>${repayRate}%</strong>이며,<br>
-      탕감률은 <strong>${reliefRate}%</strong>로 예상됩니다.
+      현재가치(PV)는 <strong>${Number(presentValue).toLocaleString()}원</strong>이며,<br>
+      청산가치 <strong>${asset.toLocaleString()}원</strong>과 비교했을 때<br>
+      <strong>${meetsAssetRequirement ? "충족합니다." : "충족하지 못합니다."}</strong>
     </p>
   `;
 
