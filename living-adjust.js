@@ -1,5 +1,5 @@
 /****************************************************
- * 법원 생계비 계산기 — 2026 최신 HTML 대응 버전
+ * 법원 생계비 계산기 — 오류 없는 완성본
  ****************************************************/
 
 /* 숫자 처리 */
@@ -30,14 +30,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return preciseRound(baseLiving1 * (weights[household] || 1));
   }
 
-  /* 가구 수 선택 시 living 텍스트박스 자동 채우기 */
+  /* 가구 수 선택 시 living 자동 입력 */
   function updateLivingByHousehold() {
     const household = getInt("la_household") || 1;
     const courtLiving = getCourtLiving(household);
-    const livingInput = document.getElementById("living");
-    if (livingInput) {
-      livingInput.value = courtLiving;
-    }
+    document.getElementById("living").value = courtLiving;
   }
 
   /****************************************************
@@ -69,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("la_months").value = "36";
-
     document.getElementById("la_summary").innerHTML = "";
     document.getElementById("la_accordion").innerHTML = "";
     document.getElementById("la_explain").innerHTML = "";
@@ -84,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = document.querySelector(".la-acc-btn");
     if (btn) btn.textContent = "계산 상세 보기 ▼";
 
-    // 가구 수 기준으로 living 다시 세팅
     updateLivingByHousehold();
   };
 
@@ -98,8 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const extraInput   = getInt('la_extra');
     const months       = getInt('la_months');
 
-    /* 법원 기준 생계비: living 텍스트박스에서 가져옴 */
-    const courtLiving  = getInt('living');
+    /* living 값이 비어 있으면 자동 보정 */
+    let courtLiving = getInt('living');
+    if (!courtLiving) {
+      courtLiving = getCourtLiving(household);
+      document.getElementById("living").value = courtLiving;
+    }
 
     /* 추가 생계비 인정 */
     const extraLimit   = preciseRound(courtLiving * 0.3);
@@ -190,33 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
   /****************************************************
    * 이벤트 연결
    ****************************************************/
-  // 가구 수 변경 시 living 자동 계산
   document.getElementById("la_household")
     .addEventListener("change", updateLivingByHousehold);
 
-  // 페이지 로드 시 한 번 초기 세팅
   updateLivingByHousehold();
 
   document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
-
-  /* FAQ 토글 */
-  document.querySelectorAll(".faq-question.toggle-arrow").forEach(btn => {
-    btn.addEventListener("click", function () {
-      const answer = this.nextElementSibling;
-      const isOpen = answer.style.display === "block";
-      answer.style.display = isOpen ? "none" : "block";
-      this.textContent = isOpen
-        ? this.textContent.replace("▲", "▼")
-        : this.textContent.replace("▼", "▲");
-    });
-  });
-
-  document.querySelectorAll(".faq-question").forEach(btn => {
-    btn.addEventListener("click", function () {
-      const answer = this.nextElementSibling;
-      const isOpen = answer.style.display === "block";
-      answer.style.display = isOpen ? "none" : "block";
-    });
-  });
-
 });
