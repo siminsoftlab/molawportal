@@ -51,38 +51,33 @@ function calcInterest() {
    ****************************************************/
   const acc = document.getElementById("interestAccordion");
   acc.innerHTML = `
-    <div class="repay-highlight-box">
-
-      <div class="row">
-        <div class="label">이자 계산식</div>
-        <div class="value">원금 × (연이율 ÷ 100) × (일수 ÷ 365)</div>
-      </div>
-
+    <div class="repay-highlight-box-red">
+  
       <div class="row">
         <div class="label">원금</div>
         <div class="value">${principal.toLocaleString()}원</div>
       </div>
-
+  
       <div class="row">
         <div class="label">연 이자율</div>
         <div class="value">${rate}%</div>
       </div>
-
+  
       <div class="row">
         <div class="label">기간(일수)</div>
         <div class="value">${days}일</div>
       </div>
-
+  
       <div class="row">
         <div class="label">총 이자</div>
         <div class="value">${interest.toLocaleString()}원</div>
       </div>
-
+  
       <div class="row">
         <div class="label">총 상환금액</div>
         <div class="value">${total.toLocaleString()}원</div>
       </div>
-
+  
     </div>
   `;
 
