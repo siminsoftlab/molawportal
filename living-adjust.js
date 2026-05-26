@@ -82,6 +82,23 @@ function resetLivingAdjust() {
  * 계산 (법원 생계비 계산기)
  ****************************************************/
 function calcLivingAdjust() {
+
+  /****************************************************
+   * ⭐ 필수 입력값 체크 (월소득, 법원 기준 생계비, 추가 생계비, 변제기간)
+   ****************************************************/
+  const incomeInput = document.getElementById('la_income').value.trim();
+  const livingInput = document.getElementById('la_court_living').value.trim();
+  const extraInputRaw = document.getElementById('la_extra').value.trim();
+  const monthsInput = document.getElementById('la_months').value.trim();
+
+  if (incomeInput === "" || livingInput === "" || extraInputRaw === "" || monthsInput === "") {
+    alert("월 소득, 법원 기준 생계비, 추가 생계비, 변제기간(개월)을 모두 입력해주세요.");
+    return; // ← 계산 중단
+  }
+
+  /****************************************************
+   * 기존 계산 로직
+   ****************************************************/
   const income      = getInt('la_income');
   const household   = getInt('la_household');
   const courtLiving = getInt('la_court_living');
@@ -158,7 +175,7 @@ function calcLivingAdjust() {
    * 상세 계산
    ****************************************************/
   const acc = document.getElementById("la_accordion");
- acc.innerHTML = `
+  acc.innerHTML = `
   <div class="repay-highlight-box-red">
 
     <div class="row"><div class="label">월 소득</div>
@@ -191,6 +208,7 @@ function calcLivingAdjust() {
   const btn = document.querySelector(".la-acc-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
+
 
 /****************************************************
  * 이벤트 연결
