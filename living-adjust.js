@@ -139,6 +139,7 @@ function calcLivingAdjust() {
   const explain = document.getElementById("la_explain");
   explain.style.display = "block";
   explain.innerHTML = `
+    <h3>📌 법원 생계비 자동 설명</h3>
     <p>선택한 가구 수는 <strong>${getHouseholdLabel(household)}</strong>이며,  
     이에 따른 법원 기준 생계비는 <strong>${courtLiving.toLocaleString()}원</strong>입니다.</p>
 
