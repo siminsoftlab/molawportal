@@ -1209,6 +1209,7 @@ padding: 15px;
   max-height: none !important;
   overflow: visible !important;
   padding: 12px;
+  min-height: 50px !important;
 }
 #interestExplain {
 display: none;
