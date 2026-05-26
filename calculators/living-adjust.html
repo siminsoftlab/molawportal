@@ -68,21 +68,16 @@
       <button class="faq-question toggle-arrow">법원 생계비 계산기 설명 보기 ▼</button>
       <div class="faq-answer">
         <p>
-          법원 생계비 계산기는 내가 입력한 생계비가<br>
-          법원에서 인정하는 기준 생계비와 <strong>어떻게 다른지 비교</strong>하고 싶을 때 사용합니다.<br>
-          가구수·소득·입력 생계비·추가 생계비를 기준으로<br>
-          법원이 인정하는 <strong>최종 생계비</strong>를 산정하고,<br>
-          그에 따라 계산되는 <strong>월 변제 가능 금액과 총 변제금</strong>을 확인할 수 있습니다.
+          법원 생계비 계산기는 <strong>가구 수</strong>와 <strong>중위소득</strong>을 기준으로  
+          법원이 인정하는 <strong>기준 생계비</strong>를 산정하고,  
+          월 소득 대비 <strong>변제 가능 금액</strong>을 확인할 수 있는 계산 도구입니다.
         </p>
       </div>
     </div>
 
-    <label>총 부채(원)</label>
-    <input id="la_debt" type="number">
-
     <label>월 소득(원)</label>
     <input id="la_income" type="number">
-
+    
     <label>가구 수</label>
     <select id="la_household">
       <option value="1">1인 가구</option>
@@ -91,20 +86,16 @@
       <option value="4">4인 가구</option>
       <option value="5">5인 가구</option>
     </select>
-
-    <!-- 🔥 새로 추가된 법원 생계비 textbox -->
-    <label>법원 생계비(원)</label>
+    
+    <label>법원 기준 생계비(자동 계산)</label>
     <input id="la_court_living" type="number" readonly>
-
+    
     <label>추가 생계비(원)</label>
     <input id="la_extra" type="number">
-
+    
     <label>변제기간(개월)</label>
     <input id="la_months" type="number" value="36">
-
-    <label>청산가치(원)</label>
-    <input id="la_asset" type="number">
-
+    
     <div class="btn-row">
       <button onclick="calcLivingAdjust()">계산하기</button>
       <button onclick="resetLivingAdjust()">초기화</button>
@@ -121,59 +112,65 @@
     <div id="la_explain" class="explain-box"></div>
 
     <!-- ⭐ 법원 생계비 계산기 FAQ -->
-    <section class="faq-section">
-      <h2>법원 생계비 계산기 FAQ</h2>
-    
-      <div class="faq-item">
-        <button class="faq-question toggle-arrow">법원 생계비는 어떤 기준으로 계산되나요?</button>
-        <div class="faq-answer">
-          <p>
-            법원 생계비는 보건복지부 고시 <strong>중위소득</strong>을 기준으로 산정되며,  
-            가구원 수에 따라 인정되는 생계비가 달라집니다.
-          </p>
-        </div>
+   <section class="faq-section">
+    <h2>법원 생계비 계산기 FAQ</h2>
+  
+    <!-- FAQ 1 -->
+    <div class="faq-item">
+      <button class="faq-question toggle-arrow">법원 생계비는 어떤 기준으로 계산되나요?</button>
+      <div class="faq-answer">
+        <p>
+          법원 생계비는 보건복지부 고시 <strong>중위소득</strong>을 기준으로 산정되며,  
+          <strong>가구원 수</strong>에 따라 인정되는 생계비가 달라집니다.
+        </p>
       </div>
-    
-      <div class="faq-item">
-        <button class="faq-question toggle-arrow">사용자가 입력한 생계비와 법원 생계비가 다르면 어떻게 되나요?</button>
-        <div class="faq-answer">
-          <p>
-            법원 기준 생계비보다 적게 입력하면 변제금이 증가할 수 있으며,  
-            반대로 더 많이 입력하면 법원에서 조정될 수 있습니다.
-          </p>
-        </div>
+    </div>
+  
+    <!-- FAQ 2 (수정됨) -->
+    <div class="faq-item">
+      <button class="faq-question toggle-arrow">사용자가 입력한 생계비와 법원 생계비가 다르면 어떻게 되나요?</button>
+      <div class="faq-answer">
+        <p>
+          법원 기준 생계비보다 적게 입력하면 <strong>실제 생활비가 부족</strong>할 수 있으며,  
+          추가 생계비가 필요한 경우 법원에서 <strong>일부 인정</strong>될 수 있습니다.
+        </p>
       </div>
-    
-      <div class="faq-item">
-        <button class="faq-question toggle-arrow">추가 생계비는 어떤 경우에 인정되나요?</button>
-        <div class="faq-answer">
-          <p>
-            장애, 질병, 교육비, 의료비 등 <strong>특별한 사유</strong>가 있는 경우  
-            법원이 추가 생계비를 인정할 수 있습니다.
-          </p>
-        </div>
+    </div>
+  
+    <!-- FAQ 3 -->
+    <div class="faq-item">
+      <button class="faq-question toggle-arrow">추가 생계비는 어떤 경우에 인정되나요?</button>
+      <div class="faq-answer">
+        <p>
+          장애, 질병, 교육비, 의료비 등 <strong>특별한 사유</strong>가 있는 경우  
+          법원이 추가 생계비를 인정할 수 있습니다.
+        </p>
       </div>
-    
-      <div class="faq-item">
-        <button class="faq-question toggle-arrow">법원 생계비가 높게 나오면 변제금은 어떻게 되나요?</button>
-        <div class="faq-answer">
-          <p>
-            법원 생계비가 높게 산정되면 가용소득이 줄어들어  
-            <strong>월 변제금이 낮아질 수 있습니다.</strong>
-          </p>
-        </div>
+    </div>
+  
+    <!-- FAQ 4 (수정됨) -->
+    <div class="faq-item">
+      <button class="faq-question toggle-arrow">법원 생계비가 높게 나오면 어떤 영향이 있나요?</button>
+      <div class="faq-answer">
+        <p>
+          법원 생계비가 높게 산정되면 실제 <strong>가용소득이 줄어들 수 있습니다.</strong>
+        </p>
       </div>
-    
-      <div class="faq-item">
-        <button class="faq-question toggle-arrow">생계비 계산 결과는 개인회생 변제금과 어떻게 연결되나요?</button>
-        <div class="faq-answer">
-          <p>
-            법원 생계비를 기준으로 산정된 가용소득이  
-            개인회생 절차에서 <strong>월 변제금의 기준</strong>이 됩니다.
-          </p>
-        </div>
+    </div>
+  
+    <!-- FAQ 5 (수정됨) -->
+    <div class="faq-item">
+      <button class="faq-question toggle-arrow">생계비 계산 결과는 개인회생과 어떤 관련이 있나요?</button>
+      <div class="faq-answer">
+        <p>
+          법원 생계비는 개인회생 절차에서 <strong>참고되는 기준</strong>이지만,  
+          본 계산기는 <strong>생계비 산정만을 제공</strong>합니다.
+        </p>
       </div>
-    </section>
+    </div>
+  
+  </section>
+
    </div>
   </div>
 <footer class="site-footer">
