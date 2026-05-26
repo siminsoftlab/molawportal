@@ -1,10 +1,11 @@
 /****************************************************
- * 법원 생계비 계산기 — 전용 버전 (2026 최종)
+ * 법원 생계비 계산기 — 오차 제거 버전 (2026 최종)
  * - 정규식 숫자 처리
  * - 법원 생계비 자동 계산
  * - 법원 생계비(가구수) 표기
  * - 추가 생계비 입력값 보존 + 인정값 별도 계산
  * - PV·청산가치 충족
+ * - 부동소수점 오차 제거 (preciseRound)
  * - 개인회생 계산기 항목 완전 제거
  ****************************************************/
 
@@ -13,6 +14,11 @@ function getInt(id) {
   return parseInt(
     (document.getElementById(id).value || "0").replace(/[^\d]/g, "")
   ) || 0;
+}
+
+/* 부동소수점 오차 제거용 */
+function preciseRound(num) {
+  return Math.round((num + Number.EPSILON));
 }
 
 /* 가구수 텍스트 */
@@ -29,7 +35,7 @@ function updateCourtLiving() {
   const baseLiving1 = 1538523;
   const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
 
-  const courtLiving = Math.round(baseLiving1 * (weights[household] || 1));
+  const courtLiving = preciseRound(baseLiving1 * (weights[household] || 1));
 
   document.getElementById('la_court_living').value = courtLiving;
 }
@@ -94,9 +100,8 @@ function calcLivingAdjust() {
 
   /****************************************************
    * 추가 생계비 인정 한도 (법원 기준)
-   * 예: 법원 생계비의 30%까지만 인정
    ****************************************************/
-  const extraLimit   = Math.round(courtLiving * 0.3);
+  const extraLimit   = preciseRound(courtLiving * 0.3);
   const allowedExtra = Math.min(extraInput, extraLimit);
 
   const totalLiving  = courtLiving + allowedExtra;
@@ -110,19 +115,19 @@ function calcLivingAdjust() {
   const years        = months / 12;
 
   const requiredFinalPay = asset > 0
-    ? Math.round(asset * Math.pow(1 + discountRate, years))
+    ? preciseRound(asset * Math.pow(1 + discountRate, years))
     : 0;
 
   const finalPay = Math.max(totalRepay, requiredFinalPay, asset);
 
   const presentValue = finalPay > 0
-    ? Math.round(finalPay / Math.pow(1 + discountRate, years))
+    ? preciseRound(finalPay / Math.pow(1 + discountRate, years))
     : 0;
 
   const meetsPV = asset > 0 ? presentValue >= asset : true;
 
   /****************************************************
-   * 요약 카드 (법원 생계비 계산기 전용 항목만 표시)
+   * 요약 카드
    ****************************************************/
   const summary = document.getElementById("la_summary");
   summary.style.display = "block";
@@ -169,7 +174,7 @@ function calcLivingAdjust() {
   `;
 
   /****************************************************
-   * 설명 박스 (법원 생계비 계산기 전용)
+   * 설명 박스
    ****************************************************/
   const explain = document.getElementById("la_explain");
   explain.style.display = "block";
@@ -191,7 +196,7 @@ function calcLivingAdjust() {
   `;
 
   /****************************************************
-   * 상세 계산 (법원 생계비 계산기 전용)
+   * 상세 계산
    ****************************************************/
   const acc = document.getElementById("la_accordion");
   acc.innerHTML = `
