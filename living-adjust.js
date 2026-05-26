@@ -1,12 +1,5 @@
 /****************************************************
  * 법원 생계비 계산기 — 오차 제거 버전 (2026 최종)
- * - 정규식 숫자 처리
- * - 법원 생계비 자동 계산
- * - 법원 생계비(가구수) 표기
- * - 추가 생계비 입력값 보존 + 인정값 별도 계산
- * - PV·청산가치 충족
- * - 부동소수점 오차 제거 (preciseRound)
- * - 개인회생 계산기 항목 완전 제거
  ****************************************************/
 
 /* 정규식 기반 숫자 처리 */
@@ -16,7 +9,7 @@ function getInt(id) {
   ) || 0;
 }
 
-/* 부동소수점 오차 제거용 */
+/* 부동소수점 오차 제거 */
 function preciseRound(num) {
   return Math.round((num + Number.EPSILON));
 }
@@ -94,13 +87,11 @@ function calcLivingAdjust() {
   const income       = getInt('la_income');
   const household    = getInt('la_household');
   const courtLiving  = getInt('la_court_living');
-  const extraInput   = getInt('la_extra');   // 입력값 그대로 유지
+  const extraInput   = getInt('la_extra');
   const months       = getInt('la_months');
   const asset        = getInt('la_asset');
 
-  /****************************************************
-   * 추가 생계비 인정 한도 (법원 기준)
-   ****************************************************/
+  /* 추가 생계비 인정 */
   const extraLimit   = preciseRound(courtLiving * 0.3);
   const allowedExtra = Math.min(extraInput, extraLimit);
 
@@ -108,9 +99,7 @@ function calcLivingAdjust() {
   const disposable   = Math.max(income - totalLiving, 0);
   const totalRepay   = disposable * months;
 
-  /****************************************************
-   * PV·청산가치 충족 (법원 필수 기준)
-   ****************************************************/
+  /* PV·청산가치 */
   const discountRate = 0.03;
   const years        = months / 12;
 
@@ -174,25 +163,19 @@ function calcLivingAdjust() {
   `;
 
   /****************************************************
-   * 설명 박스
+   * 자동 설명 (개인회생 계산기 스타일)
    ****************************************************/
   const explain = document.getElementById("la_explain");
   explain.style.display = "block";
   explain.innerHTML = `
-    <h3>📌 법원 생계비 계산 설명</h3>
-    <p>월 소득: ${income.toLocaleString()}원</p>
-    <p>법원 생계비(${getHouseholdLabel(household)}): ${courtLiving.toLocaleString()}원</p>
-    <p>추가 생계비(입력): ${extraInput.toLocaleString()}원</p>
-    <p>추가 생계비(인정): ${allowedExtra.toLocaleString()}원</p>
-    <p>총 생계비: ${totalLiving.toLocaleString()}원</p>
-    <p>월 변제 가능 금액: ${disposable.toLocaleString()}원</p>
-    <p>총 변제예정액: ${totalRepay.toLocaleString()}원</p>
-    <p>PV 충족 최소 변제금: ${requiredFinalPay.toLocaleString()}원</p>
-    <p>최종 변제금: ${finalPay.toLocaleString()}원</p>
-    <p>현재가치(PV): ${presentValue.toLocaleString()}원</p>
-    <p style="color:${meetsPV ? '#008000' : '#d60000'};">
-      ${meetsPV ? "✔ PV가 청산가치를 충족합니다." : "✘ PV가 청산가치를 충족하지 못합니다."}
-    </p>
+    <p>입력한 생계비 기준으로 계산된 월 변제 가능 금액은 <strong>${disposable.toLocaleString()}원</strong>입니다.</p>
+
+    <p>총 변제예정액은 <strong>${totalRepay.toLocaleString()}원</strong>이며,  
+    최종 변제금은 <strong>${finalPay.toLocaleString()}원</strong>입니다.</p>
+
+    <p>현재가치(PV)는 <strong>${presentValue.toLocaleString()}원</strong>이며,  
+    청산가치 <strong>${asset.toLocaleString()}원</strong>을  
+    ${meetsPV ? "<strong>충족합니다.</strong>" : "<strong>충족하지 못합니다.</strong>"}</p>
   `;
 
   /****************************************************
@@ -230,17 +213,14 @@ function calcLivingAdjust() {
 document.addEventListener("DOMContentLoaded", () => {
 
   updateCourtLiving();
-  const hh = document.getElementById('la_household');
-  if (hh) hh.addEventListener('change', updateCourtLiving);
+  document.getElementById('la_household').addEventListener('change', updateCourtLiving);
 
-  const accBtn = document.querySelector(".la-acc-btn");
-  if (accBtn) accBtn.addEventListener("click", toggleLivingAccordion);
+  document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 
-  /* 설명 아코디언 */
-  document.querySelectorAll(".toggle-arrow").forEach(btn => {
+  /* 설명 아코디언 (개인회생과 동일 구조) */
+  document.querySelectorAll(".faq-question.toggle-arrow").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
-      if (!answer) return;
       const isOpen = answer.style.display === "block";
       answer.style.display = isOpen ? "none" : "block";
       this.textContent = isOpen
@@ -253,51 +233,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", function () {
       const answer = this.nextElementSibling;
-      if (!answer) return;
       const isOpen = answer.style.display === "block";
       answer.style.display = isOpen ? "none" : "block";
     });
   });
+
 });
-document.addEventListener("DOMContentLoaded", () => {
-  const explainBtn = document.querySelector(".toggle-arrow");
-  const explainBox = document.querySelector(".explain-answer");
-
-  explainBtn.addEventListener("click", () => {
-    const isOpen = explainBox.style.display === "block";
-    explainBox.style.display = isOpen ? "none" : "block";
-
-    explainBtn.textContent = isOpen
-      ? "법원 생계비 계산기 설명 보기 ▼"
-      : "법원 생계비 계산기 설명 접기 ▲";
-  });
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const explainBtn = document.querySelector(".explain-toggle");
-  const explainBox = document.querySelector(".explain-answer");
-
-  explainBtn.addEventListener("click", () => {
-    const isOpen = explainBox.style.display === "block";
-
-    explainBox.style.display = isOpen ? "none" : "block";
-
-    explainBtn.textContent = isOpen
-      ? "법원 생계비 계산기 설명 보기 ▼"
-      : "법원 생계비 계산기 설명 접기 ▲";
-  });
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector(".explain-question");
-  const box = document.querySelector(".explain-answer");
-
-  btn.addEventListener("click", () => {
-    const isOpen = box.style.display === "block";
-
-    box.style.display = isOpen ? "none" : "block";
-
-    btn.textContent = isOpen
-      ? "법원 생계비 계산기 설명 보기 ▼"
-      : "법원 생계비 계산기 설명 접기 ▲";
-  });
-});
-
