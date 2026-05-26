@@ -35,6 +35,9 @@ function calcRepay() {
     ? ((finalPay / debt) * 100).toFixed(1)
     : 0;
 
+  // 탕감률 계산
+  const reliefRate = (100 - repayRate).toFixed(1);
+
   /****************************************************
    * 요약 카드 — 첨부 이미지 동일 UI
    ****************************************************/
@@ -55,11 +58,12 @@ function calcRepay() {
 
       <div class="row">
         <div class="label">변제율</div>
-        <div class="value">${repayRate}%</div>
+        <div class="value">${repayRate}% (실제로 갚는 비율)</div>
       </div>
 
       <div class="rate-big">
-        탕감률 ${(100 - repayRate).toFixed(1)}%
+        탕감률 ${reliefRate}%<br>
+        <span style="font-size:0.9rem; font-weight:600;">(법원에서 탕감되는 비율)</span>
       </div>
     </div>
   `;
@@ -86,27 +90,29 @@ function calcRepay() {
       총 부채: ${debt.toLocaleString()}원<br>
       최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
     </div>
-    <div class="calc-step"><strong>9) 변제율</strong><br>
-      최종 변제금 ÷ 총 부채 × 100 = <strong>${repayRate}%</strong>
+    <div class="calc-step"><strong>9) 변제율·탕감률</strong><br>
+      변제율: ${repayRate}% (실제로 갚는 비율)<br>
+      탕감률: ${reliefRate}% (법원에서 탕감되는 비율)
     </div>
   `;
 
   /****************************************************
-   * 자동 설명
+   * 자동 설명 — 변제율·탕감률 문구 자동 생성
    ****************************************************/
   const explain = $("repayExplain");
   explain.style.display = "block";
   explain.innerHTML = `
-    <h3>📌 개인회생 변제금 자동 설명</h3>
+    <h3>📌 변제율·탕감률 자동 설명</h3>
     <p>
-      총 부채는 ${debt.toLocaleString()}원이며,<br>
-      월 소득 ${income.toLocaleString()}원에서 생계비와 추가 생계비를 제외한 
-      가용소득은 ${monthlyPay.toLocaleString()}원입니다.<br>
-      ${months}개월 동안 변제하면 총 ${totalPay.toLocaleString()}원이 되며,<br>
-      청산가치와 총 부채를 비교하여 최종 변제금은 
-      <strong>${finalPay.toLocaleString()}원</strong>입니다.<br>
-      총 부채 대비 변제율은 <strong>${repayRate}%</strong>이며,
-      탕감률은 <strong>${(100 - repayRate).toFixed(1)}%</strong>입니다.
+      총 부채 중 <strong>${repayRate}%는 실제로 갚아야 하는 금액</strong>이며,<br>
+      나머지 <strong>${reliefRate}%는 법원에서 탕감받게 되는 금액</strong>입니다.<br><br>
+
+      현재 입력하신 소득과 생계비 기준으로 산정된 변제율은 <strong>${repayRate}%</strong>입니다.<br>
+      이는 전체 부채 중 <strong>${repayRate}%만 변제하면 되고</strong>,<br>
+      <strong>${reliefRate}%는 변제 의무가 없어지는 금액</strong>입니다.<br><br>
+
+      총 부채 대비 실제 변제 비율은 <strong>${repayRate}%</strong>이며,<br>
+      탕감률은 <strong>${reliefRate}%</strong>로 예상됩니다.
     </p>
   `;
 
