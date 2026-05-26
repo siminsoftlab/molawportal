@@ -1301,4 +1301,13 @@ display: block;
   font-weight: 800;
   color: #b80000;
 }
+.auto-adjust-msg {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: #e8f4ff;
+  border-left: 4px solid #4a90e2;
+  font-size: 0.85rem;
+  color: #2a5f9e;
+  border-radius: 4px;
+}
 
