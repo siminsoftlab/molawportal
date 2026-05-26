@@ -178,7 +178,7 @@ function calcRepay() {
   const explain = $("repayExplain");
   explain.style.display = "block";
   explain.innerHTML = `
-    <h3>📌 변제율·탕감률 자동 설명</h3>
+    <h3>📌 변제율·탕감률 계산 설명</h3>
     <p>
       총 부채 중 <strong>${repayRate}%</strong>는 실제로 갚아야 하는 금액이며,<br>
       <strong>${reliefRate}%</strong>는 법원에서 탕감되는 금액입니다.
