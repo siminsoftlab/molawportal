@@ -1260,3 +1260,39 @@ body.homepage .calc-box {
 .faq-answer.open {
   display: block;
 }
+.repay-highlight-box {
+  border: 2px solid #d60000;
+  background: #fff5f5;
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 15px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.repay-highlight-box .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.repay-highlight-box .label {
+  font-weight: 600;
+  color: #333;
+}
+
+.repay-highlight-box .value {
+  font-weight: 700;
+  color: #d60000;
+}
+
+.repay-highlight-box .rate-big {
+  margin-top: 12px;
+  padding: 12px;
+  background: #ffecec;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #b80000;
+}
