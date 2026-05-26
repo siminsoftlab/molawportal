@@ -77,7 +77,7 @@ function calcRepay() {
     <div class="calc-step"><strong>2) 월 소득</strong><br>${income.toLocaleString()}원</div>
     <div class="calc-step"><strong>3) 생계비</strong><br>${living.toLocaleString()}원</div>
     <div class="calc-step"><strong>4) 추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-    <div class="calc-step"><strong>5) 가용소득</strong><br>
+   <div class="calc-step"><strong>5) 가용소득</strong><br>
       ${income.toLocaleString()} − ${living.toLocaleString()} − ${extra.toLocaleString()}<br>
       = <strong>${monthlyPay.toLocaleString()}원</strong>
     </div>
