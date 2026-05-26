@@ -19,6 +19,8 @@ function setHTMLSafe(id, html) {
  * 계산하기
  ****************************************************/
 function calcRepay() {
+
+  const debt   = toNumber($("debt").value);   // ⭐ 추가: 총 부채
   const income = toNumber($("income").value);
   const living = toNumber($("living").value);
   const extra  = toNumber($("extra").value);
@@ -28,7 +30,9 @@ function calcRepay() {
   const disposable = income - living - extra;
   const monthlyPay = Math.max(disposable, 0);
   const totalPay = monthlyPay * months;
-  const finalPay = Math.max(totalPay, asset);
+
+  // ⭐ 총 부채를 최종 변제금 비교 조건에 포함
+  const finalPay = Math.max(totalPay, asset, debt);
 
   /****************************************************
    * 요약 카드 표시
@@ -44,19 +48,21 @@ function calcRepay() {
    ****************************************************/
   const acc = $("repayAccordion");
   acc.innerHTML = `
-    <div class="calc-step"><strong>1) 월 소득</strong><br>${income.toLocaleString()}원</div>
-    <div class="calc-step"><strong>2) 생계비</strong><br>${living.toLocaleString()}원</div>
-    <div class="calc-step"><strong>3) 추가 생계비</strong><br>${extra.toLocaleString()}원</div>
-    <div class="calc-step"><strong>4) 가용소득</strong><br>
+    <div class="calc-step"><strong>1) 총 부채</strong><br>${debt.toLocaleString()}원</div>
+    <div class="calc-step"><strong>2) 월 소득</strong><br>${income.toLocaleString()}원</div>
+    <div class="calc-step"><strong>3) 생계비</strong><br>${living.toLocaleString()}원</div>
+    <div class="calc-step"><strong>4) 추가 생계비</strong><br>${extra.toLocaleString()}원</div>
+    <div class="calc-step"><strong>5) 가용소득</strong><br>
       ${income.toLocaleString()} − ${living.toLocaleString()} − ${extra.toLocaleString()}<br>
       = <strong>${monthlyPay.toLocaleString()}원</strong>
     </div>
-    <div class="calc-step"><strong>5) 변제기간</strong><br>${months}개월</div>
-    <div class="calc-step"><strong>6) 총 변제금</strong><br>
+    <div class="calc-step"><strong>6) 변제기간</strong><br>${months}개월</div>
+    <div class="calc-step"><strong>7) 총 변제금</strong><br>
       ${monthlyPay.toLocaleString()} × ${months} = ${totalPay.toLocaleString()}원
     </div>
-    <div class="calc-step"><strong>7) 청산가치 비교</strong><br>
+    <div class="calc-step"><strong>8) 청산가치·총부채 비교</strong><br>
       청산가치: ${asset.toLocaleString()}원<br>
+      총 부채: ${debt.toLocaleString()}원<br>
       최종 변제금: <strong>${finalPay.toLocaleString()}원</strong>
     </div>
   `;
@@ -69,22 +75,17 @@ function calcRepay() {
   explain.innerHTML = `
     <h3>📌 개인회생 변제금 자동 설명</h3>
     <p>
+      총 부채는 ${debt.toLocaleString()}원이며,<br>
       월 소득 ${income.toLocaleString()}원에서 생계비와 추가 생계비를 제외한 
-      가용소득은 ${monthlyPay.toLocaleString()}원이며,
-      ${months}개월 동안 변제하면 총 ${totalPay.toLocaleString()}원이 됩니다.
-      청산가치와 비교하여 최종 변제금은 
+      가용소득은 ${monthlyPay.toLocaleString()}원입니다.<br>
+      ${months}개월 동안 변제하면 총 ${totalPay.toLocaleString()}원이 되며,<br>
+      청산가치와 총 부채를 비교하여 최종 변제금은 
       <strong>${finalPay.toLocaleString()}원</strong>입니다.
     </p>
   `;
 
-  /****************************************************
-   * 설명 애니메이션
-   ****************************************************/
   setTimeout(() => explain.classList.add("visible"), 50);
 
-  /****************************************************
-   * 계산 후 아코디언은 닫힌 상태 유지
-   ****************************************************/
   acc.classList.remove("open");
   acc.style.maxHeight = null;
 
@@ -93,29 +94,10 @@ function calcRepay() {
 }
 
 /****************************************************
- * 상세보기 토글
- ****************************************************/
-function toggleAccordionRepay() {
-  const box = $("repayAccordion");
-  const btn = document.querySelector(".repay-accordion-btn");
-
-  const isOpen = box.classList.contains("open");
-
-  if (isOpen) {
-    box.classList.remove("open");
-    box.style.maxHeight = null;
-    btn.textContent = "계산 상세 보기 ▼";
-  } else {
-    box.classList.add("open");
-    box.style.maxHeight = box.scrollHeight + "px";
-    btn.textContent = "계산 상세 접기 ▲";
-  }
-}
-
-/****************************************************
  * 초기화
  ****************************************************/
 function resetRepayInputs() {
+  $("debt").value = "";   // ⭐ 추가
   $("income").value = "";
   $("living").value = "1538523";
   $("extra").value = "";
@@ -137,6 +119,7 @@ function resetRepayInputs() {
   const btn = document.querySelector(".repay-accordion-btn");
   btn.textContent = "계산 상세 보기 ▼";
 }
+
 // ▼ ↔ ▲ 자동 전환 기능
 document.querySelectorAll('.toggle-arrow').forEach(btn => {
   btn.addEventListener('click', function () {
