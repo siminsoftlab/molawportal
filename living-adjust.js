@@ -168,14 +168,17 @@ function calcLivingAdjust() {
   const explain = document.getElementById("la_explain");
   explain.style.display = "block";
   explain.innerHTML = `
-    <p>입력한 생계비 기준으로 계산된 월 변제 가능 금액은 <strong>${disposable.toLocaleString()}원</strong>입니다.</p>
+     <p>입력한 생계비는 <strong>${userLiving.toLocaleString()}원</strong>이며,  
+      법원 기준(${getHouseholdLabel(household)}) 생계비는 <strong>${courtLiving.toLocaleString()}원</strong>입니다.</p>
 
-    <p>총 변제예정액은 <strong>${totalRepay.toLocaleString()}원</strong>이며,  
-    최종 변제금은 <strong>${finalPay.toLocaleString()}원</strong>입니다.</p>
+      <p>추가 생계비는 입력값 <strong>${extraInput.toLocaleString()}원</strong> 중  
+      법원에서 인정되는 금액은 <strong>${allowedExtra.toLocaleString()}원</strong>입니다.</p>
 
-    <p>현재가치(PV)는 <strong>${presentValue.toLocaleString()}원</strong>이며,  
-    청산가치 <strong>${asset.toLocaleString()}원</strong>을  
-    ${meetsPV ? "<strong>충족합니다.</strong>" : "<strong>충족하지 못합니다.</strong>"}</p>
+      <p>따라서 총 생계비는 <strong>${totalLiving.toLocaleString()}원</strong>이고,  
+      월 변제 가능 금액은 <strong>${disposable.toLocaleString()}원</strong>입니다.</p>
+
+      <p>변제기간 ${months}개월 기준 총 변제예정액은  
+      <strong>${totalRepay.toLocaleString()}원</strong>으로 계산되었습니다.</p>
   `;
 
   /****************************************************
