@@ -19,9 +19,6 @@ function getHouseholdLabel(household) {
   return `${household}인`;
 }
 
-/****************************************************
- * DOMContentLoaded 이후 실행
- ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
 
   /****************************************************
@@ -31,6 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const baseLiving1 = 1538523;
     const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
     return preciseRound(baseLiving1 * (weights[household] || 1));
+  }
+
+  /* 가구 수 선택 시 living 텍스트박스 자동 채우기 */
+  function updateLivingByHousehold() {
+    const household = getInt("la_household") || 1;
+    const courtLiving = getCourtLiving(household);
+    const livingInput = document.getElementById("living");
+    if (livingInput) {
+      livingInput.value = courtLiving;
+    }
   }
 
   /****************************************************
@@ -76,6 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const btn = document.querySelector(".la-acc-btn");
     if (btn) btn.textContent = "계산 상세 보기 ▼";
+
+    // 가구 수 기준으로 living 다시 세팅
+    updateLivingByHousehold();
   };
 
   /****************************************************
@@ -88,8 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const extraInput   = getInt('la_extra');
     const months       = getInt('la_months');
 
-    /* 법원 기준 생계비 */
-    const courtLiving  = getCourtLiving(household);
+    /* 법원 기준 생계비: living 텍스트박스에서 가져옴 */
+    const courtLiving  = getInt('living');
 
     /* 추가 생계비 인정 */
     const extraLimit   = preciseRound(courtLiving * 0.3);
@@ -180,6 +190,13 @@ document.addEventListener("DOMContentLoaded", () => {
   /****************************************************
    * 이벤트 연결
    ****************************************************/
+  // 가구 수 변경 시 living 자동 계산
+  document.getElementById("la_household")
+    .addEventListener("change", updateLivingByHousehold);
+
+  // 페이지 로드 시 한 번 초기 세팅
+  updateLivingByHousehold();
+
   document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 
   /* FAQ 토글 */
