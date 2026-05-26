@@ -1,11 +1,11 @@
 /****************************************************
- * 개인회생 변제금 계산기 — 최종 통합본 (2026)
+ * 개인회생 변제금 계산기 — 최종 통합본 (수정 안정화 버전)
  * - PV 충족 자동조정
  * - 자동조정 안내
  * - 상세 계산 자동조정 사유
  * - FAQ 아코디언
  * - 설명 아코디언
- * - 콤마 자동포맷
+ * - 숫자 입력 안정화 (콤마 포맷 개선)
  ****************************************************/
 
 /* 공통 유틸 */
@@ -30,7 +30,13 @@ function formatNumberInput(el) {
     el.value = "";
     return;
   }
-  el.value = Number(val).toLocaleString();
+
+  // type="number"인 경우 콤마를 넣으면 브라우저가 지워버리므로 숫자만 유지
+  if (el.type === "number") {
+    el.value = val;
+  } else {
+    el.value = Number(val).toLocaleString();
+  }
 }
 
 /****************************************************
@@ -44,7 +50,17 @@ function calcCourtLiving(household) {
 
 function updateLivingCost() {
   const household = Number($("household").value || 1);
-  $("living").value = calcCourtLiving(household).toLocaleString();
+  const livingVal = calcCourtLiving(household);
+
+  const livingInput = $("living");
+  if (!livingInput) return;
+
+  // type="number"이면 콤마 없이, text면 콤마 포함
+  if (livingInput.type === "number") {
+    livingInput.value = String(livingVal);
+  } else {
+    livingInput.value = livingVal.toLocaleString();
+  }
 }
 
 /****************************************************
@@ -217,7 +233,8 @@ function calcRepay() {
   acc.classList.remove("open");
   acc.style.maxHeight = null;
 
-  document.querySelector(".repay-accordion-btn").textContent = "계산 상세 보기 ▼";
+  const btn = document.querySelector(".repay-accordion-btn");
+  if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
 
 /****************************************************
@@ -239,7 +256,8 @@ function resetRepayInputs() {
   $("repayExplain").style.display = "none";
   $("repayExplain").classList.remove("visible");
 
-  document.querySelector(".repay-accordion-btn").textContent = "계산 상세 보기 ▼";
+  const btn = document.querySelector(".repay-accordion-btn");
+  if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
 
 /****************************************************
@@ -248,6 +266,7 @@ function resetRepayInputs() {
 function toggleAccordionRepay() {
   const box = $("repayAccordion");
   const btn = document.querySelector(".repay-accordion-btn");
+  if (!box || !btn) return;
 
   if (box.classList.contains("open")) {
     box.classList.remove("open");
@@ -267,23 +286,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* 법원 생계비 자동 계산 */
   updateLivingCost();
-  $("household").addEventListener("change", updateLivingCost);
+  const householdEl = $("household");
+  if (householdEl) {
+    householdEl.addEventListener("change", updateLivingCost);
+  }
 
-  /* 숫자 입력 콤마 자동 포맷 */
+  /* 숫자 입력 콤마 자동 포맷 (입력 중엔 숫자만, blur 시 포맷) */
   const numberInputs = ["debt", "income", "living", "extra", "asset"];
   numberInputs.forEach(id => {
     const el = $(id);
     if (!el) return;
-    el.addEventListener("input", () => formatNumberInput(el));
+
+    el.addEventListener("input", () => {
+      // 입력 중에는 숫자만 유지 (콤마 X)
+      let val = el.value.replace(/,/g, "").replace(/[^\d]/g, "");
+      el.value = val;
+    });
+
     el.addEventListener("blur", () => formatNumberInput(el));
   });
 
   /* FAQ 아코디언 */
   const faqButtons = document.querySelectorAll(".faq-question");
-
   faqButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       const answer = btn.nextElementSibling;
+      if (!answer) return;
       const isOpen = answer.style.display === "block";
 
       if (isOpen) {
@@ -296,18 +324,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* 설명 아코디언 */
-  const toggleBtn = document.querySelector(".toggle-arrow");
+  /* 설명 아코디언 (개인회생 변제금 계산기 설명 보기) */
+  const toggleBtn = document.querySelector(".toggle-arrow, #repayDescToggle");
   if (toggleBtn) {
+    const descBox = document.querySelector(".repay-desc-box") || toggleBtn.nextElementSibling;
+
     toggleBtn.addEventListener("click", () => {
-      const answer = toggleBtn.nextElementSibling;
-      const isOpen = answer.style.display === "block";
+      if (!descBox) return;
+      const isOpen = descBox.style.display === "block";
 
       if (isOpen) {
-        answer.style.display = "none";
+        descBox.style.display = "none";
         toggleBtn.innerHTML = "개인회생 변제금 계산기 설명 보기 ▼";
       } else {
-        answer.style.display = "block";
+        descBox.style.display = "block";
         toggleBtn.innerHTML = "개인회생 변제금 계산기 설명 접기 ▲";
       }
     });
