@@ -221,3 +221,44 @@ window.debugExplain = function () {
 
   console.log("=== DEBUG END ===");
 };
+window.debugExplain = function () {
+  const box = document.getElementById("la_explain");
+
+  // 강제 디버그 박스
+  const dbg = document.createElement("div");
+  dbg.style.position = "fixed";
+  dbg.style.top = "0";
+  dbg.style.left = "0";
+  dbg.style.width = "100%";
+  dbg.style.height = "200px";
+  dbg.style.background = "yellow";
+  dbg.style.zIndex = "999999999";
+  dbg.style.border = "5px solid red";
+  dbg.style.fontSize = "20px";
+  dbg.style.padding = "20px";
+  dbg.innerHTML = "<b>디버그 박스 표시됨</b><br>이 박스가 보이면 화면 덮힘 문제 아님";
+
+  document.body.appendChild(dbg);
+
+  // la_explain 상태 출력
+  console.log("=== DEBUG START ===");
+  console.log("Element:", box);
+  console.log("display:", getComputedStyle(box).display);
+  console.log("visibility:", getComputedStyle(box).visibility);
+  console.log("opacity:", getComputedStyle(box).opacity);
+  console.log("height:", getComputedStyle(box).height);
+  console.log("z-index:", getComputedStyle(box).zIndex);
+  console.log("position:", getComputedStyle(box).position);
+  console.log("=== DEBUG END ===");
+
+  // la_explain 강제 표시
+  box.style.display = "block";
+  box.style.visibility = "visible";
+  box.style.opacity = "1";
+  box.style.position = "relative";
+  box.style.zIndex = "999999999";
+  box.style.minHeight = "200px";
+  box.style.background = "lightgreen";
+  box.style.border = "3px solid blue";
+  box.innerHTML = "<h2>la_explain 강제 표시됨</h2>";
+};
