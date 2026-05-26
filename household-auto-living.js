@@ -106,50 +106,35 @@ function calcHouseholdLiving() {
    ****************************************************/
   const summary = document.getElementById('hl_summary');
   summary.innerHTML = `
-    <div class="repay-highlight-box">
-  
-      <div class="row">
-        <div class="label">월 소득</div>
-        <div class="value">${income.toLocaleString()}원</div>
-      </div>
-  
-      <div class="row">
-        <div class="label">가구 수</div>
-        <div class="value">${household}인</div>
-      </div>
-  
-      <div class="row">
-        <div class="label">법원 기준 생계비</div>
-        <div class="value">${living.toLocaleString()}원</div>
-      </div>
-  
-      <div class="row">
-        <div class="label">추가 생계비</div>
-        <div class="value">${extra.toLocaleString()}원</div>
-      </div>
-  
-      <div class="row">
-        <div class="label">총 생계비</div>
-        <div class="value">${totalLiving.toLocaleString()}원</div>
-      </div>
-  
-      <div class="row">
-        <div class="label">가용소득</div>
-        <div class="value">${disposable.toLocaleString()}원</div>
-      </div>
-  
-      <div class="row">
-        <div class="label">월 변제금</div>
-        <div class="value">${monthly.toLocaleString()}원</div>
-      </div>
-  
-      <div class="row">
-        <div class="label">총 변제금 (${months}개월)</div>
-        <div class="value">${finalTotal.toLocaleString()}원</div>
-      </div>
-  
-    </div>
-  `;
+  <div class="repay-highlight-box">
+
+    <div class="row"><div class="label">월 소득</div>
+      <div class="value">${income.toLocaleString()}원</div></div>
+
+    <div class="row"><div class="label">가구 수</div>
+      <div class="value">${household}인</div></div>
+
+    <div class="row"><div class="label">법원 기준 생계비</div>
+      <div class="value">${living.toLocaleString()}원</div></div>
+
+    <div class="row"><div class="label">추가 생계비</div>
+      <div class="value">${extra.toLocaleString()}원</div></div>
+
+    <div class="row"><div class="label">총 생계비</div>
+      <div class="value">${totalLiving.toLocaleString()}원</div></div>
+
+    <div class="row"><div class="label">가용소득</div>
+      <div class="value">${disposable.toLocaleString()}원</div></div>
+
+    <div class="row"><div class="label">월 변제금</div>
+      <div class="value">${monthly.toLocaleString()}원</div></div>
+
+    <div class="row"><div class="label">총 변제금</div>
+      <div class="value">${finalTotal.toLocaleString()}원</div></div>
+
+  </div>
+`;
+
   summary.style.display = "block";
 
   /****************************************************
@@ -158,48 +143,33 @@ function calcHouseholdLiving() {
   householdCalcResult = `
   <div class="repay-highlight-box-red">
 
-    <div class="row">
-      <div class="label">법원 기준 생계비</div>
-      <div class="value">${living.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">법원 기준 생계비</div>
+      <div class="value">${living.toLocaleString()}원</div></div>
 
-    <div class="row">
-      <div class="label">추가 생계비</div>
-      <div class="value">${extra.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">추가 생계비</div>
+      <div class="value">${extra.toLocaleString()}원</div></div>
 
-    <div class="row">
-      <div class="label">총 생계비</div>
-      <div class="value">${totalLiving.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">총 생계비</div>
+      <div class="value">${totalLiving.toLocaleString()}원</div></div>
 
-    <div class="row">
-      <div class="label">월 변제 가능 금액</div>
-      <div class="value">${disposable.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">월 변제 가능 금액</div>
+      <div class="value">${disposable.toLocaleString()}원</div></div>
 
-    <div class="row">
-      <div class="label">소득 기준 총 변제금</div>
-      <div class="value">${totalByIncome.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">소득 기준 총 변제금</div>
+      <div class="value">${totalByIncome.toLocaleString()}원</div></div>
 
-    <div class="row">
-      <div class="label">청산가치</div>
-      <div class="value">${asset.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">청산가치</div>
+      <div class="value">${asset.toLocaleString()}원</div></div>
 
-    <div class="row">
-      <div class="label">최종 변제금</div>
-      <div class="value">${finalTotal.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">최종 변제금</div>
+      <div class="value">${finalTotal.toLocaleString()}원</div></div>
 
-    <div class="row">
-      <div class="label">월 변제금</div>
-      <div class="value">${monthly.toLocaleString()}원</div>
-    </div>
+    <div class="row"><div class="label">월 변제금</div>
+      <div class="value">${monthly.toLocaleString()}원</div></div>
 
   </div>
 `;
+
 
   // 아코디언 초기화
   const acc = document.getElementById('hl_accordion');
