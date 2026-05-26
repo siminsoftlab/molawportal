@@ -248,3 +248,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+// 설명보기 아코디언 전용
+const explainBtn = document.querySelector(".toggle-arrow.explain-btn");
+if (explainBtn) {
+  explainBtn.addEventListener("click", function () {
+    const box = document.getElementById("explain_box");
+
+    const isOpen = box.style.display === "block";
+    box.style.display = isOpen ? "none" : "block";
+
+    this.textContent = isOpen
+      ? "법원 생계비 계산기 설명 보기 ▼"
+      : "법원 생계비 계산기 설명 접기 ▲";
+  });
+}
