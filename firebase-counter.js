@@ -133,9 +133,15 @@ async function updateVisitorCount() {
       let daily = dailySnap.exists && typeof dailySnap.data() === "object"
         ? dailySnap.data()
         : {};
-
+      
+      // 객체가 아니면 강제로 초기화
       if (daily === null || Array.isArray(daily)) {
         daily = {};
+      }
+      
+      // 필드가 하나도 없는 빈 객체면 merge 실패하므로 기본 필드 추가
+      if (Object.keys(daily).length === 0) {
+        daily = { _init: true };
       }
 
       // 이미 방문한 사용자면 종료
