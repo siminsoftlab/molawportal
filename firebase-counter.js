@@ -117,10 +117,9 @@ const NUM_SHARDS = 20;
 function incrementShard(refBase) {
   const shardId = Math.floor(Math.random() * NUM_SHARDS).toString();
   return refBase.collection("shards").doc(shardId).set({
-    count: firebase.firestore.FieldValue.increment(1)
+    total: firebase.firestore.FieldValue.increment(1)
   }, { merge: true });
 }
-
 /* ============================================================
    방문자 업데이트 (최종 안정화)
    ============================================================ */
