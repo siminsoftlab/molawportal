@@ -23,6 +23,10 @@ function getTodayString() {
   const kst = new Date(utc + 9 * 60 * 60 * 1000);
   return kst.toISOString().slice(0, 10);
 }
+
+/* ============================================================
+   시간대별 방문자 그래프
+   ============================================================ */
 let hourChart = null;
 
 async function loadHourlyStats() {
@@ -117,49 +121,12 @@ async function loadDaily() {
 
   document.getElementById("daily-log").textContent = text;
 }
-function getBrowserInfo() {
-  const ua = navigator.userAgent;
-
-  let browser = "Unknown";
-  if (ua.includes("Chrome")) browser = "Chrome";
-  else if (ua.includes("Safari")) browser = "Safari";
-  else if (ua.includes("Firefox")) browser = "Firefox";
-
-  let os = "Unknown";
-  if (ua.includes("Windows")) os = "Windows";
-  else if (ua.includes("Mac")) os = "MacOS";
-  else if (ua.includes("Android")) os = "Android";
-  else if (ua.includes("iPhone")) os = "iOS";
-
-  return { browser, os };
-}
-const info = getBrowserInfo();
-tx.set(
-  db.collection("visitors").doc("stats").collection("browser").doc(info.browser),
-  { count: firebase.firestore.FieldValue.increment(1) },
-  { merge: true }
-);
-
-tx.set(
-  db.collection("visitors").doc("stats").collection("os").doc(info.os),
-  { count: firebase.firestore.FieldValue.increment(1) },
-  { merge: true }
-);
-async function getIP() {
-  try {
-    const res = await fetch("https://api.ipify.org?format=json");
-    const data = await res.json();
-    return data.ip;
-  } catch {
-    return "unknown";
-  }
-}
-
 
 /* ============================================================
    실행
    ============================================================ */
 window.onload = () => {
   adminListenVisitorCount();
+  loadHourlyStats();
   document.getElementById("daily-btn").onclick = loadDaily;
 };
