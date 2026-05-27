@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 방문자 모니터링</title>
+
+  <!-- CSS 분리 -->
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <h2>관리자 방문자 모니터링</h2>
+
+  <section>
+    <h3>📊 실시간 방문자 수</h3>
+    <p>오늘 방문자: <span id="admin-today">0</span></p>
+    <p>전체 방문자: <span id="admin-total">0</span></p>
+  </section>
+
+  <hr>
+
+  <section>
+    <h3>🧩 샤드 상태</h3>
+    <div id="shard-list"></div>
+  </section>
+
+  <hr>
+
+  <section>
+    <h3>📅 Daily 방문자 로그</h3>
+    <input type="date" id="daily-date">
+    <button id="daily-btn">조회</button>
+
+    <pre id="daily-log">날짜를 선택하세요.</pre>
+  </section>
+
+  <!-- JS 분리 -->
+  <script src="admin.js"></script>
+</body>
+</html>
