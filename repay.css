@@ -84,3 +84,6 @@
 .top-info-wrapper {
   margin-top: 100px !important; /* header 높이에 맞게 조정 */
 }
+body.subpage {
+  display: block !important;
+}
