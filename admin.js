@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-/* Firebase 초기화 */
+/* ============================================================
+   Firebase 초기화
+   ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -14,7 +16,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* 🔍 관리자 접근 로그 기록 */
+/* ============================================================
+   관리자 접근 로그 기록
+   ============================================================ */
 async function logAdminAccess() {
   try {
     const ipRes = await fetch("https://api.ipify.org?format=json");
@@ -38,19 +42,22 @@ async function logAdminAccess() {
 
 logAdminAccess();
 
-/* 로그아웃 */
+/* ============================================================
+   버튼 기능
+   ============================================================ */
 document.getElementById("logout-btn").onclick = () => {
   localStorage.removeItem("admin_token");
   localStorage.removeItem("admin_token_time");
   window.location.href = "admin-login.html";
 };
 
-/* 비밀번호 변경 */
 document.getElementById("change-pw-btn").onclick = () => {
   window.location.href = "admin-password.html";
 };
 
-/* ⭐ 오늘 방문자 (daily/days 기반) */
+/* ============================================================
+   오늘 방문자 (daily/days 기반)
+   ============================================================ */
 async function loadToday() {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -73,7 +80,9 @@ async function loadToday() {
   document.getElementById("admin-today").textContent = count;
 }
 
-/* ⭐ 전체 방문자 (counter_shards/shards 기반) */
+/* ============================================================
+   전체 방문자 (counter_shards 기반)
+   ============================================================ */
 async function loadTotal() {
   const ref = db
     .collection("visitors")
@@ -84,14 +93,15 @@ async function loadTotal() {
 
   let total = 0;
   snap.forEach(doc => {
-    const d = doc.data();
-    total += d.total || 0;
+    total += doc.data().count || 0;
   });
 
   document.getElementById("admin-total").textContent = total;
 }
 
-/* ⭐ 샤드 상태 */
+/* ============================================================
+   샤드 상태
+   ============================================================ */
 async function loadShards() {
   const ref = db
     .collection("visitors")
@@ -103,13 +113,15 @@ async function loadShards() {
   let text = "";
   snap.forEach(doc => {
     const d = doc.data();
-    text += `Shard ${doc.id} — today: ${d.today}, total: ${d.total}, date: ${d.date}\n`;
+    text += `Shard ${doc.id} — count: ${d.count || 0}\n`;
   });
 
   document.getElementById("shard-list").textContent = text;
 }
 
-/* ⭐ Daily 로그 */
+/* ============================================================
+   Daily 로그
+   ============================================================ */
 async function loadDailyLog(date) {
   const ref = db
     .collection("visitors")
@@ -133,26 +145,51 @@ async function loadDailyLog(date) {
   document.getElementById("daily-log").textContent = text;
 }
 
-/* ⭐ 브라우저/OS 통계 */
-async function loadBrowserOSStats(date) {
-  const ref = db.collection("visitors").doc("geoip").collection(date);
+/* ============================================================
+   브라우저 통계 (stats/browser 기반)
+   ============================================================ */
+async function loadBrowserStats() {
+  const ref = db.collection("visitors").doc("stats").collection("browser");
   const snap = await ref.get();
 
   let browserCount = {};
-  let osCount = {};
 
-  snap.forEach(doc => {
-    const d = doc.data();
+  for (const doc of snap.docs) {
+    const shardSnap = await doc.ref.collection("shards").get();
 
-    if (d.browser) browserCount[d.browser] = (browserCount[d.browser] || 0) + d.count;
-    if (d.os) osCount[d.os] = (osCount[d.os] || 0) + d.count;
-  });
+    let sum = 0;
+    shardSnap.forEach(s => sum += s.data().count || 0);
+
+    browserCount[doc.id] = sum;
+  }
 
   drawPieChart("browserChart", browserCount);
+}
+
+/* ============================================================
+   OS 통계 (stats/os 기반)
+   ============================================================ */
+async function loadOSStats() {
+  const ref = db.collection("visitors").doc("stats").collection("os");
+  const snap = await ref.get();
+
+  let osCount = {};
+
+  for (const doc of snap.docs) {
+    const shardSnap = await doc.ref.collection("shards").get();
+
+    let sum = 0;
+    shardSnap.forEach(s => sum += s.data().count || 0);
+
+    osCount[doc.id] = sum;
+  }
+
   drawPieChart("osChart", osCount);
 }
 
-/* 파이차트 */
+/* ============================================================
+   파이차트 공통 함수
+   ============================================================ */
 function drawPieChart(canvasId, dataObj) {
   const ctx = document.getElementById(canvasId).getContext("2d");
 
@@ -171,7 +208,9 @@ function drawPieChart(canvasId, dataObj) {
   });
 }
 
-/* ⭐ IP 상세 정보 */
+/* ============================================================
+   IP 상세 정보 (geoip 기반)
+   ============================================================ */
 async function loadIPDetails(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
   const snap = await ref.get();
@@ -185,9 +224,9 @@ async function loadIPDetails(date) {
 IP: ${d.ip}
 국가: ${d.country}
 도시: ${d.city}
-위치: ${d.lat}, ${d.lon}
 브라우저: ${d.browser}
 OS: ${d.os}
+위치: ${d.lat}, ${d.lon}
 방문횟수: ${d.count}
 ----------------------------------------
 `;
@@ -196,19 +235,26 @@ OS: ${d.os}
   document.getElementById("ip-detail-log").textContent = text || "데이터 없음";
 }
 
-/* Daily 조회 버튼 */
+/* ============================================================
+   Daily 조회 버튼
+   ============================================================ */
 document.getElementById("daily-btn").onclick = async () => {
   const date = document.getElementById("daily-date").value;
   if (!date) return;
 
   loadDailyLog(date);
-  loadBrowserOSStats(date);
+  loadBrowserStats();
+  loadOSStats();
   loadIPDetails(date);
 };
 
-/* 초기 실행 */
+/* ============================================================
+   초기 실행
+   ============================================================ */
 loadToday();
 loadTotal();
 loadShards();
+loadBrowserStats();
+loadOSStats();
 
 });
