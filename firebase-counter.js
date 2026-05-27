@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 SHA-256 해시
+   SHA-256 해시
    ============================================================ */
 async function sha256(text) {
   const encoder = new TextEncoder();
@@ -10,7 +10,7 @@ async function sha256(text) {
 }
 
 /* ============================================================
-   🔥 UUID 생성
+   UUID 생성
    ============================================================ */
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
@@ -21,7 +21,7 @@ function generateUUID() {
 }
 
 /* ============================================================
-   🔥 모바일에서도 절대 변하지 않는 visitorKey 생성
+   모바일에서도 절대 변하지 않는 visitorKey 생성
    ============================================================ */
 async function getVisitorKey() {
   let uuid = null;
@@ -63,7 +63,7 @@ async function getVisitorKey() {
 }
 
 /* ============================================================
-   🔥 날짜 (KST)
+   날짜 (KST)
    ============================================================ */
 function getTodayString() {
   const now = new Date();
@@ -73,7 +73,7 @@ function getTodayString() {
 }
 
 /* ============================================================
-   🔥 시간대 (0~23)
+   시간대 (0~23)
    ============================================================ */
 function getHour() {
   const now = new Date();
@@ -83,7 +83,7 @@ function getHour() {
 }
 
 /* ============================================================
-   🔥 브라우저/OS 정보
+   브라우저/OS 정보
    ============================================================ */
 function getBrowserInfo() {
   const ua = navigator.userAgent;
@@ -103,20 +103,16 @@ function getBrowserInfo() {
 }
 
 /* ============================================================
-   🔥 IP + GeoIP (안정화 버전)
+   IP + GeoIP
    ============================================================ */
 async function getGeoIP() {
   try {
-    // 1) IP 가져오기 (CORS 문제 없음)
     const ipRes = await fetch("https://api.ipify.org?format=json");
     const ipData = await ipRes.json();
     const ip = ipData.ip;
 
-    // 2) Geo 정보 가져오기
     const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
     const geo = await geoRes.json();
-
-    console.log("🌍 GeoIP 응답:", geo);
 
     return {
       ip: ip,
@@ -126,13 +122,13 @@ async function getGeoIP() {
       lon: geo.longitude || null
     };
   } catch (e) {
-    console.error("🌍 GeoIP 호출 실패:", e);
+    console.error("GeoIP 오류:", e);
     return null;
   }
 }
 
 /* ============================================================
-   🔥 Firebase 초기화
+   Firebase 초기화
    ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
@@ -148,12 +144,12 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* ============================================================
-   🔥 Sharded Counter
+   Sharded Counter
    ============================================================ */
 const NUM_SHARDS = 20;
 
 /* ============================================================
-   🔥 방문자 카운트 업데이트
+   방문자 카운트 업데이트 (hourly + browser + os + geoip)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
@@ -175,8 +171,6 @@ async function updateVisitorCount() {
   const browserRef = db.collection("visitors").doc("stats").collection("browser").doc(info.browser);
   const osRef = db.collection("visitors").doc("stats").collection("os").doc(info.os);
 
-  let isNewVisitor = false;
-
   try {
     await db.runTransaction(async (tx) => {
       const dailySnap = await tx.get(dailyRef);
@@ -188,7 +182,6 @@ async function updateVisitorCount() {
 
       if (daily[visitorKey]) return;
 
-      isNewVisitor = true;
       daily[visitorKey] = true;
       tx.set(dailyRef, daily, { merge: true });
 
@@ -208,10 +201,12 @@ async function updateVisitorCount() {
         count: firebase.firestore.FieldValue.increment(1)
       }, { merge: true });
 
+      /* ⭐ 브라우저 증가 */
       tx.set(browserRef, {
         count: firebase.firestore.FieldValue.increment(1)
       }, { merge: true });
 
+      /* ⭐ OS 증가 */
       tx.set(osRef, {
         count: firebase.firestore.FieldValue.increment(1)
       }, { merge: true });
@@ -223,29 +218,26 @@ async function updateVisitorCount() {
   /* ============================================================
      GeoIP 저장
      ============================================================ */
-    const geo = await getGeoIP();
-   const info = getBrowserInfo();  // ⭐ 브라우저/OS 정보 가져오기
-   
-   if (geo && geo.ip) {
-     const geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
-   
-     geoRef.set({
-       ip: geo.ip,
-       country: geo.country,
-       city: geo.city,
-       lat: geo.lat,
-       lon: geo.lon,
-       browser: info.browser,   // ⭐ 추가
-       os: info.os,             // ⭐ 추가
-       count: firebase.firestore.FieldValue.increment(1)
-     }, { merge: true })
-     .then(() => console.log("🌍 GeoIP 저장 성공:", geo.ip))
-     .catch(e => console.error("🌍 GeoIP 저장 실패:", e));
-   }
+  const geo = await getGeoIP();
+
+  if (geo && geo.ip) {
+    const geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
+
+    geoRef.set({
+      ip: geo.ip,
+      country: geo.country,
+      city: geo.city,
+      lat: geo.lat,
+      lon: geo.lon,
+      browser: info.browser,
+      os: info.os,
+      count: firebase.firestore.FieldValue.increment(1)
+    }, { merge: true });
+  }
 }
 
 /* ============================================================
-   🔥 실시간 방문자 수 합산
+   실시간 방문자 수 합산
    ============================================================ */
 function listenVisitorCount() {
   const shardsRef = db.collection("visitors").doc("counter_shards").collection("shards");
@@ -271,7 +263,7 @@ function listenVisitorCount() {
 }
 
 /* ============================================================
-   🔥 실행
+   실행
    ============================================================ */
 window.onload = () => {
   updateVisitorCount();
