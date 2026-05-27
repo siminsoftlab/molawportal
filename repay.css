@@ -74,6 +74,16 @@
   }
 }
 .page-wrap {
-  width: 100%;
   display: block !important;
 }
+
+.subpage {
+  display: block !important;
+  text-align: center !important;
+}
+
+.top-info-box {
+  text-align: left !important;
+  margin: 0 auto !important;
+}
+
