@@ -1,35 +1,13 @@
 /* ============================================================
-   SHA-256 해시
+   UUID 기반 고유 방문자 키 생성
    ============================================================ */
-async function sha256(text) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-/* ============================================================
-   UUID 생성
-   ============================================================ */
-function generateUUID() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-    const r = crypto.getRandomValues(new Uint8Array(1))[0] & 0xf;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-/* ============================================================
-   visitorKey 생성 (고유 방문자 식별)
-   ============================================================ */
-async function getVisitorKey() {
+function getVisitorKey() {
   let uuid = localStorage.getItem("visitor_uuid");
   if (!uuid) {
-    uuid = generateUUID();
+    uuid = crypto.randomUUID();
     localStorage.setItem("visitor_uuid", uuid);
   }
-  return (await sha256(uuid + navigator.userAgent)).slice(0, 32);
+  return uuid;  // 해시 제거 → 안정적 고유값
 }
 
 /* ============================================================
@@ -112,7 +90,7 @@ const db = firebase.firestore();
 async function updateVisitorCount() {
   const today = getTodayString();
   const hour = getHour();
-  const visitorKey = await getVisitorKey();
+  const visitorKey = getVisitorKey();
   const info = getBrowserInfo();
 
   /* ⭐ 1) 오늘 방문자 기록 (고유 방문자) */
