@@ -149,7 +149,7 @@ const db = firebase.firestore();
 const NUM_SHARDS = 20;
 
 /* ============================================================
-   방문자 카운트 업데이트 (hourly + browser + os + geoip)
+   방문자 카운트 업데이트 (stats 자동 생성 포함)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
@@ -168,8 +168,12 @@ async function updateVisitorCount() {
   /* ⭐ 시간대별 문서 */
   const hourlyRef = db.collection("visitors").doc("hourly").collection(today).doc(String(hour));
 
+  /* ⭐ stats 문서 자동 생성 */
   const browserRef = db.collection("visitors").doc("stats").collection("browser").doc(info.browser);
   const osRef = db.collection("visitors").doc("stats").collection("os").doc(info.os);
+
+  await browserRef.set({ count: 0 }, { merge: true });
+  await osRef.set({ count: 0 }, { merge: true });
 
   try {
     await db.runTransaction(async (tx) => {
