@@ -1,93 +1,88 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>관리자 로그인</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>관리자 로그인</title>
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: #f5f6fa;
-    font-family: "Apple SD Gothic Neo", sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f5f6fa;
+      font-family: "Pretendard", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-  .login-box {
-    width: 90%;
-    max-width: 360px;
-    background: white;
-    padding: 32px;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    text-align: center;
-  }
+    .container {
+      width: 360px;
+      background: #fff;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
 
-  .login-title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 24px;
-    color: #333;
-  }
+    h2 {
+      margin-bottom: 24px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #333;
+    }
 
-  input {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 16px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 16px;
-    outline: none;
-    transition: 0.2s;
-  }
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
 
-  input:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
-  }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #4a90e2;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-  button {
-    width: 100%;
-    padding: 14px;
-    background: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 17px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
+    button:hover {
+      background: #357ac9;
+    }
 
-  button:hover {
-    background: #357ABD;
-  }
+    #msg {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #e74c3c;
+      min-height: 20px;
+    }
+  </style>
 
-  #login-msg {
-    margin-top: 12px;
-    font-size: 14px;
-    height: 18px;
-  }
-</style>
 </head>
-
 <body>
 
-<div class="login-box">
-  <div class="login-title">관리자 로그인</div>
+  <div class="container">
+    <h2>관리자 로그인</h2>
 
-  <input type="password" id="pw" placeholder="비밀번호 입력">
-  <button id="login-btn">로그인</button>
+    <input type="password" id="pw" placeholder="관리자 비밀번호 입력">
 
-  <div id="login-msg"></div>
-</div>
+    <button id="login-btn">로그인</button>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="admin-login.js"></script>
+    <p id="msg"></p>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="admin-login.js"></script>
 
 </body>
 </html>
