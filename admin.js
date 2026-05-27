@@ -1,6 +1,4 @@
-/* ============================================================
-   Firebase 초기화
-   ============================================================ */
+/* Firebase 초기화 */
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -14,128 +12,168 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* ============================================================
-   날짜 (KST)
-   ============================================================ */
-function getTodayString() {
-  const now = new Date();
-  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  const kst = new Date(utc + 9 * 60 * 60 * 1000);
-  return kst.toISOString().slice(0, 10);
+/* 로그아웃 */
+document.getElementById("logout-btn").onclick = () => {
+  localStorage.removeItem("admin_token");
+  localStorage.removeItem("admin_token_time");
+  window.location.href = "admin-login.html";
+};
+
+/* 비밀번호 변경 */
+document.getElementById("change-pw-btn").onclick = () => {
+  window.location.href = "admin-password.html";
+};
+
+/* 오늘 방문자 */
+async function loadToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  const ref = db.collection("visitors").doc("daily").collection(today);
+  const snap = await ref.get();
+
+  let total = 0;
+  snap.forEach(doc => total += doc.data().count);
+
+  document.getElementById("admin-today").textContent = total;
 }
 
-/* ============================================================
-   시간대별 방문자 그래프
-   ============================================================ */
-let hourChart = null;
-
-async function loadHourlyStats() {
-  const today = getTodayString();
-  const ref = db.collection("visitors").doc("hourly").collection(today);
-
+/* 전체 방문자 */
+async function loadTotal() {
+  const ref = db.collection("visitors").doc("total");
   const snap = await ref.get();
-  const hours = Array(24).fill(0);
+  document.getElementById("admin-total").textContent = snap.exists ? snap.data().count : 0;
+}
+
+/* 시간대별 그래프 */
+async function loadHourChart(date) {
+  const ref = db.collection("visitors").doc("hourly").collection(date);
+  const snap = await ref.get();
+
+  let hours = Array(24).fill(0);
 
   snap.forEach(doc => {
-    const h = parseInt(doc.id);
-    hours[h] = doc.data().count || 0;
+    const h = Number(doc.id);
+    hours[h] = doc.data().count;
   });
 
-  if (hourChart) hourChart.destroy();
+  const ctx = document.getElementById("hourChart").getContext("2d");
 
-  hourChart = new Chart(document.getElementById("hourChart"), {
+  new Chart(ctx, {
     type: "line",
     data: {
       labels: [...Array(24).keys()].map(h => `${h}시`),
       datasets: [{
         label: "방문자 수",
         data: hours,
-        borderColor: "#007bff",
-        fill: false,
-        tension: 0.3
+        borderColor: "#4a90e2",
+        backgroundColor: "rgba(74,144,226,0.2)",
+        fill: true
       }]
     }
   });
 }
 
-/* ============================================================
-   실시간 방문자 수 + 샤드 상태
-   ============================================================ */
-function adminListenVisitorCount() {
-  const shardsRef = db
-    .collection("visitors")
-    .doc("counter_shards")
-    .collection("shards");
+/* 브라우저/OS 통계 */
+async function loadBrowserOSStats(date) {
+  const ref = db.collection("visitors").doc("geoip").collection(date);
+  const snap = await ref.get();
 
-  shardsRef.onSnapshot((snapshot) => {
-    let todaySum = 0;
-    let totalSum = 0;
-    const today = getTodayString();
+  let browserCount = {};
+  let osCount = {};
 
-    let html = "";
+  snap.forEach(doc => {
+    const d = doc.data();
 
-    snapshot.forEach((doc) => {
-      const d = doc.data();
-      if (!d) return;
+    if (d.browser) browserCount[d.browser] = (browserCount[d.browser] || 0) + d.count;
+    if (d.os) osCount[d.os] = (osCount[d.os] || 0) + d.count;
+  });
 
-      if (d.date === today) todaySum += d.today || 0;
-      totalSum += d.total || 0;
+  drawPieChart("browserChart", browserCount, "브라우저 통계");
+  drawPieChart("osChart", osCount, "OS 통계");
+}
 
-      html += `
-        <div>
-          <b>Shard ${doc.id}</b> — today: ${d.today}, total: ${d.total}, date: ${d.date}
-        </div>
-      `;
-    });
+/* 파이차트 */
+function drawPieChart(canvasId, dataObj, label) {
+  const ctx = document.getElementById(canvasId).getContext("2d");
 
-    document.getElementById("admin-today").textContent = todaySum;
-    document.getElementById("admin-total").textContent = totalSum;
-    document.getElementById("shard-list").innerHTML = html;
+  new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: Object.keys(dataObj),
+      datasets: [{
+        data: Object.values(dataObj),
+        backgroundColor: [
+          "#4a90e2", "#50e3c2", "#f5a623",
+          "#e74c3c", "#9b59b6", "#2ecc71"
+        ]
+      }]
+    }
   });
 }
 
-/* ============================================================
-   Daily 방문자 로그 조회
-   ============================================================ */
-async function loadDaily() {
+/* IP 상세 정보 */
+async function loadIPDetails(date) {
+  const ref = db.collection("visitors").doc("geoip").collection(date);
+  const snap = await ref.get();
+
+  let text = "";
+
+  snap.forEach(doc => {
+    const d = doc.data();
+
+    text += `
+IP: ${d.ip}
+국가: ${d.country}
+도시: ${d.city}
+접속시간: ${d.time}
+브라우저: ${d.browser}
+OS: ${d.os}
+위치: ${d.lat}, ${d.lon}
+방문횟수: ${d.count}
+----------------------------------------
+`;
+  });
+
+  document.getElementById("ip-detail-log").textContent = text || "데이터 없음";
+}
+
+/* Daily 로그 */
+async function loadDailyLog(date) {
+  const ref = db.collection("visitors").doc("daily").collection(date);
+  const snap = await ref.get();
+
+  let text = "";
+  snap.forEach(doc => {
+    text += `${doc.id}: ${doc.data().count}\n`;
+  });
+
+  document.getElementById("daily-log").textContent = text || "데이터 없음";
+}
+
+/* 샤드 상태 */
+async function loadShards() {
+  const ref = db.collection("visitors").doc("shards").collection("list");
+  const snap = await ref.get();
+
+  let text = "";
+  snap.forEach(doc => {
+    text += `${doc.id}: ${doc.data().count}\n`;
+  });
+
+  document.getElementById("shard-list").textContent = text;
+}
+
+/* Daily 조회 버튼 */
+document.getElementById("daily-btn").onclick = async () => {
   const date = document.getElementById("daily-date").value;
   if (!date) return;
 
-  const ref = db
-    .collection("visitors")
-    .doc("daily")
-    .collection("days")
-    .doc(date);
-
-  const snap = await ref.get();
-
-  if (!snap.exists) {
-    document.getElementById("daily-log").textContent = "데이터 없음";
-    return;
-  }
-
-  const data = snap.data();
-  const keys = Object.keys(data).filter(k => k !== "_init");
-
-  let text = `📅 ${date} 방문자 수: ${keys.length}\n\n`;
-  text += keys.join("\n");
-
-  document.getElementById("daily-log").textContent = text;
-}
-document.getElementById("logout-btn").onclick = () => {
-  localStorage.removeItem("admin_token");
-  localStorage.removeItem("admin_token_time");
-  window.location.href = "admin-login.html";
-};
-document.getElementById("change-pw-btn").onclick = () => {
-  window.location.href = "admin-password.html";
+  loadDailyLog(date);
+  loadHourChart(date);
+  loadBrowserOSStats(date);
+  loadIPDetails(date);
 };
 
-/* ============================================================
-   실행
-   ============================================================ */
-window.onload = () => {
-  adminListenVisitorCount();
-  loadHourlyStats();
-  document.getElementById("daily-btn").onclick = loadDaily;
-};
+/* 초기 실행 */
+loadToday();
+loadTotal();
+loadShards();
