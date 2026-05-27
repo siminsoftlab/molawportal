@@ -12,6 +12,30 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+/* 🔍 관리자 접근 로그 기록 */
+async function logAdminAccess() {
+  try {
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ip = (await ipRes.json()).ip;
+
+    const now = new Date();
+    const time = now.toISOString().replace("T", " ").slice(0, 19);
+
+    await db.collection("admin_logs")
+      .doc(String(Date.now()))
+      .set({
+        ip: ip,
+        time: time,
+        user: "admin"
+      });
+
+  } catch (e) {
+    console.log("관리자 로그 기록 실패:", e);
+  }
+}
+
+logAdminAccess();
+
 /* 로그아웃 */
 document.getElementById("logout-btn").onclick = () => {
   localStorage.removeItem("admin_token");
