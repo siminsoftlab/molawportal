@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>IP 통계 / 방문자 지도</title>
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <!-- Leaflet 지도 라이브러리 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+
+  <header>
+    <h1>🌍 방문자 IP 통계 / GeoIP 지도</h1>
+  </header>
+
+  <div class="card full">
+    <h3>📅 날짜 선택</h3>
+    <input type="date" id="ip-date">
+    <button id="ip-btn">조회</button>
+  </div>
+
+  <div class="card full">
+    <h3>🌍 방문자 지도</h3>
+    <div id="map" style="height: 500px;"></div>
+  </div>
+
+  <div class="card full">
+    <h3>📊 국가별 방문자 수</h3>
+    <pre id="country-log"></pre>
+  </div>
+
+  <script src="ip.js"></script>
+</body>
+</html>
