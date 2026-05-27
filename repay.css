@@ -75,5 +75,5 @@
 }
 .page-wrap {
   width: 100%;
-  display: block;
+  display: block !important;
 }
