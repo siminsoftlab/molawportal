@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — UUID + Sharded Counter + Daily 중복 체크
+   🔥 Firebase 방문자 카운터 — 최종 통합본 (2026 안정화 버전)
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -20,22 +20,29 @@ function generateUUID() {
   });
 }
 
-// 방문자 식별자 생성 (UUID + UA 기반)
+// 방문자 식별자 생성 (localStorage 차단 대비 완전 강화)
 async function getVisitorKey() {
   try {
-    let uuid = localStorage.getItem("visitor_uuid");
+    let uuid = null;
 
-    if (!uuid) {
+    // localStorage 시도
+    try {
+      uuid = localStorage.getItem("visitor_uuid");
+      if (!uuid) {
+        uuid = generateUUID();
+        localStorage.setItem("visitor_uuid", uuid);
+      }
+    } catch {
+      // localStorage 차단된 경우
       uuid = generateUUID();
-      localStorage.setItem("visitor_uuid", uuid);
     }
 
-    const raw = uuid + "|" + navigator.userAgent;
+    const raw = uuid + "|" + navigator.userAgent + "|" + Math.random();
     return (await sha256(raw)).slice(0, 32);
+
   } catch {
-    // localStorage 차단된 모바일 브라우저 대비
-    const fallbackRaw = navigator.userAgent + "|" + Math.random();
-    return (await sha256(fallbackRaw)).slice(0, 32);
+    // 최종 fallback
+    return (await sha256("fallback-" + Math.random())).slice(0, 32);
   }
 }
 
@@ -96,20 +103,18 @@ async function initCounterShards() {
 }
 
 /* ============================================================
-   🔥 방문자 카운트 업데이트 (Sharded Counter + Daily 중복 체크)
+   🔥 방문자 카운트 업데이트 (daily + shard)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = await getVisitorKey();
 
-  // daily 방문자 체크
   const dailyRef = db
     .collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today);
 
-  // 랜덤 샤드 선택
   const shardId = Math.floor(Math.random() * NUM_SHARDS).toString();
   const shardRef = db
     .collection("visitors")
@@ -120,17 +125,25 @@ async function updateVisitorCount() {
   try {
     await db.runTransaction(async (tx) => {
       const dailySnap = await tx.get(dailyRef);
-      let daily = dailySnap.exists ? dailySnap.data() : {};
+      const shardSnap = await tx.get(shardRef);
 
-      // 이미 방문한 사용자면 카운트 증가 X
+      // 🔥 daily 문서를 항상 객체로 강제 초기화
+      let daily = dailySnap.exists && typeof dailySnap.data() === "object"
+        ? dailySnap.data()
+        : {};
+
+      if (daily === null || Array.isArray(daily)) {
+        daily = {};
+      }
+
+      // 이미 방문한 사용자면 종료
       if (daily[visitorKey]) return;
 
       // daily 기록
       daily[visitorKey] = true;
       tx.set(dailyRef, daily, { merge: true });
 
-      // 샤드 카운터 업데이트
-      const shardSnap = await tx.get(shardRef);
+      // 샤드 업데이트
       let shardData = shardSnap.exists ? shardSnap.data() : null;
 
       if (!shardData || shardData.date !== today) {
@@ -152,7 +165,7 @@ async function updateVisitorCount() {
       );
     });
   } catch (e) {
-    console.error("🔥 updateVisitorCount (sharded) 오류:", e);
+    console.error("🔥 updateVisitorCount 오류:", e);
   }
 }
 
@@ -192,7 +205,7 @@ function listenVisitorCount() {
 }
 
 /* ============================================================
-   🔥 실행
+   🔥 실행 (window.onload로 안정화)
    ============================================================ */
 window.onload = () => {
   updateVisitorCount();
