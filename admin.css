@@ -72,3 +72,9 @@ pre {
   border-radius: 8px;
   white-space: pre-wrap;
 }
+#map {
+  width: 100%;
+  height: 500px;
+  border-radius: 10px;
+  overflow: hidden;
+}
