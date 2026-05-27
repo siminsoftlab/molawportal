@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-/* Firebase 초기화 */
+/* ============================================================
+   Firebase 초기화
+   ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -14,36 +16,50 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* ⭐ 오늘 방문자 */
-async function loadToday() {
-  const today = new Date().toISOString().slice(0, 10);
-
-  const ref = db.collection("visitors").doc("daily").collection("days").doc(today);
-  const snap = await ref.get();
-
-  if (!snap.exists) {
-    document.getElementById("admin-today").textContent = 0;
-    return;
-  }
-
-  const data = snap.data();
-  const count = Object.keys(data).filter(k => k !== "_init").length;
-
-  document.getElementById("admin-today").textContent = count;
+/* ============================================================
+   날짜
+   ============================================================ */
+function getTodayString() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utc + 9 * 3600000).toISOString().slice(0, 10);
 }
 
-/* ⭐ 전체 방문자 */
+/* ============================================================
+   ⭐ 오늘 방문자 (샤드 합산)
+   ============================================================ */
+async function loadToday() {
+  const today = getTodayString();
+  const ref = db.collection("visitors").doc("daily_shards").collection(today);
+
+  const snap = await ref.get();
+  let total = 0;
+
+  snap.forEach(doc => {
+    total += doc.data().count || 0;
+  });
+
+  document.getElementById("admin-today").textContent = total.toLocaleString();
+}
+
+/* ============================================================
+   ⭐ 전체 방문자 (샤드 합산)
+   ============================================================ */
 async function loadTotal() {
   const ref = db.collection("visitors").doc("counter_shards").collection("shards");
   const snap = await ref.get();
 
   let total = 0;
-  snap.forEach(doc => total += doc.data().total || 0);
+  snap.forEach(doc => {
+    total += doc.data().count || 0;
+  });
 
-  document.getElementById("admin-total").textContent = total;
+  document.getElementById("admin-total").textContent = total.toLocaleString();
 }
 
-/* ⭐ 샤드 상태 */
+/* ============================================================
+   ⭐ 샤드 상태 보기
+   ============================================================ */
 async function loadShards() {
   const ref = db.collection("visitors").doc("counter_shards").collection("shards");
   const snap = await ref.get();
@@ -51,22 +67,27 @@ async function loadShards() {
   let text = "";
   snap.forEach(doc => {
     const d = doc.data();
-    text += `Shard ${doc.id} — today: ${d.today}, total: ${d.total}, date: ${d.date}\n`;
+    text += `Shard ${doc.id} — count: ${d.count || 0}\n`;
   });
 
   document.getElementById("shard-list").textContent = text;
 }
 
-/* ⭐ 시간대별 그래프 */
+/* ============================================================
+   ⭐ 시간대별 그래프 (샤드 합산)
+   ============================================================ */
 async function loadHourChart(date) {
-  const ref = db.collection("visitors").doc("hourly").collection(date);
+  const ref = db.collection("visitors").doc("hourly_shards").collection(date);
   const snap = await ref.get();
 
   const hours = Array(24).fill(0);
 
   snap.forEach(doc => {
-    const h = parseInt(doc.id);
-    hours[h] = doc.data().count || 0;
+    const id = doc.id; // 예: "13_4" (13시, shard 4)
+    const [hourStr] = id.split("_");
+    const hour = parseInt(hourStr);
+
+    hours[hour] += doc.data().count || 0;
   });
 
   const ctx = document.getElementById("hourChart").getContext("2d");
@@ -85,10 +106,12 @@ async function loadHourChart(date) {
   });
 }
 
-/* ⭐ 브라우저/OS 통계 */
+/* ============================================================
+   ⭐ 브라우저/OS 통계 (샤드 합산)
+   ============================================================ */
 async function loadBrowserOSStats() {
 
-  // 브라우저 통계
+  /* 브라우저 */
   const browserSnap = await db
     .collection("visitors")
     .doc("stats")
@@ -96,11 +119,18 @@ async function loadBrowserOSStats() {
     .get();
 
   let browserCount = {};
-  browserSnap.forEach(doc => {
-    browserCount[doc.id] = doc.data().count || 0;
-  });
 
-  // OS 통계
+  for (const doc of browserSnap.docs) {
+    const browser = doc.id;
+    const shardSnap = await doc.ref.collection("shards").get();
+
+    let sum = 0;
+    shardSnap.forEach(s => sum += s.data().count || 0);
+
+    browserCount[browser] = sum;
+  }
+
+  /* OS */
   const osSnap = await db
     .collection("visitors")
     .doc("stats")
@@ -108,9 +138,16 @@ async function loadBrowserOSStats() {
     .get();
 
   let osCount = {};
-  osSnap.forEach(doc => {
-    osCount[doc.id] = doc.data().count || 0;
-  });
+
+  for (const doc of osSnap.docs) {
+    const os = doc.id;
+    const shardSnap = await doc.ref.collection("shards").get();
+
+    let sum = 0;
+    shardSnap.forEach(s => sum += s.data().count || 0);
+
+    osCount[os] = sum;
+  }
 
   drawPieChart("browserChart", browserCount);
   drawPieChart("osChart", osCount);
@@ -135,26 +172,9 @@ function drawPieChart(canvasId, dataObj) {
   });
 }
 
-/* ⭐ Daily 로그 */
-async function loadDailyLog(date) {
-  const ref = db.collection("visitors").doc("daily").collection("days").doc(date);
-  const snap = await ref.get();
-
-  if (!snap.exists) {
-    document.getElementById("daily-log").textContent = "데이터 없음";
-    return;
-  }
-
-  const data = snap.data();
-  const keys = Object.keys(data).filter(k => k !== "_init");
-
-  let text = `📅 ${date} 방문자 수: ${keys.length}\n\n`;
-  text += keys.join("\n");
-
-  document.getElementById("daily-log").textContent = text;
-}
-
-/* ⭐ IP 상세 정보 */
+/* ============================================================
+   ⭐ GeoIP 상세 정보
+   ============================================================ */
 async function loadIPDetails(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
   const snap = await ref.get();
@@ -179,18 +199,21 @@ OS: ${d.os}
   document.getElementById("ip-detail-log").textContent = text || "데이터 없음";
 }
 
-/* Daily 조회 버튼 */
+/* ============================================================
+   ⭐ Daily 조회 버튼
+   ============================================================ */
 document.getElementById("daily-btn").onclick = async () => {
   const date = document.getElementById("daily-date").value;
   if (!date) return;
 
-  loadDailyLog(date);
   loadHourChart(date);
   loadBrowserOSStats();
   loadIPDetails(date);
 };
 
-/* 초기 실행 */
+/* ============================================================
+   ⭐ 초기 실행
+   ============================================================ */
 loadToday();
 loadTotal();
 loadShards();
