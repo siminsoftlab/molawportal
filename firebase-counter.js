@@ -183,13 +183,19 @@ function listenVisitorCount() {
 
   const today = getTodayString();
 
-  db.collection("visitors").doc("daily_shards").collection(today).onSnapshot((snap) => {
+db.collection("visitors")
+  .doc("daily_shards")
+  .collection(today)
+  .onSnapshot((snap) => {
+
     let todayCount = 0;
+
     snap.forEach(doc => {
       todayCount += doc.data().count || 0;
     });
 
-    document.getElementById("visitor-today").textContent = todayCount.toLocaleString();
+    document.getElementById("visitor-today").textContent =
+      todayCount.toLocaleString();
   });
 }
 
