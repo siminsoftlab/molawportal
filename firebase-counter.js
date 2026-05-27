@@ -165,23 +165,25 @@ async function updateVisitorCount() {
   const shardRef = db.collection("visitors").doc("counter_shards").collection("shards")
     .doc(String(Math.floor(Math.random() * NUM_SHARDS)));
 
+  /* ⭐ hourly 상위 문서(today) 자동 생성 */
+  const hourlyDayRef = db.collection("visitors").doc("hourly").collection(today).doc("_init");
+  await hourlyDayRef.set({ created: true }, { merge: true });
+
+  /* ⭐ 시간대별 문서 */
   const hourlyRef = db.collection("visitors").doc("hourly").collection(today).doc(String(hour));
+
   const browserRef = db.collection("visitors").doc("stats").collection("browser").doc(info.browser);
   const osRef = db.collection("visitors").doc("stats").collection("os").doc(info.os);
 
   let isNewVisitor = false;
 
-  /* 🔥 1) 트랜잭션: 방문자 카운트 + 통계 */
   try {
     await db.runTransaction(async (tx) => {
       const dailySnap = await tx.get(dailyRef);
       const shardSnap = await tx.get(shardRef);
 
-      let daily = dailySnap.exists && typeof dailySnap.data() === "object"
-        ? dailySnap.data()
-        : {};
-
-      if (daily === null || Array.isArray(daily)) daily = {};
+      let daily = dailySnap.exists ? dailySnap.data() : {};
+      if (!daily || typeof daily !== "object") daily = {};
       if (Object.keys(daily).length === 0) daily = { _init: true };
 
       if (daily[visitorKey]) return;
@@ -201,6 +203,7 @@ async function updateVisitorCount() {
         date: today
       }, { merge: true });
 
+      /* ⭐ 시간대별 증가 */
       tx.set(hourlyRef, {
         count: firebase.firestore.FieldValue.increment(1)
       }, { merge: true });
@@ -214,11 +217,11 @@ async function updateVisitorCount() {
       }, { merge: true });
     });
   } catch (e) {
-    console.error("🔥 updateVisitorCount 오류:", e);
+    console.error("updateVisitorCount 오류:", e);
   }
 
   /* ============================================================
-     🔥 2) GeoIP 저장 — 트랜잭션 밖에서 항상 실행
+     GeoIP 저장
      ============================================================ */
   const geo = await getGeoIP();
 
@@ -232,11 +235,10 @@ async function updateVisitorCount() {
       lat: geo.lat,
       lon: geo.lon,
       count: firebase.firestore.FieldValue.increment(1)
-    }, { merge: true })
-    .then(() => console.log("🌍 GeoIP 저장 성공:", geo.ip))
-    .catch(e => console.error("🌍 GeoIP 저장 실패:", e));
+    }, { merge: true });
   }
 }
+
 
 /* ============================================================
    🔥 실시간 방문자 수 합산
