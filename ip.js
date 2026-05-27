@@ -13,12 +13,33 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* 오늘 날짜 */
+/* 오늘 날짜 */
 function getTodayString() {
   const now = new Date();
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
   const kst = new Date(utc + 9 * 60 * 60 * 1000);
   return kst.toISOString().slice(0, 10);
 }
+
+/* 실행 */
+document.addEventListener("DOMContentLoaded", () => {
+  // 날짜 자동 입력
+  const today = getTodayString();
+  const dateInput = document.getElementById("ip-date");
+
+  if (dateInput) {
+    dateInput.value = today;
+    console.log("📅 날짜 자동 입력됨:", today);
+  } else {
+    console.error("❌ ip-date 요소를 찾을 수 없음");
+  }
+
+  // 자동 조회
+  loadIPStats();
+
+  // 버튼 클릭 시 조회
+  document.getElementById("ip-btn").onclick = loadIPStats;
+});
 
 /* 지도 초기화 */
 let map = L.map("map").setView([20, 0], 2);
