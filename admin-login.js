@@ -84,6 +84,8 @@ async function checkAutoLogin() {
     window.location.href = "admin.html";
   }
 }
+localStorage.setItem("admin_token", inputHash);
+localStorage.setItem("admin_token_time", Date.now());
 
 /* ============================================================
    실행
