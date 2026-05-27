@@ -12,11 +12,19 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+/* 오늘 날짜 */
+function getTodayString() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const kst = new Date(utc + 9 * 60 * 60 * 1000);
+  return kst.toISOString().slice(0, 10);
+}
+
 /* 지도 초기화 */
 let map = L.map("map").setView([20, 0], 2);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-/* 날짜 기반 GeoIP 로드 */
+/* GeoIP 로드 */
 async function loadIPStats() {
   const date = document.getElementById("ip-date").value;
   if (!date) return;
@@ -25,6 +33,8 @@ async function loadIPStats() {
   const snap = await ref.get();
 
   let countryCount = {};
+
+  // 기존 마커 제거
   map.eachLayer(layer => {
     if (layer instanceof L.Marker) map.removeLayer(layer);
   });
@@ -32,7 +42,7 @@ async function loadIPStats() {
   snap.forEach(doc => {
     const d = doc.data();
 
-    // 지도 마커 표시
+    // 지도 마커
     if (d.lat && d.lon) {
       L.marker([d.lat, d.lon])
         .addTo(map)
@@ -50,10 +60,17 @@ async function loadIPStats() {
     text += `${c}: ${countryCount[c]}명\n`;
   });
 
-  document.getElementById("country-log").textContent = text;
+  document.getElementById("country-log").textContent = text || "데이터 없음";
 }
 
 /* 실행 */
 window.onload = () => {
+  // 오늘 날짜 자동 설정
+  document.getElementById("ip-date").value = getTodayString();
+
+  // 페이지 열리면 자동 조회
+  loadIPStats();
+
+  // 버튼 클릭 시 조회
   document.getElementById("ip-btn").onclick = loadIPStats;
 };
