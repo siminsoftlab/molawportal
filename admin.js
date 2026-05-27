@@ -23,6 +23,35 @@ function getTodayString() {
   const kst = new Date(utc + 9 * 60 * 60 * 1000);
   return kst.toISOString().slice(0, 10);
 }
+let hourChart = null;
+
+async function loadHourlyStats() {
+  const today = getTodayString();
+  const ref = db.collection("visitors").doc("hourly").collection(today);
+
+  const snap = await ref.get();
+  const hours = Array(24).fill(0);
+
+  snap.forEach(doc => {
+    const h = parseInt(doc.id);
+    hours[h] = doc.data().count || 0;
+  });
+
+  if (hourChart) hourChart.destroy();
+
+  hourChart = new Chart(document.getElementById("hourChart"), {
+    type: "line",
+    data: {
+      labels: [...Array(24).keys()].map(h => `${h}시`),
+      datasets: [{
+        label: "방문자 수",
+        data: hours,
+        borderColor: "#007bff",
+        fill: false
+      }]
+    }
+  });
+}
 
 /* ============================================================
    실시간 방문자 수 + 샤드 상태
