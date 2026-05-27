@@ -137,3 +137,8 @@ canvas {
     margin-top: 10px;
   }
 }
+#browserChart,
+#osChart {
+  height: 250px !important;
+  max-height: 250px !important;
+}
