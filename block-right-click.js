@@ -14,6 +14,7 @@ document.addEventListener('selectstart', function (e) {
 });
 
 // 개발자도구 일부 차단 (선택)
+/*
 document.addEventListener('keydown', function (e) {
   if (
     e.key === "F12" ||
@@ -23,3 +24,4 @@ document.addEventListener('keydown', function (e) {
     e.preventDefault();
   }
 });
+*/
