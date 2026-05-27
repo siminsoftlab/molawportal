@@ -47,6 +47,27 @@
     }
   })();
 </script>
+  <script>
+  async function logAdminAccess() {
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ip = (await ipRes.json()).ip;
+
+    const now = new Date();
+    const time = now.toISOString().replace("T", " ").slice(0, 19);
+
+    firebase.firestore()
+      .collection("admin_logs")
+      .doc(String(Date.now()))
+      .set({
+        ip: ip,
+        time: time,
+        user: "admin"
+      });
+  }
+
+  logAdminAccess();
+</script>
+
 </head>
 <body>
 
