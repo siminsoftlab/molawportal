@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — visitors/daily/날짜 구조 자동 생성 버전
+   🔥 Firebase 방문자 카운터 — UUID + Sharded Counter + Daily 중복 체크
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -10,45 +10,33 @@ async function sha256(text) {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
+
+// RFC4122 버전4 UUID 생성
+function generateUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = crypto.getRandomValues(new Uint8Array(1))[0] & 0xf;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 // 방문자 식별자 생성 (UUID + UA 기반)
 async function getVisitorKey() {
   try {
-    // 1) localStorage에서 기존 UUID 가져오기
     let uuid = localStorage.getItem("visitor_uuid");
 
-    // 2) 없으면 새로 생성해서 저장
     if (!uuid) {
       uuid = generateUUID();
       localStorage.setItem("visitor_uuid", uuid);
     }
 
-    // 3) UA와 결합해서 해시 (선택: UA 안 써도 됨)
     const raw = uuid + "|" + navigator.userAgent;
-
-    // 기존 sha256 재사용
     return (await sha256(raw)).slice(0, 32);
-  } catch (e) {
-    console.error("getVisitorKey 오류:", e);
-
-    // localStorage가 막힌 환경 대비: UA만으로라도 생성
+  } catch {
     const fallbackRaw = navigator.userAgent + "|FALLBACK";
     return (await sha256(fallbackRaw)).slice(0, 32);
   }
 }
-
-// 방문자 식별자 생성 (IP + UA)
-/*
-async function getVisitorKey() {
-  try {
-    const res = await fetch("https://api.ipify.org?format=json");
-    const data = await res.json();
-    const raw = data.ip + "|" + navigator.userAgent;
-    return (await sha256(raw)).slice(0, 32);
-  } catch {
-    const raw = "NOIP|" + navigator.userAgent;
-    return (await sha256(raw)).slice(0, 32);
-  }
-}*/
 
 // 오늘 날짜 (KST)
 function getTodayString() {
@@ -71,94 +59,131 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// 🔥 캐시 최소값 + 오프라인 저장 비활성화
+// 캐시 최소값 + 오프라인 저장 비활성화
 firebase.firestore().settings({ cacheSizeBytes: 1048576 });
 firebase.firestore().clearPersistence().catch(() => {});
 
 const db = firebase.firestore();
 
 /* ============================================================
-   🔥 visitors/daily/날짜 구조로 정확히 생성되는 트랜잭션
+   🔥 Sharded Counter 설정
+   ============================================================ */
+const NUM_SHARDS = 20;
+
+// 최초 1회만 실행하면 되는 초기화 함수 (필요 시 콘솔에서 실행)
+// initCounterShards();
+async function initCounterShards() {
+  const batch = db.batch();
+  const today = getTodayString();
+
+  for (let i = 0; i < NUM_SHARDS; i++) {
+    const shardRef = db
+      .collection("visitors")
+      .doc("counter_shards")
+      .collection("shards")
+      .doc(String(i));
+
+    batch.set(
+      shardRef,
+      { today: 0, total: 0, date: today },
+      { merge: true }
+    );
+  }
+
+  await batch.commit();
+  console.log("Sharded counter 초기화 완료");
+}
+
+/* ============================================================
+   🔥 방문자 카운트 업데이트 (Sharded Counter + Daily 중복 체크)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = await getVisitorKey();
 
-  const counterRef = db.collection("visitors").doc("counter");
-
-  // 🔥 daily 컬렉션을 visitors 안에 정확히 생성
+  // daily 방문자 체크
   const dailyRef = db
     .collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today);
 
+  // 랜덤 샤드 선택
+  const shardId = Math.floor(Math.random() * NUM_SHARDS).toString();
+  const shardRef = db
+    .collection("visitors")
+    .doc("counter_shards")
+    .collection("shards")
+    .doc(shardId);
+
   try {
     await db.runTransaction(async (tx) => {
-      const counterSnap = await tx.get(counterRef);
       const dailySnap = await tx.get(dailyRef);
-
-      let counter = counterSnap.exists
-        ? counterSnap.data()
-        : null;
-
       let daily = dailySnap.exists ? dailySnap.data() : {};
 
-      // 날짜 변경 시 초기화
-      if (!counter || counter.date !== today) {
-        counter = {
-          today: 0,
-          total: counter ? counter.total : 0,
-          date: today
-        };
-      }
-
-      // 중복 방문자 체크
+      // 이미 방문한 사용자면 카운트 증가 X
       if (daily[visitorKey]) return;
 
       // daily 기록
       daily[visitorKey] = true;
-
-      // 쓰기
       tx.set(dailyRef, daily, { merge: true });
+
+      // 샤드 카운터 업데이트
+      const shardSnap = await tx.get(shardRef);
+      let shardData = shardSnap.exists ? shardSnap.data() : null;
+
+      if (!shardData || shardData.date !== today) {
+        shardData = {
+          today: 0,
+          total: shardData ? shardData.total : 0,
+          date: today
+        };
+      }
+
       tx.set(
-        counterRef,
+        shardRef,
         {
-          today: counter.today + 1,
-          total: counter.total + 1,
+          today: shardData.today + 1,
+          total: shardData.total + 1,
           date: today
         },
         { merge: true }
       );
     });
   } catch (e) {
-    console.error("🔥 updateVisitorCount 오류:", e);
+    console.error("🔥 updateVisitorCount (sharded) 오류:", e);
   }
 }
 
 /* ============================================================
-   🔥 실시간 반영
+   🔥 실시간 방문자 수 합산 (모든 샤드 합치기)
    ============================================================ */
 function listenVisitorCount() {
-  db.collection("visitors")
-    .doc("counter")
-    .onSnapshot((doc) => {
-      if (!doc.exists) return;
+  const shardsRef = db
+    .collection("visitors")
+    .doc("counter_shards")
+    .collection("shards");
 
+  shardsRef.onSnapshot((snapshot) => {
+    let todaySum = 0;
+    let totalSum = 0;
+    const today = getTodayString();
+
+    snapshot.forEach((doc) => {
       const data = doc.data();
-      const todayEl = document.getElementById("visitor-today");
-      const totalEl = document.getElementById("visitor-total");
+      if (!data) return;
 
-      if (todayEl) todayEl.textContent = data.today.toLocaleString();
-      if (totalEl) totalEl.textContent = data.total.toLocaleString();
+      if (data.date === today) {
+        todaySum += data.today || 0;
+      }
+      totalSum += data.total || 0;
     });
-}
-// RFC4122 버전4 UUID 생성
-function generateUUID() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-    const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 0xf) >> 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
+
+    const todayEl = document.getElementById("visitor-today");
+    const totalEl = document.getElementById("visitor-total");
+
+    if (todayEl) todayEl.textContent = todaySum.toLocaleString();
+    if (totalEl) totalEl.textContent = totalSum.toLocaleString();
   });
 }
 
