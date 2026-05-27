@@ -194,5 +194,7 @@ function listenVisitorCount() {
 /* ============================================================
    🔥 실행
    ============================================================ */
-updateVisitorCount();
-listenVisitorCount();
+window.onload = () => {
+  updateVisitorCount();
+  listenVisitorCount();
+};
