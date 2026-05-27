@@ -37,7 +37,9 @@ async function getVisitorKey() {
       uuid = generateUUID();
     }
 
-    const raw = uuid + "|" + navigator.userAgent + "|" + Math.random();
+    //const raw = uuid + "|" + navigator.userAgent + "|" + Math.random();
+     const raw = uuid + "|" + navigator.userAgent;
+
     return (await sha256(raw)).slice(0, 32);
 
   } catch {
