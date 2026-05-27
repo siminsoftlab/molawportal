@@ -127,6 +127,9 @@ document.getElementById("logout-btn").onclick = () => {
   localStorage.removeItem("admin_token_time");
   window.location.href = "admin-login.html";
 };
+document.getElementById("change-pw-btn").onclick = () => {
+  window.location.href = "admin-password.html";
+};
 
 /* ============================================================
    실행
