@@ -167,63 +167,36 @@ async function updateVisitorCount() {
 }
 
 /* ============================================================
-   실시간 방문자 수 합산
+   실시간 방문자 수 합산 (최종 안정화)
    ============================================================ */
 function listenVisitorCount() {
-  const ref = db.collection("visitors").doc("counter_shards").collection("shards");
 
-  ref.onSnapshot((snap) => {
-    let total = 0;
-    snap.forEach(doc => {
-      total += doc.data().total || 0;   // ← 수정됨
+  /* ⭐ 전체 방문자 (total 필드 기반) */
+  db.collection("visitors")
+    .doc("counter_shards")
+    .collection("shards")
+    .onSnapshot((snap) => {
+      let total = 0;
+      snap.forEach(doc => {
+        total += doc.data().total || 0;
+      });
+      document.getElementById("visitor-total").textContent = total.toLocaleString();
     });
 
-    document.getElementById("visitor-total").textContent = total.toLocaleString();
-  });
-
+  /* ⭐ 오늘 방문자 (daily_shards 기반) */
   const today = getTodayString();
 
-db.collection("visitors")
-  .doc("daily_shards")
-  .collection(today)
-  .onSnapshot((snap) => {
-
-    let todayCount = 0;
-
-    snap.forEach(doc => {
-      todayCount += doc.data().count || 0;
+  db.collection("visitors")
+    .doc("daily_shards")
+    .collection(today)
+    .onSnapshot((snap) => {
+      let todayCount = 0;
+      snap.forEach(doc => {
+        todayCount += doc.data().count || 0;
+      });
+      document.getElementById("visitor-today").textContent = todayCount.toLocaleString();
     });
-
-    document.getElementById("visitor-today").textContent =
-      todayCount.toLocaleString();
-  });
 }
-
-/*
-function listenVisitorCount() {
-  const ref = db.collection("visitors").doc("counter_shards").collection("shards");
-
-  ref.onSnapshot((snap) => {
-    let total = 0;
-    snap.forEach(doc => {
-      total += doc.data().count || 0;
-    });
-
-    document.getElementById("visitor-total").textContent = total.toLocaleString();
-  });
-
-  const today = getTodayString();
-  const dailyRef = db.collection("visitors").doc("daily_shards").collection(today).doc("shards");
-
-  db.collection("visitors").doc("daily_shards").collection(today).onSnapshot((snap) => {
-    let todayCount = 0;
-    snap.forEach(doc => {
-      todayCount += doc.data().count || 0;
-    });
-
-    document.getElementById("visitor-today").textContent = todayCount.toLocaleString();
-  });
-}*/
 
 /* ============================================================
    실행
