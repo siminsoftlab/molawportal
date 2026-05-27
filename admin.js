@@ -51,7 +51,8 @@ async function loadHourlyStats() {
         label: "방문자 수",
         data: hours,
         borderColor: "#007bff",
-        fill: false
+        fill: false,
+        tension: 0.3
       }]
     }
   });
