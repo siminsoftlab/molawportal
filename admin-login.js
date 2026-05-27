@@ -26,6 +26,27 @@ async function sha256(text) {
 }
 
 /* ============================================================
+   🔥 관리자 문서 자동 생성 (최초 1회)
+   ============================================================ */
+async function ensureAdminDoc() {
+  const ref = db.collection("admin").doc("auth");
+  const snap = await ref.get();
+
+  if (!snap.exists) {
+    // 기본 비밀번호: admin1234
+    const defaultPw = "admin1234";
+    const hash = await sha256(defaultPw);
+
+    await ref.set({
+      passwordHash: hash,
+      createdAt: Date.now()
+    });
+
+    console.log("🔥 admin/auth 문서 자동 생성됨 (기본 비번: admin1234)");
+  }
+}
+
+/* ============================================================
    로그인 처리
    ============================================================ */
 async function adminLogin() {
@@ -52,8 +73,8 @@ async function adminLogin() {
   const savedHash = snap.data().passwordHash;
 
   if (inputHash === savedHash) {
-    // 🔐 로그인 성공 → 토큰 저장
     localStorage.setItem("admin_token", inputHash);
+    localStorage.setItem("admin_token_time", Date.now());
 
     msg.textContent = "로그인 성공! 이동 중...";
     msg.style.color = "green";
@@ -84,13 +105,12 @@ async function checkAutoLogin() {
     window.location.href = "admin.html";
   }
 }
-localStorage.setItem("admin_token", inputHash);
-localStorage.setItem("admin_token_time", Date.now());
 
 /* ============================================================
    실행
    ============================================================ */
-window.onload = () => {
-  checkAutoLogin();
+window.onload = async () => {
+  await ensureAdminDoc();  // 🔥 관리자 문서 자동 생성
+  await checkAutoLogin();
   document.getElementById("login-btn").onclick = adminLogin;
 };
