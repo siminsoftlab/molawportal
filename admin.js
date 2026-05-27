@@ -50,32 +50,81 @@ document.getElementById("change-pw-btn").onclick = () => {
   window.location.href = "admin-password.html";
 };
 
-/* ⭐ 오늘 방문자 (shards 기반) */
+/* ⭐ 오늘 방문자 (daily/days 기반) */
 async function loadToday() {
   const today = new Date().toISOString().slice(0, 10);
-  const ref = db.collection("visitors").doc("daily").collection(today);
+
+  const ref = db
+    .collection("visitors")
+    .doc("daily")
+    .collection("days")
+    .doc(today);
+
   const snap = await ref.get();
 
-  let total = 0;
-  snap.forEach(doc => total += doc.data().count);
+  if (!snap.exists) {
+    document.getElementById("admin-today").textContent = 0;
+    return;
+  }
 
-  document.getElementById("admin-today").textContent = total;
+  const data = snap.data();
+  const count = Object.keys(data).filter(k => k !== "_init").length;
+
+  document.getElementById("admin-today").textContent = count;
 }
 
-/* ⭐ 전체 방문자 (shards 기반) */
+/* ⭐ 전체 방문자 (counter_shards/shards 기반) */
 async function loadTotal() {
-  const ref = db.collection("visitors").doc("shards").collection("list");
+  const ref = db
+    .collection("visitors")
+    .doc("counter_shards")
+    .collection("shards");
+
   const snap = await ref.get();
 
   let total = 0;
-  snap.forEach(doc => total += doc.data().count);
+  snap.forEach(doc => {
+    const d = doc.data();
+    total += d.total || 0;
+  });
 
   document.getElementById("admin-total").textContent = total;
 }
 
-/* 시간대별 그래프 (hourly 없음 → 표시 불가) */
+/* ⭐ 샤드 상태 */
+async function loadShards() {
+  const ref = db
+    .collection("visitors")
+    .doc("counter_shards")
+    .collection("shards");
+
+  const snap = await ref.get();
+
+  let text = "";
+  snap.forEach(doc => {
+    const d = doc.data();
+    text += `Shard ${doc.id} — today: ${d.today}, total: ${d.total}, date: ${d.date}\n`;
+  });
+
+  document.getElementById("shard-list").textContent = text;
+}
+
+/* ⭐ 시간대별 그래프 (hourly/{date}/{hour}) */
 async function loadHourChart(date) {
-  // hourly 데이터가 Firestore에 없으므로 빈 그래프 표시
+  const ref = db
+    .collection("visitors")
+    .doc("hourly")
+    .collection(date);
+
+  const snap = await ref.get();
+
+  const hours = Array(24).fill(0);
+
+  snap.forEach(doc => {
+    const h = parseInt(doc.id);
+    hours[h] = doc.data().count || 0;
+  });
+
   const ctx = document.getElementById("hourChart").getContext("2d");
 
   new Chart(ctx, {
@@ -84,16 +133,39 @@ async function loadHourChart(date) {
       labels: [...Array(24).keys()].map(h => `${h}시`),
       datasets: [{
         label: "방문자 수",
-        data: Array(24).fill(0),
-        borderColor: "#ccc",
-        backgroundColor: "rgba(200,200,200,0.2)",
-        fill: true
+        data: hours,
+        borderColor: "#4a90e2",
+        fill: false
       }]
     }
   });
 }
 
-/* 브라우저/OS 통계 */
+/* ⭐ Daily 로그 */
+async function loadDailyLog(date) {
+  const ref = db
+    .collection("visitors")
+    .doc("daily")
+    .collection("days")
+    .doc(date);
+
+  const snap = await ref.get();
+
+  if (!snap.exists) {
+    document.getElementById("daily-log").textContent = "데이터 없음";
+    return;
+  }
+
+  const data = snap.data();
+  const keys = Object.keys(data).filter(k => k !== "_init");
+
+  let text = `📅 ${date} 방문자 수: ${keys.length}\n\n`;
+  text += keys.join("\n");
+
+  document.getElementById("daily-log").textContent = text;
+}
+
+/* ⭐ 브라우저/OS 통계 */
 async function loadBrowserOSStats(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
   const snap = await ref.get();
@@ -108,12 +180,12 @@ async function loadBrowserOSStats(date) {
     if (d.os) osCount[d.os] = (osCount[d.os] || 0) + d.count;
   });
 
-  drawPieChart("browserChart", browserCount, "브라우저 통계");
-  drawPieChart("osChart", osCount, "OS 통계");
+  drawPieChart("browserChart", browserCount);
+  drawPieChart("osChart", osCount);
 }
 
 /* 파이차트 */
-function drawPieChart(canvasId, dataObj, label) {
+function drawPieChart(canvasId, dataObj) {
   const ctx = document.getElementById(canvasId).getContext("2d");
 
   new Chart(ctx, {
@@ -131,7 +203,7 @@ function drawPieChart(canvasId, dataObj, label) {
   });
 }
 
-/* IP 상세 정보 */
+/* ⭐ IP 상세 정보 */
 async function loadIPDetails(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
   const snap = await ref.get();
@@ -145,9 +217,6 @@ async function loadIPDetails(date) {
 IP: ${d.ip}
 국가: ${d.country}
 도시: ${d.city}
-접속시간: ${d.time}
-브라우저: ${d.browser}
-OS: ${d.os}
 위치: ${d.lat}, ${d.lon}
 방문횟수: ${d.count}
 ----------------------------------------
@@ -157,39 +226,13 @@ OS: ${d.os}
   document.getElementById("ip-detail-log").textContent = text || "데이터 없음";
 }
 
-/* Daily 로그 */
-async function loadDailyLog(date) {
-  const ref = db.collection("visitors").doc("daily").collection(date);
-  const snap = await ref.get();
-
-  let text = "";
-  snap.forEach(doc => {
-    text += `${doc.id}: ${doc.data().count}\n`;
-  });
-
-  document.getElementById("daily-log").textContent = text || "데이터 없음";
-}
-
-/* 샤드 상태 */
-async function loadShards() {
-  const ref = db.collection("visitors").doc("shards").collection("list");
-  const snap = await ref.get();
-
-  let text = "";
-  snap.forEach(doc => {
-    text += `${doc.id}: ${doc.data().count}\n`;
-  });
-
-  document.getElementById("shard-list").textContent = text;
-}
-
 /* Daily 조회 버튼 */
 document.getElementById("daily-btn").onclick = async () => {
   const date = document.getElementById("daily-date").value;
   if (!date) return;
 
   loadDailyLog(date);
-  loadHourChart(date); // hourly 없음 → 빈 그래프
+  loadHourChart(date);
   loadBrowserOSStats(date);
   loadIPDetails(date);
 };
