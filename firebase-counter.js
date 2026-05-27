@@ -223,26 +223,26 @@ async function updateVisitorCount() {
   /* ============================================================
      GeoIP 저장
      ============================================================ */
- const geo = await getGeoIP();
-const info = getBrowserInfo();  // ⭐ 브라우저/OS 정보 가져오기
-
-if (geo && geo.ip) {
-  const geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
-
-  geoRef.set({
-    ip: geo.ip,
-    country: geo.country,
-    city: geo.city,
-    lat: geo.lat,
-    lon: geo.lon,
-    browser: info.browser,   // ⭐ 추가
-    os: info.os,             // ⭐ 추가
-    count: firebase.firestore.FieldValue.increment(1)
-  }, { merge: true })
-  .then(() => console.log("🌍 GeoIP 저장 성공:", geo.ip))
-  .catch(e => console.error("🌍 GeoIP 저장 실패:", e));
+    const geo = await getGeoIP();
+   const info = getBrowserInfo();  // ⭐ 브라우저/OS 정보 가져오기
+   
+   if (geo && geo.ip) {
+     const geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
+   
+     geoRef.set({
+       ip: geo.ip,
+       country: geo.country,
+       city: geo.city,
+       lat: geo.lat,
+       lon: geo.lon,
+       browser: info.browser,   // ⭐ 추가
+       os: info.os,             // ⭐ 추가
+       count: firebase.firestore.FieldValue.increment(1)
+     }, { merge: true })
+     .then(() => console.log("🌍 GeoIP 저장 성공:", geo.ip))
+     .catch(e => console.error("🌍 GeoIP 저장 실패:", e));
+   }
 }
-
 
 /* ============================================================
    🔥 실시간 방문자 수 합산
