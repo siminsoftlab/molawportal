@@ -81,7 +81,7 @@ async function loadToday() {
 }
 
 /* ============================================================
-   전체 방문자 (counter_shards 기반)
+   전체 방문자 (counter_shards 기반 → total 필드 사용)
    ============================================================ */
 async function loadTotal() {
   const ref = db
@@ -93,7 +93,7 @@ async function loadTotal() {
 
   let total = 0;
   snap.forEach(doc => {
-    total += doc.data().count || 0;
+    total += doc.data().total || 0;  // ← total 필드 사용
   });
 
   document.getElementById("admin-total").textContent = total;
@@ -113,7 +113,7 @@ async function loadShards() {
   let text = "";
   snap.forEach(doc => {
     const d = doc.data();
-    text += `Shard ${doc.id} — count: ${d.count || 0}\n`;
+    text += `Shard ${doc.id} — total: ${d.total || 0}, today: ${d.today || 0}, date: ${d.date}\n`;
   });
 
   document.getElementById("shard-list").textContent = text;
