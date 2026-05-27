@@ -122,7 +122,7 @@ function incrementShard(refBase) {
 }
 
 /* ============================================================
-   방문자 업데이트 (샤드 방식)
+   방문자 업데이트 (최종 안정화)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
@@ -130,22 +130,24 @@ async function updateVisitorCount() {
   const visitorKey = await getVisitorKey();
   const info = getBrowserInfo();
 
-  /* 🔥 1) 오늘 방문자 샤드 증가 */
-  await incrementShard(
-    db.collection("visitors").doc("daily_shards").collection(today)
-  );
+  /* ⭐ 1) 오늘 방문자 기록 (admin.js와 동일 구조) */
+  db.collection("visitors")
+    .doc("daily")
+    .collection("days")
+    .doc(today)
+    .set({ [visitorKey]: true, _init: true }, { merge: true });
 
-  /* 🔥 2) 전체 방문자 샤드 증가 */
+  /* ⭐ 2) 전체 방문자 샤드 증가 */
   await incrementShard(
     db.collection("visitors").doc("counter_shards")
   );
 
-  /* 🔥 3) 시간대별 샤드 증가 */
+  /* ⭐ 3) 시간대별 샤드 증가 */
   await incrementShard(
     db.collection("visitors").doc("hourly_shards").collection(today).doc(String(hour))
   );
 
-  /* 🔥 4) 브라우저/OS 샤드 증가 */
+  /* ⭐ 4) 브라우저/OS 샤드 증가 */
   await incrementShard(
     db.collection("visitors").doc("stats").collection("browser").doc(info.browser)
   );
@@ -154,7 +156,7 @@ async function updateVisitorCount() {
     db.collection("visitors").doc("stats").collection("os").doc(info.os)
   );
 
-  /* 🔥 5) GeoIP 저장 */
+  /* ⭐ 5) GeoIP 저장 */
   const geo = await getGeoIP();
   if (geo && geo.ip) {
     db.collection("visitors").doc("geoip").collection(today).doc(geo.ip).set({
@@ -183,18 +185,24 @@ function listenVisitorCount() {
       document.getElementById("visitor-total").textContent = total.toLocaleString();
     });
 
-  /* ⭐ 오늘 방문자 (daily_shards 기반) */
+  /* ⭐ 오늘 방문자 (daily/days 기반 — admin.js와 동일) */
   const today = getTodayString();
 
   db.collection("visitors")
-    .doc("daily_shards")
-    .collection(today)
+    .doc("daily")
+    .collection("days")
+    .doc(today)
     .onSnapshot((snap) => {
-      let todayCount = 0;
-      snap.forEach(doc => {
-        todayCount += doc.data().count || 0;
-      });
-      document.getElementById("visitor-today").textContent = todayCount.toLocaleString();
+
+      if (!snap.exists) {
+        document.getElementById("visitor-today").textContent = 0;
+        return;
+      }
+
+      const data = snap.data();
+      const count = Object.keys(data).filter(k => k !== "_init").length;
+
+      document.getElementById("visitor-today").textContent = count.toLocaleString();
     });
 }
 
