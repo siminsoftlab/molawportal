@@ -108,11 +108,24 @@ function getBrowserInfo() {
 async function getGeoIP() {
   try {
     const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+    console.log("🌍 GeoIP 응답:", data);
+    return data;
+  } catch (e) {
+    console.error("🌍 GeoIP 호출 실패:", e);
+    return null;
+  }
+}
+
+/*
+async function getGeoIP() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
     return await res.json();
   } catch {
     return null;
   }
-}
+}*/
 
 /* ============================================================
    🔥 Firebase 초기화
