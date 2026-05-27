@@ -5,18 +5,19 @@
 
 /* container 밖에서 중앙 정렬 + 동일 폭 유지 */
 /* 상단 안내 박스 전체 래퍼 */
-/* 상단 안내 박스 전체 래퍼 */
 .top-info-wrapper {
   width: 100%;
+  max-width: 100%;
   display: flex !important;
   justify-content: center !important;
-  align-items: center;
-  margin: 20px 0 30px 0;
-  padding: 0 15px;
+  align-items: flex-start;
+  margin: 20px auto 30px auto !important;
+  padding: 0;
   box-sizing: border-box;
+  position: relative;
 }
 
-/* 안내 박스: container와 동일한 최대 폭 */
+/* 안내 박스: container와 동일한 폭 */
 .top-info-box {
   width: 100%;
   max-width: 900px; /* container 폭과 동일 */
@@ -27,8 +28,12 @@
   line-height: 1.65;
   color: #222;
   box-sizing: border-box;
-  margin: 0 auto; /* 혹시 flex가 무시될 때 대비 */
+  margin: 0 auto !important;
+  position: relative;
+  left: 0;
+  right: 0;
 }
+
 
 /* 제목 */
 .top-info-box h2 {
