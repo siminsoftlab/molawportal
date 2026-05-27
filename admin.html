@@ -38,28 +38,6 @@
     })();
   </script>
 
-  <!-- 🔍 관리자 접근 로그 기록 -->
-  <script>
-    async function logAdminAccess() {
-      const ipRes = await fetch("https://api.ipify.org?format=json");
-      const ip = (await ipRes.json()).ip;
-
-      const now = new Date();
-      const time = now.toISOString().replace("T", " ").slice(0, 19);
-
-      firebase.firestore()
-        .collection("admin_logs")
-        .doc(String(Date.now()))
-        .set({
-          ip: ip,
-          time: time,
-          user: "admin"
-        });
-    }
-
-    logAdminAccess();
-  </script>
-
 </head>
 <body>
 
@@ -124,6 +102,8 @@
 
   </div>
 
-  <script src="admin.js"></script>
+  <!-- ⭐ admin.js는 반드시 마지막에 로드 -->
+  <script src="admin.js" defer></script>
+
 </body>
 </html>
