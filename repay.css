@@ -68,3 +68,7 @@
     line-height: 1.55;
   }
 }
+.page-wrap {
+  width: 100%;
+  display: block;
+}
