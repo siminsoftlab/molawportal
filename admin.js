@@ -74,37 +74,7 @@ async function loadShards() {
 }
 
 /* ============================================================
-   ⭐ 시간대별 그래프 (index.js 구조에 맞게 수정됨)
-   ============================================================ */
-async function loadHourChart(date) {
-  const ref = db.collection("visitors").doc("hourly_shards").collection(date);
-  const snap = await ref.get();
-
-  const hours = Array(24).fill(0);
-
-  snap.forEach(doc => {
-    const hour = parseInt(doc.id);   // index.js는 doc.id = "13"
-    hours[hour] += doc.data().count || 0;
-  });
-
-  const ctx = document.getElementById("hourChart").getContext("2d");
-
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: [...Array(24).keys()].map(h => `${h}시`),
-      datasets: [{
-        label: "방문자 수",
-        data: hours,
-        borderColor: "#4a90e2",
-        fill: false
-      }]
-    }
-  });
-}
-
-/* ============================================================
-   ⭐ 브라우저/OS 통계 (index.js 구조에 맞게 정상)
+   ⭐ 브라우저/OS 통계
    ============================================================ */
 async function loadBrowserOSStats() {
 
@@ -197,13 +167,12 @@ OS: ${d.os}
 }
 
 /* ============================================================
-   ⭐ Daily 조회 버튼
+   ⭐ Daily 조회 버튼 (hourly 제거됨)
    ============================================================ */
 document.getElementById("daily-btn").onclick = async () => {
   const date = document.getElementById("daily-date").value;
   if (!date) return;
 
-  loadHourChart(date);
   loadBrowserOSStats();
   loadIPDetails(date);
 };
