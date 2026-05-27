@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", () => {
+
 /* Firebase 초기화 */
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
@@ -201,3 +203,5 @@ document.getElementById("daily-btn").onclick = async () => {
 loadToday();
 loadTotal();
 loadShards();
+
+});
