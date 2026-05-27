@@ -15,7 +15,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* ============================================================
-   SHA-256 해시 함수
+   SHA-256 해시
    ============================================================ */
 async function sha256(text) {
   const encoder = new TextEncoder();
@@ -26,7 +26,7 @@ async function sha256(text) {
 }
 
 /* ============================================================
-   관리자 로그인 처리
+   로그인 처리
    ============================================================ */
 async function adminLogin() {
   const pw = document.getElementById("pw").value.trim();
@@ -38,10 +38,8 @@ async function adminLogin() {
     return;
   }
 
-  // 입력한 비밀번호 해시 생성
   const inputHash = await sha256(pw);
 
-  // Firestore에서 관리자 비밀번호 해시 가져오기
   const ref = db.collection("admin").doc("auth");
   const snap = await ref.get();
 
@@ -53,9 +51,8 @@ async function adminLogin() {
 
   const savedHash = snap.data().passwordHash;
 
-  // 해시 비교
   if (inputHash === savedHash) {
-    // 로그인 성공 → 토큰 저장
+    // 🔐 로그인 성공 → 토큰 저장
     localStorage.setItem("admin_token", inputHash);
 
     msg.textContent = "로그인 성공! 이동 중...";
@@ -79,13 +76,11 @@ async function checkAutoLogin() {
 
   const ref = db.collection("admin").doc("auth");
   const snap = await ref.get();
-
   if (!snap.exists) return;
 
   const savedHash = snap.data().passwordHash;
 
   if (token === savedHash) {
-    // 이미 로그인됨 → 관리자 페이지로 이동
     window.location.href = "admin.html";
   }
 }
