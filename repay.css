@@ -4,19 +4,21 @@
    ================================ */
 
 /* container 밖에서 중앙 정렬 + 동일 폭 유지 */
+/* 상단 안내 박스 전체 래퍼 */
 .top-info-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;   /* 수직 정렬 안정화 */
   margin: 20px 0 30px 0;
-  padding: 0 15px; /* 모바일 좌우 여백 */
+  padding: 0 15px;
   box-sizing: border-box;
 }
 
 /* 안내 박스: container와 동일한 최대 폭 */
 .top-info-box {
   width: 100%;
-  max-width: 900px; /* container 폭과 동일 */
+  max-width: 900px;       /* container 폭과 동일 */
   background: #f1f5ff;
   padding: 22px;
   border-radius: 12px;
@@ -25,7 +27,9 @@
   color: #222;
   box-sizing: border-box;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin: 0 auto;         /* 혹시 flex가 안 먹는 환경에서도 중앙 정렬 보조 */
 }
+
 
 /* 제목 */
 .top-info-box h2 {
