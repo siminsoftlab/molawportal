@@ -1,5 +1,5 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — 최종 통합본 (2026 안정화 버전)
+   🔥 Firebase 방문자 카운터 — 최종 통합본 (모바일 완전 대응)
    ============================================================ */
 
 // SHA-256 해시 생성
@@ -20,35 +20,60 @@ function generateUUID() {
   });
 }
 
-// 방문자 식별자 생성 (localStorage 차단 대비 완전 강화)
+/* ============================================================
+   🔥 모바일에서도 절대 변하지 않는 visitorKey 생성
+   ============================================================ */
 async function getVisitorKey() {
-  try {
-    let uuid = null;
+  let uuid = null;
 
-    // localStorage 시도
+  /* 1) localStorage 시도 */
+  try {
+    uuid = localStorage.getItem("visitor_uuid");
+    if (!uuid) {
+      uuid = generateUUID();
+      localStorage.setItem("visitor_uuid", uuid);
+    }
+  } catch {
+    uuid = null;
+  }
+
+  /* 2) localStorage 실패 → 쿠키 시도 */
+  if (!uuid) {
+    const cookieMatch = document.cookie.match(/visitor_uuid=([^;]+)/);
+    if (cookieMatch) {
+      uuid = cookieMatch[1];
+    } else {
+      uuid = generateUUID();
+      document.cookie = `visitor_uuid=${uuid}; path=/; max-age=31536000`;
+    }
+  }
+
+  /* 3) 쿠키도 실패 → sessionStorage */
+  if (!uuid) {
     try {
-      uuid = localStorage.getItem("visitor_uuid");
+      uuid = sessionStorage.getItem("visitor_uuid");
       if (!uuid) {
         uuid = generateUUID();
-        localStorage.setItem("visitor_uuid", uuid);
+        sessionStorage.setItem("visitor_uuid", uuid);
       }
     } catch {
-      // localStorage 차단된 경우
-      uuid = generateUUID();
+      uuid = null;
     }
-
-    //const raw = uuid + "|" + navigator.userAgent + "|" + Math.random();
-     const raw = uuid + "|" + navigator.userAgent;
-
-    return (await sha256(raw)).slice(0, 32);
-
-  } catch {
-    // 최종 fallback
-    return (await sha256("fallback-" + Math.random())).slice(0, 32);
   }
+
+  /* 4) 그래도 실패 → UA 기반 fallback */
+  if (!uuid) {
+    uuid = "fallback-" + navigator.userAgent;
+  }
+
+  // 🔥 Math.random 제거 → visitorKey 고정
+  const raw = uuid + "|" + navigator.userAgent;
+  return (await sha256(raw)).slice(0, 32);
 }
 
-// 오늘 날짜 (KST)
+/* ============================================================
+   🔥 날짜 (KST)
+   ============================================================ */
 function getTodayString() {
   const now = new Date();
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
@@ -56,7 +81,9 @@ function getTodayString() {
   return kst.toISOString().slice(0, 10);
 }
 
-// Firebase 설정
+/* ============================================================
+   🔥 Firebase 초기화
+   ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -68,11 +95,8 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
-// 캐시 최소값 + 오프라인 저장 비활성화
 firebase.firestore().settings({ cacheSizeBytes: 1048576 });
 firebase.firestore().clearPersistence().catch(() => {});
-
 const db = firebase.firestore();
 
 /* ============================================================
@@ -80,7 +104,7 @@ const db = firebase.firestore();
    ============================================================ */
 const NUM_SHARDS = 20;
 
-// 최초 1회만 실행하면 되는 초기화 함수
+// 최초 1회만 실행
 // initCounterShards();
 async function initCounterShards() {
   const batch = db.batch();
@@ -129,17 +153,16 @@ async function updateVisitorCount() {
       const dailySnap = await tx.get(dailyRef);
       const shardSnap = await tx.get(shardRef);
 
-      // 🔥 daily 문서를 항상 객체로 강제 초기화
+      /* 🔥 daily 문서를 항상 정상 객체로 강제 초기화 */
       let daily = dailySnap.exists && typeof dailySnap.data() === "object"
         ? dailySnap.data()
         : {};
-      
-      // 객체가 아니면 강제로 초기화
+
       if (daily === null || Array.isArray(daily)) {
         daily = {};
       }
-      
-      // 필드가 하나도 없는 빈 객체면 merge 실패하므로 기본 필드 추가
+
+      // 빈 객체면 merge 실패하므로 기본 필드 추가
       if (Object.keys(daily).length === 0) {
         daily = { _init: true };
       }
@@ -151,7 +174,7 @@ async function updateVisitorCount() {
       daily[visitorKey] = true;
       tx.set(dailyRef, daily, { merge: true });
 
-      // 샤드 업데이트
+      /* 🔥 샤드 업데이트 */
       let shardData = shardSnap.exists ? shardSnap.data() : null;
 
       if (!shardData || shardData.date !== today) {
@@ -178,7 +201,7 @@ async function updateVisitorCount() {
 }
 
 /* ============================================================
-   🔥 실시간 방문자 수 합산 (모든 샤드 합치기)
+   🔥 실시간 방문자 수 합산
    ============================================================ */
 function listenVisitorCount() {
   const shardsRef = db
@@ -187,8 +210,6 @@ function listenVisitorCount() {
     .collection("shards");
 
   shardsRef.onSnapshot((snapshot) => {
-
-    // 🔥 초기 빈 스냅샷이면 화면 업데이트 금지
     if (snapshot.empty) return;
 
     let todaySum = 0;
@@ -213,7 +234,7 @@ function listenVisitorCount() {
 }
 
 /* ============================================================
-   🔥 실행 (window.onload로 안정화)
+   🔥 실행
    ============================================================ */
 window.onload = () => {
   updateVisitorCount();
