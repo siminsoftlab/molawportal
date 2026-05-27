@@ -12,33 +12,8 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- 🔐 로그인 체크 -->
-  <script>
-    (async () => {
-      const token = localStorage.getItem("admin_token");
-      const time = localStorage.getItem("admin_token_time");
-
-      if (!token || !time) {
-        window.location.href = "admin-login.html";
-        return;
-      }
-
-      const now = Date.now();
-      const diff = now - Number(time);
-      const SESSION_LIMIT = 2 * 60 * 60 * 1000; // 2시간
-
-      if (diff > SESSION_LIMIT) {
-        localStorage.removeItem("admin_token");
-        localStorage.removeItem("admin_token_time");
-        alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-        window.location.href = "admin-login.html";
-        return;
-      }
-    })();
-  </script>
-
 </head>
+
 <body>
 
   <!-- ⭐ 상단 네비게이션 -->
@@ -101,6 +76,31 @@
     </div>
 
   </div>
+
+  <!-- 🔐 로그인 체크 (body 끝으로 이동) -->
+  <script>
+    (async () => {
+      const token = localStorage.getItem("admin_token");
+      const time = localStorage.getItem("admin_token_time");
+
+      if (!token || !time) {
+        window.location.href = "admin-login.html";
+        return;
+      }
+
+      const now = Date.now();
+      const diff = now - Number(time);
+      const SESSION_LIMIT = 2 * 60 * 60 * 1000; // 2시간
+
+      if (diff > SESSION_LIMIT) {
+        localStorage.removeItem("admin_token");
+        localStorage.removeItem("admin_token_time");
+        alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+        window.location.href = "admin-login.html";
+        return;
+      }
+    })();
+  </script>
 
   <!-- ⭐ admin.js는 반드시 마지막에 로드 -->
   <script src="admin.js" defer></script>
