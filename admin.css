@@ -104,6 +104,16 @@ body {
   font-size: 14px;
 }
 
+/* IP 상세 정보 */
+#ip-detail-log {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 /* 샤드 테이블 */
 .shard-table {
   white-space: pre-line;
