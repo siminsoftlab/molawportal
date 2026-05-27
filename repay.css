@@ -81,4 +81,7 @@
   display: block !important;
   text-align: center !important;
 }
+.top-info-wrapper {
+  margin-top: 80px !important; /* header 높이만큼 내려줌 */
+}
 
