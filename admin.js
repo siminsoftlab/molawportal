@@ -109,38 +109,6 @@ async function loadShards() {
   document.getElementById("shard-list").textContent = text;
 }
 
-/* ⭐ 시간대별 그래프 (hourly/{date}/{hour}) */
-async function loadHourChart(date) {
-  const ref = db
-    .collection("visitors")
-    .doc("hourly")
-    .collection(date);
-
-  const snap = await ref.get();
-
-  const hours = Array(24).fill(0);
-
-  snap.forEach(doc => {
-    const h = parseInt(doc.id);
-    hours[h] = doc.data().count || 0;
-  });
-
-  const ctx = document.getElementById("hourChart").getContext("2d");
-
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: [...Array(24).keys()].map(h => `${h}시`),
-      datasets: [{
-        label: "방문자 수",
-        data: hours,
-        borderColor: "#4a90e2",
-        fill: false
-      }]
-    }
-  });
-}
-
 /* ⭐ Daily 로그 */
 async function loadDailyLog(date) {
   const ref = db
@@ -218,6 +186,8 @@ IP: ${d.ip}
 국가: ${d.country}
 도시: ${d.city}
 위치: ${d.lat}, ${d.lon}
+브라우저: ${d.browser}
+OS: ${d.os}
 방문횟수: ${d.count}
 ----------------------------------------
 `;
@@ -232,7 +202,6 @@ document.getElementById("daily-btn").onclick = async () => {
   if (!date) return;
 
   loadDailyLog(date);
-  loadHourChart(date);
   loadBrowserOSStats(date);
   loadIPDetails(date);
 };
