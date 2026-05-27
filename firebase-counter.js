@@ -10,8 +10,34 @@ async function sha256(text) {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
+// 방문자 식별자 생성 (UUID + UA 기반)
+async function getVisitorKey() {
+  try {
+    // 1) localStorage에서 기존 UUID 가져오기
+    let uuid = localStorage.getItem("visitor_uuid");
+
+    // 2) 없으면 새로 생성해서 저장
+    if (!uuid) {
+      uuid = generateUUID();
+      localStorage.setItem("visitor_uuid", uuid);
+    }
+
+    // 3) UA와 결합해서 해시 (선택: UA 안 써도 됨)
+    const raw = uuid + "|" + navigator.userAgent;
+
+    // 기존 sha256 재사용
+    return (await sha256(raw)).slice(0, 32);
+  } catch (e) {
+    console.error("getVisitorKey 오류:", e);
+
+    // localStorage가 막힌 환경 대비: UA만으로라도 생성
+    const fallbackRaw = navigator.userAgent + "|FALLBACK";
+    return (await sha256(fallbackRaw)).slice(0, 32);
+  }
+}
 
 // 방문자 식별자 생성 (IP + UA)
+/*
 async function getVisitorKey() {
   try {
     const res = await fetch("https://api.ipify.org?format=json");
@@ -22,7 +48,7 @@ async function getVisitorKey() {
     const raw = "NOIP|" + navigator.userAgent;
     return (await sha256(raw)).slice(0, 32);
   }
-}
+}*/
 
 // 오늘 날짜 (KST)
 function getTodayString() {
@@ -126,6 +152,14 @@ function listenVisitorCount() {
       if (todayEl) todayEl.textContent = data.today.toLocaleString();
       if (totalEl) totalEl.textContent = data.total.toLocaleString();
     });
+}
+// RFC4122 버전4 UUID 생성
+function generateUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 0xf) >> 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
 
 /* ============================================================
