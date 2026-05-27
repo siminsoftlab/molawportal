@@ -1,8 +1,6 @@
 /* ============================================================
-   🔥 Firebase 방문자 카운터 — 최종 통합본 (모바일 완전 대응)
+   🔥 SHA-256 해시
    ============================================================ */
-
-// SHA-256 해시 생성
 async function sha256(text) {
   const encoder = new TextEncoder();
   const data = encoder.encode(text);
@@ -11,7 +9,9 @@ async function sha256(text) {
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// RFC4122 버전4 UUID 생성
+/* ============================================================
+   🔥 UUID 생성
+   ============================================================ */
 function generateUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
     const r = crypto.getRandomValues(new Uint8Array(1))[0] & 0xf;
@@ -26,7 +26,7 @@ function generateUUID() {
 async function getVisitorKey() {
   let uuid = null;
 
-  /* 1) localStorage 시도 */
+  // 1) localStorage
   try {
     uuid = localStorage.getItem("visitor_uuid");
     if (!uuid) {
@@ -37,18 +37,17 @@ async function getVisitorKey() {
     uuid = null;
   }
 
-  /* 2) localStorage 실패 → 쿠키 시도 */
+  // 2) 쿠키
   if (!uuid) {
     const cookieMatch = document.cookie.match(/visitor_uuid=([^;]+)/);
-    if (cookieMatch) {
-      uuid = cookieMatch[1];
-    } else {
+    if (cookieMatch) uuid = cookieMatch[1];
+    else {
       uuid = generateUUID();
       document.cookie = `visitor_uuid=${uuid}; path=/; max-age=31536000`;
     }
   }
 
-  /* 3) 쿠키도 실패 → sessionStorage */
+  // 3) sessionStorage
   if (!uuid) {
     try {
       uuid = sessionStorage.getItem("visitor_uuid");
@@ -61,14 +60,10 @@ async function getVisitorKey() {
     }
   }
 
-  /* 4) 그래도 실패 → UA 기반 fallback */
-  if (!uuid) {
-    uuid = "fallback-" + navigator.userAgent;
-  }
+  // 4) UA fallback
+  if (!uuid) uuid = "fallback-" + navigator.userAgent;
 
-  // 🔥 Math.random 제거 → visitorKey 고정
-  const raw = uuid + "|" + navigator.userAgent;
-  return (await sha256(raw)).slice(0, 32);
+  return (await sha256(uuid + "|" + navigator.userAgent)).slice(0, 32);
 }
 
 /* ============================================================
@@ -79,6 +74,48 @@ function getTodayString() {
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
   const kst = new Date(utc + 9 * 60 * 60 * 1000);
   return kst.toISOString().slice(0, 10);
+}
+
+/* ============================================================
+   🔥 시간대 (0~23)
+   ============================================================ */
+function getHour() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const kst = new Date(utc + 9 * 60 * 60 * 1000);
+  return kst.getHours();
+}
+
+/* ============================================================
+   🔥 브라우저/OS 정보
+   ============================================================ */
+function getBrowserInfo() {
+  const ua = navigator.userAgent;
+
+  let browser = "Unknown";
+  if (ua.includes("Chrome")) browser = "Chrome";
+  else if (ua.includes("Safari")) browser = "Safari";
+  else if (ua.includes("Firefox")) browser = "Firefox";
+
+  let os = "Unknown";
+  if (ua.includes("Windows")) os = "Windows";
+  else if (ua.includes("Mac")) os = "MacOS";
+  else if (ua.includes("Android")) os = "Android";
+  else if (ua.includes("iPhone")) os = "iOS";
+
+  return { browser, os };
+}
+
+/* ============================================================
+   🔥 IP + GeoIP
+   ============================================================ */
+async function getGeoIP() {
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
 /* ============================================================
@@ -100,72 +137,45 @@ firebase.firestore().clearPersistence().catch(() => {});
 const db = firebase.firestore();
 
 /* ============================================================
-   🔥 Sharded Counter 설정
+   🔥 Sharded Counter
    ============================================================ */
 const NUM_SHARDS = 20;
 
-// 최초 1회만 실행
-// initCounterShards();
-async function initCounterShards() {
-  const batch = db.batch();
-  const today = getTodayString();
-
-  for (let i = 0; i < NUM_SHARDS; i++) {
-    const shardRef = db
-      .collection("visitors")
-      .doc("counter_shards")
-      .collection("shards")
-      .doc(String(i));
-
-    batch.set(
-      shardRef,
-      { today: 0, total: 0, date: today },
-      { merge: true }
-    );
-  }
-
-  await batch.commit();
-  console.log("Sharded counter 초기화 완료");
-}
-
 /* ============================================================
-   🔥 방문자 카운트 업데이트 (daily + shard)
+   🔥 방문자 카운트 업데이트 (daily + shard + stats + geoip)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
+  const hour = getHour();
   const visitorKey = await getVisitorKey();
+  const info = getBrowserInfo();
+  const geo = await getGeoIP();
 
-  const dailyRef = db
-    .collection("visitors")
-    .doc("daily")
-    .collection("days")
-    .doc(today);
+  const dailyRef = db.collection("visitors").doc("daily").collection("days").doc(today);
+  const shardRef = db.collection("visitors").doc("counter_shards").collection("shards")
+    .doc(String(Math.floor(Math.random() * NUM_SHARDS)));
 
-  const shardId = Math.floor(Math.random() * NUM_SHARDS).toString();
-  const shardRef = db
-    .collection("visitors")
-    .doc("counter_shards")
-    .collection("shards")
-    .doc(shardId);
+  const hourlyRef = db.collection("visitors").doc("hourly").collection(today).doc(String(hour));
+  const browserRef = db.collection("visitors").doc("stats").collection("browser").doc(info.browser);
+  const osRef = db.collection("visitors").doc("stats").collection("os").doc(info.os);
+
+  let geoRef = null;
+  if (geo && geo.ip) {
+    geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
+  }
 
   try {
     await db.runTransaction(async (tx) => {
       const dailySnap = await tx.get(dailyRef);
       const shardSnap = await tx.get(shardRef);
 
-      /* 🔥 daily 문서를 항상 정상 객체로 강제 초기화 */
+      // daily 강제 객체화
       let daily = dailySnap.exists && typeof dailySnap.data() === "object"
         ? dailySnap.data()
         : {};
 
-      if (daily === null || Array.isArray(daily)) {
-        daily = {};
-      }
-
-      // 빈 객체면 merge 실패하므로 기본 필드 추가
-      if (Object.keys(daily).length === 0) {
-        daily = { _init: true };
-      }
+      if (daily === null || Array.isArray(daily)) daily = {};
+      if (Object.keys(daily).length === 0) daily = { _init: true };
 
       // 이미 방문한 사용자면 종료
       if (daily[visitorKey]) return;
@@ -174,26 +184,44 @@ async function updateVisitorCount() {
       daily[visitorKey] = true;
       tx.set(dailyRef, daily, { merge: true });
 
-      /* 🔥 샤드 업데이트 */
+      // 샤드 업데이트
       let shardData = shardSnap.exists ? shardSnap.data() : null;
-
       if (!shardData || shardData.date !== today) {
-        shardData = {
-          today: 0,
-          total: shardData ? shardData.total : 0,
-          date: today
-        };
+        shardData = { today: 0, total: shardData ? shardData.total : 0, date: today };
       }
 
-      tx.set(
-        shardRef,
-        {
-          today: shardData.today + 1,
-          total: shardData.total + 1,
-          date: today
-        },
-        { merge: true }
-      );
+      tx.set(shardRef, {
+        today: shardData.today + 1,
+        total: shardData.total + 1,
+        date: today
+      }, { merge: true });
+
+      // 시간대별 통계
+      tx.set(hourlyRef, {
+        count: firebase.firestore.FieldValue.increment(1)
+      }, { merge: true });
+
+      // 브라우저 통계
+      tx.set(browserRef, {
+        count: firebase.firestore.FieldValue.increment(1)
+      }, { merge: true });
+
+      // OS 통계
+      tx.set(osRef, {
+        count: firebase.firestore.FieldValue.increment(1)
+      }, { merge: true });
+
+      // GeoIP 저장
+      if (geoRef) {
+        tx.set(geoRef, {
+          ip: geo.ip,
+          country: geo.country,
+          city: geo.city,
+          lat: geo.latitude,
+          lon: geo.longitude,
+          count: firebase.firestore.FieldValue.increment(1)
+        }, { merge: true });
+      }
     });
   } catch (e) {
     console.error("🔥 updateVisitorCount 오류:", e);
@@ -204,10 +232,7 @@ async function updateVisitorCount() {
    🔥 실시간 방문자 수 합산
    ============================================================ */
 function listenVisitorCount() {
-  const shardsRef = db
-    .collection("visitors")
-    .doc("counter_shards")
-    .collection("shards");
+  const shardsRef = db.collection("visitors").doc("counter_shards").collection("shards");
 
   shardsRef.onSnapshot((snapshot) => {
     if (snapshot.empty) return;
@@ -220,16 +245,12 @@ function listenVisitorCount() {
       const data = doc.data();
       if (!data) return;
 
-      if (data.date === today) {
-        todaySum += data.today || 0;
-      }
+      if (data.date === today) todaySum += data.today || 0;
       totalSum += data.total || 0;
     });
 
-    document.getElementById("visitor-today").textContent =
-      todaySum.toLocaleString();
-    document.getElementById("visitor-total").textContent =
-      totalSum.toLocaleString();
+    document.getElementById("visitor-today").textContent = todaySum.toLocaleString();
+    document.getElementById("visitor-total").textContent = totalSum.toLocaleString();
   });
 }
 
