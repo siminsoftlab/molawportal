@@ -56,7 +56,7 @@ document.getElementById("change-pw-btn").onclick = () => {
 };
 
 /* ============================================================
-   오늘 방문자 (daily/days 기반)
+   오늘 방문자 (daily/days 기반 — 고유 방문자)
    ============================================================ */
 async function loadToday() {
   const today = new Date().toISOString().slice(0, 10);
@@ -81,26 +81,20 @@ async function loadToday() {
 }
 
 /* ============================================================
-   전체 방문자 (counter_shards 기반 → total 필드 사용)
+   전체 방문자 (고유 방문자 기반 — total/visitors)
    ============================================================ */
 async function loadTotal() {
-  const ref = db
+  const snap = await db
     .collection("visitors")
-    .doc("counter_shards")
-    .collection("shards");
+    .doc("total")
+    .collection("visitors")
+    .get();
 
-  const snap = await ref.get();
-
-  let total = 0;
-  snap.forEach(doc => {
-    total += doc.data().total || 0;  // ← total 필드 사용
-  });
-
-  document.getElementById("admin-total").textContent = total;
+  document.getElementById("admin-total").textContent = snap.size;
 }
 
 /* ============================================================
-   샤드 상태
+   샤드 상태 (조회수용 — 참고용)
    ============================================================ */
 async function loadShards() {
   const ref = db
@@ -113,14 +107,14 @@ async function loadShards() {
   let text = "";
   snap.forEach(doc => {
     const d = doc.data();
-    text += `Shard ${doc.id} — total: ${d.total || 0}, today: ${d.today || 0}, date: ${d.date}\n`;
+    text += `Shard ${doc.id} — total: ${d.total || 0}\n`;
   });
 
   document.getElementById("shard-list").textContent = text;
 }
 
 /* ============================================================
-   Daily 로그
+   Daily 로그 (고유 방문자)
    ============================================================ */
 async function loadDailyLog(date) {
   const ref = db
@@ -146,7 +140,7 @@ async function loadDailyLog(date) {
 }
 
 /* ============================================================
-   브라우저 통계 (stats/browser 기반)
+   브라우저 통계 (고유 방문자 기반)
    ============================================================ */
 async function loadBrowserStats() {
   const ref = db.collection("visitors").doc("stats").collection("browser");
@@ -155,19 +149,16 @@ async function loadBrowserStats() {
   let browserCount = {};
 
   for (const doc of snap.docs) {
-    const shardSnap = await doc.ref.collection("shards").get();
-
-    let sum = 0;
-    shardSnap.forEach(s => sum += s.data().count || 0);
-
-    browserCount[doc.id] = sum;
+    const data = doc.data();
+    const keys = Object.keys(data);
+    browserCount[doc.id] = keys.length;
   }
 
   drawPieChart("browserChart", browserCount);
 }
 
 /* ============================================================
-   OS 통계 (stats/os 기반)
+   OS 통계 (고유 방문자 기반)
    ============================================================ */
 async function loadOSStats() {
   const ref = db.collection("visitors").doc("stats").collection("os");
@@ -176,12 +167,9 @@ async function loadOSStats() {
   let osCount = {};
 
   for (const doc of snap.docs) {
-    const shardSnap = await doc.ref.collection("shards").get();
-
-    let sum = 0;
-    shardSnap.forEach(s => sum += s.data().count || 0);
-
-    osCount[doc.id] = sum;
+    const data = doc.data();
+    const keys = Object.keys(data);
+    osCount[doc.id] = keys.length;
   }
 
   drawPieChart("osChart", osCount);
@@ -209,7 +197,7 @@ function drawPieChart(canvasId, dataObj) {
 }
 
 /* ============================================================
-   IP 상세 정보 (geoip 기반)
+   IP 상세 정보 (고유 방문자 기반)
    ============================================================ */
 async function loadIPDetails(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
@@ -226,8 +214,6 @@ IP: ${d.ip}
 도시: ${d.city}
 브라우저: ${d.browser}
 OS: ${d.os}
-위치: ${d.lat}, ${d.lon}
-방문횟수: ${d.count}
 ----------------------------------------
 `;
   });
