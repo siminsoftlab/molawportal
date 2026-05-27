@@ -126,7 +126,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+<script>
+  function listenTodayVisitors() {
+  const today = new Date().toISOString().slice(0, 10);
 
+  db.collection("visitors")
+    .doc("daily")
+    .collection("days")
+    .doc(today)
+    .onSnapshot((snap) => {
+
+      if (!snap.exists) {
+        document.getElementById("visitor-today").textContent = 0;
+        return;
+      }
+
+      const data = snap.data();
+      const count = Object.keys(data).filter(k => k !== "_init").length;
+
+      document.getElementById("visitor-today").textContent = count;
+    });
+}
+
+  listenTodayVisitors();
+
+</script>
 </head>
 <body class="homepage">
 
