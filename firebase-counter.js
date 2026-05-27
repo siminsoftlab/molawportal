@@ -210,6 +210,6 @@ function listenVisitorCount() {
    실행
    ============================================================ */
 window.onload = () => {
-  updateVisitorCount();
-  listenVisitorCount();
+  await updateVisitorCount();   // ⭐ 반드시 먼저 실행
+  listenVisitorCount();         // ⭐ 그 다음 실시간 리스너
 };
