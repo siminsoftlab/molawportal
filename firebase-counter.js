@@ -21,7 +21,7 @@ function generateUUID() {
 }
 
 /* ============================================================
-   visitorKey 생성 (중복 방문 방지)
+   visitorKey 생성 (고유 방문자 식별)
    ============================================================ */
 async function getVisitorKey() {
   let uuid = localStorage.getItem("visitor_uuid");
@@ -107,22 +107,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* ============================================================
-   샤드 개수
-   ============================================================ */
-const NUM_SHARDS = 20;
-
-/* ============================================================
-   샤드 증가 함수 (전체 방문자, 브라우저/OS 등)
-   ============================================================ */
-function incrementShard(refBase) {
-  const shardId = Math.floor(Math.random() * NUM_SHARDS).toString();
-  return refBase.collection("shards").doc(shardId).set({
-    total: firebase.firestore.FieldValue.increment(1)
-  }, { merge: true });
-}
-
-/* ============================================================
-   방문자 업데이트 (최종 안정화)
+   방문자 업데이트 (고유 방문자 기반)
    ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
@@ -130,79 +115,83 @@ async function updateVisitorCount() {
   const visitorKey = await getVisitorKey();
   const info = getBrowserInfo();
 
-  /* ⭐ 1) 오늘 방문자 기록 (admin.js와 동일 구조) */
+  /* ⭐ 1) 오늘 방문자 기록 (고유 방문자) */
   await db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
     .set({ [visitorKey]: true, _init: true }, { merge: true });
 
-  /* ⭐ 2) 전체 방문자 샤드 증가 */
-  await incrementShard(
-    db.collection("visitors").doc("counter_shards")
-  );
+  /* ⭐ 2) 전체 방문자 기록 (고유 방문자) */
+  await db.collection("visitors")
+    .doc("total")
+    .collection("visitors")
+    .doc(visitorKey)
+    .set({ visited: true }, { merge: true });
 
-  /* ⭐ 3) 시간대별 샤드 증가 */
-  await incrementShard(
-    db.collection("visitors").doc("hourly_shards").collection(today).doc(String(hour))
-  );
+  /* ⭐ 3) 시간대별 통계 */
+  await db.collection("visitors")
+    .doc("hourly")
+    .collection(today)
+    .doc(String(hour))
+    .set({ [visitorKey]: true }, { merge: true });
 
-  /* ⭐ 4) 브라우저/OS 샤드 증가 */
-  await incrementShard(
-    db.collection("visitors").doc("stats").collection("browser").doc(info.browser)
-  );
+  /* ⭐ 4) 브라우저/OS 통계 */
+  await db.collection("visitors")
+    .doc("stats")
+    .collection("browser")
+    .doc(info.browser)
+    .set({ [visitorKey]: true }, { merge: true });
 
-  await incrementShard(
-    db.collection("visitors").doc("stats").collection("os").doc(info.os)
-  );
+  await db.collection("visitors")
+    .doc("stats")
+    .collection("os")
+    .doc(info.os)
+    .set({ [visitorKey]: true }, { merge: true });
 
   /* ⭐ 5) GeoIP 저장 */
   const geo = await getGeoIP();
   if (geo && geo.ip) {
-    db.collection("visitors").doc("geoip").collection(today).doc(geo.ip).set({
-      ...geo,
-      browser: info.browser,
-      os: info.os,
-      count: firebase.firestore.FieldValue.increment(1)
-    }, { merge: true });
+    db.collection("visitors")
+      .doc("geoip")
+      .collection(today)
+      .doc(geo.ip)
+      .set({
+        ...geo,
+        browser: info.browser,
+        os: info.os,
+        visited: true
+      }, { merge: true });
   }
 }
 
 /* ============================================================
-   실시간 방문자 수 합산 (최종 안정화)
+   실시간 방문자 수 표시
    ============================================================ */
 function listenVisitorCount() {
-
-  /* ⭐ 전체 방문자 (total 필드 기반) */
-  db.collection("visitors")
-    .doc("counter_shards")
-    .collection("shards")
-    .onSnapshot((snap) => {
-      let total = 0;
-      snap.forEach(doc => {
-        total += doc.data().total || 0;
-      });
-      document.getElementById("visitor-total").textContent = total.toLocaleString();
-    });
-
-  /* ⭐ 오늘 방문자 (daily/days 기반 — admin.js와 동일) */
   const today = getTodayString();
 
+  /* ⭐ 오늘 방문자 (고유 방문자 수) */
   db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
     .onSnapshot((snap) => {
-
       if (!snap.exists) {
         document.getElementById("visitor-today").textContent = 0;
         return;
       }
-
       const data = snap.data();
       const count = Object.keys(data).filter(k => k !== "_init").length;
+      document.getElementById("visitor-today").textContent = count;
+    });
 
-      document.getElementById("visitor-today").textContent = count.toLocaleString();
+  /* ⭐ 전체 방문자 (고유 방문자 수) */
+  db.collection("visitors")
+    .doc("total")
+    .collection("visitors")
+    .onSnapshot((snap) => {
+      document.getElementById("visitor-total").textContent = snap.size;
     });
 }
 
@@ -210,6 +199,6 @@ function listenVisitorCount() {
    실행
    ============================================================ */
 window.onload = async () => {
-  await updateVisitorCount();   // ⭐ 반드시 먼저 실행
-  listenVisitorCount();         // ⭐ 그 다음 실시간 리스너
+  await updateVisitorCount();   // 고유 방문자 기록
+  listenVisitorCount();         // 실시간 표시
 };
