@@ -122,6 +122,11 @@ async function loadDaily() {
 
   document.getElementById("daily-log").textContent = text;
 }
+document.getElementById("logout-btn").onclick = () => {
+  localStorage.removeItem("admin_token");
+  localStorage.removeItem("admin_token_time");
+  window.location.href = "admin-login.html";
+};
 
 /* ============================================================
    실행
