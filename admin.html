@@ -10,6 +10,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -27,9 +28,16 @@
         <div id="admin-total" class="big-number">0</div>
       </div>
   </div>
-  </section>
+  </section>  
 
   <hr>
+
+  <section>
+    <h3>⏰ 시간대별 방문자 그래프</h3>
+    <canvas id="hourChart" width="400" height="150"></canvas>
+  </section>   
+
+   <hr>
 
   <section>
     <h3>🧩 샤드 상태</h3>
