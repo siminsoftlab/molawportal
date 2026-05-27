@@ -105,6 +105,26 @@ async function checkAutoLogin() {
     window.location.href = "admin.html";
   }
 }
+/* ============================================================
+   ⭐ 관리자 비밀번호 검증
+   ============================================================ */
+async function verifyAdminPassword(inputPw) {
+  try {
+    const doc = await db.collection("admin").doc("password").get();
+
+    if (!doc.exists) {
+      console.error("관리자 비밀번호 문서가 존재하지 않습니다.");
+      return false;
+    }
+
+    const savedPw = doc.data().value;
+
+    return inputPw === savedPw;
+  } catch (e) {
+    console.error("비밀번호 확인 중 오류:", e);
+    return false;
+  }
+}
 
 /* ============================================================
    실행
