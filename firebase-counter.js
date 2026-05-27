@@ -1,13 +1,30 @@
 /* ============================================================
-   UUID 기반 고유 방문자 키 생성
+   고유 방문자 키 생성 (localStorage + cookie + fallback)
    ============================================================ */
 function getVisitorKey() {
-  let uuid = localStorage.getItem("visitor_uuid");
-  if (!uuid) {
-    uuid = crypto.randomUUID();
-    localStorage.setItem("visitor_uuid", uuid);
+  let key = localStorage.getItem("visitor_uuid");
+
+  // 1) localStorage에 없으면 cookie 확인
+  if (!key) {
+    const cookieMatch = document.cookie.match(/visitor_uuid=([^;]+)/);
+    if (cookieMatch) {
+      key = cookieMatch[1];
+      localStorage.setItem("visitor_uuid", key);
+    }
   }
-  return uuid;  // 해시 제거 → 안정적 고유값
+
+  // 2) 그래도 없으면 새로 생성
+  if (!key) {
+    key = crypto.randomUUID();
+
+    // localStorage 저장
+    localStorage.setItem("visitor_uuid", key);
+
+    // cookie 저장 (1년 유지)
+    document.cookie = `visitor_uuid=${key}; path=/; max-age=31536000; SameSite=Lax`;
+  }
+
+  return key;
 }
 
 /* ============================================================
@@ -93,14 +110,14 @@ async function updateVisitorCount() {
   const visitorKey = getVisitorKey();
   const info = getBrowserInfo();
 
-  /* ⭐ 1) 오늘 방문자 기록 (고유 방문자) */
+  /* ⭐ 1) 오늘 방문자 기록 */
   await db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
     .set({ [visitorKey]: true, _init: true }, { merge: true });
 
-  /* ⭐ 2) 전체 방문자 기록 (고유 방문자) */
+  /* ⭐ 2) 전체 방문자 기록 */
   await db.collection("visitors")
     .doc("total")
     .collection("visitors")
@@ -149,7 +166,7 @@ async function updateVisitorCount() {
 function listenVisitorCount() {
   const today = getTodayString();
 
-  /* ⭐ 오늘 방문자 (고유 방문자 수) */
+  /* ⭐ 오늘 방문자 */
   db.collection("visitors")
     .doc("daily")
     .collection("days")
@@ -164,7 +181,7 @@ function listenVisitorCount() {
       document.getElementById("visitor-today").textContent = count;
     });
 
-  /* ⭐ 전체 방문자 (고유 방문자 수) */
+  /* ⭐ 전체 방문자 */
   db.collection("visitors")
     .doc("total")
     .collection("visitors")
