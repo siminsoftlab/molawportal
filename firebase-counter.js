@@ -21,7 +21,7 @@ function generateUUID() {
 }
 
 /* ============================================================
-   visitorKey 생성
+   visitorKey 생성 (중복 방문 방지)
    ============================================================ */
 async function getVisitorKey() {
   let uuid = localStorage.getItem("visitor_uuid");
@@ -112,7 +112,7 @@ const db = firebase.firestore();
 const NUM_SHARDS = 20;
 
 /* ============================================================
-   샤드 증가 함수
+   샤드 증가 함수 (전체 방문자, 브라우저/OS 등)
    ============================================================ */
 function incrementShard(refBase) {
   const shardId = Math.floor(Math.random() * NUM_SHARDS).toString();
@@ -120,6 +120,7 @@ function incrementShard(refBase) {
     total: firebase.firestore.FieldValue.increment(1)
   }, { merge: true });
 }
+
 /* ============================================================
    방문자 업데이트 (최종 안정화)
    ============================================================ */
@@ -130,7 +131,7 @@ async function updateVisitorCount() {
   const info = getBrowserInfo();
 
   /* ⭐ 1) 오늘 방문자 기록 (admin.js와 동일 구조) */
-  db.collection("visitors")
+  await db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
@@ -208,7 +209,7 @@ function listenVisitorCount() {
 /* ============================================================
    실행
    ============================================================ */
-window.onload = () => {
+window.onload = async () => {
   await updateVisitorCount();   // ⭐ 반드시 먼저 실행
   listenVisitorCount();         // ⭐ 그 다음 실시간 리스너
 };
