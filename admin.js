@@ -50,7 +50,7 @@ document.getElementById("change-pw-btn").onclick = () => {
   window.location.href = "admin-password.html";
 };
 
-/* 오늘 방문자 */
+/* ⭐ 오늘 방문자 (shards 기반) */
 async function loadToday() {
   const today = new Date().toISOString().slice(0, 10);
   const ref = db.collection("visitors").doc("daily").collection(today);
@@ -62,25 +62,20 @@ async function loadToday() {
   document.getElementById("admin-today").textContent = total;
 }
 
-/* 전체 방문자 */
+/* ⭐ 전체 방문자 (shards 기반) */
 async function loadTotal() {
-  const ref = db.collection("visitors").doc("total");
+  const ref = db.collection("visitors").doc("shards").collection("list");
   const snap = await ref.get();
-  document.getElementById("admin-total").textContent = snap.exists ? snap.data().count : 0;
+
+  let total = 0;
+  snap.forEach(doc => total += doc.data().count);
+
+  document.getElementById("admin-total").textContent = total;
 }
 
-/* 시간대별 그래프 */
+/* 시간대별 그래프 (hourly 없음 → 표시 불가) */
 async function loadHourChart(date) {
-  const ref = db.collection("visitors").doc("hourly").collection(date);
-  const snap = await ref.get();
-
-  let hours = Array(24).fill(0);
-
-  snap.forEach(doc => {
-    const h = Number(doc.id);
-    hours[h] = doc.data().count;
-  });
-
+  // hourly 데이터가 Firestore에 없으므로 빈 그래프 표시
   const ctx = document.getElementById("hourChart").getContext("2d");
 
   new Chart(ctx, {
@@ -89,9 +84,9 @@ async function loadHourChart(date) {
       labels: [...Array(24).keys()].map(h => `${h}시`),
       datasets: [{
         label: "방문자 수",
-        data: hours,
-        borderColor: "#4a90e2",
-        backgroundColor: "rgba(74,144,226,0.2)",
+        data: Array(24).fill(0),
+        borderColor: "#ccc",
+        backgroundColor: "rgba(200,200,200,0.2)",
         fill: true
       }]
     }
@@ -194,7 +189,7 @@ document.getElementById("daily-btn").onclick = async () => {
   if (!date) return;
 
   loadDailyLog(date);
-  loadHourChart(date);
+  loadHourChart(date); // hourly 없음 → 빈 그래프
   loadBrowserOSStats(date);
   loadIPDetails(date);
 };
