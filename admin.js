@@ -74,7 +74,7 @@ async function loadShards() {
 }
 
 /* ============================================================
-   ⭐ 시간대별 그래프 (샤드 합산)
+   ⭐ 시간대별 그래프 (index.js 구조에 맞게 수정됨)
    ============================================================ */
 async function loadHourChart(date) {
   const ref = db.collection("visitors").doc("hourly_shards").collection(date);
@@ -83,10 +83,7 @@ async function loadHourChart(date) {
   const hours = Array(24).fill(0);
 
   snap.forEach(doc => {
-    const id = doc.id; // 예: "13_4" (13시, shard 4)
-    const [hourStr] = id.split("_");
-    const hour = parseInt(hourStr);
-
+    const hour = parseInt(doc.id);   // index.js는 doc.id = "13"
     hours[hour] += doc.data().count || 0;
   });
 
@@ -107,7 +104,7 @@ async function loadHourChart(date) {
 }
 
 /* ============================================================
-   ⭐ 브라우저/OS 통계 (샤드 합산)
+   ⭐ 브라우저/OS 통계 (index.js 구조에 맞게 정상)
    ============================================================ */
 async function loadBrowserOSStats() {
 
