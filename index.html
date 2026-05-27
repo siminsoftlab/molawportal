@@ -59,6 +59,74 @@
   <link rel="icon" href="images/favicon.ico">
   <link rel="stylesheet" href="style.css">
   <script src="block-right-click.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
+    authDomain: "molawcounter.firebaseapp.com",
+    projectId: "molawcounter",
+    storageBucket: "molawcounter.firebasestorage.app",
+    messagingSenderId: "989958208701",
+    appId: "1:989958208701:web:16bd53eed95276f5d4cbd4",
+    measurementId: "G-D4W34NBWKT"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  /* 오늘 날짜 */
+  function getToday() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  /* ⭐ 오늘 방문자 (daily/days 기반) */
+  async function loadToday() {
+    const today = getToday();
+
+    const ref = db
+      .collection("visitors")
+      .doc("daily")
+      .collection("days")
+      .doc(today);
+
+    const snap = await ref.get();
+
+    if (!snap.exists) {
+      document.getElementById("visitor-today").textContent = 0;
+      return;
+    }
+
+    const data = snap.data();
+    const count = Object.keys(data).filter(k => k !== "_init").length;
+
+    document.getElementById("visitor-today").textContent = count;
+  }
+
+  /* ⭐ 전체 방문자 (counter_shards/shards 기반 → total 필드 사용) */
+  async function loadTotal() {
+    const ref = db
+      .collection("visitors")
+      .doc("counter_shards")
+      .collection("shards");
+
+    const snap = await ref.get();
+
+    let total = 0;
+    snap.forEach(doc => {
+      total += doc.data().total || 0;   // ← admin.js와 동일
+    });
+
+    document.getElementById("visitor-total").textContent = total;
+  }
+
+  /* 초기 실행 */
+  loadToday();
+  loadTotal();
+
+});
+</script>
+
 </head>
 <body class="homepage">
 
@@ -69,8 +137,8 @@
   <!-- 사이트명 & 방문자수 -->
   
   <div class="top-info-bar">
-    딱요만큼변제 · 오늘 방문 <span id="visitor-today">조회중…</span>명 · 전체 방문 <span id="visitor-total">조회중…</span>명
-  </div>
+  딱요만큼변제 · 오늘 방문 <span id="visitor-today">조회중…</span>명 · 전체 방문 <span id="visitor-total">조회중…</span>명
+</div>
 </div>
 <!-- ⭐ 페이지 전체 내용 시작 --> 
 <div class="container">  
