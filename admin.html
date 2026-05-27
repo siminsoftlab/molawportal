@@ -4,57 +4,56 @@
   <meta charset="UTF-8">
   <title>관리자 방문자 모니터링</title>
 
-  <!-- CSS 분리 -->
   <link rel="stylesheet" href="admin.css">
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <h2>관리자 방문자 모니터링</h2>
+  <header>
+    <h1>📊 방문자 분석 관리자 페이지</h1>
+  </header>
 
-  <section>
-    <div class="dashboard">
-      <div class="card">
-        <h3>오늘 방문자</h3>
-        <div id="admin-today" class="big-number">0</div>
-      </div>
-    
-      <div class="card">
-        <h3>전체 방문자</h3>
-        <div id="admin-total" class="big-number">0</div>
-      </div>
+  <!-- 대시보드 카드 -->
+  <div class="dashboard">
+    <div class="card">
+      <h3>오늘 방문자</h3>
+      <div id="admin-today" class="big-number">0</div>
+    </div>
+
+    <div class="card">
+      <h3>전체 방문자</h3>
+      <div id="admin-total" class="big-number">0</div>
+    </div>
   </div>
-  </section>  
 
-  <hr>
-
-  <section>
+  <!-- 시간대별 그래프 -->
+  <div class="card full">
     <h3>⏰ 시간대별 방문자 그래프</h3>
-    <canvas id="hourChart" width="400" height="150"></canvas>
-  </section>   
+    <canvas id="hourChart" height="120"></canvas>
+  </div>
 
-   <hr>
-
-  <section>
+  <!-- 샤드 상태 -->
+  <div class="card full">
     <h3>🧩 샤드 상태</h3>
-    <div id="shard-list"></div>
-  </section>
+    <div id="shard-list" class="shard-table"></div>
+  </div>
 
-  <hr>
-
-  <section>
+  <!-- Daily 로그 -->
+  <div class="card full">
     <h3>📅 Daily 방문자 로그</h3>
-    <input type="date" id="daily-date">
-    <button id="daily-btn">조회</button>
-
+    <div class="daily-controls">
+      <input type="date" id="daily-date">
+      <button id="daily-btn">조회</button>
+    </div>
     <pre id="daily-log">날짜를 선택하세요.</pre>
-  </section>
+  </div>
 
-  <!-- JS 분리 -->
   <script src="admin.js"></script>
 </body>
 </html>
