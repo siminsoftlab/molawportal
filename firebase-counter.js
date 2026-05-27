@@ -14,6 +14,17 @@ async function sha256(text) {
 }
 
 /* ============================================================
+   모든 브라우저에서 100% 동작하는 UUID 생성기
+   ============================================================ */
+function safeUUID() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === "x" ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+/* ============================================================
    모바일에서도 절대 실패하지 않는 visitorKey 생성
    ============================================================ */
 async function getVisitorKey() {
@@ -22,28 +33,25 @@ async function getVisitorKey() {
   try {
     uuid = localStorage.getItem("visitor_uuid");
     if (!uuid) {
-      uuid = crypto.randomUUID();
+      uuid = safeUUID();
       localStorage.setItem("visitor_uuid", uuid);
     }
   } catch {
-    // localStorage 실패 → 쿠키 사용
     try {
       const match = document.cookie.match(/visitor_uuid=([^;]+)/);
       if (match) uuid = match[1];
       else {
-        uuid = crypto.randomUUID();
+        uuid = safeUUID();
         document.cookie = `visitor_uuid=${uuid}; path=/; max-age=31536000`;
       }
     } catch {
-      // 쿠키도 실패 → sessionStorage
       try {
         uuid = sessionStorage.getItem("visitor_uuid");
         if (!uuid) {
-          uuid = crypto.randomUUID();
+          uuid = safeUUID();
           sessionStorage.setItem("visitor_uuid", uuid);
         }
       } catch {
-        // 모든 저장 실패 → userAgent 기반 fallback
         uuid = "fallback-" + navigator.userAgent + "-" + Math.random();
       }
     }
@@ -112,7 +120,7 @@ async function getGeoIP() {
       lon: geo.longitude || null
     };
   } catch {
-    return null; // 실패해도 방문자 카운트는 정상 증가
+    return null;
   }
 }
 
@@ -199,7 +207,6 @@ async function updateVisitorCount() {
       }
     });
 
-    /* GeoIP 저장 (실패해도 무시) */
     const geo = await getGeoIP();
     if (geo && geo.ip) {
       const geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
@@ -216,7 +223,7 @@ async function updateVisitorCount() {
     }
 
   } catch (e) {
-    console.error("🔥 모바일 대응 updateVisitorCount 오류:", e);
+    console.error("🔥 updateVisitorCount 오류:", e);
   }
 }
 
