@@ -1,0 +1,67 @@
+/* ================================
+   상단 안내 박스 (Top Info Box)
+   repay 페이지 전용 스타일
+   ================================ */
+
+/* container 밖에서 중앙 정렬 + 동일 폭 유지 */
+.top-info-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 30px 0;
+  padding: 0 15px; /* 모바일 좌우 여백 */
+  box-sizing: border-box;
+}
+
+/* 안내 박스: container와 동일한 최대 폭 */
+.top-info-box {
+  width: 100%;
+  max-width: 900px; /* container 폭과 동일 */
+  background: #f1f5ff;
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid #d9e4ff;
+  line-height: 1.65;
+  color: #222;
+  box-sizing: border-box;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* 제목 */
+.top-info-box h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a2b6d;
+}
+
+/* 문단 */
+.top-info-box p {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+/* 마지막 문단 여백 제거 */
+.top-info-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* ================================
+   반응형 (모바일 최적화)
+   ================================ */
+@media (max-width: 480px) {
+  .top-info-box {
+    padding: 18px;
+    border-radius: 10px;
+  }
+
+  .top-info-box h2 {
+    font-size: 18px;
+  }
+
+  .top-info-box p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+}
