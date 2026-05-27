@@ -12,11 +12,22 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+  // 🔐 관리자 로그인 체크
+  (async () => {
+    const token = localStorage.getItem("admin_token");
+    if (!token) {
+      // 로그인 안 되어 있으면 로그인 페이지로 이동
+      window.location.href = "admin-login.html";
+    }
+  })();
+</script>
 </head>
 <body>
 
   <header>
-    <h1>📊 딱요만큼변제 방문자 분석 관리자 페이지</h1>
+    <h1>📊 방문자 분석 관리자 페이지</h1>
   </header>
 
   <!-- 대시보드 카드 -->
