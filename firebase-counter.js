@@ -33,7 +33,8 @@ async function getVisitorKey() {
     const raw = uuid + "|" + navigator.userAgent;
     return (await sha256(raw)).slice(0, 32);
   } catch {
-    const fallbackRaw = navigator.userAgent + "|FALLBACK";
+    // localStorage 차단된 모바일 브라우저 대비
+    const fallbackRaw = navigator.userAgent + "|" + Math.random();
     return (await sha256(fallbackRaw)).slice(0, 32);
   }
 }
@@ -70,7 +71,7 @@ const db = firebase.firestore();
    ============================================================ */
 const NUM_SHARDS = 20;
 
-// 최초 1회만 실행하면 되는 초기화 함수 (필요 시 콘솔에서 실행)
+// 최초 1회만 실행하면 되는 초기화 함수
 // initCounterShards();
 async function initCounterShards() {
   const batch = db.batch();
@@ -165,6 +166,10 @@ function listenVisitorCount() {
     .collection("shards");
 
   shardsRef.onSnapshot((snapshot) => {
+
+    // 🔥 초기 빈 스냅샷이면 화면 업데이트 금지
+    if (snapshot.empty) return;
+
     let todaySum = 0;
     let totalSum = 0;
     const today = getTodayString();
@@ -179,11 +184,10 @@ function listenVisitorCount() {
       totalSum += data.total || 0;
     });
 
-    const todayEl = document.getElementById("visitor-today");
-    const totalEl = document.getElementById("visitor-total");
-
-    if (todayEl) todayEl.textContent = todaySum.toLocaleString();
-    if (totalEl) totalEl.textContent = totalSum.toLocaleString();
+    document.getElementById("visitor-today").textContent =
+      todaySum.toLocaleString();
+    document.getElementById("visitor-total").textContent =
+      totalSum.toLocaleString();
   });
 }
 
