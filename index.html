@@ -76,12 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  /* 오늘 날짜 */
   function getToday() {
     return new Date().toISOString().slice(0, 10);
   }
 
-  /* ⭐ 오늘 방문자 (admin.js와 동일) */
+  /* 오늘 방문자 */
   function listenToday() {
     const today = getToday();
 
@@ -90,33 +89,23 @@ document.addEventListener("DOMContentLoaded", () => {
       .collection("days")
       .doc(today)
       .onSnapshot((snap) => {
-
         if (!snap.exists) {
           document.getElementById("visitor-today").textContent = 0;
           return;
         }
-
         const data = snap.data();
         const count = Object.keys(data).filter(k => k !== "_init").length;
-
         document.getElementById("visitor-today").textContent = count;
       });
   }
 
-  /* ⭐ 전체 방문자 (admin.js와 동일 — counter_shards 기반) */
+  /* 전체 방문자 */
   function listenTotal() {
     db.collection("visitors")
-      .doc("counter_shards")
-      .collection("shards")
+      .doc("total")
+      .collection("visitors")
       .onSnapshot((snap) => {
-
-        let total = 0;
-
-        snap.forEach(doc => {
-          total += doc.data().total || 0;
-        });
-
-        document.getElementById("visitor-total").textContent = total;
+        document.getElementById("visitor-total").textContent = snap.size;
       });
   }
 
@@ -125,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
 </head>
 <body class="homepage">
 
