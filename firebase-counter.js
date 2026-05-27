@@ -103,29 +103,33 @@ function getBrowserInfo() {
 }
 
 /* ============================================================
-   🔥 IP + GeoIP
+   🔥 IP + GeoIP (안정화 버전)
    ============================================================ */
 async function getGeoIP() {
   try {
-    const res = await fetch("https://ipapi.co/json/");
-    const data = await res.json();
-    console.log("🌍 GeoIP 응답:", data);
-    return data;
+    // 1) IP 가져오기 (CORS 문제 없음)
+    const ipRes = await fetch("https://api.ipify.org?format=json");
+    const ipData = await ipRes.json();
+    const ip = ipData.ip;
+
+    // 2) Geo 정보 가져오기
+    const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+    const geo = await geoRes.json();
+
+    console.log("🌍 GeoIP 응답:", geo);
+
+    return {
+      ip: ip,
+      country: geo.country || "Unknown",
+      city: geo.city || "Unknown",
+      lat: geo.latitude || null,
+      lon: geo.longitude || null
+    };
   } catch (e) {
     console.error("🌍 GeoIP 호출 실패:", e);
     return null;
   }
 }
-
-/*
-async function getGeoIP() {
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    return await res.json();
-  } catch {
-    return null;
-  }
-}*/
 
 /* ============================================================
    🔥 Firebase 초기화
@@ -165,9 +169,9 @@ async function updateVisitorCount() {
   const browserRef = db.collection("visitors").doc("stats").collection("browser").doc(info.browser);
   const osRef = db.collection("visitors").doc("stats").collection("os").doc(info.os);
 
-  /* 🔥 1) 트랜잭션: 방문자 카운트 + 통계 */
   let isNewVisitor = false;
 
+  /* 🔥 1) 트랜잭션: 방문자 카운트 + 통계 */
   try {
     await db.runTransaction(async (tx) => {
       const dailySnap = await tx.get(dailyRef);
@@ -180,7 +184,7 @@ async function updateVisitorCount() {
       if (daily === null || Array.isArray(daily)) daily = {};
       if (Object.keys(daily).length === 0) daily = { _init: true };
 
-      if (daily[visitorKey]) return; // 이미 방문자
+      if (daily[visitorKey]) return;
 
       isNewVisitor = true;
       daily[visitorKey] = true;
@@ -213,20 +217,24 @@ async function updateVisitorCount() {
     console.error("🔥 updateVisitorCount 오류:", e);
   }
 
-  /* 🔥 2) GeoIP 저장 (트랜잭션 밖에서 실행해야 정상 작동) */
-  if (isNewVisitor) {
-    const geo = await getGeoIP();
-    if (geo && geo.ip) {
-      const geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
-      geoRef.set({
-        ip: geo.ip,
-        country: geo.country,
-        city: geo.city,
-        lat: geo.latitude,
-        lon: geo.longitude,
-        count: firebase.firestore.FieldValue.increment(1)
-      }, { merge: true });
-    }
+  /* ============================================================
+     🔥 2) GeoIP 저장 — 트랜잭션 밖에서 항상 실행
+     ============================================================ */
+  const geo = await getGeoIP();
+
+  if (geo && geo.ip) {
+    const geoRef = db.collection("visitors").doc("geoip").collection(today).doc(geo.ip);
+
+    geoRef.set({
+      ip: geo.ip,
+      country: geo.country,
+      city: geo.city,
+      lat: geo.lat,
+      lon: geo.lon,
+      count: firebase.firestore.FieldValue.increment(1)
+    }, { merge: true })
+    .then(() => console.log("🌍 GeoIP 저장 성공:", geo.ip))
+    .catch(e => console.error("🌍 GeoIP 저장 실패:", e));
   }
 }
 
