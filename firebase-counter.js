@@ -175,6 +175,31 @@ function listenVisitorCount() {
   ref.onSnapshot((snap) => {
     let total = 0;
     snap.forEach(doc => {
+      total += doc.data().total || 0;   // ← 수정됨
+    });
+
+    document.getElementById("visitor-total").textContent = total.toLocaleString();
+  });
+
+  const today = getTodayString();
+
+  db.collection("visitors").doc("daily_shards").collection(today).onSnapshot((snap) => {
+    let todayCount = 0;
+    snap.forEach(doc => {
+      todayCount += doc.data().count || 0;
+    });
+
+    document.getElementById("visitor-today").textContent = todayCount.toLocaleString();
+  });
+}
+
+/*
+function listenVisitorCount() {
+  const ref = db.collection("visitors").doc("counter_shards").collection("shards");
+
+  ref.onSnapshot((snap) => {
+    let total = 0;
+    snap.forEach(doc => {
       total += doc.data().count || 0;
     });
 
@@ -192,7 +217,7 @@ function listenVisitorCount() {
 
     document.getElementById("visitor-today").textContent = todayCount.toLocaleString();
   });
-}
+}*/
 
 /* ============================================================
    실행
