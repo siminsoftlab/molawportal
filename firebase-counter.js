@@ -128,6 +128,8 @@ async function saveVisitorGeoIP() {
     const res = await fetch("https://ipapi.co/json/");
     const data = await res.json();
 
+    const { browser, os } = getBrowserInfo();
+
     await db.collection("visitors")
       .doc("geoip")
       .collection(today)
@@ -136,12 +138,35 @@ async function saveVisitorGeoIP() {
         ip: data.ip || null,
         country: data.country_name || null,
         city: data.city || null,
+        browser,
+        os,
         timestamp: Date.now()
       }, { merge: true });
 
   } catch (e) {
     console.error("GeoIP 저장 실패:", e);
   }
+}
+
+/* ============================================================
+   브라우저/OS 감지 함수 추가
+   ============================================================ */
+function getBrowserInfo() {
+  const ua = navigator.userAgent;
+
+  let browser = "Unknown";
+  if (ua.includes("Chrome")) browser = "Chrome";
+  else if (ua.includes("Safari")) browser = "Safari";
+  else if (ua.includes("Firefox")) browser = "Firefox";
+  else if (ua.includes("Edg")) browser = "Edge";
+
+  let os = "Unknown";
+  if (ua.includes("Windows")) os = "Windows";
+  else if (ua.includes("Mac OS")) os = "macOS";
+  else if (ua.includes("Android")) os = "Android";
+  else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
+
+  return { browser, os };
 }
 
 /* ============================================================
