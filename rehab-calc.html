@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>개인회생 변제금 계산기 – 2026 최신 기준 자동 계산</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 외부 CSS -->
+  <link rel="stylesheet" href="rehab-calc.css">
+</head>
+
+<body>
+
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="hero-title">내 개인회생 변제금, 지금 바로 확인해보세요.</div>
+      <div class="hero-sub">
+        소득·부채·부양가족·생계비를 반영해<br>
+        실제 법원 기준에 맞춘 예상 변제금과 탕감률을 계산합니다.
+      </div>
+      <div class="badge-row">
+        실제 계산 결과 기반 · <b>2026 최신 기준 반영</b> · 개인정보 저장 없음
+      </div>
+      <a href="#calculator" class="btn-primary">변제금 계산하기</a>
+    </section>
+
+    <!-- 실제 계산 결과 예시 -->
+    <section class="section">
+      <div class="section-title">실제 계산 결과 예시</div>
+      <div class="section-sub">아래 예시는 실제 개인회생 변제금 계산 로직을 기반으로 한 샘플입니다.</div>
+
+      <div class="card" id="example-result">
+        <!-- JS로 자동 삽입 가능 -->
+      </div>
+    </section>
+
+    <!-- 계산기 -->
+    <section id="calculator" class="section">
+      <div class="section-title">10초 만에 내 변제금 계산하기</div>
+      <div class="section-sub">아래 정보를 입력하면 예상 변제금과 탕감률을 확인할 수 있습니다.</div>
+
+      <div class="card">
+        <form id="calc-form">
+          <label>월 소득</label>
+          <input type="number" id="income" placeholder="예: 2800000">
+
+          <label>총 부채</label>
+          <input type="number" id="debt" placeholder="예: 90000000">
+
+          <label>부양가족 수</label>
+          <select id="family">
+            <option value="0">0명</option>
+            <option value="1">1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명 이상</option>
+          </select>
+
+          <label>추가 생계비 (선택)</label>
+          <input type="number" id="extra" placeholder="예: 200000 (없으면 0)">
+
+          <label>변제기간</label>
+          <select id="period">
+            <option value="36">36개월</option>
+            <option value="48">48개월</option>
+            <option value="60">60개월</option>
+          </select>
+
+          <button type="button" id="calc-btn" class="btn-primary" style="margin-top:14px; width:100%;">예상 변제금 계산하기</button>
+        </form>
+      </div>
+
+      <div class="card" id="calc-result" style="display:none;"></div>
+    </section>
+
+  </div>
+
+  <!-- 외부 JS -->
+  <script src="rehab-calc.js"></script>
+</body>
+</html>
