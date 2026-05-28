@@ -69,31 +69,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="admin-login.js"></script>
-
-<script>
-async function login() {
-  const pw = document.getElementById("pw").value.trim();
-  if (!pw) {
-    alert("비밀번호를 입력하세요.");
-    return;
-  }
-
-  // admin.js 내부의 verifyAdminPassword() 함수 사용한다고 가정
-  const ok = await verifyAdminPassword(pw);
-
-  if (!ok) {
-    alert("비밀번호가 올바르지 않습니다.");
-    return;
-  }
-
-  // 로그인 성공 → 토큰 저장
-  localStorage.setItem("admin_token", "LOGIN_OK");
-  localStorage.setItem("admin_token_time", Date.now());
-
-  window.location.href = "admin.html";
-}
-</script>
-
+<script src="admin-login.js" defer></script>
 </body>
 </html>
