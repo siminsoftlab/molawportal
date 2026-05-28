@@ -9,6 +9,14 @@
     <priority>1.0</priority>
   </url>
 
+  <!-- 개인회생 변제금 안내 렌딩페이지 -->
+  <url>
+    <loc>https://molawcalculator.com/repay-calc.html</loc>
+    <lastmod>2026-05-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- 계산기 4종 -->
   <url>
     <loc>https://molawcalculator.com/calculators/interest.html</loc>
