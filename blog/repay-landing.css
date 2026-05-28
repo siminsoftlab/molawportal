@@ -1,0 +1,195 @@
+/* 기본 설정 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Pretendard", sans-serif;
+  background: #f5f6fa;
+  color: #222;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+/* 히어로 */
+.hero {
+  background: #fff;
+  padding: 36px 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.hero-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.hero-sub {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.badge-row {
+  font-size: 13px;
+  color: #4a6fff;
+  margin-bottom: 20px;
+}
+
+/* 버튼 */
+.btn-primary {
+  display: inline-block;
+  padding: 12px 22px;
+  background: #4a6fff;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #3a57e0;
+}
+
+.btn-full {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 14px;
+}
+
+/* 섹션 */
+.section {
+  margin-top: 32px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.section-sub {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 14px;
+}
+
+/* 카드 */
+.card {
+  background: #fff;
+  padding: 20px 18px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  margin-bottom: 16px;
+}
+
+/* 2열 그리드 */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  font-size: 13px;
+}
+
+.label {
+  color: #777;
+}
+
+.value {
+  font-weight: 600;
+}
+
+.highlight {
+  color: #e53935;
+  font-weight: 700;
+}
+
+.note {
+  font-size: 12px;
+  color: #777;
+  margin-top: 10px;
+}
+
+/* 텍스트 */
+.text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+/* 태그(Pill) */
+.pill-row {
+  margin-top: 12px;
+}
+
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #eef2ff;
+  color: #4a6fff;
+  border-radius: 999px;
+  font-size: 11px;
+  margin-right: 6px;
+  margin-top: 4px;
+}
+
+/* 리스트 */
+.list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* FAQ */
+.faq-item {
+  margin-bottom: 14px;
+}
+
+.faq-q {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.faq-a {
+  font-size: 12px;
+  color: #666;
+}
+
+/* CTA 박스 */
+.cta {
+  text-align: center;
+}
+
+.cta-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.cta-text {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* 반응형 */
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 30px;
+  }
+  .grid-2 {
+    font-size: 14px;
+  }
+}
