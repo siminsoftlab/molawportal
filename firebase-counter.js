@@ -84,22 +84,36 @@ async function updateVisitorCount() {
 function listenVisitorCount() {
   const today = getTodayString();
 
-  /* ⭐ 오늘 방문자 수 */
+  /* 오늘 방문자 */
   db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
     .collection("visitors")
     .onSnapshot((snap) => {
-      document.getElementById("visitor-today").textContent = snap.size;
+      const count = snap.size;
+
+      // 일반 페이지용
+      const el1 = document.getElementById("visitor-today");
+      if (el1) el1.textContent = count;
+
+      // admin 페이지용
+      const el2 = document.getElementById("admin-today");
+      if (el2) el2.textContent = count;
     });
 
-  /* ⭐ 전체 방문자 수 */
+  /* 전체 방문자 */
   db.collection("visitors")
     .doc("total")
     .collection("visitors")
     .onSnapshot((snap) => {
-      document.getElementById("visitor-total").textContent = snap.size;
+      const count = snap.size;
+
+      const el1 = document.getElementById("visitor-total");
+      if (el1) el1.textContent = count;
+
+      const el2 = document.getElementById("admin-total");
+      if (el2) el2.textContent = count;
     });
 }
 
