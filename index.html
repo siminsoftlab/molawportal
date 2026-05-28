@@ -58,63 +58,7 @@
   <!-- 기존 코드 유지 -->
   <link rel="icon" href="images/favicon.ico">
   <link rel="stylesheet" href="style.css">
-  <script src="block-right-click.js"></script>
-  
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
-    authDomain: "molawcounter.firebaseapp.com",
-    projectId: "molawcounter",
-    storageBucket: "molawcounter.firebasestorage.app",
-    messagingSenderId: "989958208701",
-    appId: "1:989958208701:web:16bd53eed95276f5d4cbd4",
-    measurementId: "G-D4W34NBWKT"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  function getToday() {
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  /* 오늘 방문자 */
-  function listenToday() {
-    const today = getToday();
-
-    db.collection("visitors")
-      .doc("daily")
-      .collection("days")
-      .doc(today)
-      .onSnapshot((snap) => {
-        if (!snap.exists) {
-          document.getElementById("visitor-today").textContent = 0;
-          return;
-        }
-        const data = snap.data();
-        const count = Object.keys(data).filter(k => k !== "_init").length;
-        document.getElementById("visitor-today").textContent = count;
-      });
-  }
-
-  /* 전체 방문자 */
-  function listenTotal() {
-    db.collection("visitors")
-      .doc("total")
-      .collection("visitors")
-      .onSnapshot((snap) => {
-        document.getElementById("visitor-total").textContent = snap.size;
-      });
-  }
-
-  listenToday();
-  listenTotal();
-
-});
-</script>
-
+  <script src="block-right-click.js"></script>  
 </head>
 <body class="homepage">
 
