@@ -21,19 +21,19 @@ async function sha256(text) {
   const encoder = new TextEncoder();
   const data = encoder.encode(text);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /* ============================================================
-   🔥 관리자 문서 자동 생성 (최초 1회)
+   관리자 문서 자동 생성
    ============================================================ */
 async function ensureAdminDoc() {
   const ref = db.collection("admin").doc("auth");
   const snap = await ref.get();
 
   if (!snap.exists) {
-    // 기본 비밀번호: admin1234
     const defaultPw = "admin1234";
     const hash = await sha256(defaultPw);
 
@@ -42,7 +42,7 @@ async function ensureAdminDoc() {
       createdAt: Date.now()
     });
 
-    console.log("🔥 admin/auth 문서 자동 생성됨 (기본 비번: admin1234)");
+    console.log("🔥 admin/auth 문서 생성됨 (기본 비번: admin1234)");
   }
 }
 
@@ -60,7 +60,6 @@ async function adminLogin() {
   }
 
   const inputHash = await sha256(pw);
-
   const ref = db.collection("admin").doc("auth");
   const snap = await ref.get();
 
@@ -81,7 +80,7 @@ async function adminLogin() {
 
     setTimeout(() => {
       window.location.href = "admin.html";
-    }, 500);
+    }, 400);
   } else {
     msg.textContent = "비밀번호가 올바르지 않습니다.";
     msg.style.color = "red";
@@ -99,38 +98,21 @@ async function checkAutoLogin() {
   const snap = await ref.get();
   if (!snap.exists) return;
 
-  const savedHash = snap.data().passwordHash;
-
-  if (token === savedHash) {
+  if (token === snap.data().passwordHash) {
     window.location.href = "admin.html";
   }
 }
-/* ============================================================
-   ⭐ 관리자 비밀번호 검증
-   ============================================================ */
-async function verifyAdminPassword(inputPw) {
-  try {
-    const doc = await db.collection("admin").doc("password").get();
-
-    if (!doc.exists) {
-      console.error("관리자 비밀번호 문서가 존재하지 않습니다.");
-      return false;
-    }
-
-    const savedPw = doc.data().value;
-
-    return inputPw === savedPw;
-  } catch (e) {
-    console.error("비밀번호 확인 중 오류:", e);
-    return false;
-  }
-}
 
 /* ============================================================
-   실행
+   실행 (DOMContentLoaded)
    ============================================================ */
-window.onload = async () => {
-  await ensureAdminDoc();  // 🔥 관리자 문서 자동 생성
+document.addEventListener("DOMContentLoaded", async () => {
+  const btn = document.getElementById("login-btn");
+  btn.disabled = true; // 초기화 전 클릭 방지
+
+  await ensureAdminDoc();
   await checkAutoLogin();
-  document.getElementById("login-btn").onclick = adminLogin;
-};
+
+  btn.disabled = false; // 초기화 완료 후 버튼 활성화
+  btn.onclick = adminLogin;
+});
