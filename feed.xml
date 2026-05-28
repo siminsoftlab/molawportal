@@ -28,6 +28,18 @@
          콘텐츠 목록 (최신순)
     ============================ -->
 
+    <!-- ⭐ 개인회생 변제금 안내 렌딩페이지 (repay-calc.html) -->
+    <item>
+      <title><![CDATA[개인회생 변제금 안내 — 계산 기준·예시 정리]]></title>
+      <link>https://molawcalculator.com/blog/repay-calc.html</link>
+      <guid isPermaLink="true">https://molawcalculator.com/blog/repay-calc.html</guid>
+      <description><![CDATA[
+        개인회생 변제금 산정 기준과 계산 예시, 변제금 줄이는 방법을 한눈에 정리한 안내 페이지입니다. 변제금 구조를 이해하고 실제 계산기로 이동하기 전 꼭 확인해야 할 핵심 내용을 제공합니다.
+      ]]></description>
+      <category><![CDATA[개인회생변제금안내]]></category>
+      <pubDate>Mon, 25 May 2026 17:04:30 +0900</pubDate>
+    </item>
+
     <!-- 연이자 계산기 -->
     <item>
        <title><![CDATA[연이자 계산기 — 총이자·총상환금액 자동 계산]]></title>
