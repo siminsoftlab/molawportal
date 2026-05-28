@@ -93,11 +93,11 @@ function listenVisitorCount() {
     .onSnapshot((snap) => {
       const count = snap.size;
 
-      // 일반 페이지용
+      // index.html용
       const el1 = document.getElementById("visitor-today");
       if (el1) el1.textContent = count;
 
-      // admin 페이지용
+      // admin.html용
       const el2 = document.getElementById("admin-today");
       if (el2) el2.textContent = count;
     });
@@ -116,7 +116,6 @@ function listenVisitorCount() {
       if (el2) el2.textContent = count;
     });
 }
-
 /* ============================================================
    실행
    ============================================================ */
