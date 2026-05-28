@@ -116,10 +116,39 @@ function listenVisitorCount() {
       if (el2) el2.textContent = count;
     });
 }
+
+/* ============================================================
+   방문자 GeoIP 저장
+   ============================================================ */
+async function saveVisitorGeoIP() {
+  const today = getTodayString();
+  const visitorKey = getVisitorKey();
+
+  try {
+    const res = await fetch("https://ipapi.co/json/");
+    const data = await res.json();
+
+    await db.collection("visitors")
+      .doc("geoip")
+      .collection(today)
+      .doc(visitorKey)
+      .set({
+        ip: data.ip || null,
+        country: data.country_name || null,
+        city: data.city || null,
+        timestamp: Date.now()
+      }, { merge: true });
+
+  } catch (e) {
+    console.error("GeoIP 저장 실패:", e);
+  }
+}
+
 /* ============================================================
    실행
    ============================================================ */
 window.onload = async () => {
   await updateVisitorCount();
+  await saveVisitorGeoIP();   // ⭐ 추가됨
   listenVisitorCount();
 };
