@@ -22,7 +22,7 @@ function getVisitorKey() {
 }
 
 /* ============================================================
-   날짜/시간
+   날짜 (KST 기준)
    ============================================================ */
 function getTodayString() {
   const now = new Date();
@@ -53,21 +53,23 @@ async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = getVisitorKey();
 
-  /* ⭐ 오늘 방문자 기록 */
+  /* ⭐ 오늘 방문자 기록 (문서 1개 = 방문자 1명) */
   await db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
-    .set({ [visitorKey]: true, _init: true }, { merge: true });
+    .collection("visitors")
+    .doc(visitorKey)
+    .set({ visited: true, timestamp: Date.now() }, { merge: true });
 
-  /* ⭐ 전체 방문자 기록 (고유 방문자) */
+  /* ⭐ 전체 방문자 기록 (문서 1개 = 방문자 1명) */
   await db.collection("visitors")
     .doc("total")
     .collection("visitors")
     .doc(visitorKey)
-    .set({ visited: true }, { merge: true });
+    .set({ visited: true, firstVisit: Date.now() }, { merge: true });
 
-  /* ⭐ 샤드는 조회수용으로 유지 (증가) */
+  /* ⭐ 조회수 샤드 증가 */
   const shardId = Math.floor(Math.random() * 20).toString();
   await db.collection("visitors")
     .doc("counter_shards")
@@ -82,22 +84,17 @@ async function updateVisitorCount() {
 function listenVisitorCount() {
   const today = getTodayString();
 
-  /* 오늘 방문자 */
+  /* ⭐ 오늘 방문자 수 */
   db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
+    .collection("visitors")
     .onSnapshot((snap) => {
-      if (!snap.exists) {
-        document.getElementById("visitor-today").textContent = 0;
-        return;
-      }
-      const data = snap.data();
-      const count = Object.keys(data).filter(k => k !== "_init").length;
-      document.getElementById("visitor-today").textContent = count;
+      document.getElementById("visitor-today").textContent = snap.size;
     });
 
-  /* 전체 방문자 */
+  /* ⭐ 전체 방문자 수 */
   db.collection("visitors")
     .doc("total")
     .collection("visitors")
