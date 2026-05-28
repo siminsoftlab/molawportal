@@ -227,12 +227,34 @@ OS: ${d.os}
 document.getElementById("daily-btn").onclick = async () => {
   const date = document.getElementById("daily-date").value;
   if (!date) return;
-
+  loadGeoIPLog(date);
   loadDailyLog(date);
   loadBrowserStats();
   loadOSStats();
   loadIPDetails(date);
 };
+async function loadGeoIPLog(date) {
+  const snap = await db.collection("visitors")
+    .doc("geoip")
+    .collection(date)
+    .get();
+
+  const logBox = document.getElementById("ip-detail-log");
+
+  if (snap.empty) {
+    logBox.textContent = "해당 날짜의 GeoIP 데이터가 없습니다.";
+    return;
+  }
+
+  let text = "";
+
+  snap.forEach(doc => {
+    const d = doc.data();
+    text += `${d.ip || "-"} / ${d.country || "-"} / ${d.city || "-"} / ${new Date(d.timestamp).toLocaleString()}\n`;
+  });
+
+  logBox.textContent = text;
+}
 
 /* ============================================================
    초기 실행
