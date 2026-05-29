@@ -113,6 +113,7 @@ const disposable = Math.max(income - totalLiving, 0);
 const totalByIncome = disposable * months;
 const finalTotal = totalByIncome;
 const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
+  
   /****************************************************
    * 요약 카드 — 핵심만 표시
    ****************************************************/
