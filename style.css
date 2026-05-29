@@ -869,3 +869,17 @@ body.subpage .top-info-bar {
   opacity: 0.5;
   pointer-events: none;
 }
+/* ============================
+   온라인 상담 — 앱 스타일 복원
+============================ */
+.container.consult-section {
+  width: 100% !important;
+  max-width: 900px;
+  margin: 0 auto 80px !important;
+  padding: 20px !important;
+
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
