@@ -89,26 +89,30 @@ function calcHouseholdLiving() {
     return;
   }
 
-  const income = Number(incomeInput);
-  const household = Number(document.getElementById('hl_household').value || 1);
-  const extra = Number(document.getElementById('hl_extra').value || 0);
-  const months = Number(monthsInput);
+ /****************************************************
+ * 기존 계산 로직
+ ****************************************************/
+const income = Number(incomeInput);
+const household = Number(document.getElementById('hl_household').value || 1);
+const extra = Number(document.getElementById('hl_extra').value || 0);
+const months = Number(monthsInput);
 
-  const living = Number(livingInput);
+const living = Number(livingInput);
 
-  /****************************************************
-   * 추가 생계비 인정 로직 (법원 기준 동일)
-   ****************************************************/
-  const extraLimit = Math.round(living * 0.3);
-  const extraAllowed = Math.min(extra, extraLimit);
+/* ⭐ 추가 생계비 인정 로직 — 반드시 summary보다 위에 있어야 함 */
+const extraLimit = Math.round(living * 0.3);
+const extraAllowed = Math.min(extra, extraLimit);
 
-  const totalLiving = living + extraAllowed;
-  const disposable = Math.max(income - totalLiving, 0);
+/* 총 생계비 */
+const totalLiving = living + extraAllowed;
 
-  const totalByIncome = disposable * months;
-  const finalTotal = totalByIncome;   // ✔ 청산가치 제거됨
-  const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
+/* 월 변제 가능 금액 */
+const disposable = Math.max(income - totalLiving, 0);
 
+/* 총 변제금 */
+const totalByIncome = disposable * months;
+const finalTotal = totalByIncome;
+const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
   /****************************************************
    * 요약 카드 — 핵심만 표시
    ****************************************************/
