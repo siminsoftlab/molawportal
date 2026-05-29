@@ -53,7 +53,7 @@ async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = getVisitorKey();
 
-  /* ⭐ 오늘 방문자 기록 (문서 1개 = 방문자 1명) */
+  /* ⭐ 오늘 방문자 기록 */
   await db.collection("visitors")
     .doc("daily")
     .collection("days")
@@ -62,7 +62,7 @@ async function updateVisitorCount() {
     .doc(visitorKey)
     .set({ visited: true, timestamp: Date.now() }, { merge: true });
 
-  /* ⭐ 전체 방문자 기록 (문서 1개 = 방문자 1명) */
+  /* ⭐ 전체 방문자 기록 */
   await db.collection("visitors")
     .doc("total")
     .collection("visitors")
@@ -79,42 +79,60 @@ async function updateVisitorCount() {
 }
 
 /* ============================================================
-   실시간 방문자 표시
+   실시간 방문자 표시 (Listen 자동 재연결 적용)
    ============================================================ */
 function listenVisitorCount() {
   const today = getTodayString();
 
-  /* 오늘 방문자 */
-  db.collection("visitors")
+  const dailyRef = db.collection("visitors")
     .doc("daily")
     .collection("days")
     .doc(today)
-    .collection("visitors")
-    .onSnapshot((snap) => {
-      const count = snap.size;
+    .collection("visitors");
 
-      // index.html용
-      const el1 = document.getElementById("visitor-today");
-      if (el1) el1.textContent = count;
-
-      // admin.html용
-      const el2 = document.getElementById("admin-today");
-      if (el2) el2.textContent = count;
-    });
-
-  /* 전체 방문자 */
-  db.collection("visitors")
+  const totalRef = db.collection("visitors")
     .doc("total")
-    .collection("visitors")
-    .onSnapshot((snap) => {
-      const count = snap.size;
+    .collection("visitors");
 
-      const el1 = document.getElementById("visitor-total");
-      if (el1) el1.textContent = count;
+  /* ⭐ 자동 재연결 기능 포함 */
+  function attachDailyListener() {
+    return dailyRef.onSnapshot(
+      (snap) => {
+        const count = snap.size;
 
-      const el2 = document.getElementById("admin-total");
-      if (el2) el2.textContent = count;
-    });
+        const el1 = document.getElementById("visitor-today");
+        if (el1) el1.textContent = count;
+
+        const el2 = document.getElementById("admin-today");
+        if (el2) el2.textContent = count;
+      },
+      (error) => {
+        console.error("🔥 Daily Listen Error:", error);
+        setTimeout(attachDailyListener, 2000); // 자동 재연결
+      }
+    );
+  }
+
+  function attachTotalListener() {
+    return totalRef.onSnapshot(
+      (snap) => {
+        const count = snap.size;
+
+        const el1 = document.getElementById("visitor-total");
+        if (el1) el1.textContent = count;
+
+        const el2 = document.getElementById("admin-total");
+        if (el2) el2.textContent = count;
+      },
+      (error) => {
+        console.error("🔥 Total Listen Error:", error);
+        setTimeout(attachTotalListener, 2000); // 자동 재연결
+      }
+    );
+  }
+
+  attachDailyListener();
+  attachTotalListener();
 }
 
 /* ============================================================
@@ -149,16 +167,16 @@ async function saveVisitorGeoIP() {
 }
 
 /* ============================================================
-   브라우저/OS 감지 함수 추가
+   브라우저/OS 감지 함수
    ============================================================ */
 function getBrowserInfo() {
   const ua = navigator.userAgent;
 
   let browser = "Unknown";
-  if (ua.includes("Chrome")) browser = "Chrome";
+  if (ua.includes("Edg")) browser = "Edge";
+  else if (ua.includes("Chrome")) browser = "Chrome";
   else if (ua.includes("Safari")) browser = "Safari";
   else if (ua.includes("Firefox")) browser = "Firefox";
-  else if (ua.includes("Edg")) browser = "Edge";
 
   let os = "Unknown";
   if (ua.includes("Windows")) os = "Windows";
@@ -174,6 +192,6 @@ function getBrowserInfo() {
    ============================================================ */
 window.onload = async () => {
   await updateVisitorCount();
-  await saveVisitorGeoIP();   // ⭐ 추가됨
+  await saveVisitorGeoIP();
   listenVisitorCount();
 };
