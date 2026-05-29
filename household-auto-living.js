@@ -123,32 +123,34 @@ function calcHouseholdLiving() {
   summary.innerHTML = `
   <div class="repay-highlight-box">
 
-    <div class="row"><div class="label">월 소득</div>
-      <div class="value">${income.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">월 소득</div>
+      <div class="value">${income.toLocaleString()}원</div>
+    </div>
 
-    <div class="row"><div class="label">가구 수</div>
-      <div class="value">${household}인</div></div>
+    <div class="row">
+      <div class="label">법원 기준 생계비 (${household}인 가구)</div>
+      <div class="value">${living.toLocaleString()}원</div>
+    </div>
 
-    <div class="row"><div class="label">법원 기준 생계비</div>
-      <div class="value">${living.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">추가 생계비</div>
+      <div class="value">입력 ${extra.toLocaleString()}원 → 인정 ${extraAllowed.toLocaleString()}원</div>
+    </div>
 
-    <div class="row"><div class="label">추가 생계비</div>
-      <div class="value">${extra.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">월 변제 가능 금액</div>
+      <div class="value">${disposable.toLocaleString()}원</div>
+    </div>
 
-    <div class="row"><div class="label">총 생계비</div>
-      <div class="value">${totalLiving.toLocaleString()}원</div></div>
-
-    <div class="row"><div class="label">가용소득</div>
-      <div class="value">${disposable.toLocaleString()}원</div></div>
-
-    <div class="row"><div class="label">월 변제금</div>
-      <div class="value">${monthly.toLocaleString()}원</div></div>
-
-    <div class="row"><div class="label">총 변제금</div>
-      <div class="value">${finalTotal.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">최종 변제금 / 월 변제금</div>
+      <div class="value">${finalTotal.toLocaleString()}원 / ${monthly.toLocaleString()}원</div>
+    </div>
 
   </div>
 `;
+
   summary.style.display = "block";
 
   /****************************************************
@@ -157,11 +159,17 @@ function calcHouseholdLiving() {
   householdCalcResult = `
   <div class="repay-highlight-box-red">
 
+    <div class="row"><div class="label">가구 수</div>
+      <div class="value">${household}인 가구</div></div>
+
     <div class="row"><div class="label">법원 기준 생계비</div>
       <div class="value">${living.toLocaleString()}원</div></div>
 
-    <div class="row"><div class="label">추가 생계비</div>
+    <div class="row"><div class="label">추가 생계비 (입력)</div>
       <div class="value">${extra.toLocaleString()}원</div></div>
+
+    <div class="row"><div class="label">추가 생계비 (인정)</div>
+      <div class="value">${extraAllowed.toLocaleString()}원</div></div>
 
     <div class="row"><div class="label">총 생계비</div>
       <div class="value">${totalLiving.toLocaleString()}원</div></div>
@@ -183,6 +191,7 @@ function calcHouseholdLiving() {
 
   </div>
 `;
+
 
   // 아코디언 초기화
   const acc = document.getElementById('hl_accordion');
