@@ -127,29 +127,36 @@ function calcLivingAdjust() {
   summary.innerHTML = `
   <div class="repay-highlight-box">
 
-    <div class="row"><div class="label">월 소득</div>
-      <div class="value">${income.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">월 소득</div>
+      <div class="value">${income.toLocaleString()}원</div>
+    </div>
 
-    <div class="row"><div class="label">법원 기준 생계비 (${getHouseholdLabel(household)})</div>
-      <div class="value">${courtLiving.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">법원 기준 생계비 (${getHouseholdLabel(household)})</div>
+      <div class="value">${courtLiving.toLocaleString()}원</div>
+    </div>
 
-    <div class="row"><div class="label">추가 생계비(입력)</div>
-      <div class="value">${extraInput.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">추가 생계비</div>
+      <div class="value">
+        입력 ${extraInput.toLocaleString()}원 → 인정 ${allowedExtra.toLocaleString()}원
+      </div>
+    </div>
 
-    <div class="row"><div class="label">추가 생계비(인정)</div>
-      <div class="value">${allowedExtra.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">월 변제 가능 금액</div>
+      <div class="value">${disposable.toLocaleString()}원</div>
+    </div>
 
-    <div class="row"><div class="label">총 인정 생계비</div>
-      <div class="value">${totalLiving.toLocaleString()}원</div></div>
-
-    <div class="row"><div class="label">월 변제 가능 금액</div>
-      <div class="value">${disposable.toLocaleString()}원</div></div>
-
-    <div class="row"><div class="label">총 변제예정액</div>
-      <div class="value">${totalRepay.toLocaleString()}원</div></div>
+    <div class="row">
+      <div class="label">총 변제예정액</div>
+      <div class="value">${totalRepay.toLocaleString()}원</div>
+    </div>
 
   </div>
 `;
+
 
   /****************************************************
    * 자동 설명
