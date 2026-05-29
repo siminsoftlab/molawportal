@@ -1003,3 +1003,37 @@ text-decoration: none;
 box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 z-index: 10000;
 }
+/* 법원생계비 계산기 — 계산 상세 보기 버튼을 개인회생 계산기와 동일하게 */
+.living-accordion-btn {
+  width: 100%;
+  background: #ffe066;
+  color: #333;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s ease;
+}
+
+.living-accordion-btn:hover {
+  background: #ffd54a;
+}
+
+/* 아코디언 내용 박스도 동일하게 */
+#livingAccordion {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+#livingAccordion.open {
+  display: block;
+  max-height: 2000px;
+  padding: 15px;
+}
