@@ -186,15 +186,6 @@ const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
   </div>
 `;
 
-  const acc = document.getElementById('hl_accordion');
-  acc.innerHTML = "";
-  acc.classList.remove("open");
-  acc.style.maxHeight = null;
-  acc.style.padding = "0px";
-
-  const btn = document.querySelector(".hl-acc-btn");
-  btn.textContent = "계산 상세 보기 ▼";
-
   /****************************************************
    * SEO 설명문
    ****************************************************/
