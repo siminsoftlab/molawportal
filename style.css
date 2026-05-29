@@ -908,66 +908,95 @@ body.subpage .top-info-bar {
 #repayExplain {
   display: none;
 }
+
 /* ============================
-   FOOTER 복원
+  footer
 ============================ */
-footer {
-  background: #f5f5f5;
-  padding: 25px 15px;
-  text-align: center;
-  color: #333;
-  line-height: 1.6;
+.site-footer {
+background: #000;
+padding: 32px 20px;
+padding-bottom: 120px;
+text-align: left;
+border-top: 1px solid #333;
+color: #fff;
+margin-top: auto;
+margin-bottom: 0;
+}
+
+.site-footer .footer-inner {
+max-width: 900px;
+margin: 0 auto;
 }
 
 .footer-company {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 8px;
+font-size: 20px;
+font-weight: 800;
+margin-bottom: 14px;
 }
 
 .footer-info {
-  font-size: 14px;
-  color: #555;
+white-space: pre-line;
+line-height: 1.7;
+font-size: 15px;
+color: #ddd;
+margin-bottom: 18px;
+}
+
+.footer-copy {
+font-size: 14px;
+color: #aaa;
+border-top: 1px solid #333;
+padding-top: 14px;
+margin-top: 14px;
 }
 
 /* ============================
-   무료 상담 버튼 복원
+  하단 고정 상담바
 ============================ */
-.call-btn {
-  position: fixed;
-  bottom: 90px;
-  right: 20px;
-  background: #0066ff;
-  color: #fff;
-  padding: 14px 18px;
-  border-radius: 50px;
-  font-size: 16px;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 9999;
-  text-decoration: none;
+.call-fixed {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+background: linear-gradient(90deg, #b80000, #d60000);
+padding: 18px 0;
+text-align: center;
+z-index: 9999;
+box-shadow: 0 -4px 12px rgba(0,0,0,0.35);
+
+/* ⭐ iOS 렌더링 버그 방지 */
+-webkit-transform: translateZ(0);
+}
+
+.call-fixed .consult-call {
+color: #fff;
+font-size: 19px;
+font-weight: 800;
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+}
+
+.call-fixed .consult-call::before {
+content: "📞";
+font-size: 22px;
 }
 
 /* ============================
-   카톡 상담 버튼 복원
+  카톡 상담 버튼
 ============================ */
-.kakao-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  background: #ffe812;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 9999;
+.quick-kakao {
+position: fixed;
+bottom: 80px;
+right: 20px;
+background: #ffe812;
+color: #3c1e1e;
+padding: 14px 18px;
+border-radius: 50px;
+font-size: 16px;
+font-weight: 900;
+text-decoration: none;
+box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+z-index: 10000;
 }
-
-.kakao-btn img {
-  width: 36px;
-  height: 36px;
-}
-
