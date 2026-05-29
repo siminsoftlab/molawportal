@@ -1091,7 +1091,7 @@ z-index: 10000;
   background: #ffd54a;
 }
 
-/* 아코디언 박스 통일 */
+/* 아코디언 박스 스타일 통일 */
 #hl_accordion {
   display: none;
   max-height: 0;
@@ -1105,6 +1105,7 @@ z-index: 10000;
   max-height: 2000px;
   padding: 15px;
 }
+
 #hl_summary {
   margin-bottom: 20px;
 }
