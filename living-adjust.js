@@ -16,7 +16,7 @@ function preciseRound(num) {
 
 /* 가구수 텍스트 */
 function getHouseholdLabel(household) {
-  return `${household}인`;
+  return `${household}인 가구`;
 }
 
 /****************************************************
@@ -182,7 +182,7 @@ function calcLivingAdjust() {
     <div class="row"><div class="label">월 소득</div>
       <div class="value">${income.toLocaleString()}원</div></div>
 
-    <div class="row"><div class="label">법원 기준 생계비</div>
+    <div class="row"><div class="label">법원 기준 생계비 (${getHouseholdLabel(household)})</div>
       <div class="value">${courtLiving.toLocaleString()}원</div></div>
 
     <div class="row"><div class="label">추가 생계비(입력)</div>
