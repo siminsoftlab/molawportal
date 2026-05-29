@@ -903,3 +903,13 @@ body.subpage .top-info-bar {
   min-height: 120px;
   line-height: 1.5;
 }
+/* 계산 상세 보기 아코디언 — 초기 로드시 펼쳐지는 문제 해결 */
+.calc-acc-content {
+  max-height: 0 !important;
+  overflow: hidden;
+}
+
+.calc-acc-content.open {
+  max-height: 2000px !important; /* 충분히 큰 값 */
+  padding: 15px !important;
+}
