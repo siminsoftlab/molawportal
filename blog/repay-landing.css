@@ -99,6 +99,9 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 12px 16px;
   font-size: 13px;
+  border: 1px solid #ddd; /* 테두리 추가 */
+  padding: 16px; /* 테두리 안쪽 여백 */
+  border-radius: 8px; /* 선택: 둥근 모서리 */
 }
 
 .label {
