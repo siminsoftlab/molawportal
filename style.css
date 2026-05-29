@@ -912,6 +912,11 @@ body.subpage .top-info-bar {
 #la_explain {
   display: none;
 }
+/* 연이자 계산기 자동 박스 — 페이지 로드시 완전 숨김 */
+#interestExplain {
+  display: none;
+}
+
 /* ============================
   footer
 ============================ */
