@@ -270,17 +270,16 @@ function calcRepay() {
 function toggleAccordionRepay() {
   const box = $("repayAccordion");
   const btn = document.querySelector(".repay-accordion-btn");
-  if (!box || !btn) return;
 
   if (box.classList.contains("open")) {
-      box.classList.remove("open");
-      box.style.maxHeight = "0px";
-      btn.textContent = "계산 상세 보기 ▼";
-    } else {
-      box.classList.add("open");
-      box.style.maxHeight = box.scrollHeight + "px";
-      btn.textContent = "계산 상세 접기 ▲";
-    }
+    box.classList.remove("open");
+    box.style.maxHeight = "0px";
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.classList.add("open");
+    box.style.maxHeight = box.scrollHeight + "px";
+    btn.textContent = "계산 상세 접기 ▲";
+  }
 }
 
 /****************************************************
