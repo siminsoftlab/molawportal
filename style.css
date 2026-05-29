@@ -908,7 +908,10 @@ body.subpage .top-info-bar {
 #repayExplain {
   display: none;
 }
-
+/* 법원 생계비 계산기 자동 박스 — 페이지 로드시 완전 숨김 */
+#la_explain {
+  display: none;
+}
 /* ============================
   footer
 ============================ */
