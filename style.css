@@ -1152,3 +1152,31 @@ z-index: 10000;
   background: rgba(255,255,255,0.28) !important;
   transform: translateY(-50%) scale(1.05) !important;
 }
+/* ============================================
+   중앙에 떠 있는 홈 버튼 (기존 코드 수정 없음)
+============================================ */
+.home-btn-center {
+  position: fixed;
+  top: 28px;               /* 헤더 중앙 높이 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  padding: 10px 20px;
+  border-radius: 12px;
+
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  transition: 0.2s ease;
+}
+
+.home-btn-center:hover {
+  background: rgba(255,255,255,0.28);
+  transform: translateX(-50%) scale(1.05);
+}
