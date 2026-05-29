@@ -870,16 +870,36 @@ body.subpage .top-info-bar {
   pointer-events: none;
 }
 /* ============================
-   온라인 상담 — 앱 스타일 복원
+   온라인 상담 입력창 — 앱 UI 스타일
 ============================ */
-.container.consult-section {
-  width: 100% !important;
-  max-width: 900px;
-  margin: 0 auto 80px !important;
-  padding: 20px !important;
+.container.consult-section input[type="text"],
+.container.consult-section input[type="tel"],
+.container.consult-section input[type="email"],
+.container.consult-section select,
+.container.consult-section textarea {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.2s ease;
+}
 
-  background: transparent !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
+/* 포커스 시 앱 느낌 강조 */
+.container.consult-section input:focus,
+.container.consult-section select:focus,
+.container.consult-section textarea:focus {
+  border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.25);
+  outline: none;
+}
+
+/* textarea 앱 스타일 */
+.container.consult-section textarea {
+  resize: none;
+  min-height: 120px;
+  line-height: 1.5;
 }
