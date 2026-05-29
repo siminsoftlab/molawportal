@@ -557,16 +557,7 @@ body.subpage .top-info-bar {
   /* 홈페이지 2열 → 1열 */
   body.homepage .two-box {
     grid-template-columns: 1fr;
-  }
-
-  /* 텍스트 크기 조정 */
-  .footer-info {
-    font-size: 14px;
-  }
-
-  .footer-company {
-    font-size: 18px;
-  }
+  }  
 
   body.homepage .calc-img {
     width: 60%;
@@ -916,5 +907,67 @@ body.subpage .top-info-bar {
 /* 개인회생 계산기 자동 박스 — 페이지 로드시 완전 숨김 */
 #repayExplain {
   display: none;
+}
+/* ============================
+   FOOTER 복원
+============================ */
+footer {
+  background: #f5f5f5;
+  padding: 25px 15px;
+  text-align: center;
+  color: #333;
+  line-height: 1.6;
+}
+
+.footer-company {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.footer-info {
+  font-size: 14px;
+  color: #555;
+}
+
+/* ============================
+   무료 상담 버튼 복원
+============================ */
+.call-btn {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  background: #0066ff;
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+  text-decoration: none;
+}
+
+/* ============================
+   카톡 상담 버튼 복원
+============================ */
+.kakao-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: #ffe812;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+.kakao-btn img {
+  width: 36px;
+  height: 36px;
 }
 
