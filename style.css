@@ -1180,3 +1180,37 @@ z-index: 10000;
   background: rgba(255,255,255,0.28);
   transform: translateX(-50%) scale(1.05);
 }
+/* ============================================
+   헤더 그라데이션 적용
+============================================ */
+.fixed-header {
+  background: linear-gradient(90deg, #000000, #2c2c2c) !important;
+}
+
+/* ============================================
+   홈 버튼을 중앙 정렬 + 아이콘 버튼으로 변경
+============================================ */
+.fixed-header .home-btn {
+  position: absolute !important;
+  left: 50% !important;
+  top: 70% !important; /* 타이틀 아래쪽 중앙 */
+  transform: translateX(-50%) !important;
+
+  background: rgba(255,255,255,0.18) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 10px 20px !important;
+  border-radius: 12px !important;
+
+  font-size: 20px !important; /* 아이콘 크기 */
+  color: #fff !important;
+  text-decoration: none !important;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25) !important;
+  transition: 0.2s ease !important;
+}
+
+/* hover 효과 */
+.fixed-header .home-btn:hover {
+  background: rgba(255,255,255,0.28) !important;
+  transform: translateX(-50%) scale(1.05) !important;
+}
