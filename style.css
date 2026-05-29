@@ -144,42 +144,44 @@ body.subpage .container {
   -webkit-backdrop-filter: blur(4px);
 }
 /* ============================
-   상단 고정 헤더
+   앱 스타일 상단 헤더 (100px 고정)
 ============================ */
 .fixed-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: #222;
+  height: 100px; /* ⭐ 요청한 고정 높이 */
+  background: #000;
   color: #fff;
-  padding: 18px 20px;
-  text-align: center;
-  z-index: 9999;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: center;      /* 세로 중앙 */
+  justify-content: center;  /* 가로 중앙 */
+  padding: 0 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 9999;
 }
 
-/* 헤더 타이틀 */
+/* 헤더 타이틀 중앙 정렬 */
 .fixed-header h1 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
 }
 
-/* 홈 버튼 (기존 스타일 유지) */
+/* 홈 버튼 — 앱의 뒤로가기 버튼처럼 좌측 고정 */
 .fixed-header .home-btn {
-  margin-top: 8px;
-  color: #fff;
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
   background: #444;
-  padding: 6px 12px;
-  border-radius: 6px;
-  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #fff;
   font-size: 14px;
   font-weight: 600;
+  text-decoration: none;
 }
 
 /* ============================
