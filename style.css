@@ -913,18 +913,8 @@ body.subpage .top-info-bar {
   max-height: 2000px !important; /* 충분히 큰 값 */
   padding: 15px !important;
 }
-/* 개인회생 계산기 상세 박스 — 페이지 로드시 완전 숨김 */
-#repayAccordion {
-  display: none !important;
-  max-height: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
-
-/* open 상태일 때만 보이기 */
-#repayAccordion.open {
-  display: block !important;
-  max-height: 2000px !important;
-  padding: 15px !important;
+/* 개인회생 계산기 자동 박스 — 페이지 로드시 완전 숨김 */
+#repayExplain {
+  display: none;
 }
 
