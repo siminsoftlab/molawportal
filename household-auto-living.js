@@ -27,7 +27,9 @@ function toggleHouseholdAccordion() {
     box.innerHTML = householdCalcResult;
     box.classList.add("open");
     box.style.padding = "15px";
+    requestAnimationFrame(() => {
     box.style.maxHeight = box.scrollHeight + "px";
+  });
     btn.textContent = "계산 상세 접기 ▲";
   }
 }
