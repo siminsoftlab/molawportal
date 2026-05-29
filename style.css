@@ -426,6 +426,7 @@ body.subpage .top-info-bar {
 .summary-card {
   display: none;
   margin-top: 20px;
+  margin-bottom: 20px; /* 원하는 만큼 조절 가능 */
   padding: 20px;
   background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: #fff;
