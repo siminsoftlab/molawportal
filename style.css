@@ -1071,3 +1071,40 @@ z-index: 10000;
   max-height: 2000px;
   padding: 15px;
 }
+/* 가구수 생계비 계산기 — 계산 상세 보기 버튼 스타일 통일 */
+.hl-acc-btn {
+  width: 100%;
+  background: #ffe066;
+  color: #333;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s ease;
+}
+
+.hl-acc-btn:hover {
+  background: #ffd54a;
+}
+
+/* 아코디언 박스 통일 */
+#hl_accordion {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+#hl_accordion.open {
+  display: block;
+  max-height: 2000px;
+  padding: 15px;
+}
+#hl_summary {
+  margin-bottom: 20px;
+}
