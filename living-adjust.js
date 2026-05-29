@@ -44,7 +44,7 @@ function toggleLivingAccordion() {
 
   if (box.classList.contains("open")) {
     box.classList.remove("open");
-    box.style.maxHeight = null;
+    box.style.maxHeight = "0px";
     btn.textContent = "계산 상세 보기 ▼";
   } else {
     box.classList.add("open");
@@ -52,6 +52,7 @@ function toggleLivingAccordion() {
     btn.textContent = "계산 상세 접기 ▲";
   }
 }
+
 
 /****************************************************
  * 초기화
