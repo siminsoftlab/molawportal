@@ -1,115 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"
-     xmlns:atom="http://www.w3.org/2005/Atom">
-
+<rss version="2.0">
   <channel>
 
-    <title><![CDATA[딱요만큼변제 공식 RSS｜개인회생 변제금·생계비·연이자·불법사채 이자조회 업데이트]]></title>
+    <title>딱요만큼변제 — 업데이트 피드</title>
     <link>https://molawcalculator.com/</link>
-    <atom:link href="https://molawcalculator.com/feed.xml" rel="self" type="application/rss+xml" />
+    <description>개인회생·파산·채무조정에 필요한 계산기와 법률 정보를 제공하는 딱요만큼변제 공식 업데이트 피드</description>
 
-    <description><![CDATA[
-      개인회생 변제금·생계비·연이자·불법사채 이자조회 등 채무 해결 계산기 업데이트를 제공하는 공식 RSS 피드입니다.
-    ]]></description>
-
-    <language>ko</language>
-    <lastBuildDate>Mon, 25 May 2026 17:04:00 +0900</lastBuildDate>
-    <ttl>180</ttl>
-    <generator>molawcalculator.com RSS Generator</generator>
-    <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
-
-    <image>
-      <url>https://molawcalculator.com/images/og_main.png</url>
-      <title>딱요만큼변제</title>
-      <link>https://molawcalculator.com/</link>
-    </image>
-
-    <!-- ============================
-         콘텐츠 목록 (최신순)
-    ============================ -->
-
-    <!-- ⭐ 개인회생 변제금 안내 렌딩페이지 (repay-calc.html) -->
+    <!-- 개인회생 변제금 계산기 -->
     <item>
-      <title><![CDATA[개인회생 변제금 안내 — 계산 기준·예시 정리]]></title>
-      <link>https://molawcalculator.com/blog/repay-calc.html</link>
-      <guid isPermaLink="true">https://molawcalculator.com/blog/repay-calc.html</guid>
-      <description><![CDATA[
-        개인회생 변제금 산정 기준과 계산 예시, 변제금 줄이는 방법을 한눈에 정리한 안내 페이지입니다. 변제금 구조를 이해하고 실제 계산기로 이동하기 전 꼭 확인해야 할 핵심 내용을 제공합니다.
-      ]]></description>
-      <category><![CDATA[개인회생변제금안내]]></category>
-      <pubDate>Mon, 25 May 2026 17:04:30 +0900</pubDate>
-    </item>
-
-    <!-- 연이자 계산기 -->
-    <item>
-       <title><![CDATA[연이자 계산기 — 총이자·총상환금액 자동 계산]]></title>
-       <link>https://molawcalculator.com/calculators/interest.html</link>
-       <guid isPermaLink="true">https://molawcalculator.com/calculators/interest.html</guid>
-       <description><![CDATA[
-         연이자 계산기 — 원금·이자율·기간 입력 시 총이자와 총상환금액을 자동 계산합니다. 민법 기간 계산 규정을 반영하여 정확한 일할계산을 제공합니다.
-       ]]></description>
-       <category><![CDATA[연이자계산기]]></category>
-       <pubDate>Mon, 25 May 2026 17:03:00 +0900</pubDate>
-     </item>
-
-    <!-- 쏜살민원 -->
-    <item>
-      <title><![CDATA[쏜살민원 — 법원·관공서 서류 발급 대행·개인회생 준비서류 지원]]></title>
-      <link>https://molawcalculator.com/blog/ssonsalminwon.html</link>
-      <guid isPermaLink="true">https://molawcalculator.com/blog/ssonsalminwon.html</guid>
-      <description><![CDATA[
-        쏜살민원 — 법원·관공서·금융기관 서류 발급 대행 및 개인회생 준비서류 지원 서비스 안내. 채무 문제 해결을 위한 필수 서류를 빠르고 정확하게 준비할 수 있습니다.
-      ]]></description>
-      <category><![CDATA[서류발급대행]]></category>
-      <pubDate>Mon, 25 May 2026 17:02:00 +0900</pubDate>
-    </item>
-
-    <!-- 모두의로펌 -->
-    <item>
-      <title><![CDATA[모두의로펌 — 불법사채·불법추심 대응·개인회생·파산 지원]]></title>
-      <link>https://molawcalculator.com/blog/modoolawfirm.html</link>
-      <guid isPermaLink="true">https://molawcalculator.com/blog/modoolawfirm.html</guid>
-      <description><![CDATA[
-        모두의로펌 — 불법사채·불법추심 대응부터 개인회생·파산·채무조정까지 종합적으로 지원하는 채무 해결 서비스. 실제 사례 기반의 전문 대응 전략을 제공합니다.
-      ]]></description>
-      <category><![CDATA[개인회생파산지원]]></category>
-      <pubDate>Mon, 25 May 2026 17:01:00 +0900</pubDate>
-    </item>
-
-    <!-- 변제금 계산기 -->
-    <item>
-      <title><![CDATA[개인회생 변제금 계산기 — 월변제금·청산가치 자동 산정]]></title>
+      <title>개인회생 변제금 계산기</title>
       <link>https://molawcalculator.com/calculators/repay.html</link>
-      <guid isPermaLink="true">https://molawcalculator.com/calculators/repay.html</guid>
+      <guid>https://molawcalculator.com/calculators/repay.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
       <description><![CDATA[
-        개인회생 변제금 계산기 — 소득·생계비·청산가치를 기반으로 월변제금을 자동 산정합니다. 법원 기준을 반영하여 실제 변제금과 유사한 결과를 제공합니다.
+        소득·부양가족·총부채·청산가치 등을 반영하여 개인회생 변제금을 자동 계산해주는 공식 계산기입니다.
       ]]></description>
-      <category><![CDATA[개인회생변제금계산기]]></category>
-      <pubDate>Mon, 25 May 2026 17:00:00 +0900</pubDate>
+    </item>
+
+    <!-- 이자 계산기 -->
+    <item>
+      <title>이자 계산기 — 연이율·월이자 자동 계산</title>
+      <link>https://molawcalculator.com/calculators/interest.html</link>
+      <guid>https://molawcalculator.com/calculators/interest.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        대출 이자, 연이율, 월이자 등을 자동으로 계산해주는 이자 계산기입니다.
+      ]]></description>
     </item>
 
     <!-- 법원 생계비 계산기 -->
     <item>
-      <title><![CDATA[법원 생계비 계산기 — 중위소득·개인회생 생계비 자동 산정]]></title>
+      <title>법원 생계비 자동 계산기</title>
       <link>https://molawcalculator.com/calculators/living-adjust.html</link>
-      <guid isPermaLink="true">https://molawcalculator.com/calculators/living-adjust.html</guid>
+      <guid>https://molawcalculator.com/calculators/living-adjust.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
       <description><![CDATA[
-        법원 생계비 계산기 — 중위소득 기준으로 법원 생계비와 개인회생 생계비를 자동 산정합니다. 최신 보건복지부 고시 기준을 반영하여 정확한 생계비 산정이 가능합니다.
+        개인회생·파산 절차에서 적용되는 최신 법원 생계비를 자동 계산해주는 도구입니다.
       ]]></description>
-      <category><![CDATA[법원생계비계산기]]></category>
-      <pubDate>Mon, 25 May 2026 16:59:00 +0900</pubDate>
     </item>
 
     <!-- 가구수 생계비 계산기 -->
     <item>
-      <title><![CDATA[가구수 생계비 계산기 — 맞춤형 생계비·월변제금 산정]]></title>
+      <title>가구수 자동 생계비 계산기</title>
       <link>https://molawcalculator.com/calculators/household-auto-living.html</link>
-      <guid isPermaLink="true">https://molawcalculator.com/calculators/household-auto-living.html</guid>
+      <guid>https://molawcalculator.com/calculators/household-auto-living.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
       <description><![CDATA[
-        가구수 생계비 계산기 — 성인·아동 구성에 따라 맞춤형 생계비와 개인회생 월변제금을 자동 산정합니다. 실제 가구 구성에 맞춘 정확한 생계비 계산이 가능합니다.
+        가구수별 생계비 기준을 자동으로 계산해주는 도구입니다.
       ]]></description>
-      <category><![CDATA[가구수생계비계산기]]></category>
-      <pubDate>Mon, 25 May 2026 16:58:00 +0900</pubDate>
+    </item>
+
+    <!-- 블로그: 쏜살민원 -->
+    <item>
+      <title>쏜살민원 — 법원·관공서 서류 발급 대행</title>
+      <link>https://molawcalculator.com/blog/ssonsalminwon.html</link>
+      <guid>https://molawcalculator.com/blog/ssonsalminwon.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        법원·관공서·금융기관 서류 발급 대행과 개인회생 준비서류 지원을 제공하는 민원 대행 서비스 안내 페이지입니다.
+      ]]></description>
+    </item>
+
+    <!-- 블로그: 모두의로펌 -->
+    <item>
+      <title>모두의로펌 — 불법사채·불법추심 대응 지원</title>
+      <link>https://molawcalculator.com/blog/modoolawfirm.html</link>
+      <guid>https://molawcalculator.com/blog/modoolawfirm.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        불법사채·불법추심 대응과 개인회생·파산·채무조정 상담을 제공하는 채무 해결 전문 서비스 안내 페이지입니다.
+      ]]></description>
+    </item>
+
+    <!-- 블로그: 개인회생 변제금 안내 -->
+    <item>
+      <title>개인회생 변제금 안내 — 계산 기준·예시</title>
+      <link>https://molawcalculator.com/blog/repay-calc.html</link>
+      <guid>https://molawcalculator.com/blog/repay-calc.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        개인회생 변제금 산정 기준과 계산 예시, 변제금 줄이는 방법을 정리한 안내 페이지입니다.
+      ]]></description>
     </item>
 
   </channel>
