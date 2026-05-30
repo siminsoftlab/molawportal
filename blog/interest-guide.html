@@ -2,97 +2,134 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-   <!-- ⭐ 네이버 사이트 인증 -->
-  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />  
+
+  <!-- ⭐ 네이버 사이트 인증 -->
+  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
+
   <!-- ⭐ 구글 사이트 인증 -->
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- ⭐ SEO 최적화 Title (40자 이내) -->
-  <title>연이자 계산기 안내 — 단리·복리 계산 예시</title>
-  <!-- ⭐ SEO Description (80자 이내) -->
-  <meta name="description" content="연이자 계산 방식과 단리·복리 계산 예시를 정리한 안내 페이지입니다.">
-  <!-- ⭐ 네이버 검색용 Keywords -->
+
+  <title>연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기</title>
+  <meta name="description" content="연이자 계산기 사용법과 단리·복리 계산 예시를 정리한 안내 페이지입니다.">
   <meta name="keywords" content="연이자 계산기, 단리 계산, 복리 계산, 이자 계산기, 총이자 계산">
-  <link rel="canonical" href="https://molawcalculator.com/blog/interest.html">
-  <!-- ⭐ Open Graph -->
-  <meta property="og:title" content="연이자 계산기 안내 — 단리·복리 계산 예시">
-  <meta property="og:description" content="연이자 계산 방식과 단리·복리 계산 예시를 정리한 안내 페이지입니다.">
+
+  <link rel="canonical" href="https://molawcalculator.com/blog/interest-guide.html">
+
+  <meta property="og:title" content="연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기">
+  <meta property="og:description" content="연이자 계산기 사용법과 단리·복리 계산 예시를 정리한 안내 페이지입니다.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="딱요만큼변제">
-  <meta property="og:url" content="https://molawcalculator.com/blog/interest.html">
+  <meta property="og:url" content="https://molawcalculator.com/blog/interest-guide.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="연이자 계산기 안내 — 단리·복리 계산 예시">
-  <meta name="twitter:description" content="연이자 계산 방식과 단리·복리 계산 예시를 제공합니다.">
+  <meta name="twitter:title" content="연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기">
+  <meta name="twitter:description" content="연이자 계산기 사용법과 단리·복리 계산 예시를 제공합니다.">
   <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ 구조화 데이터 (Article) -->
+  <!-- ⭐ 구조화 데이터 -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "연이자 계산기 안내",
-    "description": "연이자 계산 방식과 단리·복리 계산 예시를 정리한 안내 페이지입니다.",
-    "author": {
-      "@type": "Organization",
-      "name": "법무법인 영민"
-    },
+    "headline": "연이자 계산기 사용법",
+    "description": "연이자 계산기 사용법과 단리·복리 계산 예시를 정리한 안내 페이지입니다.",
+    "author": { "@type": "Organization", "name": "법무법인 영민" },
     "publisher": {
       "@type": "Organization",
       "name": "딱요만큼변제",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://molawcalculator.com/images/og_main.png"
-      }
+      "logo": { "@type": "ImageObject", "url": "https://molawcalculator.com/images/og_main.png" }
     },
-    "mainEntityOfPage": "https://molawcalculator.com/blog/interest.html"
+    "mainEntityOfPage": "https://molawcalculator.com/blog/interest-guide.html"
   }
   </script>
 
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="robots" content="index, follow">
 
-  <!-- 기존 코드 유지 -->
   <link rel="icon" href="../images/favicon.ico">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="repay-landing.css">
-  <script src="../block-right-click.js"></script>  
+
+  <!-- ⭐ 링크 밑줄 제거 스타일 -->
+  <style>
+    a:not(.btn-primary):not(.btn-full) {
+      text-decoration: none;
+      color: #0066ff;
+    }
+    a:not(.btn-primary):not(.btn-full):hover {
+      color: #003399;
+    }
+  </style>
+
+  <script src="../block-right-click.js"></script>
   <script src="../app.js" defer></script>
 </head>
 
 <body>
+
 <header class="fixed-header fixed-top">
-  <h1>연이자 계산기 안내 — 단리·복리 계산 예시</h1>
+  <h1>연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기</h1>
   <a href="../index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
     </svg>
-  </a> 
+  </a>
 </header>
 
 <div class="wrap">
 
   <!-- 히어로 -->
   <section class="hero">
-    <h1 class="hero-title">연이자, 이렇게 계산됩니다.</h1>
+    <h1 class="hero-title">연이자 계산, 단리·복리 차이를 쉽게 이해하세요.</h1>
     <p class="hero-sub">
-      단리·복리 방식에 따른<br>
-      연이자·총이자·총상환액 계산 예시를 확인해보세요.
+      대출·투자·채무조정 등 다양한 상황에서<br>
+      정확한 이자 계산은 매우 중요합니다.
     </p>
-    <p class="badge-row">
-      단리·복리 지원 · 개인정보 저장 없음
-    </p>
-    <a href="https://molawcalculator.com/calculators/interest.html" class="btn-primary">
-      연이자 계산하러 가기
-    </a>
+
+    <p class="badge-row">단리·복리 자동 계산 · 개인정보 저장 없음</p>
+
+    <a href="/calculators/interest.html" class="btn-primary">연이자 계산하러 가기</a>
+
+    <div class="sub-links">
+      <a href="/calculators/repay.html">개인회생 변제금 계산기</a> ·
+      <a href="/calculators/living-expense.html">법원 생계비 계산기</a> ·
+      <a href="/calculators/household.html">가구수 계산기</a>
+    </div>
   </section>
 
-  <!-- 실제 계산 결과 예시 -->
+  <!-- 사용 가이드 -->
   <section class="section">
     <div class="card">
-      <h2 class="section-title">실제 계산 결과 예시</h2>
-      <p class="section-sub">아래는 연이자 계산 로직을 적용한 샘플 케이스입니다.</p>
+      <h2 class="section-title">연이자 계산기, 이렇게 사용하세요</h2>
+      <p class="text">
+        연이자 계산기는 원금·이율·기간만 입력하면<br>
+        단리·복리 기준으로 총이자와 총상환액을 자동 계산해줍니다.
+      </p>
+
+      <ul class="list">
+        <li><b>원금</b> — 대출 또는 투자 금액</li>
+        <li><b>연이율</b> — 약정된 이자율</li>
+        <li><b>기간</b> — 연 단위</li>
+        <li><b>계산 방식</b> — 단리 또는 복리 선택</li>
+      </ul>
+
+      <p class="text">
+        개인회생 변제금 계산 시에도<br>
+        채무 구조 파악을 위해 <a href="/blog/repay-guide.html">변제금 계산 방식</a>과 함께  
+        연이자 계산을 확인하는 것이 좋습니다.
+      </p>
+
+      <a href="/calculators/interest.html" class="btn-primary btn-full">지금 바로 계산해보기</a>
+    </div>
+  </section>
+
+  <!-- 계산 예시 -->
+  <section class="section">
+    <div class="card">
+      <h2 class="section-title">단리 계산 예시</h2>
+      <p class="section-sub">아래는 단리 기준 계산 예시입니다.</p>
 
       <div class="grid-2">
         <div><span class="label">원금</span><br><span class="value">10,000,000원</span></div>
@@ -105,44 +142,30 @@
         <div><span class="label">총 상환액</span><br><span class="value highlight">12,100,000원</span></div>
       </div>
 
-      <p class="note">※ 복리 계산 시 총이자는 더 높아질 수 있습니다.</p>
+      <p class="note">
+        복리 계산은 이자가 원금에 더해져 계산되므로<br>
+        총이자가 더 높아질 수 있습니다.<br>
+        <a href="/calculators/interest.html">복리 계산 바로가기</a>
+      </p>
     </div>
   </section>
 
-  <!-- 해석 -->
+  <!-- 변제금과의 관계 -->
   <section class="section">
     <div class="card">
-      <h2 class="section-title">이 결과가 의미하는 것</h2>
+      <h2 class="section-title">연이자 계산이 개인회생에 중요한 이유</h2>
       <p class="text">
-        연이자 계산은 단리·복리 여부에 따라 결과가 크게 달라집니다.<br>
-        단리는 원금 기준, 복리는 원금+이자 기준으로 계산됩니다.
-      </p>
-      <p class="text">
-        대출·투자·채무조정 등 다양한 상황에서<br>
-        정확한 이자 계산은 매우 중요한 요소입니다.
+        개인회생에서는 이자 대부분이 면제되지만,<br>
+        신청 전 채무 구조를 파악하기 위해  
+        <a href="/blog/repay-guide.html">변제금 계산</a>과 함께  
+        연이자 계산을 확인하는 것이 매우 중요합니다.
       </p>
 
-      <div class="pill-row">
-        <span class="pill">단리·복리 지원</span>
-        <span class="pill">총이자 자동 계산</span>
-        <span class="pill">총상환액 확인 가능</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- 왜 계산해야 하는가 -->
-  <section class="section">
-    <div class="card">
-      <h2 class="section-title">왜 연이자를 직접 계산해야 할까요?</h2>
-      <ul class="list">
-        <li>대출·투자·채무 상황에서 이자 부담을 정확히 파악할 수 있습니다.</li>
-        <li>복리의 경우 기간이 길수록 이자 차이가 크게 발생합니다.</li>
-        <li>개인회생·채무조정 시 채무 구조 파악에 필수입니다.</li>
-      </ul>
-
-      <a href="https://molawcalculator.com/calculators/interest.html" class="btn-primary btn-full">
-        내 이자 직접 계산해보기
-      </a>
+      <p class="text">
+        생계비·가구수 기준은 아래에서 확인할 수 있습니다.<br>
+        <a href="/blog/living-expense-guide.html">법원 생계비 기준</a> ·  
+        <a href="/blog/household-guide.html">가구수 산정 기준</a>
+      </p>
     </div>
   </section>
 
@@ -153,17 +176,19 @@
 
       <div class="faq-item">
         <div class="faq-q">Q. 단리와 복리의 차이는 무엇인가요?</div>
-        <div class="faq-a">A. 단리는 원금 기준, 복리는 원금+이자 기준으로 계산됩니다.</div>
+        <div class="faq-a">
+          A. 단리는 원금 기준, 복리는 원금+이자 기준으로 계산됩니다.<br>
+          자세한 계산은 <a href="/calculators/interest.html">연이자 계산기</a>에서 확인할 수 있습니다.
+        </div>
       </div>
 
       <div class="faq-item">
-        <div class="faq-q">Q. 총이자와 총상환액은 어떻게 계산되나요?</div>
-        <div class="faq-a">A. 총이자는 원금×이율×기간이며, 총상환액은 원금+총이자입니다.</div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-q">Q. 복리 계산도 가능한가요?</div>
-        <div class="faq-a">A. 네, 연이자 계산기는 단리·복리 모두 지원합니다.</div>
+        <div class="faq-q">Q. 개인회생 변제금 계산에도 필요한가요?</div>
+        <div class="faq-a">
+          A. 네. 채무 구조 파악을 위해  
+          <a href="/blog/repay-guide.html">변제금 계산 방식</a>과 함께  
+          연이자 계산을 확인하는 것이 좋습니다.
+        </div>
       </div>
 
       <div class="faq-item">
@@ -179,9 +204,14 @@
     <div class="card cta">
       <p class="cta-title">이제, 연이자를 직접 계산해보세요.</p>
       <p class="cta-text">1분이면 총이자와 총상환액을 확인할 수 있습니다.</p>
-      <a href="https://molawcalculator.com/calculators/interest.html" class="btn-primary">
-        연이자 계산하러 가기
-      </a>
+
+      <a href="/calculators/interest.html" class="btn-primary">연이자 계산하러 가기</a>
+
+      <div class="cta-links">
+        <a href="/calculators/repay.html">변제금 계산하기</a> ·
+        <a href="/calculators/living-expense.html">생계비 계산하기</a> ·
+        <a href="/calculators/household.html">가구수 계산하기</a>
+      </div>
     </div>
   </section>
 
@@ -202,15 +232,10 @@
 </footer>
 
 <div class="call-fixed">
-  <a href="tel:025955706" class="consult-call">
-    무료 상담 02-595-5706 ← 클릭 시 전화 연결
-  </a>
+  <a href="tel:025955706" class="consult-call">무료 상담 02-595-5706 ← 클릭 시 전화 연결</a>
 </div>
 
-<a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" target="_blank" rel="noopener noreferrer">
-  💬 카톡 상담
-</a>
+<a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
 
 </body>
 </html>
