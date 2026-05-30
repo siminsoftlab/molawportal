@@ -2,18 +2,25 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-   <!-- ⭐ 네이버 사이트 인증 -->
-  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />  
+
+  <!-- ⭐ 네이버 사이트 인증 -->
+  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
+
   <!-- ⭐ 구글 사이트 인증 -->
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-  <!-- ⭐ SEO 최적화 Title (40자 이내) -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ⭐ SEO 최적화 Title -->
   <title>개인회생 변제금 계산기 사용법 — 쉽게 계산하는 방법</title>
-  <!-- ⭐ SEO Description (80자 이내) -->
+
+  <!-- ⭐ SEO Description -->
   <meta name="description" content="개인회생 변제금을 직접 계산하는 방법과 계산기 활용법을 정리한 안내 페이지입니다.">
-  <!-- ⭐ 네이버 검색용 Keywords -->
+
+  <!-- ⭐ Keywords -->
   <meta name="keywords" content="개인회생 변제금 계산기, 변제금 계산 방법, 개인회생 계산기, 변제금 산정">
-  <link rel="canonical" href="https://molawcalculator.com/blog/repay-guide.html">  
+
+  <link rel="canonical" href="https://molawcalculator.com/blog/repay-guide.html">
 
   <!-- ⭐ Open Graph -->
   <meta property="og:title" content="개인회생 변제금 계산기 사용법 — 쉽게 계산하는 방법">
@@ -29,47 +36,41 @@
   <meta name="twitter:description" content="개인회생 변제금을 직접 계산하는 방법과 계산기 활용법을 제공합니다.">
   <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ 구조화 데이터 (Article) -->
+  <!-- ⭐ 구조화 데이터 -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "개인회생 변제금 계산기 사용법",
     "description": "개인회생 변제금을 직접 계산하는 방법과 계산기 활용법을 정리한 안내 페이지입니다.",
-    "author": {
-      "@type": "Organization",
-      "name": "법무법인 영민"
-    },
+    "author": { "@type": "Organization", "name": "법무법인 영민" },
     "publisher": {
       "@type": "Organization",
       "name": "딱요만큼변제",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://molawcalculator.com/images/og_main.png"
-      }
+      "logo": { "@type": "ImageObject", "url": "https://molawcalculator.com/images/og_main.png" }
     },
     "mainEntityOfPage": "https://molawcalculator.com/blog/repay-guide.html"
   }
   </script>
 
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="robots" content="index, follow">
 
-  <!-- 기존 코드 유지 -->
   <link rel="icon" href="../images/favicon.ico">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="repay-landing.css">
-  <script src="../block-right-click.js"></script>  
+  <script src="../block-right-click.js"></script>
   <script src="../app.js" defer></script>
 </head>
 
 <body>
+
 <header class="fixed-header fixed-top">
   <h1>개인회생 변제금 계산기 사용법 — 쉽게 계산하는 방법</h1>
   <a href="../index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
     </svg>
-  </a> 
+  </a>
 </header>
 
 <div class="wrap">
@@ -81,12 +82,17 @@
       변제금은 소득·생계비·가구수·재산에 따라 달라집니다.<br>
       계산기를 활용하면 내 예상 변제금을 1분 만에 확인할 수 있습니다.
     </p>
-    <p class="badge-row">
-      자동 계산 · 개인정보 저장 없음 · 법원 기준 반영
-    </p>
-    <a href="https://molawcalculator.com/calculators/repay.html" class="btn-primary">
-      개인회생 변제금 계산하러 가기
-    </a>
+
+    <p class="badge-row">자동 계산 · 개인정보 저장 없음 · 법원 기준 반영</p>
+
+    <a href="/calculators/repay.html" class="btn-primary">개인회생 변제금 계산하러 가기</a>
+
+    <!-- 내부링크 추가 -->
+    <div class="sub-links">
+      <a href="/calculators/living-expense.html">법원 생계비 계산기</a> ·
+      <a href="/calculators/household.html">가구수 계산기</a> ·
+      <a href="/calculators/interest.html">연이자 계산기</a>
+    </div>
   </section>
 
   <!-- 계산기 사용 가이드 -->
@@ -99,52 +105,27 @@
       </p>
 
       <ul class="list">
-        <li><b>월 소득</b> — 급여, 사업소득 등 실제 수령액 기준</li>
-        <li><b>가구수</b> — 부양가족 포함 여부에 따라 달라짐</li>
+        <li><b>월 소득</b> — 실제 수령액 기준</li>
+        <li><b>가구수</b> — <a href="/blog/household-guide.html">부양가족 인정 기준</a>에 따라 달라짐</li>
         <li><b>총 부채</b> — 원금 기준</li>
         <li><b>재산(청산가치)</b> — 자동차·예금·보험 등</li>
       </ul>
 
       <p class="text">
-        입력 후 ‘계산하기’를 누르면 변제금·변제율·탕감률이 자동으로 산출됩니다.
+        변제금은 <a href="/blog/living-expense-guide.html">법원 생계비 기준</a>,
+        <a href="/blog/household-guide.html">가구수 산정</a>,
+        <a href="/blog/interest-guide.html">이자 구조</a>에 따라 크게 달라집니다.
       </p>
 
-      <a href="https://molawcalculator.com/calculators/repay.html" class="btn-primary btn-full">
-        지금 바로 계산해보기
-      </a>
+      <a href="/calculators/repay.html" class="btn-primary btn-full">지금 바로 계산해보기</a>
     </div>
   </section>
 
-  <!-- 변제금이 달라지는 이유 -->
-  <section class="section">
-    <div class="card">
-      <h2 class="section-title">왜 사람마다 변제금이 다르게 나올까?</h2>
-      <p class="text">
-        같은 부채라도 변제금이 다르게 나오는 이유는<br>
-        법원이 아래 요소를 모두 고려하기 때문입니다.
-      </p>
-
-      <div class="pill-row">
-        <span class="pill">소득 수준</span>
-        <span class="pill">법원 생계비</span>
-        <span class="pill">가구수</span>
-        <span class="pill">부양가족 인정 여부</span>
-        <span class="pill">청산가치</span>
-        <span class="pill">현재가치(PV)</span>
-      </div>
-
-      <p class="text">
-        즉, 변제금은 단순히 “부채 ÷ 36개월”이 아니라<br>
-        <b>법원이 정한 최소 기준을 충족해야 하는 구조</b>입니다.
-      </p>
-    </div>
-  </section>
-
-  <!-- 계산 예시 (새로운 예시) -->
+  <!-- 계산 예시 -->
   <section class="section">
     <div class="card">
       <h2 class="section-title">새로운 계산 예시</h2>
-      <p class="section-sub">아래는 실제 계산기 로직을 적용한 또 다른 예시입니다.</p>
+      <p class="section-sub">아래는 실제 계산기 로직을 적용한 예시입니다.</p>
 
       <div class="grid-2">
         <div><span class="label">총 부채</span><br><span class="value">65,000,000원</span></div>
@@ -163,7 +144,12 @@
         <div><span class="label">탕감률</span><br><span class="value">43.8%</span></div>
       </div>
 
-      <p class="note">※ 위 예시는 청산가치가 낮아 가용소득 기준으로 산정된 사례입니다.</p>
+      <p class="note">
+        생계비·가구수·이자 계산은 각각 별도 계산기로 확인할 수 있습니다.<br>
+        <a href="/calculators/living-expense.html">생계비 계산</a> ·
+        <a href="/calculators/household.html">가구수 계산</a> ·
+        <a href="/calculators/interest.html">연이자 계산</a>
+      </p>
     </div>
   </section>
 
@@ -173,13 +159,15 @@
       <h2 class="section-title">변제금을 줄일 수 있는 3가지 포인트</h2>
 
       <ul class="list">
-        <li><b>부양가족 인정</b> — 실제 부양 중이면 생계비가 증가하여 변제금이 줄어듭니다.</li>
-        <li><b>특별지출 인정</b> — 의료비·교육비 등은 생계비에 추가 반영될 수 있습니다.</li>
-        <li><b>재산 평가 조정</b> — 청산가치가 낮아지면 최소 변제금도 낮아집니다.</li>
+        <li><b>부양가족 인정</b> — 실제 부양 중이면 생계비 증가 → 변제금 감소  
+          (<a href="/blog/household-guide.html">가구수 기준 보기</a>)
+        </li>
+        <li><b>특별지출 인정</b> — 의료비·교육비 등 추가 생계비 반영 가능</li>
+        <li><b>재산 평가 조정</b> — 청산가치가 낮아지면 최소 변제금도 낮아짐</li>
       </ul>
 
       <p class="text">
-        단, 모든 조정은 법원 판단에 따라 달라질 수 있습니다.
+        생계비 조정은 <a href="/blog/living-expense-guide.html">법원 생계비 안내</a>에서 자세히 확인할 수 있습니다.
       </p>
     </div>
   </section>
@@ -191,12 +179,21 @@
 
       <div class="faq-item">
         <div class="faq-q">Q. 변제금 계산은 법원과 동일한가요?</div>
-        <div class="faq-a">A. 법원 기준을 반영한 계산이지만, 최종 변제금은 법원 심사에 따라 달라질 수 있습니다.</div>
+        <div class="faq-a">
+          A. 법원 기준을 반영한 계산이지만, 최종 변제금은 법원 심사에 따라 달라질 수 있습니다.<br>
+          생계비·가구수·이자 구조는  
+          <a href="/blog/living-expense-guide.html">생계비 안내</a>,  
+          <a href="/blog/household-guide.html">가구수 안내</a>,  
+          <a href="/blog/interest-guide.html">연이자 안내</a>에서 확인할 수 있습니다.
+        </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-q">Q. 변제금이 너무 높게 나오면 어떻게 하나요?</div>
-        <div class="faq-a">A. 부양가족·특별지출·재산 평가 등을 통해 조정될 수 있습니다.</div>
+        <div class="faq-a">
+          A. 부양가족·특별지출·재산 평가 등을 통해 조정될 수 있습니다.<br>
+          자세한 기준은 <a href="/blog/living-expense-guide.html">생계비 기준</a>을 참고하세요.
+        </div>
       </div>
 
       <div class="faq-item">
@@ -212,9 +209,14 @@
     <div class="card cta">
       <p class="cta-title">이제, 내 변제금을 직접 계산해보세요.</p>
       <p class="cta-text">1분이면 예상 변제금과 탕감률을 확인할 수 있습니다.</p>
-      <a href="https://molawcalculator.com/calculators/repay.html" class="btn-primary">
-        개인회생 변제금 계산하러 가기
-      </a>
+
+      <a href="/calculators/repay.html" class="btn-primary">개인회생 변제금 계산하러 가기</a>
+
+      <div class="cta-links">
+        <a href="/calculators/living-expense.html">생계비 계산하기</a> ·
+        <a href="/calculators/household.html">가구수 계산하기</a> ·
+        <a href="/calculators/interest.html">연이자 계산하기</a>
+      </div>
     </div>
   </section>
 
@@ -235,15 +237,10 @@
 </footer>
 
 <div class="call-fixed">
-  <a href="tel:025955706" class="consult-call">
-    무료 상담 02-595-5706 ← 클릭 시 전화 연결
-  </a>
+  <a href="tel:025955706" class="consult-call">무료 상담 02-595-5706 ← 클릭 시 전화 연결</a>
 </div>
 
-<a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" target="_blank" rel="noopener noreferrer">
-  💬 카톡 상담
-</a>
+<a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
 
 </body>
 </html>
