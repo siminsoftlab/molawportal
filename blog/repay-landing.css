@@ -202,4 +202,12 @@ body {
   margin: 0 auto;
   padding: 0 16px;
 }
+a:not(.btn-primary):not(.btn-full) {
+  text-decoration: none;
+  color: #0066ff;
+}
+
+a:not(.btn-primary):not(.btn-full):hover {
+  color: #003399;
+}
 
