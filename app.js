@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
  * 온라인 상담 말풍선 타이핑 효과 (확정 작동 버전)
  ****************************************************/
 document.addEventListener("DOMContentLoaded", function () {
-  const text2 = "1분이면 상담 신청이 가능합니다.";
+  const text2 = "1분이면 상담 신청 가능합니다.";
   const typingTarget2 = document.getElementById("consult-typing");
 
   if (!typingTarget2) return;
