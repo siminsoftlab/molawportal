@@ -11,11 +11,10 @@
   <title>개인회생 계산기 — 변제금·생계비 자동 계산</title>
   <!-- ⭐ SEO Description (80자 권장) -->
   <meta name="description" content="개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스">
-  <!-- ⭐ Keywords (네이버 참고 지표) -->
+  <!-- ⭐ Keywords -->
   <meta name="keywords" content="개인회생 계산기, 변제금 계산기, 생계비 계산기, 연이자 계산기, 월변제금, 청산가치, 불법사채 이자계산">
-  <!-- Canonical -->
   <link rel="canonical" href="https://molawcalculator.com/index.html">
-  <!-- ⭐ Open Graph -->
+
   <meta property="og:title" content="개인회생 계산기 — 변제금·생계비 자동 계산">
   <meta property="og:description" content="개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스">
   <meta property="og:type" content="website">
@@ -23,33 +22,20 @@
   <meta property="og:url" content="https://molawcalculator.com/index.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ Twitter Card (네이버 모바일 미리보기 반영됨) -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="개인회생 계산기 — 변제금·생계비 자동 계산">
-  <meta name="twitter:description" content="개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 계산 서비스">
-  <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ 구조화 데이터 (WebSite + LegalService) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "딱요만큼변제",
     "url": "https://molawcalculator.com",
-    "description": "개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스",
-    "keywords": "개인회생 계산기, 변제금 계산기, 생계비 계산기, 연이자 계산기",
-    "provider": {
-      "@type": "LegalService",
-      "name": "법무법인 영민",
-      "url": "https://molawcalculator.com"
-    }
+    "description": "개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스"
   }
   </script>
 
-  <!-- ⭐ 네이버 검색 로봇 수집 강화 -->
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="robots" content="index, follow">
 
-  <!-- 기존 코드 유지 -->
   <link rel="icon" href="images/favicon.ico">
   <link rel="stylesheet" href="style.css">
   <script src="block-right-click.js"></script>  
@@ -58,77 +44,111 @@
 <body class="homepage">
 
 <div class="fixed-top">
-  <!-- 🔥 실시간 시계 -->
   <div id="live-clock"></div>
-  
-  <!-- 사이트명 & 방문자수 -->  
   <div class="top-info-bar">
-  딱요만큼변제 · 오늘 방문 <span id="visitor-today">조회중…</span>명 · 전체 방문 <span id="visitor-total">조회중…</span>명
+    딱요만큼변제 · 오늘 방문 <span id="visitor-today">조회중…</span>명 · 전체 방문 <span id="visitor-total">조회중…</span>명
+  </div>
 </div>
-</div>
-<!-- ⭐ 페이지 전체 내용 시작 --> 
-<div class="container">  
-    <!-- 💬 타이핑 말풍선 (계산기 div 바로 위) -->
-    <div class="calc-greeting-bubble">
-      <span id="typing-text"></span>
+
+<!-- ⭐ 페이지 전체 내용 시작 -->
+<div class="container">
+
+  <div class="calc-greeting-bubble">
+    <span id="typing-text"></span>
+  </div>
+
+  <h2>개인회생 계산기 모음</h2>
+
+  <div class="two-box calc-box">
+
+    <div class="left-box">
+      <a href="calculators/repay.html">
+        <div class="box-top">
+          <img src="images/repay_icon.png" class="calc-img" alt="변제금 아이콘">
+        </div>
+        <p class="calc-desc">개인회생 변제금 계산기</p>
+      </a>
     </div>
 
-    <h2>개인회생 계산기 모음</h2>
-
-    <!-- ⭐ 계산기 영역: calc-box 추가 -->
-    <div class="two-box calc-box">
-
-      <div class="left-box">
-        <a href="calculators/repay.html">
-          <div class="box-top">
-            <img src="images/repay_icon.png" class="calc-img" alt="변제금 아이콘">
-          </div>
-          <p class="calc-desc">개인회생 변제금 계산기</p>
-        </a>
-      </div>     
-
-      <div class="left-box">
-        <a href="calculators/living-adjust.html">
-          <div class="box-top">
-            <img src="images/living-adjust_icon.png" class="calc-img" alt="법원 생계비 계산기 아이콘">
-          </div>
-          <p class="calc-desc">법원 생계비 계산기</p>
-        </a>
-      </div>
-
-      <div class="right-box">
-        <a href="calculators/household-auto-living.html">
-          <div class="box-top">
-            <img src="images/household-auto-living_icon.png" class="calc-img" alt="가구수 생계비 계산기 아이콘">
-          </div>
-          <p class="calc-desc">가구수 생계비 계산기</p>
-        </a>
-      </div>
-
-       <div class="right-box">
-        <a href="calculators/interest.html">
-          <div class="box-top">
-            <img src="images/interest_icon.png" class="calc-img" alt="연이자 아이콘">
-          </div>
-          <p class="calc-desc">연이자 계산기</p>
-        </a>
-      </div>
-
+    <div class="left-box">
+      <a href="calculators/living-adjust.html">
+        <div class="box-top">
+          <img src="images/living-adjust_icon.png" class="calc-img" alt="법원 생계비 계산기 아이콘">
+        </div>
+        <p class="calc-desc">법원 생계비 계산기</p>
+      </a>
     </div>
 
-    <!-- ⭐ 내부링크 추가: 블로그 4종 -->
-    <div class="blog-links" style="margin-top:25px; text-align:center;">
-      <p><strong>계산기 사용 가이드 보기</strong></p>
-      <a href="blog/repay-guide.html">변제금 계산 가이드</a> ·
-      <a href="blog/living-expense-guide.html">생계비 계산 가이드</a> ·
-      <a href="blog/household-guide.html">가구수 계산 가이드</a> ·
-      <a href="blog/interest-guide.html">연이자 계산 가이드</a>
+    <div class="right-box">
+      <a href="calculators/household-auto-living.html">
+        <div class="box-top">
+          <img src="images/household-auto-living_icon.png" class="calc-img" alt="가구수 생계비 계산기 아이콘">
+        </div>
+        <p class="calc-desc">가구수 생계비 계산기</p>
+      </a>
     </div>
+
+    <div class="right-box">
+      <a href="calculators/interest.html">
+        <div class="box-top">
+          <img src="images/interest_icon.png" class="calc-img" alt="연이자 아이콘">
+        </div>
+        <p class="calc-desc">연이자 계산기</p>
+      </a>
+    </div>
+
+  </div>
 
 </div>
- <!-- ⭐ 온라인 상담 신청 --> 
+
+<!-- ⭐ 추가된 섹션 ① : 계산기 사용 가이드 보기 -->
+<div class="container" style="margin-top:40px;">
+  <h2 class="consult-title">계산기 사용 가이드 보기</h2>
+  <p class="consult-guide">개인회생 계산기를 처음 사용한다면 아래 가이드를 참고하세요.</p>
+
+  <div class="two-box">
+
+    <div class="left-box">
+      <a href="blog/repay-guide.html">
+        <div class="box-top">
+          <img src="images/repay_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">변제금 계산 가이드</p>
+      </a>
+    </div>
+
+    <div class="right-box">
+      <a href="blog/living-expense-guide.html">
+        <div class="box-top">
+          <img src="images/living-adjust_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">생계비 계산 가이드</p>
+      </a>
+    </div>
+
+    <div class="left-box">
+      <a href="blog/household-guide.html">
+        <div class="box-top">
+          <img src="images/household-auto-living_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">가구수 계산 가이드</p>
+      </a>
+    </div>
+
+    <div class="right-box">
+      <a href="blog/interest-guide.html">
+        <div class="box-top">
+          <img src="images/interest_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">연이자 계산 가이드</p>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ⭐ 온라인 상담 신청 -->
 <div class="container consult-section">
-  <!-- 💬 온라인 상담 말풍선 -->
   <div class="calc-greeting-bubble">
     <span id="consult-typing"></span>
   </div>
@@ -166,11 +186,10 @@
     </select>
 
     <label>상담 내용</label>
-    <textarea name="message" id="message" rows="5" placeholder="상담 내용을 간단히 적어주세요"></textarea>
+    <textarea name="message" id="message" rows="5"></textarea>
     <div id="messageCount">0 / 300자</div>
     <div class="error-msg" id="messageError"></div>
 
-    <!-- 개인정보 동의 -->
     <div class="agree-box">
       <input type="checkbox" id="agree">
       <label for="agree">개인정보 수집·이용에 동의합니다.</label>
@@ -183,89 +202,114 @@
     </button>
   </form>
 
-  <!-- 개인정보 처리방침 모달 -->
   <div id="privacyModal" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
       <h3>개인정보 수집·이용 안내</h3>
-
-      <p><strong>1. 수집 항목</strong><br>
-      이름, 연락처, 이메일, 상담 유형, 상담 내용</p>
-
-      <p><strong>2. 수집 목적</strong><br>
-      상담 요청 확인 및 상담 진행을 위한 연락</p>
-
-      <p><strong>3. 보유 기간</strong><br>
-      상담 완료 후 1년 보관 후 즉시 파기</p>
-
-      <p><strong>4. 동의 거부 권리</strong><br>
-      동의를 거부할 수 있으나, 이 경우 상담 신청이 제한될 수 있습니다.</p>
+      <p><strong>1. 수집 항목</strong><br>이름, 연락처, 이메일, 상담 유형, 상담 내용</p>
+      <p><strong>2. 수집 목적</strong><br>상담 요청 확인 및 상담 진행을 위한 연락</p>
+      <p><strong>3. 보유 기간</strong><br>상담 완료 후 1년 보관 후 즉시 파기</p>
+      <p><strong>4. 동의 거부 권리</strong><br>동의를 거부할 수 있으나 상담 신청이 제한될 수 있습니다.</p>
     </div>
   </div>
 </div>
 
-<!-- ⭐ 회생·파산 신청·서류 발급대행 --> 
+<!-- ⭐ 회생·파산 신청·서류 발급대행 -->
 <div class="container">
   <h2>개인회생 서비스 모음</h2>
-    <div class="two-box">
-      <!-- 기존 left-box / right-box가 있다면 유지 -->
-  
-      <!-- ⭐ 추가된 박스 시작 -->
-      <div class="left-box">
-        <a href="blog/modoolawfirm.html">
-          <div class="box-top">
-            <img src="images/dontworry_icon.png" class="calc-img" alt="모두의로펌 아이콘">
-          </div>
-          <p class="calc-desc">모두의로펌</p>
-        </a>
-      </div>
-  
-      <div class="right-box">
-        <a href="blog/ssonsalminwon.html">
-          <div class="box-top">
-            <img src="images/rocketminwon_icon.png" class="calc-img" alt="쏜살민원 아이콘">
-          </div>
-          <p class="calc-desc">쏜살민원</p>
-        </a>
-      </div>
-      <!-- ⭐ 추가된 박스 끝 -->
-    </div> 
+  <div class="two-box">
 
-    <!-- ⭐ 내부링크 추가: 계산기 4종 바로가기 -->
-    <div class="calc-links" style="margin-top:30px; text-align:center;">
-      <p><strong>개인회생 계산기 바로가기</strong></p>
-      <a href="calculators/repay.html">변제금 계산기</a> ·
-      <a href="calculators/living-adjust.html">생계비 계산기</a> ·
-      <a href="calculators/household-auto-living.html">가구수 계산기</a> ·
-      <a href="calculators/interest.html">연이자 계산기</a>
+    <div class="left-box">
+      <a href="blog/modoolawfirm.html">
+        <div class="box-top">
+          <img src="images/dontworry_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">모두의로펌</p>
+      </a>
     </div>
 
+    <div class="right-box">
+      <a href="blog/ssonsalminwon.html">
+        <div class="box-top">
+          <img src="images/rocketminwon_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">쏜살민원</p>
+      </a>
+    </div>
+
+  </div>
+
 </div>
+
+<!-- ⭐ 추가된 섹션 ② : 개인회생 계산기 바로가기 -->
+<div class="container" style="margin-top:40px;">
+  <h2 class="consult-title">개인회생 계산기 바로가기</h2>
+  <p class="consult-guide">아래 계산기 중 원하는 항목을 선택하세요.</p>
+
+  <div class="two-box">
+
+    <div class="left-box">
+      <a href="calculators/repay.html">
+        <div class="box-top">
+          <img src="images/repay_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">변제금 계산기</p>
+      </a>
+    </div>
+
+    <div class="right-box">
+      <a href="calculators/living-adjust.html">
+        <div class="box-top">
+          <img src="images/living-adjust_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">생계비 계산기</p>
+      </a>
+    </div>
+
+    <div class="left-box">
+      <a href="calculators/household-auto-living.html">
+        <div class="box-top">
+          <img src="images/household-auto-living_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">가구수 계산기</p>
+      </a>
+    </div>
+
+    <div class="right-box">
+      <a href="calculators/interest.html">
+        <div class="box-top">
+          <img src="images/interest_icon.png" class="calc-img">
+        </div>
+        <p class="calc-desc">연이자 계산기</p>
+      </a>
+    </div>
+
+  </div>
 </div>
-<!-- ⭐ 페이지 전체 내용 끝 -->
-<!-- ⭐ 찾아오시는길 -->
+
+<!-- ⭐ 찾아오시는 길 -->
 <div class="container location-section">
   <h2 class="calc-title">찾아오시는 길</h2>
 
   <div class="location-wrapper">
     <div class="location-info">
       <p><strong>상호</strong> : 법무법인 영민</p>
-      <p><strong>주소</strong> : 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)</p>
+      <p><strong>주소</strong> : 서울특별시 서초구 반포대로30길 70, 5층</p>
       <p><strong>전화번호</strong> : 02-595-5706</p>
-      <p><strong>업무시간</strong> : 평일 09:00 ~ 18:00 (주말/공휴일 온라인 상담신청 가능)</p>
-      <p><strong>교통안내</strong> : 지하철 교대역 9번 출구 도보 3분</p>
+      <p><strong>업무시간</strong> : 평일 09:00 ~ 18:00</p>
+      <p><strong>교통안내</strong> : 교대역 9번 출구 도보 3분</p>
     </div>
 
     <div id="daumRoughmapContainer1779184856757" class="root_daum_roughmap root_daum_roughmap_landing custom-map"></div>
   </div>
 </div>
-<!-- ⭐ footer (페이지 끝에 붙음) -->
+
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-company">딱요만큼변제</div>
     <div class="footer-info">
       상호: 법무법인 영민 | 대표: 박희영 | 사업자등록번호: 425-88-00769  
-      주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
+      주소: 06645 서울특별시 서초구 반포대로30길 70, 5층  
       개인정보관리책임자: 박희영  
       전화: 02-595-5706  
       팩스: 02-525-7255
@@ -274,20 +318,16 @@
   </div>
 </footer>
 
-<!-- 🔥 하단 고정 상담바 -->
 <div class="call-fixed">
   <a href="tel:025955706" class="consult-call">
     무료 상담 02-595-5706 ← 클릭 시 전화 연결
   </a>
 </div>
 
-<!-- 🔥 오른쪽 하단 고정 카톡 상담 -->
-<a href="http://pf.kakao.com/_wAqxen/chat" 
-   class="quick-kakao" target="_blank" rel="noopener noreferrer">
+<a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">
   💬 카톡 상담
-</a>  
+</a>
 
-<!-- JS -->
 <script src="app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -296,6 +336,6 @@
 <script src="map.js" defer></script>  
 <script src="firebase-counter.js" defer></script>
 <script src="consult.js" defer></script>
-<!--<script src="accordion.js"></script> -->
+
 </body>
 </html>
