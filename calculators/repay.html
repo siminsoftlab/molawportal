@@ -7,16 +7,11 @@
   <!-- ⭐ 구글 사이트 인증 -->
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- ⭐ SEO 최적화 Title (40자 이내) -->
   <title>개인회생 변제금 계산기 — 월변제금 자동 계산</title>
-  <!-- ⭐ 네이버 최적화 Description (80자 이내) -->
   <meta name="description" content="개인회생 변제금·변제율·청산가치를 자동 계산하는 개인회생 변제금 계산기입니다. 최저생계비 반영.">
-  <!-- ⭐ 네이버 검색용 Keywords -->
   <meta name="keywords" content="개인회생 변제금 계산기, 개인회생 계산기, 변제율, 청산가치, 최저생계비">
-  <!-- Canonical -->
   <link rel="canonical" href="https://molawcalculator.com/calculators/repay.html">
 
-  <!-- ⭐ OG 태그 -->
   <meta property="og:title" content="개인회생 변제금 계산기 — 월변제금 자동 계산">
   <meta property="og:description" content="개인회생 변제금·변제율·청산가치를 자동 계산하는 개인회생 변제금 계산기입니다. 최저생계비 반영.">
   <meta property="og:type" content="website">
@@ -24,13 +19,11 @@
   <meta property="og:url" content="https://molawcalculator.com/calculators/repay.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ Twitter Card (네이버 모바일 미리보기 반영됨) -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="개인회생 변제금 계산기 — 월변제금 자동 계산">
   <meta name="twitter:description" content="개인회생 변제금·변제율·청산가치를 자동 계산하는 무료 계산기.">
   <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ 구조화 데이터 (FinancialService + Calculator) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -52,14 +45,44 @@
   }
   </script>
 
-  <!-- ⭐ 네이버 검색 로봇 수집 강화 -->
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
-  <!-- 기존 코드 유지 -->
   <link rel="icon" href="../images/favicon.ico">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../faq.css">
   <script src="../block-right-click.js"></script>
+
+  <!-- ⭐ 내부 네비게이션 CSS -->
+  <style>
+    .calc-nav {
+      display: flex;
+      gap: 8px;
+      margin: 20px 0 30px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .calc-nav a {
+      flex-shrink: 0;
+      padding: 10px 16px;
+      background: #f3f5ff;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #3a3a3a;
+      text-decoration: none;
+      border: 1px solid #e0e4ff;
+      transition: 0.2s;
+    }
+    .calc-nav a:hover {
+      background: #e7ebff;
+    }
+    .calc-nav a.active {
+      background: #4a6fff;
+      color: #fff;
+      border-color: #4a6fff;
+      font-weight: 600;
+    }
+  </style>
+
 </head>
 
 <body class="subpage">
@@ -70,8 +93,17 @@
     <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg></a> 
 </header>
+
 <div class="page-wrap">
   <div class="container">
+
+    <!-- ⭐ 내부 네비게이션 자동 삽입 -->
+    <div class="calc-nav">
+      <a href="repay.html" class="active">변제금 계산기</a>
+      <a href="living-adjust.html">법원 생계비 계산기</a>
+      <a href="household-auto-living.html">가구수 생계비 계산기</a>
+      <a href="interest.html">연이자 계산기</a>
+    </div>
 
     <h2>📌 개인회생 변제금, 지금 바로 확인해보세요</h2>
 
@@ -125,10 +157,8 @@
       <button onclick="resetRepayInputs()" style="margin-bottom:16px;">초기화</button>
     </div>
 
-    <!-- ⭐ 요약 카드 -->
     <div id="repaySummary" class="summary-card" style="display:none;"></div>
 
-    <!-- ⭐ 상세 계산 아코디언 -->
     <div class="accordion-item">
       <button class="calc-acc-btn repay-accordion-btn" onclick="toggleAccordionRepay()">
         계산 상세 보기 ▼
@@ -136,15 +166,13 @@
       <div class="acc-content calc-acc-content" id="repayAccordion"></div>
     </div>
 
-    <!-- ⭐ 자동 설명 -->
     <div id="repayExplain" class="explain-box"></div>
 
-    <!-- SEO 설명 -->
     <div class="seo-box-animated">
       <p>개인회생 변제금 계산기는 월 소득·생계비·총 부채·청산가치를 기준으로 변제금과 변제율·탕감률을 자동 계산하는 무료 서비스입니다.</p>
       <p>가용소득·총 변제예정액·최종 변제금·현재가치(PV)·청산가치 충족 여부까지 확인할 수 있습니다.</p>
     </div>
-    <!-- 상담유도 시작 -->
+
     <section class="consult-section">
        <h2 style="font-size:20px; font-weight:700; margin-bottom:10px;">
         365일 무료 상담 가능합니다
@@ -154,7 +182,6 @@
         다양한 요소에 따라 결과가 크게 달라질 수 있습니다.
         <strong>→ 전문가가 365일 무료로 상담해드립니다.</strong>
       </div> 
-      <!-- 홈 화면 바로가기 버튼 -->
       <a href="../index.html"
          style="display:inline-block; padding:14px 26px; background:#4a6fff; color:#fff; font-size:15px; font-weight:600; border-radius:999px; text-decoration:none;">
         ⬅ 홈 화면 바로가기
@@ -163,54 +190,54 @@
         ※ 온라인 상담은 홈 화면에서 이용하실 수 있습니다.<br>
       </p>
     </section>
-    <!-- 상담유도 끝 -->
-    <!-- FAQ -->
-<section class="faq-section">
-  <h2>개인회생 변제금 계산기 FAQ</h2>
 
-  <div class="faq-item">
-    <button class="faq-question toggle-arrow">개인회생 변제금은 어떻게 계산되나요?</button>
-    <div class="faq-answer">
-      <p>소득에서 법원 생계비를 제외한 가용소득을 기준으로 계산하며, 청산가치보다 적을 수 없습니다.</p>
-    </div>
-  </div>
+    <section class="faq-section">
+      <h2>개인회생 변제금 계산기 FAQ</h2>
 
-  <div class="faq-item">
-    <button class="faq-question toggle-arrow">가용소득은 무엇인가요?</button>
-    <div class="faq-answer">
-      <p>월 소득에서 법원 기준 생계비를 뺀 금액으로, 실제 변제금 산정의 핵심 요소입니다.</p>
-    </div>
-  </div>
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">개인회생 변제금은 어떻게 계산되나요?</button>
+        <div class="faq-answer">
+          <p>소득에서 법원 생계비를 제외한 가용소득을 기준으로 계산하며, 청산가치보다 적을 수 없습니다.</p>
+        </div>
+      </div>
 
-  <div class="faq-item">
-    <button class="faq-question toggle-arrow">청산가치는 왜 중요한가요?</button>
-    <div class="faq-answer">
-      <p>보유 재산을 처분했을 때의 가치로, 변제금 총액은 반드시 청산가치 이상이어야 인가가 가능합니다.</p>
-    </div>
-  </div>
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">가용소득은 무엇인가요?</button>
+        <div class="faq-answer">
+          <p>월 소득에서 법원 기준 생계비를 뺀 금액으로, 실제 변제금 산정의 핵심 요소입니다.</p>
+        </div>
+      </div>
 
-  <div class="faq-item">
-    <button class="faq-question toggle-arrow">변제금이 너무 높게 나오면 줄일 수 있나요?</button>
-    <div class="faq-answer">
-      <p>부양가족 인정, 소득 변동, 특별지출 사유 등을 통해 조정 가능하며 실제 사건에서도 자주 적용됩니다.</p>
-    </div>
-  </div>
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">청산가치는 왜 중요한가요?</button>
+        <div class="faq-answer">
+          <p>보유 재산을 처분했을 때의 가치로, 변제금 총액은 반드시 청산가치 이상이어야 인가가 가능합니다.</p>
+        </div>
+      </div>
 
-  <div class="faq-item">
-    <button class="faq-question toggle-arrow">부양가족은 어떻게 인정되나요?</button>
-    <div class="faq-answer">
-      <p>실제 생계를 같이 하는 가족을 기준으로 하며, 법원은 주민등록·건강보험·소득자료 등을 통해 판단합니다.</p>
-    </div>
-  </div>
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">변제금이 너무 높게 나오면 줄일 수 있나요?</button>
+        <div class="faq-answer">
+          <p>부양가족 인정, 소득 변동, 특별지출 사유 등을 통해 조정 가능하며 실제 사건에서도 자주 적용됩니다.</p>
+        </div>
+      </div>
 
-  <div class="faq-item">
-    <button class="faq-question toggle-arrow">계산기 결과가 실제 법원 변제금과 동일한가요?</button>
-    <div class="faq-answer">
-      <p>법원 기준을 반영해 매우 유사하게 산정되지만, 사건별 소득·지출·재산에 따라 일부 조정될 수 있습니다.</p>
-    </div>
-  </div>
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">부양가족은 어떻게 인정되나요?</button>
+        <div class="faq-answer">
+          <p>실제 생계를 같이 하는 가족을 기준으로 하며, 법원은 주민등록·건강보험·소득자료 등을 통해 판단합니다.</p>
+        </div>
+      </div>
 
-</section>
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">계산기 결과가 실제 법원 변제금과 동일한가요?</button>
+        <div class="faq-answer">
+          <p>법원 기준을 반영해 매우 유사하게 산정되지만, 사건별 소득·지출·재산에 따라 일부 조정될 수 있습니다.</p>
+        </div>
+      </div>
+
+    </section>
+
   </div>
 </div>
 
