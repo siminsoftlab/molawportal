@@ -1094,6 +1094,7 @@ z-index: 10000;
   margin-top: 10px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.15);
   transition: background 0.2s ease;
+  text-align: center; /* ⭐ 텍스트 중앙 정렬 */
 }
 
 .hl-acc-btn:hover {
