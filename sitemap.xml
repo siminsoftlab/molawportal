@@ -60,4 +60,33 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- ⭐ 유지되는 가이드 페이지 -->
+  <url>
+    <loc>https://molawcalculator.com/blog/repay-guide.html</loc>
+    <lastmod>2026-05-30T09:00:00+09:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://molawcalculator.com/blog/living-adjust-guide.html</loc>
+    <lastmod>2026-05-30T09:00:00+09:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://molawcalculator.com/blog/household-living-guide.html</loc>
+    <lastmod>2026-05-30T09:00:00+09:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://molawcalculator.com/blog/interest-guide.html</loc>
+    <lastmod>2026-05-30T09:00:00+09:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
 </urlset>
