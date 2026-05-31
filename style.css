@@ -1305,11 +1305,11 @@ z-index: 10000;
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: #fff8d1;
-  color: #333;
+  background: #f3eaff;
+  color: #5a3ea6;
   font-size: 14px;
   border-radius: 10px;
-  border: 1px solid #f0d97a;
+  border: 1px solid #d7c4ff;
   text-decoration: none;
   font-weight: 600;
 }
@@ -1321,10 +1321,10 @@ z-index: 10000;
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #FFD84D;
+  background: #d7c4ff;
   color: #333;
   font-size: 12px;
   font-weight: bold;
-  border: 1.5px solid #E0B93A;
+  border: 1.5px solid #b9a0f5;
 }
 
