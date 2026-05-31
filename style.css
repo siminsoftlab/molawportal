@@ -1389,4 +1389,8 @@ z-index: 10000;
   transform: scale(1.12);
   opacity: 0.85;
 }
+button.hl-acc-btn {
+  text-align: center !important;
+  justify-content: center !important;
+}
 
