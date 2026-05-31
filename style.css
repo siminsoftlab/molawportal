@@ -1235,8 +1235,17 @@ z-index: 10000;
 .guide-btn:active {
   transform: scale(0.96);
 }
-.info-icon {
-  margin-right: 6px;
-  font-size: 15px;
-  vertical-align: middle;
+.info-badge {
+  display: inline-block;
+  margin-left: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FFD84D; /* 노란색 */
+  color: #333; /* 가독성 좋은 진회색 */
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 16px;
+  border: 1.5px solid #E0B93A; /* 살짝 어두운 노란색 테두리 */
 }
