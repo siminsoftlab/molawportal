@@ -559,7 +559,8 @@ body.subpage .top-info-bar {
 
   /* 홈페이지 2열 → 1열 */
   body.homepage .two-box {
-    grid-template-columns: 1fr;
+    <!--grid-template-columns: 1fr;-->
+   grid-template-columns: repeat(2, 1fr) !important;
   }  
 
   body.homepage .calc-img {
