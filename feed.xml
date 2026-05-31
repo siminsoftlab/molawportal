@@ -63,12 +63,12 @@
 
     <!-- 블로그: 모두의로펌 -->
     <item>
-      <title>모두의로펌 — 불법사채·불법추심 대응 지원</title>
+      <title>모두의로펌 — 불법사채 피해구제·개인회생·파산 채무조정</title>
       <link>https://molawcalculator.com/blog/modoolawfirm.html</link>
       <guid>https://molawcalculator.com/blog/modoolawfirm.html</guid>
       <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
       <description><![CDATA[
-        불법사채·불법추심 대응과 개인회생·파산·채무조정 상담을 제공하는 채무 해결 전문 서비스 안내 페이지입니다.
+        불법사채·불법추심 파해구제와 개인회생·파산·채무조정 상담을 제공하는 채무 해결 전문 서비스 안내 페이지입니다.
       ]]></description>
     </item>
 
@@ -80,6 +80,48 @@
       <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
       <description><![CDATA[
         개인회생 변제금 산정 기준과 계산 예시, 변제금 줄이는 방법을 정리한 안내 페이지입니다.
+      ]]></description>
+    </item>
+
+    <!-- ⭐ 추가된 가이드 페이지들 -->
+
+    <item>
+      <title>개인회생 변제금 계산기 가이드</title>
+      <link>https://molawcalculator.com/blog/repay-guide.html</link>
+      <guid>https://molawcalculator.com/blog/repay-guide.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        개인회생 변제금 계산기를 정확하게 사용하는 방법과 계산 기준을 정리한 공식 가이드입니다.
+      ]]></description>
+    </item>
+
+    <item>
+      <title>법원 생계비 계산기 가이드</title>
+      <link>https://molawcalculator.com/blog/living-adjust-guide.html</link>
+      <guid>https://molawcalculator.com/blog/living-adjust-guide.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        법원 생계비 계산 방식, 중위소득 기준, 가구수별 생계비 산정 방법을 정리한 가이드입니다.
+      ]]></description>
+    </item>
+
+    <item>
+      <title>가구수 생계비 계산기 가이드</title>
+      <link>https://molawcalculator.com/blog/household-living-guide.html</link>
+      <guid>https://molawcalculator.com/blog/household-living-guide.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        가구수별 생계비 기준과 계산기 활용법을 정리한 공식 가이드입니다.
+      ]]></description>
+    </item>
+
+    <item>
+      <title>연이자 계산기 가이드</title>
+      <link>https://molawcalculator.com/blog/interest-guide.html</link>
+      <guid>https://molawcalculator.com/blog/interest-guide.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        연이율·월이자·총이자 계산 방식과 계산기 활용법을 정리한 가이드입니다.
       ]]></description>
     </item>
 
