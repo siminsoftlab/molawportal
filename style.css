@@ -1362,4 +1362,22 @@ z-index: 10000;
 .youtube-overlay-box:hover .youtube-play-btn {
   background: rgba(0,0,0,0.75);
 }
+.footer-social {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+  align-items: center;
+}
+
+.footer-social .sns-icon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  transition: 0.2s ease;
+}
+
+.footer-social .sns-icon img:hover {
+  transform: scale(1.12);
+  opacity: 0.85;
+}
 
