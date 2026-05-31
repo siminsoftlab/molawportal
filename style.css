@@ -1235,3 +1235,8 @@ z-index: 10000;
 .guide-btn:active {
   transform: scale(0.96);
 }
+.info-icon {
+  margin-right: 6px;
+  font-size: 15px;
+  vertical-align: middle;
+}
