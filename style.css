@@ -1293,4 +1293,38 @@ z-index: 10000;
   font-size: 16px;
   line-height: 1;
 }
+.guide-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0 25px;
+}
+
+.guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #fff8d1;
+  color: #333;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #f0d97a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #FFD84D;
+  color: #333;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1.5px solid #E0B93A;
+}
 
