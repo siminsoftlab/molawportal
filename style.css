@@ -1251,3 +1251,30 @@ z-index: 10000;
   border: 1.5px solid #E0B93A;
   box-sizing: border-box;
 }
+.calc-nav {
+      display: flex;
+      gap: 8px;
+      margin: 20px 0 30px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .calc-nav a {
+      flex-shrink: 0;
+      padding: 10px 16px;
+      background: #f3f5ff;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #3a3a3a;
+      text-decoration: none;
+      border: 1px solid #e0e4ff;
+      transition: 0.2s;
+    }
+    .calc-nav a:hover {
+      background: #e7ebff;
+    }
+    .calc-nav a.active {
+      background: #4a6fff;
+      color: #fff;
+      border-color: #4a6fff;
+      font-weight: 600;
+    }
