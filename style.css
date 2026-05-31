@@ -1252,29 +1252,40 @@ z-index: 10000;
   box-sizing: border-box;
 }
 .calc-nav {
-      display: flex;
-      gap: 8px;
-      margin: 20px 0 30px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-    }
-    .calc-nav a {
-      flex-shrink: 0;
-      padding: 10px 16px;
-      background: #f3f5ff;
-      border-radius: 10px;
-      font-size: 14px;
-      color: #3a3a3a;
-      text-decoration: none;
-      border: 1px solid #e0e4ff;
-      transition: 0.2s;
-    }
-    .calc-nav a:hover {
-      background: #e7ebff;
-    }
-    .calc-nav a.active {
-      background: #4a6fff;
-      color: #fff;
-      border-color: #4a6fff;
-      font-weight: 600;
-    }
+  display: flex;
+  gap: 10px;
+  margin: 20px 0 30px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.calc-nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #f3f5ff;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  border: 1px solid #e0e4ff;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.calc-nav .nav-item:hover {
+  background: #e7ebff;
+}
+
+.calc-nav .nav-item.active {
+  background: #4a6fff;
+  color: #fff;
+  border-color: #4a6fff;
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 16px;
+  line-height: 1;
+}
