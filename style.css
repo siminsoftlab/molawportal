@@ -1285,7 +1285,12 @@ z-index: 10000;
   font-weight: 600;
 }
 
+.calc-nav .nav-item.active .nav-icon {
+  color: #fff; /* 아이콘도 흰색으로 반전 */
+}
+
 .nav-icon {
   font-size: 16px;
   line-height: 1;
 }
+
