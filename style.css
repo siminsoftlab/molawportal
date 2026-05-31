@@ -1214,3 +1214,24 @@ z-index: 10000;
   background: rgba(255,255,255,0.28) !important;
   transform: translateX(-50%) scale(1.05) !important;
 }
+.guide-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #3A7AFE;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+.guide-btn:hover {
+  background: #2f63d9;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.guide-btn:active {
+  transform: scale(0.96);
+}
