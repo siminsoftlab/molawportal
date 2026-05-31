@@ -1236,16 +1236,18 @@ z-index: 10000;
   transform: scale(0.96);
 }
 .info-badge {
-  display: inline-block;
-  margin-left: 6px;
-  width: 16px;
-  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px; /* ⭐ 공백 여유 증가 */
+  padding: 2px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #FFD84D; /* 노란색 */
-  color: #333; /* 가독성 좋은 진회색 */
+  color: #333;
   font-size: 12px;
   font-weight: bold;
-  text-align: center;
-  line-height: 16px;
-  border: 1.5px solid #E0B93A; /* 살짝 어두운 노란색 테두리 */
+  border: 1.5px solid #E0B93A;
+  box-sizing: border-box;
 }
