@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
  * 타이핑 효과
  ****************************************************/
 document.addEventListener("DOMContentLoaded", function () {
-  const text = "계산은 아이콘 클릭, 설명은 가이드 클릭";
+  const text = "아이콘 클릭시 계산기 이용이 가능합니다.";
   const typingTarget = document.getElementById("typing-text");
   const bubble = document.querySelector(".calc-greeting-bubble");
 
