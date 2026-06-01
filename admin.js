@@ -159,7 +159,7 @@ function renderShardButtons() {
 }
 
 /* ============================================================
-   Daily 방문자 로그 (페이징)
+   Daily 방문자 로그 (정렬 없음 + 페이징)
    ============================================================ */
 let dailyData = [];
 let dailyPage = 0;
@@ -181,6 +181,9 @@ async function loadDailyLog(date) {
 
   const data = snap.data();
   dailyData = Object.keys(data).filter(k => k !== "_init");
+
+  // ⭐ 요청에 따라 정렬하지 않음
+  // dailyData.sort().reverse(); ← 제거됨
 
   dailyPage = 0;
   renderDailyPage(date);
@@ -285,7 +288,7 @@ function drawPieChart(canvasId, dataObj) {
 }
 
 /* ============================================================
-   IP 상세 정보 (페이징 + 접속시간)
+   IP 상세 정보 (최신순 정렬 + 페이징)
    ============================================================ */
 let ipData = [];
 let ipPage = 0;
@@ -304,9 +307,13 @@ async function loadIPDetails(date) {
       ip: d.ip,
       country: d.country,
       city: d.city,
-      time: d.timestamp ? new Date(d.timestamp).toLocaleString() : "-"
+      time: d.timestamp ? new Date(d.timestamp).toLocaleString() : "-",
+      rawTime: d.timestamp || 0
     });
   });
+
+  // ⭐ 최신 접속시간 순 정렬
+  ipData.sort((a, b) => b.rawTime - a.rawTime);
 
   ipPage = 0;
   renderIPPage();
