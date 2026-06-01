@@ -94,8 +94,12 @@ async function loadTotal() {
 }
 
 /* ============================================================
-   샤드 상태
+   샤드 상태 (페이징)
    ============================================================ */
+let shardData = [];
+let shardPage = 0;
+const shardPageSize = 10;
+
 async function loadShards() {
   const ref = db
     .collection("visitors")
@@ -104,18 +108,63 @@ async function loadShards() {
 
   const snap = await ref.get();
 
-  let text = "";
+  shardData = [];
+
   snap.forEach(doc => {
     const d = doc.data();
-    text += `Shard ${doc.id} — total: ${d.total || 0}\n`;
+    shardData.push(`Shard ${doc.id} — total: ${d.total || 0}`);
   });
 
-  document.getElementById("shard-list").textContent = text;
+  shardPage = 0;
+  renderShardPage();
+}
+
+function renderShardPage() {
+  const start = shardPage * shardPageSize;
+  const end = start + shardPageSize;
+
+  const slice = shardData.slice(start, end);
+
+  document.getElementById("shard-list").textContent =
+    slice.join("\n") || "데이터 없음";
+
+  renderShardButtons();
+}
+
+function renderShardButtons() {
+  const container = document.getElementById("shard-buttons");
+  container.innerHTML = "";
+
+  if (shardPage > 0) {
+    const prev = document.createElement("button");
+    prev.textContent = "이전";
+    prev.className = "btn-secondary";
+    prev.onclick = () => {
+      shardPage--;
+      renderShardPage();
+    };
+    container.appendChild(prev);
+  }
+
+  if ((shardPage + 1) * shardPageSize < shardData.length) {
+    const next = document.createElement("button");
+    next.textContent = "다음";
+    next.className = "btn-secondary";
+    next.onclick = () => {
+      shardPage++;
+      renderShardPage();
+    };
+    container.appendChild(next);
+  }
 }
 
 /* ============================================================
-   Daily 로그
+   Daily 방문자 로그 (페이징)
    ============================================================ */
+let dailyData = [];
+let dailyPage = 0;
+const dailyPageSize = 10;
+
 async function loadDailyLog(date) {
   const ref = db
     .collection("visitors")
@@ -131,12 +180,51 @@ async function loadDailyLog(date) {
   }
 
   const data = snap.data();
-  const keys = Object.keys(data).filter(k => k !== "_init");
+  dailyData = Object.keys(data).filter(k => k !== "_init");
 
-  let text = `📅 ${date} 방문자 수: ${keys.length}\n\n`;
-  text += keys.join("\n");
+  dailyPage = 0;
+  renderDailyPage(date);
+}
+
+function renderDailyPage(date) {
+  const start = dailyPage * dailyPageSize;
+  const end = start + dailyPageSize;
+
+  const slice = dailyData.slice(start, end);
+
+  let text = `📅 ${date} 방문자 수: ${dailyData.length}\n\n`;
+  text += slice.join("\n") || "데이터 없음";
 
   document.getElementById("daily-log").textContent = text;
+
+  renderDailyButtons();
+}
+
+function renderDailyButtons() {
+  const container = document.getElementById("daily-buttons");
+  container.innerHTML = "";
+
+  if (dailyPage > 0) {
+    const prev = document.createElement("button");
+    prev.textContent = "이전";
+    prev.className = "btn-secondary";
+    prev.onclick = () => {
+      dailyPage--;
+      renderDailyPage(document.getElementById("daily-date").value);
+    };
+    container.appendChild(prev);
+  }
+
+  if ((dailyPage + 1) * dailyPageSize < dailyData.length) {
+    const next = document.createElement("button");
+    next.textContent = "다음";
+    next.className = "btn-secondary";
+    next.onclick = () => {
+      dailyPage++;
+      renderDailyPage(document.getElementById("daily-date").value);
+    };
+    container.appendChild(next);
+  }
 }
 
 /* ============================================================
@@ -197,11 +285,11 @@ function drawPieChart(canvasId, dataObj) {
 }
 
 /* ============================================================
-   IP 상세 정보 (10줄씩 페이징 + 접속시간 표시)
+   IP 상세 정보 (페이징 + 접속시간)
    ============================================================ */
 let ipData = [];
-let currentPage = 0;
-const pageSize = 10;
+let ipPage = 0;
+const ipPageSize = 10;
 
 async function loadIPDetails(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
@@ -211,6 +299,7 @@ async function loadIPDetails(date) {
 
   snap.forEach(doc => {
     const d = doc.data();
+
     ipData.push({
       ip: d.ip,
       country: d.country,
@@ -219,13 +308,14 @@ async function loadIPDetails(date) {
     });
   });
 
-  currentPage = 0;
+  ipPage = 0;
   renderIPPage();
 }
 
 function renderIPPage() {
-  const start = currentPage * pageSize;
-  const end = start + pageSize;
+  const start = ipPage * ipPageSize;
+  const end = start + ipPageSize;
+
   const slice = ipData.slice(start, end);
 
   let text = "";
@@ -243,30 +333,28 @@ function renderIPPage() {
 
 function renderIPButtons() {
   const container = document.getElementById("ip-buttons");
-  if (!container) return;
-
   container.innerHTML = "";
 
-  if (currentPage > 0) {
-    const prevBtn = document.createElement("button");
-    prevBtn.textContent = "이전";
-    prevBtn.className = "btn-secondary";
-    prevBtn.onclick = () => {
-      currentPage--;
+  if (ipPage > 0) {
+    const prev = document.createElement("button");
+    prev.textContent = "이전";
+    prev.className = "btn-secondary";
+    prev.onclick = () => {
+      ipPage--;
       renderIPPage();
     };
-    container.appendChild(prevBtn);
+    container.appendChild(prev);
   }
 
-  if ((currentPage + 1) * pageSize < ipData.length) {
-    const nextBtn = document.createElement("button");
-    nextBtn.textContent = "다음";
-    nextBtn.className = "btn-secondary";
-    nextBtn.onclick = () => {
-      currentPage++;
+  if ((ipPage + 1) * ipPageSize < ipData.length) {
+    const next = document.createElement("button");
+    next.textContent = "다음";
+    next.className = "btn-secondary";
+    next.onclick = () => {
+      ipPage++;
       renderIPPage();
     };
-    container.appendChild(nextBtn);
+    container.appendChild(next);
   }
 }
 
