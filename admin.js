@@ -197,21 +197,77 @@ function drawPieChart(canvasId, dataObj) {
 }
 
 /* ============================================================
-   IP 상세 정보 (축약 버전)
+   IP 상세 정보 (10줄씩 페이징 + 접속시간 표시)
    ============================================================ */
+let ipData = [];
+let currentPage = 0;
+const pageSize = 10;
+
 async function loadIPDetails(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
   const snap = await ref.get();
 
-  let text = "";
+  ipData = [];
 
   snap.forEach(doc => {
     const d = doc.data();
-
-    text += `${d.ip} / ${d.country} / ${d.city}\n`;
+    ipData.push({
+      ip: d.ip,
+      country: d.country,
+      city: d.city,
+      time: d.timestamp ? new Date(d.timestamp).toLocaleString() : "-"
+    });
   });
 
-  document.getElementById("ip-detail-log").textContent = text || "데이터 없음";
+  currentPage = 0;
+  renderIPPage();
+}
+
+function renderIPPage() {
+  const start = currentPage * pageSize;
+  const end = start + pageSize;
+  const slice = ipData.slice(start, end);
+
+  let text = "";
+
+  slice.forEach(d => {
+    text += `${d.ip} / ${d.country} / ${d.city} / ${d.time}\n`;
+  });
+
+  if (text === "") text = "데이터 없음";
+
+  document.getElementById("ip-detail-log").textContent = text;
+
+  renderIPButtons();
+}
+
+function renderIPButtons() {
+  const container = document.getElementById("ip-buttons");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (currentPage > 0) {
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "이전";
+    prevBtn.className = "btn-secondary";
+    prevBtn.onclick = () => {
+      currentPage--;
+      renderIPPage();
+    };
+    container.appendChild(prevBtn);
+  }
+
+  if ((currentPage + 1) * pageSize < ipData.length) {
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "다음";
+    nextBtn.className = "btn-secondary";
+    nextBtn.onclick = () => {
+      currentPage++;
+      renderIPPage();
+    };
+    container.appendChild(nextBtn);
+  }
 }
 
 /* ============================================================
