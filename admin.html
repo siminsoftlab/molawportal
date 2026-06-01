@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>관리자 방문자 모니터링</title>
 
-  <link rel="stylesheet" href="admin.css?v=1002">
+  <link rel="stylesheet" href="admin.css?v=1003">
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -58,6 +58,9 @@
     <div class="card full">
       <div class="card-title">🧩 샤드 상태</div>
       <pre id="shard-list" class="shard-table"></pre>
+
+      <!-- ⭐ 샤드 페이징 버튼 -->
+      <div id="shard-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
     </div>
   </div>
 
@@ -72,18 +75,21 @@
       </div>
 
       <pre id="daily-log">날짜를 선택하세요.</pre>
+
+      <!-- ⭐ Daily 페이징 버튼 -->
+      <div id="daily-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
     </div>
   </div>
 
-  <!-- 5️⃣ IP 상세 정보 + 페이징 버튼 -->
+  <!-- 5️⃣ IP 상세 정보 -->
   <div class="admin-container section">
     <div class="card full">
       <div class="card-title">📌 방문자 상세 정보 (IP / 국가 / 도시 / 접속시간)</div>
 
       <pre id="ip-detail-log">날짜를 선택하면 표시됩니다.</pre>
 
-      <!-- ⭐ 페이징 버튼 영역 추가 -->
-      <div id="ip-buttons" style="margin-top: 10px; display: flex; gap: 10px;"></div>
+      <!-- ⭐ IP 페이징 버튼 -->
+      <div id="ip-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
     </div>
   </div>
 
@@ -113,7 +119,7 @@
   </script>
 
   <!-- admin.js -->
-  <script src="admin.js?v=1002" defer></script>
+  <script src="admin.js?v=1003" defer></script>
   <script src="firebase-counter.js" defer></script>
 
 </body>
