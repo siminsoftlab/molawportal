@@ -142,3 +142,8 @@ canvas {
   height: 250px !important;
   max-height: 250px !important;
 }
+@media (max-width: 600px) {
+  .admin-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
