@@ -73,10 +73,12 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+/* 전체폭 카드 */
 .card.full {
-  grid-column: 1 / -1;
+  grid-column: 1 / -1 !important;
 }
 
+/* 카드 텍스트 */
 .card-title {
   font-size: 16px;
   color: #555;
@@ -126,6 +128,12 @@ canvas {
   margin-top: 10px;
 }
 
+#browserChart,
+#osChart {
+  height: 250px !important;
+  max-height: 250px !important;
+}
+
 /* 반응형 */
 @media (max-width: 600px) {
   .admin-header {
@@ -136,13 +144,8 @@ canvas {
   .actions {
     margin-top: 10px;
   }
-}
-#browserChart,
-#osChart {
-  height: 250px !important;
-  max-height: 250px !important;
-}
-@media (max-width: 600px) {
+
+  /* 모바일에서 2개씩 정렬 */
   .admin-container {
     grid-template-columns: repeat(2, 1fr);
   }
