@@ -53,45 +53,39 @@
     </div>
   </div>
 
-  <!-- 3️⃣ 샤드 상태 -->
-  <div class="admin-container section">
-    <div class="card full">
-      <div class="card-title">🧩 샤드 상태</div>
-      <pre id="shard-list" class="shard-table"></pre>
+  <!-- 3️⃣ 샤드 / Daily / IP 상세정보 (3개 한 줄) -->
+<div class="admin-container section">
 
-      <!-- ⭐ 샤드 페이징 버튼 -->
-      <div id="shard-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
-    </div>
+  <!-- 샤드 상태 -->
+  <div class="card">
+    <div class="card-title">🧩 샤드 상태</div>
+    <pre id="shard-list" class="shard-table"></pre>
+    <div id="shard-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
   </div>
 
-  <!-- 4️⃣ Daily 로그 -->
-  <div class="admin-container section">
-    <div class="card full">
-      <div class="card-title">📅 Daily 방문자 로그</div>
+  <!-- Daily 방문자 로그 -->
+  <div class="card">
+    <div class="card-title">📅 Daily 방문자 로그</div>
 
-      <div class="daily-controls">
-        <input type="date" id="daily-date">
-        <button id="daily-btn" class="btn-secondary">조회</button>
-      </div>
-
-      <pre id="daily-log">날짜를 선택하세요.</pre>
-
-      <!-- ⭐ Daily 페이징 버튼 -->
-      <div id="daily-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
+    <div class="daily-controls">
+      <input type="date" id="daily-date">
+      <button id="daily-btn" class="btn-secondary">조회</button>
     </div>
+
+    <pre id="daily-log">날짜를 선택하세요.</pre>
+    <div id="daily-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
   </div>
 
-  <!-- 5️⃣ IP 상세 정보 -->
-  <div class="admin-container section">
-    <div class="card full">
-      <div class="card-title">📌 방문자 상세 정보 (IP / 국가 / 도시 / 접속시간)</div>
+  <!-- 방문자 상세 정보 -->
+  <div class="card">
+    <div class="card-title">📌 방문자 상세 정보 (IP / 국가 / 도시 / 접속시간)</div>
 
-      <pre id="ip-detail-log">날짜를 선택하면 표시됩니다.</pre>
-
-      <!-- ⭐ IP 페이징 버튼 -->
-      <div id="ip-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
-    </div>
+    <pre id="ip-detail-log">날짜를 선택하면 표시됩니다.</pre>
+    <div id="ip-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
   </div>
+
+</div>
+
 
   <!-- 로그인 체크 -->
   <script>
