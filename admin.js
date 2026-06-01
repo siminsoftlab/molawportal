@@ -56,7 +56,7 @@ document.getElementById("change-pw-btn").onclick = () => {
 };
 
 /* ============================================================
-   오늘 방문자 (daily/days 기반 — 고유 방문자)
+   오늘 방문자
    ============================================================ */
 async function loadToday() {
   const today = new Date().toISOString().slice(0, 10);
@@ -81,7 +81,7 @@ async function loadToday() {
 }
 
 /* ============================================================
-   전체 방문자 (고유 방문자 기반 — total/visitors)
+   전체 방문자
    ============================================================ */
 async function loadTotal() {
   const snap = await db
@@ -94,7 +94,7 @@ async function loadTotal() {
 }
 
 /* ============================================================
-   샤드 상태 (조회수용 — 참고용)
+   샤드 상태
    ============================================================ */
 async function loadShards() {
   const ref = db
@@ -114,7 +114,7 @@ async function loadShards() {
 }
 
 /* ============================================================
-   Daily 로그 (고유 방문자)
+   Daily 로그
    ============================================================ */
 async function loadDailyLog(date) {
   const ref = db
@@ -140,7 +140,7 @@ async function loadDailyLog(date) {
 }
 
 /* ============================================================
-   브라우저 통계 (고유 방문자 기반)
+   브라우저 통계
    ============================================================ */
 async function loadBrowserStats() {
   const ref = db.collection("visitors").doc("stats").collection("browser");
@@ -158,7 +158,7 @@ async function loadBrowserStats() {
 }
 
 /* ============================================================
-   OS 통계 (고유 방문자 기반)
+   OS 통계
    ============================================================ */
 async function loadOSStats() {
   const ref = db.collection("visitors").doc("stats").collection("os");
@@ -197,7 +197,7 @@ function drawPieChart(canvasId, dataObj) {
 }
 
 /* ============================================================
-   IP 상세 정보 (고유 방문자 기반)
+   IP 상세 정보 (축약 버전)
    ============================================================ */
 async function loadIPDetails(date) {
   const ref = db.collection("visitors").doc("geoip").collection(date);
@@ -208,14 +208,7 @@ async function loadIPDetails(date) {
   snap.forEach(doc => {
     const d = doc.data();
 
-    text += `
-IP: ${d.ip}
-국가: ${d.country}
-도시: ${d.city}
-브라우저: ${d.browser}
-OS: ${d.os}
-----------------------------------------
-`;
+    text += `${d.ip} / ${d.country} / ${d.city}\n`;
   });
 
   document.getElementById("ip-detail-log").textContent = text || "데이터 없음";
@@ -227,33 +220,27 @@ OS: ${d.os}
 document.getElementById("daily-btn").onclick = async () => {
   const date = document.getElementById("daily-date").value;
   if (!date) return;
-  loadGeoIPLog(date);
-  loadDailyLog(date);
-  loadBrowserStats();
-  loadOSStats();
-  loadIPDetails(date);
+
+  await loadDailyLog(date);
+  await loadIPDetails(date);
+  await loadBrowserStats();
+  await loadOSStats();
 };
-async function loadGeoIPLog(date) {
-  const snap = await db.collection("visitors")
-    .doc("geoip")
-    .collection(date)
-    .get();
 
-  const logBox = document.getElementById("ip-detail-log");
+/* ============================================================
+   페이지 로드시 자동으로 오늘 날짜 선택 + 자동 조회
+   ============================================================ */
+function setTodayDate() {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById("daily-date").value = today;
+}
 
-  if (snap.empty) {
-    logBox.textContent = "해당 날짜의 GeoIP 데이터가 없습니다.";
-    return;
-  }
-
-  let text = "";
-
-  snap.forEach(doc => {
-    const d = doc.data();
-    text += `${d.ip || "-"} / ${d.country || "-"} / ${d.city || "-"} / ${new Date(d.timestamp).toLocaleString()}\n`;
-  });
-
-  logBox.textContent = text;
+async function autoLoadDaily() {
+  const today = new Date().toISOString().slice(0, 10);
+  await loadDailyLog(today);
+  await loadIPDetails(today);
+  await loadBrowserStats();
+  await loadOSStats();
 }
 
 /* ============================================================
@@ -262,7 +249,7 @@ async function loadGeoIPLog(date) {
 loadToday();
 loadTotal();
 loadShards();
-loadBrowserStats();
-loadOSStats();
+setTodayDate();
+autoLoadDaily();
 
 });
