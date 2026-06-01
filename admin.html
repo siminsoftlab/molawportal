@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>관리자 방문자 모니터링</title>
 
-  <link rel="stylesheet" href="admin.css?v=1001">
+  <link rel="stylesheet" href="admin.css?v=1002">
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -27,8 +27,8 @@
     </div>
   </div>
 
-  <!-- 1️⃣ 방문자 카드 (2개) -->
-  <div class="admin-container">
+  <!-- 1️⃣ 방문자 카드 -->
+  <div class="admin-container section">
     <div class="card">
       <div class="card-title">오늘 방문자</div>
       <div id="admin-today" class="card-value">0</div>
@@ -40,8 +40,8 @@
     </div>
   </div>
 
-  <!-- 2️⃣ 브라우저 / OS 통계 (2개) -->
-  <div class="admin-container">
+  <!-- 2️⃣ 브라우저 / OS 통계 -->
+  <div class="admin-container section">
     <div class="card">
       <div class="card-title">🌐 브라우저 통계</div>
       <canvas id="browserChart" height="120"></canvas>
@@ -53,8 +53,16 @@
     </div>
   </div>
 
-  <!-- 4️⃣ Daily 로그 (전체폭) -->
-  <div class="admin-container">
+  <!-- 3️⃣ 샤드 상태 -->
+  <div class="admin-container section">
+    <div class="card full">
+      <div class="card-title">🧩 샤드 상태</div>
+      <pre id="shard-list" class="shard-table"></pre>
+    </div>
+  </div>
+
+  <!-- 4️⃣ Daily 로그 -->
+  <div class="admin-container section">
     <div class="card full">
       <div class="card-title">📅 Daily 방문자 로그</div>
 
@@ -67,19 +75,15 @@
     </div>
   </div>
 
-  <!-- 5️⃣ IP 상세 정보 (전체폭) -->
-  <div class="admin-container">
+  <!-- 5️⃣ IP 상세 정보 + 페이징 버튼 -->
+  <div class="admin-container section">
     <div class="card full">
       <div class="card-title">📌 방문자 상세 정보 (IP / 국가 / 도시 / 접속시간)</div>
-      <pre id="ip-detail-log">날짜를 선택하면 표시됩니다.</pre>
-    </div>
-  </div>
 
-   <!-- 3️⃣ 샤드 상태 (전체폭) -->
-  <div class="admin-container">
-    <div class="card full">
-      <div class="card-title">🧩 샤드 상태</div>
-      <div id="shard-list" class="shard-table"></div>
+      <pre id="ip-detail-log">날짜를 선택하면 표시됩니다.</pre>
+
+      <!-- ⭐ 페이징 버튼 영역 추가 -->
+      <div id="ip-buttons" style="margin-top: 10px; display: flex; gap: 10px;"></div>
     </div>
   </div>
 
@@ -109,7 +113,7 @@
   </script>
 
   <!-- admin.js -->
-  <script src="admin.js" defer></script>
+  <script src="admin.js?v=1002" defer></script>
   <script src="firebase-counter.js" defer></script>
 
 </body>
