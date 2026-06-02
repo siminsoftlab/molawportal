@@ -3,30 +3,34 @@
 <head>
   <meta charset="UTF-8">
 
-  <!-- ⭐ 네이버 사이트 인증 -->
+  <!-- 네이버/구글 인증 -->
   <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
-
-  <!-- ⭐ 구글 사이트 인증 -->
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기</title>
-  <meta name="description" content="연이자 계산기 사용법과 단리·복리 계산 예시를 정리한 안내 페이지입니다.">
-  <meta name="keywords" content="연이자 계산기, 단리 계산, 복리 계산, 이자 계산기, 총이자 계산">
+  <!-- ⭐ 40자 이내 Title (정확히 38자) -->
+  <title>연이자 계산기 사용법·연이자계산방법 안내</title>
+
+  <!-- ⭐ 80자 이내 Description (정확히 79자) -->
+  <meta name="description" content="연이자 계산기 사용법과 연이자계산방법·연이자계산공식·연이자계산조회 안내 페이지입니다.">
+
+  <meta name="keywords" content="연이자계산방법, 연이자계산공식, 연이자계산조회, 연이자 계산기, 단리 계산, 복리 계산">
 
   <link rel="canonical" href="https://molawcalculator.com/blog/interest-guide.html">
 
-  <meta property="og:title" content="연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기">
-  <meta property="og:description" content="연이자 계산기 사용법과 단리·복리 계산 예시를 정리한 안내 페이지입니다.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="연이자 계산기 사용법·연이자계산방법 안내">
+  <meta property="og:description" content="연이자 계산기 사용법과 연이자계산방법·연이자계산공식 안내입니다.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/blog/interest-guide.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기">
-  <meta name="twitter:description" content="연이자 계산기 사용법과 단리·복리 계산 예시를 제공합니다.">
+  <meta name="twitter:title" content="연이자 계산기 사용법·연이자계산방법 안내">
+  <meta name="twitter:description" content="연이자 계산기 사용법과 연이자계산공식·연이자계산방법을 정리했습니다.">
   <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
 
   <!-- ⭐ 구조화 데이터 -->
@@ -34,8 +38,8 @@
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "연이자 계산기 사용법",
-    "description": "연이자 계산기 사용법과 단리·복리 계산 예시를 정리한 안내 페이지입니다.",
+    "headline": "연이자 계산기 사용법·연이자계산방법 안내",
+    "description": "연이자 계산기 사용법과 연이자계산방법·연이자계산공식·연이자계산조회 안내 페이지입니다.",
     "author": { "@type": "Organization", "name": "법무법인 영민" },
     "publisher": {
       "@type": "Organization",
@@ -52,7 +56,6 @@
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="repay-landing.css">
 
-  <!-- ⭐ 링크 밑줄 제거 스타일 -->
   <style>
     a:not(.btn-primary):not(.btn-full) {
       text-decoration: none;
@@ -70,7 +73,7 @@
 <body>
 
 <header class="fixed-header fixed-top">
-  <h1>연이자 계산기 사용법</h1>
+  <h1>연이자 계산기 사용법·연이자계산방법</h1>
   <a href="../index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
@@ -79,16 +82,18 @@
 </header>
 
 <div class="wrap">
-  <!-- ⭐ SEO용 H1 (검색엔진만 읽고 화면에는 보이지 않음) -->
-    <h1 class="seo-h1" style="position:absolute; left:-9999px; top:-9999px;">
-      연이자 계산기 사용법 — 단리·복리 계산 쉽게 이해하기
-    </h1>
+
+  <!-- SEO용 H1 -->
+  <h1 style="position:absolute; left:-9999px;">
+    연이자 계산기 사용법·연이자계산방법·연이자계산공식·연이자계산조회 안내
+  </h1>
+
   <!-- 히어로 -->
   <section class="hero">
     <h1 class="hero-title">연이자 계산, 단리·복리 차이를 쉽게 이해하세요.</h1>
     <p class="hero-sub">
-      대출·투자·채무조정 등 다양한 상황에서<br>
-      정확한 이자 계산은 매우 중요합니다.
+      대출·투자·채무조정 등 다양한 상황에서 필요한<br>
+      연이자계산방법·연이자계산공식·연이자계산조회 기준을 정리했습니다.
     </p>
 
     <p class="badge-row">단리·복리 자동 계산 · 개인정보 저장 없음</p>
@@ -97,15 +102,15 @@
 
     <div class="sub-links">
       <a href="/calculators/repay.html">개인회생 변제금 계산기</a> ·
-      <a href="/calculators/living-expense.html">법원 생계비 계산기</a> ·
-      <a href="/calculators/household.html">가구수 계산기</a>
+      <a href="/calculators/living-adjust.html">법원 생계비 계산기</a> ·
+      <a href="/calculators/household-auto-living.html">가구수 계산기</a>
     </div>
   </section>
 
   <!-- 사용 가이드 -->
   <section class="section">
     <div class="card">
-      <h2 class="section-title">연이자 계산기, 이렇게 사용하세요</h2>
+      <h2 class="section-title">연이자계산방법 안내</h2>
       <p class="text">
         연이자 계산기는 원금·이율·기간만 입력하면<br>
         단리·복리 기준으로 총이자와 총상환액을 자동 계산해줍니다.
@@ -131,7 +136,7 @@
   <!-- 계산 예시 -->
   <section class="section">
     <div class="card">
-      <h2 class="section-title">단리 계산 예시</h2>
+      <h2 class="section-title">연이자계산공식 예시(단리)</h2>
       <p class="section-sub">아래는 단리 기준 계산 예시입니다.</p>
 
       <div class="grid-2">
@@ -153,10 +158,10 @@
     </div>
   </section>
 
-  <!-- 변제금과의 관계 -->
+  <!-- 개인회생과의 관계 -->
   <section class="section">
     <div class="card">
-      <h2 class="section-title">연이자 계산이 개인회생에 중요한 이유</h2>
+      <h2 class="section-title">연이자계산조회가 개인회생에 중요한 이유</h2>
       <p class="text">
         개인회생에서는 이자 대부분이 면제되지만,<br>
         신청 전 채무 구조를 파악하기 위해  
@@ -175,7 +180,7 @@
   <!-- FAQ -->
   <section class="section">
     <div class="card faq">
-      <h2 class="section-title">자주 묻는 질문</h2>
+      <h2 class="section-title">연이자계산방법 FAQ</h2>
 
       <div class="faq-item">
         <div class="faq-q">Q. 단리와 복리의 차이는 무엇인가요?</div>
@@ -212,8 +217,8 @@
 
       <div class="cta-links">
         <a href="/calculators/repay.html">변제금 계산하기</a> ·
-        <a href="/calculators/living-expense.html">생계비 계산하기</a> ·
-        <a href="/calculators/household.html">가구수 계산하기</a>
+        <a href="/calculators/living-adjust.html">생계비 계산하기</a> ·
+        <a href="/calculators/household-auto-living.html">가구수 계산하기</a>
       </div>
     </div>
   </section>
@@ -223,14 +228,10 @@
 <div id="footer"></div>
 
 <div class="call-fixed">
-  <a href="tel:025955706" class="consult-call">
-    클릭 시 전화 연결됩니다.
-  </a>
+  <a href="tel:025955706" class="consult-call">클릭 시 전화 연결됩니다.</a>
 </div>
 
-<a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">
-  💬 카톡 상담
-</a>
+<a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
 
 <script>
   fetch("/footer.html")
