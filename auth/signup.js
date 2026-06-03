@@ -34,12 +34,19 @@ async function signup() {
   const passwordConfirm = document.getElementById("signup-password-confirm").value.trim();
   const msg = document.getElementById("msg");
 
-  /* ⭐ 비밀번호 일치 검사 */
+  /* ⭐ 비밀번호 6자리 이상 체크 */
+  if (password.length < 6) {
+    msg.textContent = "비밀번호는 6자리 이상이어야 합니다.";
+    return;
+  }
+
+  /* ⭐ 비밀번호 일치 체크 */
   if (password !== passwordConfirm) {
     msg.textContent = "비밀번호가 일치하지 않습니다.";
     return;
   }
 
+  /* ⭐ 필수 입력 체크 */
   if (!name || !email || !password) {
     msg.textContent = "모든 항목을 입력해주세요.";
     return;
@@ -70,6 +77,7 @@ async function signup() {
     msg.textContent = "오류: " + error.message;
   }
 }
+
 
 /* ============================================================
    이벤트 바인딩
