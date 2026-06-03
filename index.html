@@ -332,6 +332,21 @@
 <script src="firebase-counter.js" defer></script>
 <script src="consult.js" defer></script>
 <script>
+  // ⭐ 슬라이드 랜덤 셔플
+  document.addEventListener("DOMContentLoaded", function () {
+    const wrapper = document.querySelector(".youtubeSwiper .swiper-wrapper");
+    const slides = Array.from(wrapper.children);
+
+    // Fisher–Yates Shuffle
+    for (let i = slides.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      wrapper.appendChild(slides[j]);
+      slides.splice(j, 1);
+    }
+  });
+</script>
+
+<script>
   new Swiper(".youtubeSwiper", {
     slidesPerView: 1.1,
     spaceBetween: 16,
