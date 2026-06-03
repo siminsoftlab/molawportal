@@ -118,22 +118,24 @@
     </div>
 
     <!-- 입력 영역 -->
-    <label>원금(원)</label>
-    <input id="principal" type="number">
-
-    <label>연 이자율(%)</label>
-    <input id="rate" type="number" value="20">
-
-    <label>시작일 (From)</label>
-    <input id="fromDate" type="date" class="input-field">
-
-    <label>종료일 (To)</label>
-    <input id="toDate" type="date" class="input-field">
-
-    <label>기간(일수)</label>
-    <input id="days" type="number">
-    <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
-
+    <div class="input-section">
+      <label>원금(원)</label>
+      <input id="principal" type="number">
+  
+      <label>연 이자율(%)</label>
+      <input id="rate" type="number" value="20">
+  
+      <label>시작일 (From)</label>
+      <input id="fromDate" type="date" class="input-field">
+  
+      <label>종료일 (To)</label>
+      <input id="toDate" type="date" class="input-field">
+  
+      <label>기간(일수)</label>
+      <input id="days" type="number">
+      <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
+    </div>
+    
     <div class="btn-row">
       <button onclick="calcInterest()">계산하기</button>
       <p class="notice">※ 원금, 연이자율, 기간(일수) 항목은 필수 입력입니다.</p>
