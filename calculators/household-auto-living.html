@@ -112,27 +112,29 @@
     </div>
 
     <!-- 입력 영역 -->
-    <label>월 소득(원)</label>
-    <input id="hl_income" type="number">
-
-    <label>가구 수</label>
-    <select id="hl_household">
-      <option value="1">1인 가구</option>
-      <option value="2">2인 가구</option>
-      <option value="3">3인 가구</option>
-      <option value="4">4인 가구</option>
-      <option value="5">5인 가구</option>
-    </select>
-
-    <label>최저 생계비(자동 계산)</label>
-    <input id="hl_court_living" type="number" readonly>
-
-    <label>추가 생계비(원)</label>
-    <input id="hl_extra" type="number">
-
-    <label>변제기간(개월)</label>
-    <input id="hl_months" type="number" value="36">
-
+    <div class="input-section">
+      <label>월 소득(원)</label>
+      <input id="hl_income" type="number">
+  
+      <label>가구 수</label>
+      <select id="hl_household">
+        <option value="1">1인 가구</option>
+        <option value="2">2인 가구</option>
+        <option value="3">3인 가구</option>
+        <option value="4">4인 가구</option>
+        <option value="5">5인 가구</option>
+      </select>
+  
+      <label>최저 생계비(자동 계산)</label>
+      <input id="hl_court_living" type="number" readonly>
+  
+      <label>추가 생계비(원)</label>
+      <input id="hl_extra" type="number">
+  
+      <label>변제기간(개월)</label>
+      <input id="hl_months" type="number" value="36">
+    </div>
+    
     <div class="btn-row">
       <button onclick="calcHouseholdLiving()">계산하기</button>
       <p class="notice">※ 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.</p>
