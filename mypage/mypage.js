@@ -88,6 +88,8 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById("userEmail").textContent = data.email;
 
   loadTicket(user.uid);
+  checkExpireAlert(user.uid);    // 추가
+  requestNotificationPermission(); // 추가
 });
 
 /* ============================================================
