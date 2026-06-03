@@ -32,7 +32,7 @@ function getTodayString() {
 
 /* ============================================================
    Firebase 초기화
-   ============================================================ */
+  
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -43,7 +43,8 @@ const firebaseConfig = {
   measurementId: "G-D4W34NBWKT"
 };
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig); 
+============================================================ */
 const db = firebase.firestore();
 
 /* ============================================================
