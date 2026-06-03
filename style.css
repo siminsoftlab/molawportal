@@ -93,11 +93,15 @@ body.homepage .container {
 /* 홈페이지 박스 2열 */
 body.homepage .two-box {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-top: 20px;
 }
-
+/* PC 기본 크기 */
+body.homepage .calc-img {
+  width: 70%;
+  max-width: 120px;
+}
 body.homepage .left-box,
 body.homepage .right-box {
   padding: 20px !important;
