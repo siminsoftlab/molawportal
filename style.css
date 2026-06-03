@@ -1510,11 +1510,11 @@ button.hl-acc-btn {
   text-align: right;
 }
 /* ============================
-   로그인 바(auth-bar) 고정 위치 재정렬
+   로그인바(auth-bar) 정상 표시용 재정의
 ============================ */
 .auth-bar {
-  position: fixed;
-  top: 90px; /* 방문자 정보바(40px + padding) 바로 아래 */
+  position: fixed !important;
+  top: 90px !important; /* 방문자 정보바 아래 정확히 위치 */
   left: 0;
   width: 100%;
   background: #f0f3ff;
@@ -1523,10 +1523,10 @@ button.hl-acc-btn {
   justify-content: flex-end;
   gap: 10px;
   border-bottom: 1px solid #dce1ff;
-  z-index: 99998;
+  z-index: 200000 !important; /* top-info-bar보다 위로 */
 }
 
-/* 로그인/회원가입/로그아웃 버튼 */
+/* 로그인 버튼 스타일 */
 .auth-btn {
   padding: 6px 12px;
   background: #4a6fff;
@@ -1542,6 +1542,6 @@ button.hl-acc-btn {
 
 /* 본문이 헤더에 가려지지 않도록 */
 body.homepage {
-  padding-top: 160px !important; /* 기존 90px → 160px로 증가 */
+  padding-top: 170px !important;
 }
 
