@@ -1544,4 +1544,11 @@ button.hl-acc-btn {
 body.homepage {
   padding-top: 170px !important;
 }
+#auth-before {
+  display: flex;
+  gap: 10px;
+}
 
+#auth-after {
+  display: none;
+}
