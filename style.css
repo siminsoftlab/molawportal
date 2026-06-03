@@ -1552,38 +1552,28 @@ button.hl-acc-btn {
   width: 100%;
   background: #4a90e2;
   color: #fff;
-  padding: 10px 0;
+  padding: 6px 0 !important; /* 기존 10px → 6px (여백 최소화) */
   text-align: center;
   font-weight: 600;
   z-index: 200000;
-}
-
-/* 방문자 수 영역 맨 위 */
-.top-info-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: #4a90e2;
-  color: #fff;
-  padding: 10px 0;
-  text-align: center;
-  font-weight: 600;
-  z-index: 200000;
+  margin: 0 !important;
+  line-height: 1.2;
 }
 
 /* 방문자 수 아래 2번째 줄 */
 .header-row {
- position: fixed;
-  top: 50px; /* 방문자 수 바 아래 */
+  position: fixed;
+  top: 38px !important; /* 방문자수 바 높이에 정확히 맞춤 */
   width: 100%;
   display: flex;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.85); /* ⭐ 원하는 배경색 */
-  backdrop-filter: blur(6px);            /* ⭐ 반투명 + 블러 효과 */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
   z-index: 200000;
-  padding: 8px 0; /* 위아래 여백 */
+  padding: 4px 0 !important; /* 기존 8px → 4px (여백 최소화) */
+  margin: 0 !important;
 }
+
 /* container 폭과 동일하게 */
 .header-inner {
   width: 92%;
@@ -1591,7 +1581,10 @@ button.hl-acc-btn {
   display: flex;
   justify-content: space-between; /* 시계 왼쪽, 로그인바 오른쪽 */
   align-items: center;
+  padding: 0 !important;
+  margin: 0 auto !important;
 }
+
 /* 내부 container */
 .header-row > div,
 .auth-bar-inner {
