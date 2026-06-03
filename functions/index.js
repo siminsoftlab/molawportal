@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const webpush = require("web-push");
 const nodemailer = require("nodemailer");
+const axios = require("axios");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -169,6 +170,73 @@ exports.autoMatchDeposits = functions.firestore
       });
 
       console.log("자동 승인 완료:", paymentId);
+    }
+
+    return null;
+  });
+
+/* ============================================================
+   6) 은행 API 자동 입금 수집 (오픈뱅킹)
+============================================================ */
+exports.fetchBankDeposits = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
+
+    const accessToken = "OPENBANKING_ACCESS_TOKEN";
+    const fintechUseNum = "YOUR_FINTECH_USE_NUM";
+
+    try {
+      const response = await axios.post(
+        "https://openapi.openbanking.or.kr/v2.0/account/transaction_list",
+        {
+          bank_tran_id: "MOLAW" + Date.now(),
+          fintech_use_num: fintechUseNum,
+          inquiry_type: "A",
+          inquiry_base: "D",
+          from_date: "20240101",
+          to_date: "20241231",
+          sort_order: "D"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      const list = response.data.res_list;
+
+      for (const item of list) {
+        if (item.inout_type !== "입금") continue;
+
+        const depositor = item.print_content.trim();
+        const amount = Number(item.tran_amt);
+        const timestamp = new Date(
+          item.tran_date + " " + item.tran_time
+        ).getTime();
+
+        // Firestore 중복 체크
+        const exists = await db.collection("bank_deposits")
+          .where("timestamp", "==", timestamp)
+          .where("amount", "==", amount)
+          .get();
+
+        if (!exists.empty) continue;
+
+        // Firestore 저장 → autoMatchDeposits 자동 실행
+        await db.collection("bank_deposits").add({
+          depositor_name: depositor,
+          amount: amount,
+          timestamp: timestamp,
+          matched: false
+        });
+
+        console.log("입금 내역 저장:", depositor, amount);
+      }
+
+    } catch (err) {
+      console.error("은행 API 오류:", err);
     }
 
     return null;
