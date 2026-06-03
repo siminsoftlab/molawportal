@@ -557,7 +557,7 @@ body.subpage .top-info-bar {
   body.homepage .calc-img {
     width: 85% !important;
     max-width: 150px !important;
-    margin-bottom: 12px !important;
+    margin-bottom: 5px !important;
   }
 
   body.homepage .calc-desc {
