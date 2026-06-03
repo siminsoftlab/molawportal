@@ -45,3 +45,17 @@ h2 {
 .logout:hover {
   background: #d63a3a;
 }
+.expire-banner {
+  background: #fff3cd;
+  color: #856404;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ffeeba;
+  font-size: 15px;
+}
+.expire-banner a {
+  color: #4a6fff;
+  font-weight: bold;
+  margin-left: 10px;
+}
