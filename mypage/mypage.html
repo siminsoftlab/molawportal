@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마이페이지</title>
+
+  <link rel="stylesheet" href="mypage.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>마이페이지</h2>
+
+  <div class="info">
+    <p><strong>이름:</strong> <span id="userName"></span></p>
+    <p><strong>이메일:</strong> <span id="userEmail"></span></p>
+  </div>
+
+  <h3>📅 이용권 상태</h3>
+  <div id="ticketBox" class="ticket-box">
+    <p>이용권 정보를 불러오는 중...</p>
+  </div>
+
+  <button id="logoutBtn" class="logout">로그아웃</button>
+</div>
+
+<script src="mypage.js"></script>
+</body>
+</html>
