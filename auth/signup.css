@@ -4,6 +4,7 @@ body {
   background: #f7f8fc;
 }
 
+/* 회원가입 박스 */
 .box {
   max-width: 360px;
   margin: 60px auto;
@@ -12,13 +13,14 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   position: relative;
-  z-index: 2;
+  z-index: 10; /* 박스를 최상단으로 */
 }
 
 .box h2 {
   margin-bottom: 20px;
 }
 
+/* 입력창 */
 input {
   width: 100%;
   padding: 12px;
@@ -29,6 +31,7 @@ input {
   box-sizing: border-box;
 }
 
+/* 회원가입 버튼 */
 button {
   width: 100%;
   padding: 12px;
@@ -45,43 +48,52 @@ button:hover {
   background: #3b57d6;
 }
 
+/* 메시지 */
 .msg {
   margin-top: 15px;
   color: #444;
   font-size: 14px;
   min-height: 18px;
 }
-/* 회원가입 상단 네비게이션 */
+
+/* ============================
+   상단 네비게이션 (홈 / 로그인)
+============================ */
 .signup-nav {
   width: 100%;
   max-width: 900px;
-  margin: 20px auto 20px;
+  margin: 0 auto 30px; /* 박스와 간격 확보 */
   display: flex;
-  justify-content: center;   /* ⭐ 중앙 정렬 */
-  gap: 14px;                 /* 버튼 간격 */
-  pointer-events: none;
-  margin-bottom: 20px;
+  justify-content: center;
+  gap: 14px;
+
+  pointer-events: none; /* 전체는 클릭 막음 */
   position: relative;
   z-index: 1;
 }
+
 .signup-nav .nav-btn {
-  pointer-events: auto;
+  pointer-events: auto; /* 버튼만 클릭 가능 */
 }
+
 /* 네비게이션 버튼 스타일 */
 .nav-btn {
-  padding: 10px 18px;
+  padding: 8px 14px;
   background: #4a90e2;
   color: #fff;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 600;
-  text-decoration: none !important;  /* ⭐ 밑줄 제거 */
-  font-size: 15px;
+  text-decoration: none !important;
+  font-size: 14px;
 }
 
 .nav-btn:hover {
   background: #357ABD;
 }
-/* 회원가입 박스 아래 텍스트 링크 */
+
+/* ============================
+   회원가입 박스 아래 텍스트 링크
+============================ */
 .signup-links {
   margin-top: 18px;
   text-align: center;
@@ -91,12 +103,12 @@ button:hover {
 
 .signup-links .link {
   color: #4a90e2;
-  text-decoration: none; /* ⭐ 밑줄 제거 */
+  text-decoration: none;
   font-weight: 600;
 }
 
 .signup-links .link:hover {
-  text-decoration: underline; /* 선택 시만 밑줄 */
+  text-decoration: underline;
 }
 
 .signup-links .divider {
