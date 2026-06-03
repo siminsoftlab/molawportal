@@ -167,6 +167,6 @@ auth.onAuthStateChanged(async (user) => {
 ============================================================ */
 document.getElementById("logoutBtn").addEventListener("click", () => {
   auth.signOut().then(() => {
-    window.location.href = "/auth/login.html";
+    window.location.href = "/index.html";
   });
 });
