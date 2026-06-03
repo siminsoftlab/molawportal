@@ -1635,14 +1635,16 @@ body.homepage {
 }
 /* 공통 버튼 스타일 */
 .common-btn {
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 10px 16px !important;
+  border-radius: 8px !important;
   font-size: 15px;
   font-weight: 600;
   text-decoration: none;
   display: inline-block;
 }
 .auth-before {
-  display: flex;
-  gap: 10px; /* 버튼 사이 간격 */
+ display: flex !important;
+  gap: 10px !important;
+  justify-content: center;
+  align-items: center;
 }
