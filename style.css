@@ -733,7 +733,8 @@ body.subpage .top-info-bar {
   max-width: 420px;
   margin: 120px auto;
   padding: 25px;
-  border-radius: 12px;
+  border: 2px solid #4a90e2; /* 파란 테두리 */
+  border-radius: 14px;       /* 둥근 모서리 */
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
