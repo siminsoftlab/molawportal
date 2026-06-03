@@ -1557,6 +1557,20 @@ button.hl-acc-btn {
   z-index: 200000;
 }
 
+/* 방문자 수 영역 맨 위 */
+.top-info-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #4a90e2;
+  color: #fff;
+  padding: 10px 0;
+  text-align: center;
+  font-weight: 600;
+  z-index: 200000;
+}
+
 /* 시간 + 로그인바를 같은 줄에 배치 */
 .header-row {
   position: fixed;
@@ -1565,7 +1579,7 @@ button.hl-acc-btn {
   width: 100%;
   display: flex;
   justify-content: center; /* container 중앙 배치 */
-  background: rgba(255,255,255,0.0);
+  background: rgba(255,255,255,0);
   z-index: 200000;
 }
 
@@ -1610,3 +1624,4 @@ button.hl-acc-btn {
 body.homepage {
   padding-top: 120px !important;
 }
+
