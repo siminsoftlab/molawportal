@@ -571,6 +571,13 @@ body.subpage .top-info-bar {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 14px;
   }
+   .auth-bar {
+    top: 90px;
+    justify-content: center;
+  }
+  body.homepage {
+    padding-top: 170px !important;
+  }
   /* 아코디언 버튼 */
   .acc-btn {
     padding: 10px 12px;
@@ -1503,15 +1510,15 @@ button.hl-acc-btn {
   text-align: right;
 }
 /* ============================
-   로그인 바(auth-bar) 위치 재정렬
+   로그인 바(auth-bar) 고정 위치 재정렬
 ============================ */
 .auth-bar {
   position: fixed;
-  top: 90px; /* 방문자 정보바 아래 */
+  top: 90px; /* 방문자 정보바(40px + padding) 바로 아래 */
   left: 0;
   width: 100%;
   background: #f0f3ff;
-  padding: 8px 12px;
+  padding: 10px 14px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -1519,7 +1526,7 @@ button.hl-acc-btn {
   z-index: 99998;
 }
 
-/* 로그인/회원가입 버튼 */
+/* 로그인/회원가입/로그아웃 버튼 */
 .auth-btn {
   padding: 6px 12px;
   background: #4a6fff;
@@ -1535,6 +1542,6 @@ button.hl-acc-btn {
 
 /* 본문이 헤더에 가려지지 않도록 */
 body.homepage {
-  padding-top: 150px !important; /* 기존 90px → 150px로 증가 */
+  padding-top: 160px !important; /* 기존 90px → 160px로 증가 */
 }
 
