@@ -1014,9 +1014,12 @@ margin-top: 14px;
   text-decoration: none !important;
 }
 .phone-icon svg path {
-  fill: #FFE600 !important; /* 노란색 */
+  stroke: #FFE600 !important; /* 노란색 */
 }
-
+.phone-icon svg {
+  width: 26px;
+  height: 26px;
+}
 @keyframes blinkPhone {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(1.15); }
