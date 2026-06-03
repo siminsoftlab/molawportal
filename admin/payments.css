@@ -81,3 +81,18 @@ h2 {
 .back:hover {
   background: #3b57d6;
 }
+.excel {
+  width: 100%;
+  padding: 12px;
+  background: #2e8b57;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.excel:hover {
+  background: #256f46;
+}
