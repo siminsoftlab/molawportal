@@ -35,8 +35,6 @@
 <div class="mypage-home-link">
   <a href="/index.html">홈으로</a>
 </div>  
-<!-- 2) Firebase 초기화 -->
-<script src="/firebase-init.js"></script>
 <script>
 firebase.auth().onAuthStateChanged(async (user) => {
   if (!user) {
