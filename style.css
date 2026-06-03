@@ -100,7 +100,7 @@ body.homepage .two-box {
 
 body.homepage .left-box,
 body.homepage .right-box {
-  padding: 26px !important;
+  padding: 20px !important;
   border-radius: 12px;
   text-align: center;
   background: rgba(255,255,255,0.85);
@@ -555,8 +555,8 @@ body.subpage .top-info-bar {
   }  
 
   body.homepage .calc-img {
-    width: 85% !important;
-    max-width: 150px !important;
+    width: 70%;
+    max-width: 120px
     margin-bottom: 5px !important;
   }
 
