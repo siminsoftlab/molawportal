@@ -49,3 +49,27 @@ button:hover {
   font-size: 14px;
   min-height: 18px;
 }
+/* 회원가입 상단 네비게이션 */
+.signup-nav {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto 20px;
+  display: flex;
+  justify-content: center;   /* ⭐ 중앙 정렬 */
+  gap: 14px;                 /* 버튼 간격 */
+}
+
+/* 네비게이션 버튼 스타일 */
+.nav-btn {
+  padding: 10px 18px;
+  background: #4a90e2;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none !important;  /* ⭐ 밑줄 제거 */
+  font-size: 15px;
+}
+
+.nav-btn:hover {
+  background: #357ABD;
+}
