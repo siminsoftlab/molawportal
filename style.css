@@ -1574,16 +1574,22 @@ button.hl-acc-btn {
 
 /* 방문자 수 아래 2번째 줄 */
 .header-row {
-  position: fixed;
-  top: 50px; /* 방문자 수 바 높이 */
-  left: 0;
+ position: fixed;
+  top: 50px; /* 방문자 수 바 아래 */
   width: 100%;
   display: flex;
-  justify-content: center;
-  background: transparent;
+  justify-content: center; /* header-inner를 가운데로 */
   z-index: 200000;
+  background: transparent;
 }
-
+/* container 폭과 동일하게 */
+.header-inner {
+  width: 92%;
+  max-width: 900px; /* homepage .container와 동일 */
+  display: flex;
+  justify-content: space-between; /* 시계 왼쪽, 로그인바 오른쪽 */
+  align-items: center;
+}
 /* 내부 container */
 .header-row > div,
 .auth-bar-inner {
