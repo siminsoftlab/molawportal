@@ -1410,4 +1410,5 @@ button.hl-acc-btn {
   background: #f8faff;
   margin-bottom: 30px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-sizing: border-box;   /* ⭐ div 내부 패딩 포함해서 width 계산 */
 }
