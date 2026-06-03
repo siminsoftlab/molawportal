@@ -93,7 +93,7 @@ body.homepage .container {
 /* 홈페이지 박스 2열 */
 body.homepage .two-box {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-top: 20px;
 }
