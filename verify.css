@@ -1,0 +1,14 @@
+.verify-box {
+  max-width: 360px;
+  margin: 120px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.verify-box h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
