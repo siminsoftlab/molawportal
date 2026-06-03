@@ -115,33 +115,35 @@
     </div>
 
     <!-- 입력 영역 -->
-    <label>총 부채(원)</label>
-    <input id="debt" type="number">
-
-    <label>월 소득(원)</label>
-    <input id="income" type="number">
-
-    <label>가구 수</label>
-    <select id="household">
-      <option value="1">1인 가구</option>
-      <option value="2">2인 가구</option>
-      <option value="3">3인 가구</option>
-      <option value="4">4인 가구</option>
-      <option value="5">5인 가구</option>
-    </select>
-
-    <label>최저 생계비(자동 계산)</label>
-    <input id="living" type="number" readonly>
-
-    <label>추가 생계비(원)</label>
-    <input id="extra" type="number">
-
-    <label>변제기간(개월)</label>
-    <input id="months" type="number" value="36">
-
-    <label>청산가치(원)</label>
-    <input id="asset" type="number">
-    <p class="notice">※ 청산가치 = 보유 재산을 모두 처분했을 때의 가치</p>
+    <div class="input-section">
+      <label>총 부채(원)</label>
+      <input id="debt" type="number">
+  
+      <label>월 소득(원)</label>
+      <input id="income" type="number">
+  
+      <label>가구 수</label>
+      <select id="household">
+        <option value="1">1인 가구</option>
+        <option value="2">2인 가구</option>
+        <option value="3">3인 가구</option>
+        <option value="4">4인 가구</option>
+        <option value="5">5인 가구</option>
+      </select>
+  
+      <label>최저 생계비(자동 계산)</label>
+      <input id="living" type="number" readonly>
+  
+      <label>추가 생계비(원)</label>
+      <input id="extra" type="number">
+  
+      <label>변제기간(개월)</label>
+      <input id="months" type="number" value="36">
+  
+      <label>청산가치(원)</label>
+      <input id="asset" type="number">
+      <p class="notice">※ 청산가치 = 보유 재산을 모두 처분했을 때의 가치</p>
+    </div>
 
     <div class="btn-row">
       <button onclick="calcRepay()">계산하기</button>
