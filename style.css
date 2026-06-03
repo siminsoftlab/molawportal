@@ -1642,4 +1642,7 @@ body.homepage {
   text-decoration: none;
   display: inline-block;
 }
-
+.auth-before {
+  display: flex;
+  gap: 10px; /* 버튼 사이 간격 */
+}
