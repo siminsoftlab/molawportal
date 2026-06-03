@@ -1534,6 +1534,64 @@ button.hl-acc-btn {
   pointer-events: auto; /* 클릭 가능 */
 }
 
+#auth-before {
+  display: flex;
+  gap: 10px;
+}
+
+#auth-after {
+  display: none;
+}
+
+/* 방문자 수 영역 맨 위 */
+.top-info-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #4a90e2;
+  color: #fff;
+  padding: 10px 0;
+  text-align: center;
+  font-weight: 600;
+  z-index: 200000;
+}
+
+/* 시간 + 로그인바를 같은 줄에 배치 */
+.header-row {
+  position: fixed;
+  top: 50px; /* 방문자바 높이만큼 아래 */
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* container 중앙 배치 */
+  background: rgba(255,255,255,0.0);
+  z-index: 200000;
+}
+
+/* 내부 container (계산기 박스와 동일 폭) */
+.header-row > div,
+.auth-bar-inner {
+  width: 92%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+}
+
+/* 시간 표시 왼쪽 */
+#live-clock {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 로그인바 오른쪽 */
+.auth-bar-inner {
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 /* 버튼 스타일 */
 .auth-btn {
   padding: 6px 12px;
@@ -1550,14 +1608,5 @@ button.hl-acc-btn {
 
 /* 본문이 헤더에 가려지지 않도록 */
 body.homepage {
-  padding-top: 160px !important;
-}
-
-#auth-before {
-  display: flex;
-  gap: 10px;
-}
-
-#auth-after {
-  display: none;
+  padding-top: 120px !important;
 }
