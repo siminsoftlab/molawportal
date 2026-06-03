@@ -43,9 +43,7 @@ async function loadTicket(userId) {
     return;
   }
 
-  // 여러 개의 이용권이 있을 경우 가장 늦게 만료되는 것 선택
   let best = null;
-
   snap.forEach(doc => {
     const data = doc.data();
     if (!best || data.expire_at > best.expire_at) {
@@ -54,15 +52,6 @@ async function loadTicket(userId) {
   });
 
   const remaining = getRemainingDays(best.expire_at);
-
-  if (remaining <= 0) {
-    ticketBox.innerHTML = `
-      <p>이용권이 만료되었습니다.</p>
-      <p><a href="/payment.html">새 이용권 구매하기</a></p>
-    `;
-    return;
-  }
-
   const expireDate = new Date(best.expire_at).toLocaleDateString("ko-KR");
 
   ticketBox.innerHTML = `
@@ -73,33 +62,8 @@ async function loadTicket(userId) {
 }
 
 /* ============================================================
-   로그인된 사용자 정보 불러오기
+   만료 3일 전 배너 표시
 ============================================================ */
-auth.onAuthStateChanged(async (user) => {
-  if (!user) {
-    window.location.href = "/auth/login.html";
-    return;
-  }
-
-  const userDoc = await db.collection("users").doc(user.uid).get();
-  const data = userDoc.data();
-
-  document.getElementById("userName").textContent = data.name;
-  document.getElementById("userEmail").textContent = data.email;
-
-  loadTicket(user.uid);
-  checkExpireAlert(user.uid);    // 추가
-  requestNotificationPermission(); // 추가
-});
-
-/* ============================================================
-   로그아웃
-============================================================ */
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  auth.signOut().then(() => {
-    window.location.href = "/auth/login.html";
-  });
-});
 async function checkExpireAlert(userId) {
   const snap = await db.collection("access_tokens")
     .where("user_id", "==", userId)
@@ -116,58 +80,93 @@ async function checkExpireAlert(userId) {
     }
   });
 
-  const now = Date.now();
-  const diffDays = Math.ceil((best.expire_at - now) / (1000 * 60 * 60 * 24));
+  const remaining = getRemainingDays(best.expire_at);
 
-  if (diffDays === 3) {
-    showExpireBanner(diffDays);
+  if (remaining === 3) {
+    const box = document.createElement("div");
+    box.className = "expire-banner";
+    box.innerHTML = `
+      <p>📢 이용권 만료까지 <strong>${remaining}일</strong> 남았습니다.</p>
+      <a href="/payment.html">지금 연장하기</a>
+    `;
+    document.body.prepend(box);
   }
 }
 
-function showExpireBanner(days) {
-  const box = document.createElement("div");
-  box.className = "expire-banner";
-  box.innerHTML = `
-    <p>📢 이용권 만료까지 <strong>${days}일</strong> 남았습니다.</p>
-    <a href="/payment.html">지금 연장하기</a>
-  `;
-  document.body.prepend(box);
-}
-async function requestNotificationPermission() {
-  if (!("Notification" in window)) return;
+/* ============================================================
+   Push 알림 권한 요청 배너
+============================================================ */
+function showPushPermissionBanner() {
+  if (Notification.permission === "granted") return;
 
+  const banner = document.getElementById("pushBanner");
+  banner.style.display = "flex";
+
+  document.getElementById("pushAllow").onclick = async () => {
+    await requestPushPermission();
+    banner.style.display = "none";
+  };
+
+  document.getElementById("pushLater").onclick = () => {
+    banner.style.display = "none";
+  };
+}
+
+/* ============================================================
+   Push 알림 권한 요청 + Service Worker 등록
+============================================================ */
+async function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    await navigator.serviceWorker.register("/sw.js");
+  }
+}
+
+async function requestPushPermission() {
   const permission = await Notification.requestPermission();
   if (permission !== "granted") return;
 
-  checkExpirePush();
-}
+  const registration = await navigator.serviceWorker.ready;
 
-async function checkExpirePush() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const snap = await db.collection("access_tokens")
-    .where("user_id", "==", user.uid)
-    .where("is_active", "==", true)
-    .get();
-
-  if (snap.empty) return;
-
-  let best = null;
-  snap.forEach(doc => {
-    const data = doc.data();
-    if (!best || data.expire_at > best.expire_at) {
-      best = data;
-    }
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: "<VAPID_PUBLIC_KEY>"
   });
 
-  const now = Date.now();
-  const diffDays = Math.ceil((best.expire_at - now) / (1000 * 60 * 60 * 24));
+  const user = auth.currentUser;
 
-  if (diffDays === 3) {
-    new Notification("이용권 만료 안내", {
-      body: `이용권 만료까지 ${diffDays}일 남았습니다.`,
-      icon: "/images/icon.png"
-    });
-  }
+  await db.collection("push_subscriptions").doc(user.uid).set({
+    subscription: JSON.parse(JSON.stringify(subscription)),
+    updated_at: Date.now()
+  });
 }
+
+/* ============================================================
+   로그인 확인 후 실행
+============================================================ */
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    window.location.href = "/auth/login.html";
+    return;
+  }
+
+  await registerServiceWorker();
+
+  const userDoc = await db.collection("users").doc(user.uid).get();
+  const data = userDoc.data();
+
+  document.getElementById("userName").textContent = data.name;
+  document.getElementById("userEmail").textContent = data.email;
+
+  loadTicket(user.uid);
+  checkExpireAlert(user.uid);
+  showPushPermissionBanner();
+});
+
+/* ============================================================
+   로그아웃
+============================================================ */
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  auth.signOut().then(() => {
+    window.location.href = "/auth/login.html";
+  });
+});
