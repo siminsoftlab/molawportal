@@ -628,6 +628,9 @@ body.subpage .top-info-bar {
   .phone-icon svg path {
     stroke: #FFE600 !important;
   }
+    .review-box-wrap {
+    grid-template-columns: 1fr;
+  }
 }
 /* ============================
    자동 설명문 애니메이션
@@ -1465,4 +1468,37 @@ button.hl-acc-btn {
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
+}
+.review-box-wrap {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.review-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border: 1px solid #eee;
+}
+
+.review-stars {
+  font-size: 18px;
+  color: #FFD700;
+  margin-bottom: 8px;
+}
+
+.review-text {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.review-user {
+  font-size: 14px;
+  color: #666;
+  text-align: right;
 }
