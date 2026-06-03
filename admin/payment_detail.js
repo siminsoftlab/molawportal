@@ -136,3 +136,33 @@ document.getElementById("backBtn").addEventListener("click", () => {
    실행
 ============================================================ */
 loadPaymentDetail();
+async function loadLogs() {
+  const logBox = document.getElementById("logBox");
+
+  const snap = await db.collection("payments")
+    .doc(paymentId)
+    .collection("logs")
+    .orderBy("timestamp", "desc")
+    .get();
+
+  if (snap.empty) {
+    logBox.innerHTML = "<p>로그가 없습니다.</p>";
+    return;
+  }
+
+  let html = "";
+
+  snap.forEach(doc => {
+    const log = doc.data();
+    const time = new Date(log.timestamp).toLocaleString("ko-KR");
+
+    html += `
+      <div class="log-item">
+        <p><strong>${log.admin}</strong> (${time})</p>
+        <p>${log.message}</p>
+      </div>
+    `;
+  });
+
+  logBox.innerHTML = html;
+}
