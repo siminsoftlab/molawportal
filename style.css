@@ -618,6 +618,10 @@ body.subpage .top-info-bar {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
   }
+   .two-box {
+       grid-template-columns: repeat(2, 1fr) !important;
+       gap: 14px !important;
+     }
 }
 /* ============================
    자동 설명문 애니메이션
