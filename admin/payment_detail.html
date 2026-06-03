@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 상세 정보</title>
+
+  <link rel="stylesheet" href="payment_detail.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>💳 결제 상세 정보</h2>
+
+  <div id="paymentInfo" class="section">
+    <p>불러오는 중...</p>
+  </div>
+
+  <h3>👤 사용자 정보</h3>
+  <div id="userInfo" class="section">
+    <p>불러오는 중...</p>
+  </div>
+
+  <h3>📝 결제 로그</h3>
+  <div id="logBox" class="section">
+    <p>불러오는 중...</p>
+  </div>
+
+  <div class="btn-group">
+    <button id="confirmBtn" class="confirm">입금 확인</button>
+    <button id="cancelBtn" class="cancel">결제 취소</button>
+    <button id="backBtn" class="back">← 목록으로</button>
+  </div>
+</div>
+
+<script src="payment_detail.js"></script>
+</body>
+</html>
