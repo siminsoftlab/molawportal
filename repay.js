@@ -260,7 +260,7 @@ function calcRepay() {
 
   const btn = document.querySelector(".repay-accordion-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
-  showPaywall();
+  /**showPaywall();**/
 }
 
 
