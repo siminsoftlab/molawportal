@@ -107,16 +107,7 @@ body.homepage .right-box {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-body.homepage .calc-img {
-  width: 70%;
-  max-width: 120px;
-  margin-bottom: 12px;
-}
 
-body.homepage .calc-desc {
-  font-size: 16px;
-  font-weight: 600;
-}
 
 /* ============================
    하위 페이지(subpage) 레이아웃
@@ -566,6 +557,7 @@ body.subpage .top-info-bar {
   body.homepage .calc-img {
     width: 85% !important;
     max-width: 150px !important;
+    margin-bottom: 12px !important;
   }
 
   body.homepage .calc-desc {
