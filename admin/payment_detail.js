@@ -46,7 +46,6 @@ async function issueToken(userId) {
 async function loadPaymentDetail() {
   const paymentInfo = document.getElementById("paymentInfo");
   const userInfo = document.getElementById("userInfo");
-  const logBox = document.getElementById("logBox");
 
   const doc = await db.collection("payments").doc(paymentId).get();
   const p = doc.data();
@@ -76,66 +75,17 @@ async function loadPaymentDetail() {
     <p><strong>가입일:</strong> ${new Date(user.created_at).toLocaleDateString("ko-KR")}</p>
   `;
 
-  /* 결제 로그 */
-  logBox.innerHTML = `
-    <p>상태: ${p.status}</p>
-    <p>신청일: ${created}</p>
-    <p>확인일: ${confirmed}</p>
-  `;
-
   /* 버튼 상태 제어 */
   if (p.status !== "PENDING") {
     document.getElementById("confirmBtn").style.display = "none";
   }
+
+  loadLogs();
 }
 
 /* ============================================================
-   입금 확인 처리
+   결제 로그 불러오기
 ============================================================ */
-async function confirmPayment() {
-  if (!confirm("입금 확인 처리하시겠습니까?")) return;
-
-  const doc = await db.collection("payments").doc(paymentId).get();
-  const p = doc.data();
-
-  await db.collection("payments").doc(paymentId).update({
-    status: "CONFIRMED",
-    confirmed_at: Date.now()
-  });
-
-  await issueToken(p.user_id);
-
-  alert("입금 확인 완료! 이용권이 발급되었습니다.");
-  loadPaymentDetail();
-}
-
-/* ============================================================
-   결제 취소 처리
-============================================================ */
-async function cancelPayment() {
-  if (!confirm("정말 결제를 취소하시겠습니까?")) return;
-
-  await db.collection("payments").doc(paymentId).update({
-    status: "CANCELED"
-  });
-
-  alert("결제가 취소되었습니다.");
-  loadPaymentDetail();
-}
-
-/* ============================================================
-   이벤트 바인딩
-============================================================ */
-document.getElementById("confirmBtn").addEventListener("click", confirmPayment);
-document.getElementById("cancelBtn").addEventListener("click", cancelPayment);
-document.getElementById("backBtn").addEventListener("click", () => {
-  window.location.href = "/admin/payments.html";
-});
-
-/* ============================================================
-   실행
-============================================================ */
-loadPaymentDetail();
 async function loadLogs() {
   const logBox = document.getElementById("logBox");
 
@@ -166,3 +116,94 @@ async function loadLogs() {
 
   logBox.innerHTML = html;
 }
+
+/* ============================================================
+   관리자 메모(로그) 추가
+============================================================ */
+async function addLog() {
+  const text = document.getElementById("logInput").value.trim();
+  if (!text) return alert("메모를 입력해주세요.");
+
+  await db.collection("payments")
+    .doc(paymentId)
+    .collection("logs")
+    .add({
+      message: text,
+      admin: "관리자",
+      timestamp: Date.now()
+    });
+
+  document.getElementById("logInput").value = "";
+  loadLogs();
+}
+
+/* ============================================================
+   입금 확인 처리
+============================================================ */
+async function confirmPayment() {
+  if (!confirm("입금 확인 처리하시겠습니까?")) return;
+
+  const doc = await db.collection("payments").doc(paymentId).get();
+  const p = doc.data();
+
+  // 1) 결제 상태 업데이트
+  await db.collection("payments").doc(paymentId).update({
+    status: "CONFIRMED",
+    confirmed_at: Date.now()
+  });
+
+  // 2) 이용권 발급
+  await issueToken(p.user_id);
+
+  // 3) 자동 로그 생성
+  await db.collection("payments")
+    .doc(paymentId)
+    .collection("logs")
+    .add({
+      message: "입금 확인 처리됨",
+      admin: "관리자",
+      timestamp: Date.now()
+    });
+
+  alert("입금 확인 완료! 이용권이 발급되었습니다.");
+  loadPaymentDetail();
+}
+
+/* ============================================================
+   결제 취소 처리
+============================================================ */
+async function cancelPayment() {
+  if (!confirm("정말 결제를 취소하시겠습니까?")) return;
+
+  await db.collection("payments").doc(paymentId).update({
+    status: "CANCELED"
+  });
+
+  // 자동 로그 생성
+  await db.collection("payments")
+    .doc(paymentId)
+    .collection("logs")
+    .add({
+      message: "결제 취소 처리됨",
+      admin: "관리자",
+      timestamp: Date.now()
+    });
+
+  alert("결제가 취소되었습니다.");
+  loadPaymentDetail();
+}
+
+/* ============================================================
+   이벤트 바인딩
+============================================================ */
+document.getElementById("addLogBtn").addEventListener("click", addLog);
+document.getElementById("confirmBtn").addEventListener("click", confirmPayment);
+document.getElementById("cancelBtn").addEventListener("click", cancelPayment);
+document.getElementById("backBtn").addEventListener("click", () => {
+  window.location.href = "/admin/payments.html";
+});
+
+/* ============================================================
+   실행
+============================================================ */
+loadPaymentDetail();
