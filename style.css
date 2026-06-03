@@ -572,10 +572,7 @@ body.subpage .top-info-bar {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 14px;
   }
-   .auth-bar {
-    top: 90px;
-    justify-content: center;
-  }
+
   body.homepage {
     padding-top: 170px !important;
   }
@@ -1647,4 +1644,12 @@ body.homepage {
   gap: 10px !important;
   justify-content: center;
   align-items: center;
+}
+.header-inner,
+.auth-bar-inner,
+#auth-before,
+#auth-after {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
 }
