@@ -1653,3 +1653,7 @@ body.homepage {
   align-items: center !important;
   gap: 10px !important;
 }
+.auth-bar {
+  top: 90px;
+  justify-content: center;
+}
