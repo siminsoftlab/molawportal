@@ -114,3 +114,50 @@ loadPayments();
 document.getElementById("backBtn").addEventListener("click", () => {
   window.location.href = "/admin/index.html";
 });
+/* ============================================================
+   엑셀 다운로드 기능
+============================================================ */
+async function downloadExcel() {
+  const snap = await db.collection("payments")
+    .orderBy("created_at", "desc")
+    .get();
+
+  if (snap.empty) {
+    alert("다운로드할 결제내역이 없습니다.");
+    return;
+  }
+
+  const rows = [];
+
+  snap.forEach(doc => {
+    const p = doc.data();
+
+    rows.push({
+      결제ID: doc.id,
+      사용자ID: p.user_id,
+      결제방법: p.method,
+      금액: p.amount,
+      입금자명: p.depositor_name,
+      상태: p.status,
+      신청일: new Date(p.created_at).toLocaleString("ko-KR"),
+      확인일: p.confirmed_at
+        ? new Date(p.confirmed_at).toLocaleString("ko-KR")
+        : "-"
+    });
+  });
+
+  // 워크시트 생성
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+
+  // 워크북 생성
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "결제내역");
+
+  // 파일 다운로드
+  XLSX.writeFile(workbook, "결제내역.xlsx");
+}
+
+/* ============================================================
+   버튼 이벤트
+============================================================ */
+document.getElementById("excelBtn").addEventListener("click", downloadExcel);
