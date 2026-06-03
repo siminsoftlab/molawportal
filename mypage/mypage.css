@@ -5,7 +5,7 @@ body {
 }
 
 /* 마이페이지 박스 */
-.box {
+.mypage-box {
   max-width: 420px;
   margin: 60px auto;
   padding: 30px;
@@ -19,13 +19,13 @@ h2 {
 }
 
 /* 기본 정보 */
-.info p {
+.mypage-box p {
   margin: 6px 0;
   font-size: 15px;
 }
 
 /* 이용권 박스 */
-.ticket-box {
+#mypage-ticket {
   background: #f0f3ff;
   padding: 16px;
   border-radius: 10px;
@@ -33,8 +33,8 @@ h2 {
   font-size: 15px;
 }
 
-/* 로그아웃 버튼 */
-.logout {
+/* 로그아웃 버튼 (HTML과 동일하게 logout-btn로 통일) */
+.logout-btn {
   width: 100%;
   padding: 12px;
   background: #ff4a4a;
@@ -46,53 +46,8 @@ h2 {
   margin-top: 20px;
 }
 
-.logout:hover {
+.logout-btn:hover {
   background: #d63a3a;
-}
-
-/* 만료 3일 전 배너 */
-.expire-banner {
-  background: #fff3cd;
-  color: #856404;
-  padding: 14px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  border: 1px solid #ffeeba;
-  font-size: 15px;
-}
-
-.expire-banner a {
-  color: #4a6fff;
-  font-weight: bold;
-  margin-left: 10px;
-}
-
-/* Push 알림 권한 요청 배너 */
-.push-banner {
-  background: #e8f0ff;
-  padding: 16px;
-  border-radius: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #c7d8ff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.push-banner button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-#pushAllow {
-  background: #4a6fff;
-  color: white;
-}
-
-#pushLater {
-  background: #ddd;
 }
 
 /* 홈으로 바로가기 */
