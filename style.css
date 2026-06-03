@@ -1412,3 +1412,9 @@ button.hl-acc-btn {
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   box-sizing: border-box;   /* ⭐ div 내부 패딩 포함해서 width 계산 */
 }
+.input-section input,
+.input-section select {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
