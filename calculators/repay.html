@@ -215,7 +215,18 @@
 <div id="footer"></div>
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
+<!-- 1) Firebase SDK (항상 최상단) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<!-- 2) Firebase 초기화 -->
+<script src="/firebase-init.js"></script>
 
+<!-- 3) 방문자수 카운터 (firebase-counter.js) -->
+<script src="/firebase-counter.js"></script>
+
+<!-- 4) 로그인 상태 감지 -->
+<script src="/auth/auth-state.js"></script>
 <script>
   fetch("/footer.html")
     .then(res => res.text())
