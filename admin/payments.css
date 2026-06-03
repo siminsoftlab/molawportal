@@ -1,0 +1,83 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 40px;
+  background: #f7f8fc;
+}
+
+.box {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.payment-list {
+  background: #f0f3ff;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.item {
+  background: #fff;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #e0e3ff;
+}
+
+.item p {
+  margin: 4px 0;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.status.PENDING {
+  color: #ff9800;
+}
+
+.status.CONFIRMED {
+  color: #4caf50;
+}
+
+.status.CANCELED {
+  color: #f44336;
+}
+
+.confirm-btn {
+  padding: 8px 14px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.confirm-btn:hover {
+  background: #3e8e41;
+}
+
+.back {
+  width: 100%;
+  padding: 12px;
+  background: #4a6fff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.back:hover {
+  background: #3b57d6;
+}
