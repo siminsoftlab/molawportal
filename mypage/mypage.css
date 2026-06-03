@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 40px;
+  background: #f7f8fc;
+}
+
+.box {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.info p {
+  margin: 6px 0;
+  font-size: 15px;
+}
+
+.ticket-box {
+  background: #f0f3ff;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.logout {
+  width: 100%;
+  padding: 12px;
+  background: #ff4a4a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.logout:hover {
+  background: #d63a3a;
+}
