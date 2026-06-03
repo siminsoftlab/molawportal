@@ -96,3 +96,12 @@ h2 {
 .excel:hover {
   background: #256f46;
 }
+.search {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
