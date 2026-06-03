@@ -1647,8 +1647,7 @@ body.homepage {
 }
 .header-inner,
 .auth-bar-inner,
-#auth-before,
-#auth-after {
+ {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
