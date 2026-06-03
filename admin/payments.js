@@ -161,3 +161,89 @@ async function downloadExcel() {
    버튼 이벤트
 ============================================================ */
 document.getElementById("excelBtn").addEventListener("click", downloadExcel);
+/* ============================================================
+   검색 기능 (입금자명 검색)
+============================================================ */
+let allPayments = []; // 전체 결제 데이터 저장
+
+async function loadPayments() {
+  const list = document.getElementById("paymentList");
+
+  const snap = await db.collection("payments")
+    .orderBy("created_at", "desc")
+    .get();
+
+  if (snap.empty) {
+    list.innerHTML = "<p>결제내역이 없습니다.</p>";
+    return;
+  }
+
+  allPayments = []; // 초기화
+
+  snap.forEach(doc => {
+    allPayments.push({
+      id: doc.id,
+      ...doc.data()
+    });
+  });
+
+  renderPayments(allPayments);
+}
+
+/* ============================================================
+   결제 리스트 렌더링
+============================================================ */
+function renderPayments(payments) {
+  const list = document.getElementById("paymentList");
+  let html = "";
+
+  payments.forEach(p => {
+    const created = new Date(p.created_at).toLocaleString("ko-KR");
+    const confirmed = p.confirmed_at
+      ? new Date(p.confirmed_at).toLocaleString("ko-KR")
+      : "-";
+
+    html += `
+      <div class="item">
+        <p><strong>사용자 ID:</strong> ${p.user_id}</p>
+        <p><strong>결제방법:</strong> ${p.method}</p>
+        <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
+        <p><strong>입금자명:</strong> ${p.depositor_name}</p>
+        <p><strong>상태:</strong> <span class="status ${p.status}">${p.status}</span></p>
+        <p><strong>신청일:</strong> ${created}</p>
+        <p><strong>확인일:</strong> ${confirmed}</p>
+
+        <button class="detail-btn" onclick="goDetail('${p.id}')">
+          상세 보기
+        </button>
+      </div>
+    `;
+  });
+
+  list.innerHTML = html;
+}
+
+/* ============================================================
+   검색 이벤트
+============================================================ */
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  const keyword = e.target.value.trim().toLowerCase();
+
+  if (keyword === "") {
+    renderPayments(allPayments);
+    return;
+  }
+
+  const filtered = allPayments.filter(p =>
+    p.depositor_name.toLowerCase().includes(keyword)
+  );
+
+  renderPayments(filtered);
+});
+
+/* ============================================================
+   상세 페이지 이동
+============================================================ */
+function goDetail(id) {
+  window.location.href = `/admin/payment_detail.html?id=${id}`;
+}
