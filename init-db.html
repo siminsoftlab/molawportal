@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>🔥 Firebase DB 스키마 자동 생성 & 초기화 & 삭제</title>
+
+  <style>
+    body { font-family: Arial; padding: 40px; }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background: #4a6fff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    button.delete {
+      background: #ff4a4a;
+    }
+    .log {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      white-space: pre-line;
+      height: 300px;
+      overflow-y: auto;
+    }
+  </style>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+
+<h1>🔥 Firebase DB 관리자 페이지</h1>
+<p>스키마 생성 / 초기화 / 전체 삭제를 수행할 수 있습니다.</p>
+
+<button onclick="initDB()">📌 스키마 자동 생성</button>
+<button onclick="resetDB()">♻️ 테이블 초기화</button>
+<button class="delete" onclick="deleteAll()">💣 전체 삭제</button>
+
+<div class="log" id="logBox"></div>
+
+<script>
+/* ============================================================
+   Firebase 초기화
+============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
+  authDomain: "molawcounter.firebaseapp.com",
+  projectId: "molawcounter",
+  storageBucket: "molawcounter.firebasestorage.app",
+  messagingSenderId: "989958208701",
+  appId: "1:989958208701:web:16bd53eed95276f5d4cbd4",
+  measurementId: "G-D4W34NBWKT"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* ============================================================
+   로그 출력
+============================================================ */
+function log(msg) {
+  const box = document.getElementById("logBox");
+  box.textContent += msg + "\n";
+  box.scrollTop = box.scrollHeight;
+}
+
+/* ============================================================
+   1) 스키마 자동 생성
+============================================================ */
+async function initDB() {
+  log("⏳ 스키마 생성 시작...");
+
+  try {
+    await db.collection("system_config")
+      .doc("welcome_coupon")
+      .set({
+        enabled: true,
+        days: 30,
+        created_at: Date.now()
+      }, { merge: true });
+    log("✔ system_config/welcome_coupon 생성 완료");
+
+    await db.collection("access_tokens")
+      .doc("_schema")
+      .set({
+        info: "이 문서는 스키마 정의용입니다.",
+        fields: ["user_id", "token", "type", "created_at", "expire_at", "is_active"]
+      });
+    log("✔ access_tokens/_schema 생성 완료");
+
+    await db.collection("payments")
+      .doc("_schema")
+      .set({
+        info: "결제/입금 내역 스키마 정의",
+        fields: ["user_id", "method", "amount", "status", "depositor_name", "bank_name", "account_number", "created_at", "confirmed_at"]
+      });
+    log("✔ payments/_schema 생성 완료");
+
+    await db.collection("users")
+      .doc("_schema")
+      .set({
+        info: "회원 스키마 정의",
+        fields: ["email", "name", "password_hash", "welcome_coupon_used", "created_at"]
+      });
+    log("✔ users/_schema 생성 완료");
+
+    log("🎉 스키마 생성 완료!");
+
+  } catch (e) {
+    log("❌ 오류 발생: " + e.message);
+  }
+}
+
+/* ============================================================
+   2) 테이블 초기화 (데이터만 삭제)
+============================================================ */
+async function resetCollection(name) {
+  const snap = await db.collection(name).get();
+  const batch = db.batch();
+
+  snap.forEach(doc => {
+    if (doc.id !== "_schema") batch.delete(doc.ref);
+  });
+
+  await batch.commit();
+  log(`✔ ${name} 초기화 완료`);
+}
+
+async function resetDB() {
+  log("⏳ 테이블 초기화 시작...");
+
+  await resetCollection("users");
+  await resetCollection("access_tokens");
+  await resetCollection("payments");
+
+  log("🎉 모든 테이블 초기화 완료!");
+}
+
+/* ============================================================
+   3) 전체 삭제 (스키마 포함)
+============================================================ */
+async function deleteCollection(name) {
+  const snap = await db.collection(name).get();
+  const batch = db.batch();
+
+  snap.forEach(doc => batch.delete(doc.ref));
+
+  await batch.commit();
+  log(`💣 ${name} 전체 삭제 완료`);
+}
+
+async function deleteAll() {
+  if (!confirm("⚠️ 정말 전체 삭제하시겠습니까? 복구할 수 없습니다.")) return;
+
+  log("⏳ 전체 삭제 시작...");
+
+  await deleteCollection("users");
+  await deleteCollection("access_tokens");
+  await deleteCollection("payments");
+  await deleteCollection("system_config");
+
+  log("🔥 모든 데이터 및 스키마 삭제 완료!");
+}
+</script>
+
+</body>
+</html>
