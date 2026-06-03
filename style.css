@@ -5,7 +5,7 @@
 /* iOS/Android 최적화된 배경 */
 html {
   height: 100%;
-  background: #f7f9fc url('/images/calculator_bg.png') center/cover no-repeat fixed;
+  background: #f7f9fc url('/images/calculator_bg.jpg') center/cover no-repeat fixed;
   -webkit-background-size: cover;
   background-attachment: fixed;
 }
