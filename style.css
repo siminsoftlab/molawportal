@@ -593,7 +593,11 @@ body.subpage .top-info-bar {
   .two-box > div:nth-child(2) { animation-delay: 0.2s; }
   .two-box > div:nth-child(3) { animation-delay: 0.3s; }
   .two-box > div:nth-child(4) { animation-delay: 0.4s; }
-
+   
+   .two-box {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+  }
   @keyframes fadeUp {
     to {
       opacity: 1;
@@ -617,10 +621,13 @@ body.subpage .top-info-bar {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
   }
-   .two-box {
-       grid-template-columns: repeat(2, 1fr) !important;
-       gap: 14px !important;
-     }
+   .phone-icon svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+  .phone-icon svg path {
+    stroke: #FFE600 !important;
+  }
 }
 /* ============================
    자동 설명문 애니메이션
@@ -1013,12 +1020,18 @@ margin-top: 14px;
   color: #ffffff !important;
   text-decoration: none !important;
 }
-.phone-icon svg path {
-  stroke: #FFE600 !important; /* 노란색 */
-}
+/* 전화기 아이콘 — PC/모바일 동일 적용 */
 .phone-icon svg {
-  width: 26px;
-  height: 26px;
+  width: 26px !important;
+  height: 26px !important;
+  display: inline-block;
+}
+
+.phone-icon svg path {
+  stroke: #FFE600 !important; /* 노란색 고정 */
+  stroke-width: 2.6 !important;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 @keyframes blinkPhone {
   0%, 100% { opacity: 1; transform: scale(1); }
