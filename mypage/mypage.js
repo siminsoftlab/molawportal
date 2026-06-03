@@ -131,3 +131,41 @@ function showExpireBanner(days) {
   `;
   document.body.prepend(box);
 }
+async function requestNotificationPermission() {
+  if (!("Notification" in window)) return;
+
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") return;
+
+  checkExpirePush();
+}
+
+async function checkExpirePush() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const snap = await db.collection("access_tokens")
+    .where("user_id", "==", user.uid)
+    .where("is_active", "==", true)
+    .get();
+
+  if (snap.empty) return;
+
+  let best = null;
+  snap.forEach(doc => {
+    const data = doc.data();
+    if (!best || data.expire_at > best.expire_at) {
+      best = data;
+    }
+  });
+
+  const now = Date.now();
+  const diffDays = Math.ceil((best.expire_at - now) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 3) {
+    new Notification("이용권 만료 안내", {
+      body: `이용권 만료까지 ${diffDays}일 남았습니다.`,
+      icon: "/images/icon.png"
+    });
+  }
+}
