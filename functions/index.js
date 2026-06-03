@@ -42,7 +42,7 @@ function emailTemplate(name) {
 }
 
 /* ============================================================
-   4) 매일 실행되는 만료 3일 전 알림
+   4) 만료 3일 전 알림 (이메일 + Push)
 ============================================================ */
 exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(async () => {
   const now = Date.now();
@@ -70,9 +70,7 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
     const userDoc = await db.collection("users").doc(userId).get();
     const user = userDoc.data();
 
-    /* ============================================================
-       4-1) 이메일 발송
-    ============================================================ */
+    /* 이메일 발송 */
     await transporter.sendMail({
       from: "YOUR_EMAIL@gmail.com",
       to: user.email,
@@ -80,9 +78,7 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
       html: emailTemplate(user.name)
     });
 
-    /* ============================================================
-       4-2) Push 알림 발송
-    ============================================================ */
+    /* Push 알림 발송 */
     const subDoc = await db.collection("push_subscriptions").doc(userId).get();
     if (subDoc.exists) {
       const subscription = subDoc.data().subscription;
@@ -97,9 +93,7 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
       );
     }
 
-    /* ============================================================
-       4-3) Firestore에 알림 기록 저장 (중복 방지)
-    ============================================================ */
+    /* Firestore에 발송 기록 저장 */
     await db.collection("notifications")
       .doc(userId)
       .collection("alerts")
@@ -112,3 +106,70 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
 
   return null;
 });
+
+/* ============================================================
+   5) 입금자명 자동 매칭 시스템
+============================================================ */
+exports.autoMatchDeposits = functions.firestore
+  .document("bank_deposits/{depositId}")
+  .onCreate(async (snap, context) => {
+
+    const deposit = snap.data();
+    const depositor = deposit.depositor_name.trim();
+
+    // 1) PENDING 상태의 결제 중에서 입금자명 일치 검색
+    const pendingSnap = await db.collection("payments")
+      .where("status", "==", "PENDING")
+      .where("depositor_name", "==", depositor)
+      .get();
+
+    if (pendingSnap.empty) {
+      console.log("일치하는 결제 없음:", depositor);
+      return null;
+    }
+
+    for (const doc of pendingSnap.docs) {
+      const paymentId = doc.id;
+      const payment = doc.data();
+
+      // 2) 결제 승인 처리
+      await db.collection("payments").doc(paymentId).update({
+        status: "CONFIRMED",
+        confirmed_at: Date.now()
+      });
+
+      // 3) 이용권 발급
+      const tokenId = db.collection("access_tokens").doc().id;
+      const now = Date.now();
+      const expire = now + (30 * 24 * 60 * 60 * 1000);
+
+      await db.collection("access_tokens").doc(tokenId).set({
+        user_id: payment.user_id,
+        token: tokenId,
+        type: "BANK_30D",
+        created_at: now,
+        expire_at: expire,
+        is_active: true
+      });
+
+      // 4) 자동 로그 생성
+      await db.collection("payments")
+        .doc(paymentId)
+        .collection("logs")
+        .add({
+          message: `입금자명 자동 매칭으로 승인됨 (${depositor})`,
+          admin: "자동 시스템",
+          timestamp: Date.now()
+        });
+
+      // 5) bank_deposits에 matched 표시
+      await snap.ref.update({
+        matched: true,
+        matched_payment_id: paymentId
+      });
+
+      console.log("자동 승인 완료:", paymentId);
+    }
+
+    return null;
+  });
