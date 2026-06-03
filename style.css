@@ -1636,4 +1636,26 @@ button.hl-acc-btn {
 body.homepage {
   padding-top: 120px !important;
 }
+/* 회원가입 상단 네비게이션 */
+.signup-header {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto 30px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.nav-btn {
+  padding: 10px 16px;
+  background: #4a90e2;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-btn:hover {
+  background: #357ABD;
+}
 
