@@ -1502,25 +1502,39 @@ button.hl-acc-btn {
   color: #666;
   text-align: right;
 }
+/* ============================
+   로그인 바(auth-bar) 위치 재정렬
+============================ */
 .auth-bar {
+  position: fixed;
+  top: 90px; /* 방문자 정보바 아래 */
+  left: 0;
   width: 100%;
-  padding: 12px 16px;
   background: #f0f3ff;
+  padding: 8px 12px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  font-size: 14px;
   border-bottom: 1px solid #dce1ff;
+  z-index: 99998;
 }
 
+/* 로그인/회원가입 버튼 */
 .auth-btn {
   padding: 6px 12px;
   background: #4a6fff;
   color: white;
   border-radius: 6px;
   text-decoration: none;
+  font-size: 14px;
 }
 
 .auth-btn.logout {
   background: #f44336;
 }
+
+/* 본문이 헤더에 가려지지 않도록 */
+body.homepage {
+  padding-top: 150px !important; /* 기존 90px → 150px로 증가 */
+}
+
