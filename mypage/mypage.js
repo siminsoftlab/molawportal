@@ -98,3 +98,36 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
     window.location.href = "/auth/login.html";
   });
 });
+async function checkExpireAlert(userId) {
+  const snap = await db.collection("access_tokens")
+    .where("user_id", "==", userId)
+    .where("is_active", "==", true)
+    .get();
+
+  if (snap.empty) return;
+
+  let best = null;
+  snap.forEach(doc => {
+    const data = doc.data();
+    if (!best || data.expire_at > best.expire_at) {
+      best = data;
+    }
+  });
+
+  const now = Date.now();
+  const diffDays = Math.ceil((best.expire_at - now) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 3) {
+    showExpireBanner(diffDays);
+  }
+}
+
+function showExpireBanner(days) {
+  const box = document.createElement("div");
+  box.className = "expire-banner";
+  box.innerHTML = `
+    <p>📢 이용권 만료까지 <strong>${days}일</strong> 남았습니다.</p>
+    <a href="/payment.html">지금 연장하기</a>
+  `;
+  document.body.prepend(box);
+}
