@@ -1510,23 +1510,31 @@ button.hl-acc-btn {
   text-align: right;
 }
 /* ============================
-   로그인바(auth-bar) 정상 표시용 재정의
+   로그인바를 container 폭으로 정렬
 ============================ */
 .auth-bar {
-  position: fixed !important;
-  top: 90px !important; /* 방문자 정보바 아래 정확히 위치 */
+  position: fixed;
+  top: 90px; /* 방문자 정보바 바로 아래 */
   left: 0;
   width: 100%;
-  background: #f0f3ff;
-  padding: 10px 14px;
+  background: transparent; /* 배경 제거 */
+  z-index: 200000;
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  border-bottom: 1px solid #dce1ff;
-  z-index: 200000 !important; /* top-info-bar보다 위로 */
+  justify-content: center; /* 가운데에 container를 두기 위해 */
+  pointer-events: none; /* 내부 요소만 클릭 가능하게 */
 }
 
-/* 로그인 버튼 스타일 */
+/* 내부 컨테이너 */
+.auth-bar-inner {
+  width: 92%;
+  max-width: 900px; /* homepage .container와 동일 */
+  display: flex;
+  justify-content: flex-end; /* 버튼 우측 정렬 */
+  gap: 10px;
+  pointer-events: auto; /* 클릭 가능 */
+}
+
+/* 버튼 스타일 */
 .auth-btn {
   padding: 6px 12px;
   background: #4a6fff;
@@ -1542,8 +1550,9 @@ button.hl-acc-btn {
 
 /* 본문이 헤더에 가려지지 않도록 */
 body.homepage {
-  padding-top: 170px !important;
+  padding-top: 160px !important;
 }
+
 #auth-before {
   display: flex;
   gap: 10px;
