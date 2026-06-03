@@ -1,0 +1,83 @@
+<!-- header.html -->
+<div class="header">
+  <div class="header-left">
+    <a href="/" class="logo">딱요만큼변제</a>
+  </div>
+
+  <div class="header-right">
+    <!-- 로그인 전 -->
+    <a id="loginBtn" href="/auth/login.html" class="nav-btn">로그인</a>
+    <a id="signupBtn" href="/auth/signup.html" class="nav-btn">회원가입</a>
+
+    <!-- 로그인 후 -->
+    <a id="mypageBtn" href="/mypage.html" class="nav-btn" style="display:none;">마이페이지</a>
+    <a id="logoutBtn" href="#" class="nav-btn" style="display:none;">로그아웃</a>
+  </div>
+</div>
+
+<style>
+.header {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  text-decoration: none;
+}
+
+.header-right .nav-btn {
+  margin-left: 12px;
+  padding: 8px 14px;
+  background: #4a90e2;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.header-right .nav-btn:hover {
+  background: #357ABD;
+}
+</style>
+
+<!-- Firebase Auth 상태 감지 -->
+<script>
+firebase.auth().onAuthStateChanged((user) => {
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const mypageBtn = document.getElementById("mypageBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (user) {
+    // 로그인 상태
+    loginBtn.style.display = "none";
+    signupBtn.style.display = "none";
+
+    mypageBtn.style.display = "inline-block";
+    logoutBtn.style.display = "inline-block";
+  } else {
+    // 로그아웃 상태
+    loginBtn.style.display = "inline-block";
+    signupBtn.style.display = "inline-block";
+
+    mypageBtn.style.display = "none";
+    logoutBtn.style.display = "none";
+  }
+});
+
+// 로그아웃 기능
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  firebase.auth().signOut().then(() => {
+    window.location.reload();
+  });
+});
+</script>
