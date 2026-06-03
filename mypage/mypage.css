@@ -45,6 +45,8 @@ h2 {
 .logout:hover {
   background: #d63a3a;
 }
+
+/* 만료 3일 전 배너 */
 .expire-banner {
   background: #fff3cd;
   color: #856404;
@@ -54,8 +56,37 @@ h2 {
   border: 1px solid #ffeeba;
   font-size: 15px;
 }
+
 .expire-banner a {
   color: #4a6fff;
   font-weight: bold;
   margin-left: 10px;
+}
+
+/* Push 알림 권한 요청 배너 */
+.push-banner {
+  background: #e8f0ff;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #c7d8ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.push-banner button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#pushAllow {
+  background: #4a6fff;
+  color: white;
+}
+
+#pushLater {
+  background: #ddd;
 }
