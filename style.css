@@ -1627,4 +1627,10 @@ button.hl-acc-btn {
 body.homepage {
   padding-top: 120px !important;
 }
+#auth-after {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 요소 간 간격 */
+  padding: 6px 10px; /* 위아래 6px, 좌우 10px */
+}
 
