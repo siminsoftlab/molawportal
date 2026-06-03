@@ -31,7 +31,14 @@ async function signup() {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
+  const passwordConfirm = document.getElementById("signup-password-confirm").value.trim();
   const msg = document.getElementById("msg");
+
+  /* ⭐ 비밀번호 일치 검사 */
+  if (password !== passwordConfirm) {
+    msg.textContent = "비밀번호가 일치하지 않습니다.";
+    return;
+  }
 
   if (!name || !email || !password) {
     msg.textContent = "모든 항목을 입력해주세요.";
