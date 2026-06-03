@@ -47,18 +47,22 @@
 <body class="homepage">
 
 <div class="fixed-top">
-  <div id="live-clock"></div>
+
+  <!-- 1) 방문자 수 영역 (맨 위) -->
   <div class="top-info-bar">
     딱요만큼변제 · 오늘 방문 <span id="visitor-today">조회중…</span>명 · 전체 방문 <span id="visitor-total">조회중…</span>명
   </div>
-  <!-- ⭐ 로그인 / 회원가입 / 로그아웃 영역 -->
-  <div class="auth-bar">
+
+  <!-- 2) 시간 + 로그인바를 같은 줄에 배치 -->
+  <div class="header-row">
+    <div id="live-clock"></div>
+
     <div class="auth-bar-inner">
       <div id="auth-before">
         <a href="/auth/login.html" class="auth-btn">로그인</a>
         <a href="/auth/signup.html" class="auth-btn">회원가입</a>
       </div>
-    
+
       <div id="auth-after">
         <span id="auth-username"></span>님 환영합니다!
         <a href="/mypage/mypage.html" class="auth-btn">마이페이지</a>
@@ -66,6 +70,7 @@
       </div>
     </div>
   </div>
+
 </div>
   
 <!-- ⭐ 페이지 전체 내용 시작 -->
