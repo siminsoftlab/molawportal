@@ -30,6 +30,7 @@ body {
 /* ============================
    상단 시계
 ============================ */
+/*========
 #live-clock {
   position: fixed;
   top: 0;
@@ -44,7 +45,7 @@ body {
   font-weight: 700;
   padding: 0;
   z-index: 200000;
-}
+}============*/
 
 /* ============================
    방문자 정보 바
@@ -1571,19 +1572,19 @@ button.hl-acc-btn {
   z-index: 200000;
 }
 
-/* 시간 + 로그인바를 같은 줄에 배치 */
+/* 방문자 수 아래 2번째 줄 */
 .header-row {
   position: fixed;
-  top: 50px; /* 방문자바 높이만큼 아래 */
+  top: 50px; /* 방문자 수 바 높이 */
   left: 0;
   width: 100%;
   display: flex;
-  justify-content: center; /* container 중앙 배치 */
-  background: rgba(255,255,255,0);
+  justify-content: center;
+  background: transparent;
   z-index: 200000;
 }
 
-/* 내부 container (계산기 박스와 동일 폭) */
+/* 내부 container */
 .header-row > div,
 .auth-bar-inner {
   width: 92%;
@@ -1598,6 +1599,7 @@ button.hl-acc-btn {
   font-size: 16px;
   font-weight: 700;
   color: #333;
+  background: transparent !important;
 }
 
 /* 로그인바 오른쪽 */
@@ -1605,6 +1607,7 @@ button.hl-acc-btn {
   justify-content: flex-end;
   gap: 10px;
 }
+
 
 /* 버튼 스타일 */
 .auth-btn {
