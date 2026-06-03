@@ -1656,3 +1656,6 @@ body.homepage {
   top: 90px;
   justify-content: center;
 }
+.fixed-header {
+  background: #000 !important;
+}
