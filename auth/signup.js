@@ -70,7 +70,7 @@ async function signup() {
     msg.textContent = "회원가입 완료! 30일 이용권이 발급되었습니다.";
 
     setTimeout(() => {
-      window.location.href = `/calculators/repay.html?token=${token}`;
+      window.location.href = `/index.html`;
     }, 1500);
 
   } catch (error) {
