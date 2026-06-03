@@ -986,7 +986,7 @@ margin-top: 14px;
 }
 
 .call-fixed .consult-call {
-  color: #fff;
+  color: #ffffff !important;
   font-size: 19px;
   font-weight: 800;
   text-decoration: none;
@@ -998,8 +998,13 @@ margin-top: 14px;
 /* 전화기 아이콘 색상 + 애니메이션 */
 .phone-icon {
   font-size: 22px;
-  color: #ffe600; /* ⭐ 원하는 색상으로 변경 가능 */
+  color: #ffe600 !important; /* ⭐ 원하는 색상으로 변경 가능 */
   animation: blinkPhone 1.2s infinite;
+}
+/* ⭐ blog 페이지의 a 기본 스타일 덮어쓰기 */
+.call-fixed a {
+  color: #ffffff !important;
+  text-decoration: none !important;
 }
 
 @keyframes blinkPhone {
