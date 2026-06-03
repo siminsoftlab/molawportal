@@ -100,7 +100,7 @@ body.homepage .two-box {
 
 body.homepage .left-box,
 body.homepage .right-box {
-  padding: 20px;
+  padding: 26px !important;
   border-radius: 12px;
   text-align: center;
   background: rgba(255,255,255,0.85);
@@ -564,12 +564,13 @@ body.subpage .top-info-bar {
   }  
 
   body.homepage .calc-img {
-    width: 60%;
-    max-width: 100px;
+    width: 85% !important;
+    max-width: 150px !important;
   }
 
   body.homepage .calc-desc {
-    font-size: 15px;
+     font-size: 17px !important;
+    font-weight: 700 !important;
   }
 
   /* 아코디언 버튼 */
@@ -1275,10 +1276,10 @@ z-index: 10000;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 12px 18px !important;
   background: #2E7D32;
   color: #ffffff;
-  font-size: 10px;
+  font-size: 14px !important;  
   border-radius: 10px;
   border: 1px solid #1B5E20;
   text-decoration: none;
@@ -1297,12 +1298,12 @@ z-index: 10000;
   justify-content: center;
   margin-left: 3px; /* ⭐ 공백 여유 증가 */
   padding: 2px;
-  width: 18px;
-  height: 18px;
+  width: 20px !important;
+  height: 20px !important;    
   border-radius: 50%;
   background: #FFD84D; /* 노란색 */
   color: #333;
-  font-size: 12px;
+  font-size: 13px !important;
   font-weight: bold;
   border: 1.5px solid #E0B93A;
   box-sizing: border-box;
