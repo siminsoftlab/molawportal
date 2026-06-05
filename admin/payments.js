@@ -96,7 +96,7 @@ async function confirmPayment(paymentId, userId) {
 loadPayments();
 
 document.getElementById("backBtn").addEventListener("click", () => {
-  window.location.href = "/admin/index.html";
+  window.location.href = "/admin.html";
 });
 /* ============================================================
    엑셀 다운로드 기능
