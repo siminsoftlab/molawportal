@@ -1719,3 +1719,6 @@ body.homepage {
 .welcome-btn:hover {
   background: #3b57d6;
 }
+#welcomeBanner {
+  border: 2px solid red !important;
+}
