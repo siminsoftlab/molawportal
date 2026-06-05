@@ -33,6 +33,8 @@ async function signup() {
   const password = document.getElementById("password").value.trim();
   const passwordConfirm = document.getElementById("signup-password-confirm").value.trim();
   const msg = document.getElementById("msg");
+  const agreeTerms = document.getElementById("agreeTerms").checked;
+  const agreePrivacy = document.getElementById("agreePrivacy").checked;
 
   /* ⭐ 비밀번호 6자리 이상 체크 */
   if (password.length < 6) {
@@ -51,6 +53,11 @@ async function signup() {
     msg.textContent = "모든 항목을 입력해주세요.";
     return;
   }
+
+   if (!agreeTerms || !agreePrivacy) {
+     msg.textContent = "약관 및 개인정보 제공 동의를 체크해주세요.";
+     return;
+   }
 
   try {
     msg.textContent = "회원가입 중...";
