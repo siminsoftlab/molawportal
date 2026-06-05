@@ -85,7 +85,7 @@ async function deactivateToken(id) {
    뒤로가기
 ============================================================ */
 document.getElementById("backBtn").addEventListener("click", () => {
-  window.location.href = "/admin/admin.html";
+  window.location.href = "/admin.html";
 });
 
 /* ============================================================
