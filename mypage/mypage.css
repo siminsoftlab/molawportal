@@ -167,6 +167,20 @@ h2 {
   text-decoration: none;
 }
 
+.push-banner {
+  max-width: 420px;
+  margin: 20px auto;
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
 /* ============================
    반응형
 ============================ */
