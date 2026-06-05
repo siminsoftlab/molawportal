@@ -72,3 +72,37 @@ auth.onAuthStateChanged(async (user) => {
 document.getElementById("backBtn").addEventListener("click", () => {
   window.location.href = "/mypage/mypage.html";
 });
+/* ============================================================
+   결제내역 조회
+============================================================ */
+async function loadPaymentHistory(userId) {
+  const list = document.getElementById("paymentList");
+
+  const snap = await db.collection("payments")
+    .where("user_id", "==", userId)
+    .orderBy("created_at", "desc")
+    .get();
+
+  if (snap.empty) {
+    list.innerHTML = "<p>결제내역이 없습니다.</p>";
+    return;
+  }
+
+  let html = "";
+  snap.forEach(doc => {
+    const p = doc.data();
+    const created = new Date(p.created_at).toLocaleString("ko-KR");
+
+    html += `
+      <div class="payment-item">
+        <p><strong>결제방법:</strong> ${p.method}</p>
+        <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
+        <p><strong>입금자명:</strong> ${p.depositor_name}</p>
+        <p><strong>상태:</strong> ${p.status}</p>
+        <p><strong>신청일:</strong> ${created}</p>
+      </div>
+    `;
+  });
+
+  list.innerHTML = html;
+}
