@@ -1663,29 +1663,32 @@ body.homepage {
   display: flex;
   gap: 10px;
 }
-/* 웰컴쿠폰 배너 */
+/* ⭐ container와 동일한 폭 + 중앙 정렬 + 스타일 */
 .welcome-banner {
   width: 92%;
   max-width: 900px;
-  margin: 0 auto; /* container와 동일한 중앙 정렬 */
+  margin: 0 auto; /* container와 동일 */
   margin-top: 0;  /* 로그인바와 딱 붙게 */
-  background: #f0f4ff;
-  border: 1px solid #d6e0ff;
-  padding: 18px 20px;
+  
+  background: rgba(255,255,255,0.75);
   border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 /* 아이콘 */
 .welcome-img {
-  width: 100px;
+  width: 48px;
   height: 48px;
 }
 
-/* 중앙 정렬 영역 */
+/* 중앙 정렬 */
 .welcome-center {
   flex: 1;
   text-align: center;
@@ -1696,19 +1699,20 @@ body.homepage {
   font-size: 15px;
   font-weight: 600;
   color: #2a3f9d;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 /* 버튼 */
 .welcome-btn {
   background: #4a6fff;
   color: #fff;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 700;
   text-decoration: none;
 }
+
 .welcome-btn:hover {
   background: #3b57d6;
 }
