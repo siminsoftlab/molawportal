@@ -5,7 +5,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 /* ============================================================
-   웰컴쿠폰 30일 이용권 발급
+   웰컴쿠폰 7일 이용권 발급
 ============================================================ */
 async function issueWelcomeCoupon(userId) {
   const now = Date.now();
