@@ -13,7 +13,15 @@
   <div class="box">
     <h2>이용권 결제 신청</h2>
 
-    <!-- 이용권 선택 -->
+    <div class="form-group">
+      <label>결제방법</label>
+      <select id="method">
+        <option value="무통장입금">무통장입금</option>
+        <option value="카드결제">카드결제</option>
+      </select>
+    </div>
+
+     <!-- 이용권 선택 -->
     <div class="form-group">
       <label>이용권</label>
       <select id="ticket">
@@ -25,15 +33,7 @@
         <option value="36">36개월</option>
       </select>
     </div>
-
-    <div class="form-group">
-      <label>결제방법</label>
-      <select id="method">
-        <option value="무통장입금">무통장입금</option>
-        <option value="카드결제">카드결제</option>
-      </select>
-    </div>
-
+    
     <!-- 금액 자동 계산 -->
     <div class="form-group">
       <label>금액</label>
