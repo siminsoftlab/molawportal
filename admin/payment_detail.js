@@ -61,7 +61,7 @@ async function loadPaymentDetail() {
   `;
 
   /* 버튼 상태 제어 */
-  if (p.status !== "PENDING") {
+  if (p.status !== "pending") {
     document.getElementById("confirmBtn").style.display = "none";
   }
 
