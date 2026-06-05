@@ -1663,3 +1663,40 @@ body.homepage {
   display: flex;
   gap: 10px;
 }
+.welcome-banner {
+  margin-top: 10px;
+  background: #f0f4ff;
+  border: 1px solid #d6e0ff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.welcome-img {
+  width: 48px;
+  height: 48px;
+}
+
+.welcome-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2a3f9d;
+}
+
+.welcome-btn {
+  background: #4a6fff;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.welcome-btn:hover {
+  background: #3b57d6;
+}
