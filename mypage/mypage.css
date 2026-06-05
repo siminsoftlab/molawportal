@@ -1,101 +1,175 @@
+/* ============================
+   기본 스타일
+============================ */
 body {
-  font-family: Arial, sans-serif;
-  padding: 40px;
-  background: #f7f8fc;
+  margin: 0;
+  padding: 0;
+  background: #f5f6fa;
+  font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 }
 
-/* 마이페이지 박스 */
+/* ============================
+   Push 알림 배너
+============================ */
+.push-banner {
+  display: none;
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 14px;
+  border-radius: 12px;
+  margin: 16px;
+  font-size: 14px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.push-banner button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+#pushAllow {
+  background: #4a90e2;
+  color: #fff;
+}
+
+#pushLater {
+  background: #ddd;
+  color: #333;
+}
+
+/* ============================
+   마이페이지 메인 박스
+============================ */
 .mypage-box {
   max-width: 420px;
-  margin: 60px auto;
-  padding: 30px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin: 30px auto;
+  background: #fff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
 h2 {
-  margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
 }
 
-/* 기본 정보 */
-.mypage-box p {
+/* ============================
+   사용자 정보 박스
+============================ */
+.info-box {
+  background: #f8f9ff;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e3ff;
+}
+
+.info-box p {
   margin: 6px 0;
   font-size: 15px;
 }
 
-/* 이용권 박스 */
-#mypage-ticket {
-  background: #f0f3ff;
-  padding: 16px;
-  border-radius: 10px;
-  margin-top: 10px;
-  font-size: 15px;
-}
-
-/* 로그아웃 버튼 (HTML과 동일하게 logout-btn로 통일) */
-.logout-btn {
-  width: 100%;
-  padding: 12px;
-  background: #ff4a4a;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
+/* ============================
+   섹션 제목
+============================ */
+.section-title {
   margin-top: 20px;
-}
-
-.logout-btn:hover {
-  background: #d63a3a;
-}
-
-/* 홈으로 바로가기 */
-.mypage-home-link {
-  text-align: center;
-  margin-top: 25px;
-}
-
-.mypage-home-link a {
-  display: inline-block;
-  padding: 10px 18px;
-  background: #f5f5f5;
-  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 17px;
+  font-weight: 700;
   color: #333;
-  font-weight: 600;
-  text-decoration: none;
-  transition: 0.2s;
 }
 
-.mypage-home-link a:hover {
-  background: #e0e0e0;
-}
-/* 정보수정 / 결제내역 버튼 */
-.mypage-btn {
-  width: 100%;
-  padding: 12px;
-  background: #4a6cff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 12px;
+/* ============================
+   이용권 상태 박스
+============================ */
+.ticket-box {
+  background: #eef2ff;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #dce2ff;
+  font-size: 15px;
+  margin-bottom: 20px;
 }
 
-.mypage-btn:hover {
-  background: #3a54d6;
-}
-
+/* ============================
+   결제 신청 상태 박스 (pending)
+============================ */
 .pending-box {
   background: #fff7e6;
   border: 1px solid #ffe0b2;
-  padding: 14px;
-  border-radius: 12px;
-  margin-top: 16px;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 20px;
   font-size: 14px;
 }
 
+.pending-box p {
+  margin: 5px 0;
+}
+
+/* ============================
+   버튼 스타일
+============================ */
+.mypage-btn {
+  width: 100%;
+  padding: 15px;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.2s;
+}
+
+.mypage-btn:active {
+  background: #3b7ac4;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 14px;
+  background: #ff4d4f;
+  color: #fff;
+  font-size: 15px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-top: 18px;
+}
+
+.logout-btn:active {
+  background: #d9363e;
+}
+
+/* ============================
+   홈으로 링크
+============================ */
+.mypage-home-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.mypage-home-link a {
+  color: #4a90e2;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+/* ============================
+   반응형
+============================ */
 @media (max-width: 480px) {
   .mypage-box {
     max-width: 95%;
