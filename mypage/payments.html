@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>이용권 결제 신청</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="payments.css">
+  <link rel="icon" href="../images/favicon.ico">
+</head>
+
+<body>
+
+  <div class="box">
+    <h2>이용권 결제 신청</h2>
+
+    <div class="form-group">
+      <label>결제방법</label>
+      <select id="method">
+        <option value="무통장입금">무통장입금</option>
+        <option value="카드결제">카드결제</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>금액</label>
+      <input id="amount" type="number" placeholder="예: 30000">
+    </div>
+
+    <div class="form-group">
+      <label>입금자명</label>
+      <input id="depositor" type="text" placeholder="입금자명을 입력하세요">
+    </div>
+
+    <button id="payBtn" class="submit">결제 신청하기</button>
+
+    <div id="msg" class="msg"></div>
+
+    <button id="backBtn" class="back">← 마이페이지로 돌아가기</button>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase 초기화 -->
+  <script src="/firebase-init.js"></script>
+
+  <!-- 결제 생성 스크립트 -->
+  <script>
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/auth/login.html";
+        return;
+      }
+
+      document.getElementById("payBtn").onclick = async () => {
+        const method = document.getElementById("method").value;
+        const amount = Number(document.getElementById("amount").value.trim());
+        const depositor = document.getElementById("depositor").value.trim();
+        const msg = document.getElementById("msg");
+
+        if (!amount || !depositor) {
+          msg.textContent = "모든 항목을 입력해주세요.";
+          return;
+        }
+
+        try {
+          await db.collection("payments").add({
+            user_id: user.uid,
+            method,
+            amount,
+            depositor_name: depositor,
+            status: "pending",
+            created_at: Date.now(),
+            confirmed_at: null
+          });
+
+          msg.textContent = "결제 신청이 완료되었습니다. 관리자 확인 후 이용권이 활성화됩니다.";
+
+        } catch (e) {
+          msg.textContent = "오류: " + e.message;
+        }
+      };
+    });
+
+    document.getElementById("backBtn").onclick = () => {
+      window.location.href = "/mypage/mypage.html";
+    };
+  </script>
+
+</body>
+</html>
