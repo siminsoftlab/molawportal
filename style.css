@@ -1690,7 +1690,10 @@ body.homepage {
 
 /* 중앙 정렬 */
 .welcome-center {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   text-align: center;
 }
 
