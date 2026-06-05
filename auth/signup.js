@@ -15,7 +15,7 @@ async function issueWelcomeCoupon(userId) {
   await db.collection("access_tokens").doc(token).set({
     user_id: userId,
     token: token,
-    type: "WELCOME_30D",
+    type: "WELCOME_7D",
     created_at: now,
     expire_at: expire,
     is_active: true
