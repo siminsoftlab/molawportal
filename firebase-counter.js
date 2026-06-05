@@ -143,7 +143,7 @@ async function saveVisitorGeoIP() {
   const visitorKey = getVisitorKey();
 
   try {
-    const res = await fetch("https://ipapi.co/json/");
+    const res = await fetch("https://ipwho.is/");
     const data = await res.json();
 
     const { browser, os } = getBrowserInfo();
