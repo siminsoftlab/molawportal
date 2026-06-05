@@ -9,7 +9,7 @@ const db = firebase.firestore();
 ============================================================ */
 async function issueWelcomeCoupon(userId) {
   const now = Date.now();
-  const expire = now + (30 * 24 * 60 * 60 * 1000); // 30일
+  const expire = now + (7 * 24 * 60 * 60 * 1000); // 30일
   const token = crypto.randomUUID();
 
   await db.collection("access_tokens").doc(token).set({
@@ -100,7 +100,7 @@ async function signup() {
 
     const token = await issueWelcomeCoupon(user.uid);
 
-    msg.textContent = "회원가입 완료! 30일 이용권이 발급되었습니다.";
+    msg.textContent = "회원가입 완료! 7일 이용권이 발급되었습니다.";
 
     setTimeout(() => {
       window.location.href = `/index.html`;
