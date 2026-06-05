@@ -1,0 +1,66 @@
+const auth = firebase.auth();
+
+/* ============================================================
+   비밀번호 변경
+============================================================ */
+async function changePassword() {
+  const currentPassword = document.getElementById("currentPassword").value.trim();
+  const newPassword = document.getElementById("newPassword").value.trim();
+  const newPasswordConfirm = document.getElementById("newPasswordConfirm").value.trim();
+  const msg = document.getElementById("msg");
+
+  msg.textContent = "";
+
+  if (!currentPassword || !newPassword || !newPasswordConfirm) {
+    msg.textContent = "모든 항목을 입력해주세요.";
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    msg.textContent = "새 비밀번호는 6자리 이상이어야 합니다.";
+    return;
+  }
+
+  if (newPassword !== newPasswordConfirm) {
+    msg.textContent = "새 비밀번호가 일치하지 않습니다.";
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+    msg.textContent = "로그인이 필요합니다.";
+    return;
+  }
+
+  try {
+    msg.textContent = "비밀번호 확인 중...";
+
+    // 🔐 현재 비밀번호 재인증
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      user.email,
+      currentPassword
+    );
+
+    await user.reauthenticateWithCredential(credential);
+
+    // 🔄 새 비밀번호 업데이트
+    await user.updatePassword(newPassword);
+
+    msg.textContent = "비밀번호가 성공적으로 변경되었습니다!";
+
+    setTimeout(() => {
+      window.location.href = "/mypage/mypage.html";
+    }, 1500);
+
+  } catch (error) {
+    msg.textContent = "오류: " + error.message;
+  }
+}
+
+/* ============================================================
+   이벤트 바인딩
+============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("changePasswordBtn");
+  if (btn) btn.addEventListener("click", changePassword);
+});
