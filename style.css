@@ -1666,9 +1666,7 @@ body.homepage {
 /* ⭐ container와 동일한 폭 + 중앙 정렬 + 스타일 */
 .welcome-banner {
   width: 92%;
-  max-width: 900px;
-  margin: 0 auto; /* container와 동일 */  
-  margin-bottom: 20px; /* container와의 간격 */
+  max-width: 900px; 
   background: rgba(255,255,255,0.75);
   border-radius: 14px;
   padding: 20px;
@@ -1719,6 +1717,5 @@ body.homepage {
   background: #3b57d6;
 }
 #welcomeBanner {
-  border: 2px solid red !important;
-  margin-top: 20px;   
+  border: 2px solid red !important;  
 }
