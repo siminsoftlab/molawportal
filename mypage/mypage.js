@@ -163,7 +163,7 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 /* ============================================================
-   로그아웃, 비밀번호 변경, 결재내역조회
+   로그아웃, 비밀번호 변경, 결재내역조회, 이용권결제신청
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("editInfoBtn");
@@ -192,8 +192,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
    if (buyBtn) {
-  buyBtn.addEventListener("click", () => {
+     buyBtn.addEventListener("click", () => {
     window.location.href = "/mypage/payments.html";
   });
-}
+   }
 });
