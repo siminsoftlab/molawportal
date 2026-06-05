@@ -170,3 +170,13 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
     window.location.href = "/index.html";
   });
 });
+/* ============================================================
+   정보수정 / 결제내역조회 이동
+============================================================ */
+document.getElementById("editInfoBtn").addEventListener("click", () => {
+  window.location.href = "/mypage/edit-info.html";
+});
+
+document.getElementById("paymentHistoryBtn").addEventListener("click", () => {
+  window.location.href = "/mypage/payment-history.html";
+});
