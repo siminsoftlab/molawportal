@@ -16,5 +16,8 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+/* ⭐ 여기 추가해야 함 */
+const auth = firebase.auth();
+
 /* Firestore 인스턴스 */
 const db = firebase.firestore();
