@@ -115,3 +115,26 @@ button:hover {
   margin: 0 8px;
   color: #aaa;
 }
+.agree-wrap {
+  margin: 15px 0 10px;
+  font-size: 14px;
+  color: #444;
+}
+
+.agree-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.agree-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.agree-link {
+  color: #4a90e2;
+  font-size: 13px;
+  text-decoration: underline;
+}
