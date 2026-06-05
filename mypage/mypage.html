@@ -10,77 +10,54 @@
 
 <body>
 
+  <!-- 🔔 Push 알림 배너 -->
   <div id="pushBanner" class="push-banner" style="display:none;">
     <p>🔔 만료 3일 전 알림을 받으시겠어요?</p>
     <button id="pushAllow">허용</button>
     <button id="pushLater">나중에</button>
   </div>
-  
+
+  <!-- 📱 마이페이지 박스 -->
   <div class="mypage-box">
     <h2>마이페이지</h2>
-  
-    <p>이름: <span id="mypage-name"></span></p>
-    <p>이메일: <span id="mypage-email"></span></p>
-  
-    <h3>📅 이용권 상태</h3>
-    <p id="mypage-ticket">이용권 정보를 불러오는 중...</p>    
+
+    <div class="info-box">
+      <p><strong>이름:</strong> <span id="mypage-name"></span></p>
+      <p><strong>이메일:</strong> <span id="mypage-email"></span></p>
+    </div>
+
+    <!-- 📅 이용권 상태 -->
+    <h3 class="section-title">📅 이용권 상태</h3>
+    <div id="mypage-ticket" class="ticket-box">
+      이용권 정보를 불러오는 중...
+    </div>
+
+    <!-- 🧾 현재 결제 신청 상태 -->
+    <h3 class="section-title">🧾 결제 신청 상태</h3>
+    <div id="pendingPayment"></div>
+
+    <!-- 버튼 영역 -->
     <button id="buyTicketBtn" class="mypage-btn">이용권 결제 신청</button>
     <button id="paymentHistoryBtn" class="mypage-btn">결제내역조회</button>
     <button id="editInfoBtn" class="mypage-btn">비밀번호 변경</button>
     <button id="logoutBtn" class="logout-btn">로그아웃</button>
-
-    <div id="pendingPayment"></div>
-
   </div>
+
   <div class="mypage-home-link">
     <a href="/index.html">홈으로</a>
-  </div>  
-      <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <!-- 2) Firebase 초기화 -->
-  <script src="/firebase-init.js"></script> 
-  <script>
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (!user) {
-      alert("로그인이 필요합니다.");
-      window.location.href = "/auth/login.html";
-      return;
-    }
-  
-    const nameEl = document.getElementById("mypage-name");
-    const emailEl = document.getElementById("mypage-email");
-    const ticketEl = document.getElementById("mypage-ticket");
-  
-    // Firestore에서 유저 정보 가져오기
-    const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
-  
-    if (userDoc.exists) {
-      const data = userDoc.data();
-      nameEl.textContent = data.name;
-      emailEl.textContent = data.email;
-    }
-  
-    // 이용권 정보 가져오기
-    const tokenDoc = await firebase.firestore()
-      .collection("access_tokens")
-      .where("user_id", "==", user.uid)
-      .where("is_active", "==", true)
-      .limit(1)
-      .get();
-  
-    if (!tokenDoc.empty) {
-      const tokenData = tokenDoc.docs[0].data();
-      const expireDate = new Date(tokenData.expire_at).toLocaleDateString("ko-KR");
-      ticketEl.textContent = `30일 이용권 (만료일: ${expireDate})`;
-    } else {
-      ticketEl.textContent = "보유 중인 이용권이 없습니다.";
-    }
-  });
-  </script>
-  
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase 초기화 -->
+  <script src="/firebase-init.js"></script>
+
+  <!-- 마이페이지 기능 -->
   <script src="mypage.js"></script>
   <script src="../block-right-click.js"></script>
+
 </body>
 </html>
