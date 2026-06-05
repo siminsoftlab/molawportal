@@ -28,7 +28,7 @@ function getRemainingDays(expireAt) {
    이용권 정보 불러오기
 ============================================================ */
 async function loadTicket(userId) {
-  const ticketBox = document.getElementById("ticketBox");
+  const ticketBox = document.getElementById("mypage-ticket");
 
   const snap = await db.collection("access_tokens")
     .where("user_id", "==", userId)
