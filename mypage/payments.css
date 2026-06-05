@@ -1,69 +1,170 @@
+/* ============================
+   기본 스타일
+============================ */
 body {
-  font-family: Arial, sans-serif;
-  padding: 40px;
-  background: #f7f8fc;
+  margin: 0;
+  padding: 0;
+  background: #f5f6fa;
+  font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 }
 
+/* ============================
+   메인 박스
+============================ */
 .box {
-  max-width: 480px;
-  margin: 60px auto;
-  padding: 30px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
+/* ============================
+   제목
+============================ */
 h2 {
+  text-align: center;
+  margin-bottom: 28px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* ============================
+   입력 그룹
+============================ */
+.form-group {
   margin-bottom: 20px;
 }
 
-.payment-list {
-  background: #f0f3ff;
-  padding: 16px;
-  border-radius: 10px;
+label {
+  display: block;
   font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
 }
 
+select,
+input {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fafafa;
+  outline: none;
+  transition: 0.2s;
+}
+
+select:focus,
+input:focus {
+  border-color: #4a90e2;
+  background: #fff;
+}
+
+/* ============================
+   결제 신청 버튼
+============================ */
+.submit {
+  width: 100%;
+  padding: 15px;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+.submit:active {
+  background: #3b7ac4;
+}
+
+/* ============================
+   뒤로가기 버튼
+============================ */
+.back {
+  width: 100%;
+  padding: 14px;
+  background: #eee;
+  color: #333;
+  font-size: 15px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 18px;
+}
+
+.back:active {
+  background: #ddd;
+}
+
+/* ============================
+   메시지 영역
+============================ */
+.msg {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #d9534f;
+  text-align: center;
+}
+
+/* ============================
+   결제내역 리스트 (앱 스타일 적용)
+============================ */
+.payment-list {
+  background: #eef2ff;
+  padding: 18px;
+  border-radius: 14px;
+  font-size: 15px;
+  margin-top: 20px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+}
+
+/* ============================
+   결제내역 아이템
+============================ */
 .payment-item {
   background: #fff;
-  padding: 14px;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 14px;
   border: 1px solid #e0e3ff;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
 .payment-item p {
-  margin: 4px 0;
+  margin: 5px 0;
+  font-size: 14px;
+  color: #333;
 }
 
+/* ============================
+   상태 표시
+============================ */
 .status {
-  font-weight: bold;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 13px;
 }
 
 .status.PENDING {
   color: #ff9800;
+  background: #fff3e0;
 }
 
 .status.CONFIRMED {
   color: #4caf50;
+  background: #e8f5e9;
 }
 
 .status.CANCELED {
   color: #f44336;
-}
-
-.back {
-  width: 100%;
-  padding: 12px;
-  background: #4a6fff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.back:hover {
-  background: #3b57d6;
+  background: #ffebee;
 }
