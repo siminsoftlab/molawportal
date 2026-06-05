@@ -11,18 +11,27 @@ async function changePassword() {
 
   msg.textContent = "";
 
+  // 필수 입력 체크
   if (!currentPassword || !newPassword || !newPasswordConfirm) {
     msg.textContent = "모든 항목을 입력해주세요.";
     return;
   }
 
+  // 새 비밀번호 길이 체크
   if (newPassword.length < 6) {
     msg.textContent = "새 비밀번호는 6자리 이상이어야 합니다.";
     return;
   }
 
+  // 🔥 현재 비밀번호와 새 비밀번호 동일한지 체크
+  if (currentPassword === newPassword) {
+    msg.textContent = "현재 비밀번호와 다른 번호를 입력해 주세요.";
+    return;
+  }
+
+  // 🔥 새 비밀번호와 확인 비밀번호 일치 체크
   if (newPassword !== newPasswordConfirm) {
-    msg.textContent = "새 비밀번호가 일치하지 않습니다.";
+    msg.textContent = "신규 비밀번호가 일치하지 않습니다.";
     return;
   }
 
@@ -35,18 +44,17 @@ async function changePassword() {
   try {
     msg.textContent = "비밀번호 확인 중...";
 
-    // 🔐 현재 비밀번호 재인증
+    // 현재 비밀번호 재인증
     const credential = firebase.auth.EmailAuthProvider.credential(
       user.email,
       currentPassword
     );
-
     await user.reauthenticateWithCredential(credential);
 
-    // 🔄 새 비밀번호 업데이트
+    // 새 비밀번호 업데이트
     await user.updatePassword(newPassword);
 
-    msg.textContent = "비밀번호가 성공적으로 변경되었습니다!";
+    msg.textContent = "비밀번호가 성공적으로 변경되었습니다.";
 
     setTimeout(() => {
       window.location.href = "/mypage/mypage.html";
