@@ -13,18 +13,34 @@ async function loadTokens() {
     return;
   }
 
+  const now = Date.now();
   let html = "";
 
   snap.forEach(doc => {
     const t = doc.data();
 
-    const start = t.start_at
-      ? new Date(t.start_at).toLocaleString("ko-KR")
+    const start = t.created_at
+      ? new Date(t.created_at).toLocaleString("ko-KR")
       : "-";
 
     const expire = t.expire_at
       ? new Date(t.expire_at).toLocaleString("ko-KR")
       : "-";
+
+    // 상태 계산
+    let statusText = "";
+    let statusClass = "";
+
+    if (!t.is_active) {
+      statusText = "비활성";
+      statusClass = "status-inactive";
+    } else if (t.expire_at && t.expire_at < now) {
+      statusText = "만료";
+      statusClass = "status-expired";
+    } else {
+      statusText = "활성";
+      statusClass = "status-active";
+    }
 
     html += `
       <div class="token-item">
@@ -34,14 +50,16 @@ async function loadTokens() {
         <p><strong>시작일:</strong> ${start}</p>
         <p><strong>만료일:</strong> ${expire}</p>
         <p><strong>상태:</strong> 
-          <span class="${t.is_active ? "active" : "inactive"}">
-            ${t.is_active ? "활성" : "비활성"}
+          <span class="status-badge ${statusClass}">
+            ${statusText}
           </span>
         </p>
 
-        <button class="btn-secondary" onclick="deactivateToken('${doc.id}')">
-          비활성화
-        </button>
+        <div class="token-actions">
+          <button class="btn-secondary" onclick="deactivateToken('${doc.id}')">
+            비활성화
+          </button>
+        </div>
       </div>
     `;
   });
