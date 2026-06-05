@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
    if (buyBtn) {
   buyBtn.addEventListener("click", () => {
-    window.location.href = "/payments/payments.html";
+    window.location.href = "/mypage/payments.html";
   });
 }
 });
