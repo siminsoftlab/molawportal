@@ -31,8 +31,8 @@ function getTodayString() {
 }
 
 /* ============================================================
-   Firebase 초기화
- 
+   Firebase 초기화 (v8)
+   ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -43,9 +43,11 @@ const firebaseConfig = {
   measurementId: "G-D4W34NBWKT"
 };
 
-firebase.initializeApp(firebaseConfig); 
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.firestore();
- ============================================================ */
+
 /* ============================================================
    방문자 업데이트 (고유 방문자 기반)
    ============================================================ */
@@ -53,29 +55,36 @@ async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = getVisitorKey();
 
-  /* ⭐ 오늘 방문자 기록 */
-  await db.collection("visitors")
-    .doc("daily")
-    .collection("days")
-    .doc(today)
-    .collection("visitors")
-    .doc(visitorKey)
-    .set({ visited: true, timestamp: Date.now() }, { merge: true });
+  try {
+    // 오늘 방문자 기록
+    await db.collection("visitors")
+      .doc("daily")
+      .collection("days")
+      .doc(today)
+      .collection("visitors")
+      .doc(visitorKey)
+      .set({ visited: true, timestamp: Date.now() }, { merge: true });
 
-  /* ⭐ 전체 방문자 기록 */
-  await db.collection("visitors")
-    .doc("total")
-    .collection("visitors")
-    .doc(visitorKey)
-    .set({ visited: true, firstVisit: Date.now() }, { merge: true });
+    // 전체 방문자 기록
+    await db.collection("visitors")
+      .doc("total")
+      .collection("visitors")
+      .doc(visitorKey)
+      .set({ visited: true, firstVisit: Date.now() }, { merge: true });
 
-  /* ⭐ 조회수 샤드 증가 */
-  const shardId = Math.floor(Math.random() * 20).toString();
-  await db.collection("visitors")
-    .doc("counter_shards")
-    .collection("shards")
-    .doc(shardId)
-    .set({ total: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+    // 조회수 샤드 증가
+    const shardId = Math.floor(Math.random() * 20).toString();
+    await db.collection("visitors")
+      .doc("counter_shards")
+      .collection("shards")
+      .doc(shardId)
+      .set(
+        { total: firebase.firestore.FieldValue.increment(1) },
+        { merge: true }
+      );
+  } catch (err) {
+    console.error("방문자 업데이트 실패:", err);
+  }
 }
 
 /* ============================================================
@@ -94,7 +103,6 @@ function listenVisitorCount() {
     .doc("total")
     .collection("visitors");
 
-  /* ⭐ 자동 재연결 기능 포함 */
   function attachDailyListener() {
     return dailyRef.onSnapshot(
       (snap) => {
@@ -108,7 +116,7 @@ function listenVisitorCount() {
       },
       (error) => {
         console.error("🔥 Daily Listen Error:", error);
-        setTimeout(attachDailyListener, 2000); // 자동 재연결
+        setTimeout(attachDailyListener, 2000);
       }
     );
   }
@@ -126,17 +134,21 @@ function listenVisitorCount() {
       },
       (error) => {
         console.error("🔥 Total Listen Error:", error);
-        setTimeout(attachTotalListener, 2000); // 자동 재연결
+        setTimeout(attachTotalListener, 2000);
       }
     );
   }
 
-  attachDailyListener();
-  attachTotalListener();
+  try {
+    attachDailyListener();
+    attachTotalListener();
+  } catch (err) {
+    console.error("ListenVisitorCount 실행 오류:", err);
+  }
 }
 
 /* ============================================================
-   방문자 GeoIP 저장
+   방문자 GeoIP 저장 (geolocation-db 사용)
    ============================================================ */
 async function saveVisitorGeoIP() {
   const today = getTodayString();
@@ -152,15 +164,17 @@ async function saveVisitorGeoIP() {
       .doc("geoip")
       .collection(today)
       .doc(visitorKey)
-      .set({
-        ip: data.ip || null,
-        country: data.country_name || null,
-        city: data.city || null,
-        browser,
-        os,
-        timestamp: Date.now()
-      }, { merge: true });
-
+      .set(
+        {
+          ip: data.IPv4 || null,          // ⭐ geolocation-db 필드명
+          country: data.country_name || null,
+          city: data.city || null,
+          browser,
+          os,
+          timestamp: Date.now()
+        },
+        { merge: true }
+      );
   } catch (e) {
     console.error("GeoIP 저장 실패:", e);
   }
@@ -191,7 +205,21 @@ function getBrowserInfo() {
    실행
    ============================================================ */
 window.onload = async () => {
-  await updateVisitorCount();
-  await saveVisitorGeoIP();
-  listenVisitorCount();
+  try {
+    await updateVisitorCount();
+  } catch (e) {
+    console.error("updateVisitorCount 실행 오류:", e);
+  }
+
+  try {
+    await saveVisitorGeoIP();
+  } catch (e) {
+    console.error("saveVisitorGeoIP 실행 오류:", e);
+  }
+
+  try {
+    listenVisitorCount();
+  } catch (e) {
+    console.error("listenVisitorCount 실행 오류:", e);
+  }
 };
