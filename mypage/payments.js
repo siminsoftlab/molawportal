@@ -1,20 +1,6 @@
-/* ============================================================
-   Firebase 초기화
+// firebase-init.js에서 이미 auth, db 생성됨
+// 여기서는 추가 선언 필요 없음
 
-const firebaseConfig = {
-  apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
-  authDomain: "molawcounter.firebaseapp.com",
-  projectId: "molawcounter",
-  storageBucket: "molawcounter.firebasestorage.app",
-  messagingSenderId: "989958208701",
-  appId: "1:989958208701:web:16bd53eed95276f5d4cbd4",
-  measurementId: "G-D4W34NBWKT"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-============================================================ */
 /* ============================================================
    결제내역 불러오기
 ============================================================ */
