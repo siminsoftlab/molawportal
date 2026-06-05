@@ -1671,12 +1671,10 @@ body.homepage {
   border-radius: 14px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-
   display: flex;
   align-items: center;
   gap: 16px;
+border: 2px solid red !important;  
 }
 
 /* 아이콘 */
@@ -1715,7 +1713,4 @@ body.homepage {
 
 .welcome-btn:hover {
   background: #3b57d6;
-}
-#welcomeBanner {
-  border: 2px solid red !important;  
 }
