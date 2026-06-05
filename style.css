@@ -1720,4 +1720,9 @@ body.homepage {
 }
 #welcomeBanner {
   border: 2px solid red !important;
+  margin-top: 20px;
+   
+}
+body.homepage {
+  padding-top: 200px !important;
 }
