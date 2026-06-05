@@ -169,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("editInfoBtn");
   const payBtn = document.getElementById("paymentHistoryBtn");
   const logoutBtn = document.getElementById("logoutBtn");
+  const buyBtn = document.getElementById("buyTicketBtn");
 
   if (editBtn) {
     editBtn.addEventListener("click", () => {
@@ -189,4 +190,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+   if (buyBtn) {
+  buyBtn.addEventListener("click", () => {
+    window.location.href = "/payments/payments.html";
+  });
+}
 });
