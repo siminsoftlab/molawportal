@@ -154,8 +154,8 @@ auth.onAuthStateChanged(async (user) => {
   const userDoc = await db.collection("users").doc(user.uid).get();
   const data = userDoc.data();
 
-  document.getElementById("userName").textContent = data.name;
-  document.getElementById("userEmail").textContent = data.email;
+  document.getElementById("mypage-name").textContent = data.name;
+  document.getElementById("mypage-email").textContent = data.email;
 
   loadTicket(user.uid);
   checkExpireAlert(user.uid);
