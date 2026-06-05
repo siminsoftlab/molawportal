@@ -1674,7 +1674,8 @@ body.homepage {
   display: flex;
   align-items: center;
   gap: 16px;
-border: 2px solid red !important;  
+  border: 2px solid red !important;  
+  padding-bottom: 10px;
 }
 
 /* 아이콘 */
@@ -1694,7 +1695,7 @@ border: 2px solid red !important;
 
 /* 문구 */
 .welcome-text {
-  font-size: 15px;
+  font-size: 10px;
   font-weight: 600;
   color: #2a3f9d;
   margin-bottom: 8px;
@@ -1706,7 +1707,7 @@ border: 2px solid red !important;
   color: #fff;
   padding: 8px 16px;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 700;
   text-decoration: none;
 }
