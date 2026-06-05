@@ -1,21 +1,4 @@
 /* ============================================================
-   Firebase 초기화
-
-const firebaseConfig = {
-  apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
-  authDomain: "molawcounter.firebaseapp.com",
-  projectId: "molawcounter",
-  storageBucket: "molawcounter.firebasestorage.app",
-  messagingSenderId: "989958208701",
-  appId: "1:989958208701:web:16bd53eed95276f5d4cbd4",
-  measurementId: "G-D4W34NBWKT"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-============================================================ */
-/* ============================================================
    남은 일수 계산
 ============================================================ */
 function getRemainingDays(expireAt) {
@@ -38,7 +21,7 @@ async function loadTicket(userId) {
   if (snap.empty) {
     ticketBox.innerHTML = `
       <p>현재 활성화된 이용권이 없습니다.</p>
-      <p><a href="/payment.html">이용권 구매하기</a></p>
+      <p><a href="/mypage/payments.html">이용권 결제 신청</a></p>
     `;
     return;
   }
@@ -58,6 +41,38 @@ async function loadTicket(userId) {
     <p><strong>유형:</strong> ${best.type}</p>
     <p><strong>만료일:</strong> ${expireDate}</p>
     <p><strong>남은 기간:</strong> ${remaining}일</p>
+  `;
+}
+
+/* ============================================================
+   현재 결제 신청 상태 표시 (pending)
+============================================================ */
+async function loadPendingPayment(userId) {
+  const box = document.getElementById("pendingPayment");
+
+  const snap = await db.collection("payments")
+    .where("user_id", "==", userId)
+    .where("status", "==", "pending")
+    .orderBy("created_at", "desc")
+    .limit(1)
+    .get();
+
+  if (snap.empty) {
+    box.innerHTML = ""; // 신청 없으면 표시 안 함
+    return;
+  }
+
+  const p = snap.docs[0].data();
+  const created = new Date(p.created_at).toLocaleString("ko-KR");
+
+  box.innerHTML = `
+    <div class="pending-box">
+      <p><strong>결제방법:</strong> ${p.method}</p>
+      <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
+      <p><strong>입금자명:</strong> ${p.depositor_name}</p>
+      <p><strong>상태:</strong> 승인 대기중</p>
+      <p><strong>신청일:</strong> ${created}</p>
+    </div>
   `;
 }
 
@@ -87,7 +102,7 @@ async function checkExpireAlert(userId) {
     box.className = "expire-banner";
     box.innerHTML = `
       <p>📢 이용권 만료까지 <strong>${remaining}일</strong> 남았습니다.</p>
-      <a href="/payment.html">지금 연장하기</a>
+      <a href="/mypage/payments.html">지금 연장하기</a>
     `;
     document.body.prepend(box);
   }
@@ -158,12 +173,13 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById("mypage-email").textContent = data.email;
 
   loadTicket(user.uid);
+  loadPendingPayment(user.uid);   // 🔥 추가됨
   checkExpireAlert(user.uid);
   showPushPermissionBanner();
 });
 
 /* ============================================================
-   로그아웃, 비밀번호 변경, 결재내역조회, 이용권결제신청
+   버튼 기능
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("editInfoBtn");
@@ -191,9 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-   if (buyBtn) {
-     buyBtn.addEventListener("click", () => {
-    window.location.href = "/mypage/payments.html";
-  });
-   }
+  if (buyBtn) {
+    buyBtn.addEventListener("click", () => {
+      window.location.href = "/mypage/payments.html";
+    });
+  }
 });
