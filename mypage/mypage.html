@@ -6,11 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet" href="mypage.css">
   <link rel="icon" href="../images/favicon.ico">
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="../block-right-click.js"></script>
 </head>
 
 <body>
@@ -35,6 +30,14 @@
 <div class="mypage-home-link">
   <a href="/index.html">홈으로</a>
 </div>  
+    <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <!-- 2) Firebase 초기화 -->
+<script src="/firebase-init.js"></script>
+
+  <script src="../block-right-click.js"></script>
 <script>
 firebase.auth().onAuthStateChanged(async (user) => {
   if (!user) {
