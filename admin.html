@@ -76,6 +76,34 @@
     <div id="shard-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
   </div>
 </div>
+<!-- 4️⃣ 결제 / 이용권 관리 -->
+<div class="admin-container section">
+
+  <!-- 결제 신청 (pending) 개수 -->
+  <div class="card">
+    <div class="card-title">🧾 결제 신청 (PENDING)</div>
+    <div id="payment-pending-count" class="card-value">0</div>
+    <button id="payment-manage-btn" class="btn-secondary" style="margin-top:10px;">
+      결제 신청 목록 보기
+    </button>
+  </div>
+
+  <!-- 활성 이용권 개수 -->
+  <div class="card">
+    <div class="card-title">🎟 활성 이용권 수</div>
+    <div id="token-active-count" class="card-value">0</div>
+    <button id="token-manage-btn" class="btn-secondary" style="margin-top:10px;">
+      이용권 관리 페이지
+    </button>
+  </div>
+
+  <!-- 오늘 발급된 이용권 수 -->
+  <div class="card">
+    <div class="card-title">📅 오늘 발급된 이용권</div>
+    <div id="token-today-count" class="card-value">0</div>
+  </div>
+
+</div>
 
 
   <!-- 로그인 체크 -->
