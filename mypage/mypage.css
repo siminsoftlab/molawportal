@@ -70,3 +70,19 @@ h2 {
 .mypage-home-link a:hover {
   background: #e0e0e0;
 }
+/* 정보수정 / 결제내역 버튼 */
+.mypage-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4a6cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.mypage-btn:hover {
+  background: #3a54d6;
+}
