@@ -86,3 +86,10 @@ h2 {
 .mypage-btn:hover {
   background: #3a54d6;
 }
+
+@media (max-width: 480px) {
+  .mypage-box {
+    max-width: 95%;
+    padding: 24px;
+  }
+}
