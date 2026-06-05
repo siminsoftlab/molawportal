@@ -163,20 +163,30 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 /* ============================================================
-   로그아웃
+   로그아웃, 비밀번호 변경, 결재내역조회
 ============================================================ */
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  auth.signOut().then(() => {
-    window.location.href = "/index.html";
-  });
-});
-/* ============================================================
-   정보수정 / 결제내역조회 이동
-============================================================ */
-document.getElementById("editInfoBtn").addEventListener("click", () => {
-  window.location.href = "/auth/password-change.html";
-});
+document.addEventListener("DOMContentLoaded", () => {
+  const editBtn = document.getElementById("editInfoBtn");
+  const payBtn = document.getElementById("paymentHistoryBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-document.getElementById("paymentHistoryBtn").addEventListener("click", () => {
-  window.location.href = "/mypage/payments.html";
+  if (editBtn) {
+    editBtn.addEventListener("click", () => {
+      window.location.href = "/auth/password-change.html";
+    });
+  }
+
+  if (payBtn) {
+    payBtn.addEventListener("click", () => {
+      window.location.href = "/mypage/payment-history.html";
+    });
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "/index.html";
+      });
+    });
+  }
 });
