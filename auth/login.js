@@ -47,26 +47,26 @@ async function login() {
   } catch (error) {
      let message = "";
    
-     switch (error.code) {
-       case "auth/wrong-password":
-         message = "비밀번호가 일치하지 않습니다.";
-         break;
-   
-       case "auth/invalid-login-credentials":
-         message = "비밀번호가 일치하지 않습니다.";
-         break;
-   
-       case "auth/user-not-found":
-         message = "등록되지 않은 이메일입니다.";
-         break;
-   
-       case "auth/invalid-email":
-         message = "올바른 이메일 형식이 아닙니다.";
-         break;
-   
-       default:
-         message = "로그인 중 오류가 발생했습니다.";
-     }
+      switch (error.code) {
+      case "auth/wrong-password":
+        message = "비밀번호가 일치하지 않습니다.";
+        break;
+
+      case "auth/invalid-credential":   // 🔥 Firebase 실제 반환 코드
+        message = "비밀번호가 일치하지 않습니다.";
+        break;
+
+      case "auth/user-not-found":
+        message = "등록되지 않은 이메일입니다.";
+        break;
+
+      case "auth/invalid-email":
+        message = "올바른 이메일 형식이 아닙니다.";
+        break;
+
+      default:
+        message = "로그인 중 오류가 발생했습니다.";
+    }
    
      msg.textContent = message;
    }
