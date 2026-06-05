@@ -333,4 +333,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // 페이지 로드 후 바로 타이핑 시작
   typing2();
 });
-
+/****************************************************
+ * 로그인 시 배너 자동 숨김
+ ****************************************************/
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("welcomeBanner").style.display = "none";
+  }
+});
