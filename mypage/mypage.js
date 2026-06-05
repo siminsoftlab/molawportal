@@ -178,5 +178,5 @@ document.getElementById("editInfoBtn").addEventListener("click", () => {
 });
 
 document.getElementById("paymentHistoryBtn").addEventListener("click", () => {
-  window.location.href = "/mypage/payment-history.html";
+  window.location.href = "/mypage/payments.html";
 });
