@@ -174,7 +174,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
    정보수정 / 결제내역조회 이동
 ============================================================ */
 document.getElementById("editInfoBtn").addEventListener("click", () => {
-  window.location.href = "/mypage/edit-info.html";
+  window.location.href = "/auth/password-change.html";
 });
 
 document.getElementById("paymentHistoryBtn").addEventListener("click", () => {
