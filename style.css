@@ -1675,7 +1675,7 @@ body.homepage {
   align-items: center;
   gap: 16px;
   border: 2px solid red !important;  
-  padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 /* 아이콘 */
