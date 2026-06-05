@@ -61,8 +61,24 @@ async function changePassword() {
     }, 1500);
 
   } catch (error) {
-    msg.textContent = "오류: " + error.message;
-  }
+
+     // 🔥 현재 비밀번호가 틀린 경우
+     if (error.code === "auth/wrong-password" ||
+         error.code === "auth/invalid-credential" ||
+         error.message.includes("INVALID_LOGIN_CREDENTIALS")) {
+       msg.textContent = "현재 비밀번호가 올바르지 않습니다.";
+       return;
+     }
+   
+     // 🔥 너무 약한 비밀번호 등 Firebase 정책 위반
+     if (error.code === "auth/weak-password") {
+       msg.textContent = "새 비밀번호가 너무 약합니다. 다른 비밀번호를 입력해주세요.";
+       return;
+     }
+   
+     // 🔥 기타 오류
+     msg.textContent = "오류: " + error.message;
+   }
 }
 
 /* ============================================================
