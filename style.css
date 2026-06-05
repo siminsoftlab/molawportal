@@ -1659,3 +1659,7 @@ body.homepage {
 .fixed-header {
   background: #000 !important;
 }
+#auth-before {
+  display: flex;
+  gap: 10px;
+}
