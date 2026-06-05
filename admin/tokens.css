@@ -1,0 +1,98 @@
+/* ============================================================
+   이용권 관리 페이지 스타일
+============================================================ */
+
+/* 전체 박스 */
+.box {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* 섹션 */
+.section {
+  margin-top: 20px;
+}
+
+/* 이용권 아이템 */
+.token-item {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  background: #fafafa;
+  transition: 0.2s ease;
+}
+
+.token-item:hover {
+  background: #f0f0f0;
+}
+
+/* 텍스트 */
+.token-item p {
+  margin: 4px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* 상태 배지 */
+.status-badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.status-active {
+  background: #2ecc71; /* 초록 */
+}
+
+.status-expired {
+  background: #e67e22; /* 주황 */
+}
+
+.status-inactive {
+  background: #e74c3c; /* 빨강 */
+}
+
+/* 버튼 그룹 */
+.token-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+/* 비활성화 버튼 */
+.btn-secondary {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #357ab8;
+}
+
+/* 뒤로가기 버튼 */
+.back {
+  margin-top: 20px;
+  padding: 8px 14px;
+  background: #555;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.back:hover {
+  background: #333;
+}
