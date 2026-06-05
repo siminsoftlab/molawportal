@@ -231,3 +231,50 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
 function goDetail(id) {
   window.location.href = `/admin/payment_detail.html?id=${id}`;
 }
+
+document.getElementById("confirmBtn").addEventListener("click", async () => {
+  if (!confirm("이 결제를 승인하시겠습니까?")) return;
+
+  try {
+    const paymentRef = db.collection("payments").doc(paymentId);
+    const paymentSnap = await paymentRef.get();
+    const payment = paymentSnap.data();
+
+    const userId = payment.user_id;
+
+    // 1) 기존 활성 이용권 비활성화
+    const activeTokens = await db.collection("access_tokens")
+      .where("user_id", "==", userId)
+      .where("is_active", "==", true)
+      .get();
+
+    activeTokens.forEach(doc => {
+      doc.ref.update({ is_active: false });
+    });
+
+    // 2) 새 이용권 생성
+    const now = Date.now();
+    const expire = now + (30 * 24 * 60 * 60 * 1000); // 30일 이용권
+
+    await db.collection("access_tokens").add({
+      user_id: userId,
+      type: "WELCOME_30D",
+      start_at: now,
+      expire_at: expire,
+      is_active: true
+    });
+
+    // 3) 결제 상태 업데이트
+    await paymentRef.update({
+      status: "confirmed",
+      confirmed_at: now
+    });
+
+    alert("결제가 승인되었습니다.");
+    location.reload();
+
+  } catch (err) {
+    console.error("결제 승인 오류:", err);
+    alert("결제 승인 중 오류가 발생했습니다.");
+  }
+});
