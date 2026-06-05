@@ -5,14 +5,6 @@
   <title>관리자 방문자 모니터링</title>
 
   <link rel="stylesheet" href="admin.css?v=1003">
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="block-right-click.js"></script>
 </head>
 
 <body>
@@ -111,9 +103,20 @@
     })();
   </script>
 
-  <!-- admin.js -->
-  <script src="admin.js?v=1003" defer></script>
+ 
+    <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase 초기화 -->
+  <script src="/firebase-init.js"></script>
   <script src="firebase-counter.js" defer></script>
+   <!-- admin.js -->
+  <script src="admin.js?v=1003" defer></script>
+    <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="block-right-click.js"></script>
 
 </body>
 </html>
