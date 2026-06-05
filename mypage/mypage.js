@@ -1,6 +1,6 @@
 /* ============================================================
    Firebase 초기화
-============================================================ */
+
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -14,7 +14,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-
+============================================================ */
 /* ============================================================
    남은 일수 계산
 ============================================================ */
