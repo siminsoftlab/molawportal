@@ -393,6 +393,40 @@ async function autoLoadDaily() {
   await loadBrowserStats();
   await loadOSStats();
 }
+/* ============================================================
+   결제 / 이용권 통계
+============================================================ */
+async function loadPaymentStats() {
+  // 1) pending 결제 개수
+  const pendingSnap = await db.collection("payments")
+    .where("status", "==", "pending")
+    .get();
+  document.getElementById("payment-pending-count").textContent = pendingSnap.size;
+
+  // 2) 활성 이용권 개수
+  const activeSnap = await db.collection("access_tokens")
+    .where("is_active", "==", true)
+    .get();
+  document.getElementById("token-active-count").textContent = activeSnap.size;
+
+  // 3) 오늘 발급된 이용권 개수
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const todaySnap = await db.collection("access_tokens")
+    .where("created_at", ">=", startOfDay.getTime())
+    .get();
+  document.getElementById("token-today-count").textContent = todaySnap.size;
+}
+
+// 버튼 이동
+document.getElementById("payment-manage-btn").addEventListener("click", () => {
+  window.location.href = "/admin/payments.html";
+});
+
+document.getElementById("token-manage-btn").addEventListener("click", () => {
+  window.location.href = "/admin/tokens.html";
+});
 
 /* ============================================================
    초기 실행
@@ -402,5 +436,5 @@ loadTotal();
 loadShards();
 setTodayDate();
 autoLoadDaily();
-
+loadPaymentStats();   // ← 여기 추가!
 });
