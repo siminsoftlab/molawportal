@@ -1663,40 +1663,52 @@ body.homepage {
   display: flex;
   gap: 10px;
 }
+/* 웰컴쿠폰 배너 */
 .welcome-banner {
-  margin-top: 10px;
+  width: 92%;
+  max-width: 900px;
+  margin: 0 auto; /* container와 동일한 중앙 정렬 */
+  margin-top: 0;  /* 로그인바와 딱 붙게 */
   background: #f0f4ff;
   border: 1px solid #d6e0ff;
-  padding: 12px 16px;
-  border-radius: 12px;
+  padding: 18px 20px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
+/* 아이콘 */
 .welcome-img {
   width: 48px;
   height: 48px;
 }
 
-.welcome-text {
+/* 중앙 정렬 영역 */
+.welcome-center {
   flex: 1;
-  font-size: 14px;
-  font-weight: 600;
-  color: #2a3f9d;
+  text-align: center;
 }
 
+/* 문구 */
+.welcome-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2a3f9d;
+  margin-bottom: 6px;
+}
+
+/* 버튼 */
 .welcome-btn {
   background: #4a6fff;
   color: #fff;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
 }
-
 .welcome-btn:hover {
   background: #3b57d6;
 }
