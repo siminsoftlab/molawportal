@@ -546,7 +546,7 @@ body.subpage .top-info-bar {
     font-size: 14px;
     padding: 5px 10px;
   }
-
+   
   /* 홈페이지 컨테이너 */
   body.homepage .container {
     margin-bottom: 28px;
@@ -1711,4 +1711,24 @@ button.hl-acc-btn {
 
 .welcome-btn:hover {
   background: #3b57d6;
+}
+/* ============================
+   모바일 로그인바 ↔ 웰컴배너 여백 최적화
+============================ */
+@media (max-width: 480px) {
+
+  /* 로그인바 아래 여백 제거 */
+  .header-row {
+    margin-bottom: 4px !important;
+  }
+
+  /* 컨테이너 상단 패딩 축소 */
+  body.homepage .container {
+    padding-top: 10px !important;
+  }
+
+  /* 웰컴 배너 위쪽 여백 축소 */
+  #welcomeBanner {
+    margin-top: 6px !important;
+  }
 }
