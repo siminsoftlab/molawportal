@@ -574,7 +574,7 @@ body.subpage .top-info-bar {
   }
 
   body.homepage {
-    padding-top: 220px !important;
+    padding-top: 150px !important;
   }
   /* 아코디언 버튼 */
   .acc-btn {
@@ -1620,10 +1620,7 @@ button.hl-acc-btn {
   background: #f44336;
 }
 
-/* 본문이 헤더에 가려지지 않도록 */
-body.homepage {
-  padding-top: 120px !important;
-}
+
 #auth-after {
   display: flex;
   align-items: center;
