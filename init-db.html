@@ -105,12 +105,12 @@ async function initDB() {
       });
     log("✔ payments/_schema 생성 완료");
 
-    await db.collection("users")
-      .doc("_schema")
-      .set({
-        info: "회원 스키마 정의",
-        fields: ["email", "name", "password_hash", "welcome_coupon_used", "created_at"]
-      });
+   await db.collection("users")
+    .doc("_schema")
+    .set({
+      info: "회원 스키마 정의",
+      fields: ["email", "name", "phone", "password_hash", "welcome_coupon_used", "created_at"]
+    });
     log("✔ users/_schema 생성 완료");
 
     log("🎉 스키마 생성 완료!");
