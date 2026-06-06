@@ -1713,22 +1713,23 @@ button.hl-acc-btn {
   background: #3b57d6;
 }
 /* ============================
-   모바일 로그인바 ↔ 웰컴배너 여백 최적화
+   모바일 로그인바 ↔ 웰컴배너 여백 최소화 (최종 패치)
 ============================ */
 @media (max-width: 480px) {
 
-  /* 로그인바 아래 여백 제거 */
+  /* 로그인바 아래 여백 완전 제거 */
   .header-row {
-    margin-bottom: 4px !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
   }
 
-  /* 컨테이너 상단 패딩 축소 */
+  /* 컨테이너 상단 패딩 최소화 */
   body.homepage .container {
-    padding-top: 10px !important;
+    padding-top: 6px !important;
   }
 
-  /* 웰컴 배너 위쪽 여백 축소 */
+  /* 웰컴 배너 위쪽 여백 최소화 */
   #welcomeBanner {
-    margin-top: 6px !important;
+    margin-top: 4px !important;
   }
 }
