@@ -30,61 +30,23 @@ async function issueWelcomeCoupon(userId) {
 async function signup() {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();   // ⭐ 추가
   const password = document.getElementById("password").value.trim();
   const passwordConfirm = document.getElementById("signup-password-confirm").value.trim();
   const msg = document.getElementById("msg");
   const agreeTerms = document.getElementById("agreeTerms").checked;
   const agreePrivacy = document.getElementById("agreePrivacy").checked;
 
-  /* ⭐ 이름 체크 */
-  if (!name) {
-    msg.textContent = "이름을 입력해주세요.";
-    return;
-  }
+  if (!name) { msg.textContent = "이름을 입력해주세요."; return; }
+  if (!email) { msg.textContent = "이메일을 입력해주세요."; return; }
+  if (!phone) { msg.textContent = "휴대전화번호를 입력해주세요."; return; }   // ⭐ 추가
+  if (!password) { msg.textContent = "비밀번호를 입력해주세요."; return; }
+  if (password.length < 6) { msg.textContent = "비밀번호는 6자리 이상이어야 합니다."; return; }
+  if (!passwordConfirm) { msg.textContent = "비밀번호 확인을 입력해주세요."; return; }
+  if (password !== passwordConfirm) { msg.textContent = "비밀번호가 일치하지 않습니다."; return; }
+  if (!agreeTerms) { msg.textContent = "이용약관에 동의해야 회원가입이 가능합니다."; return; }
+  if (!agreePrivacy) { msg.textContent = "개인정보 제3자 제공에 동의해야 회원가입이 가능합니다."; return; }
 
-  /* ⭐ 이메일 체크 */
-  if (!email) {
-    msg.textContent = "이메일을 입력해주세요.";
-    return;
-  }
-
-  /* ⭐ 비밀번호 체크 */
-  if (!password) {
-    msg.textContent = "비밀번호를 입력해주세요.";
-    return;
-  }
-
-  /* ⭐ 비밀번호 6자리 이상 체크 */
-  if (password.length < 6) {
-    msg.textContent = "비밀번호는 6자리 이상이어야 합니다.";
-    return;
-  }
-
-  /* ⭐ 비밀번호 확인 체크 */
-  if (!passwordConfirm) {
-    msg.textContent = "비밀번호 확인을 입력해주세요.";
-    return;
-  }
-
-  /* ⭐ 비밀번호 일치 체크 */
-  if (password !== passwordConfirm) {
-    msg.textContent = "비밀번호가 일치하지 않습니다.";
-    return;
-  }
-
-  /* ⭐ 이용약관 동의 체크 */
-  if (!agreeTerms) {
-    msg.textContent = "이용약관에 동의해야 회원가입이 가능합니다.";
-    return;
-  }
-
-  /* ⭐ 개인정보 제3자 제공 동의 체크 */
-  if (!agreePrivacy) {
-    msg.textContent = "개인정보 제3자 제공에 동의해야 회원가입이 가능합니다.";
-    return;
-  }
-
-  /* ⭐ 모든 조건 통과 → 회원가입 진행 */
   try {
     msg.textContent = "회원가입 중...";
 
@@ -94,6 +56,7 @@ async function signup() {
     await db.collection("users").doc(user.uid).set({
       email,
       name,
+      phone,   // ⭐ Firestore 저장
       welcome_coupon_used: true,
       created_at: Date.now()
     });
