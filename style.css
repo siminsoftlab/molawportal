@@ -1712,24 +1712,24 @@ button.hl-acc-btn {
 .welcome-btn:hover {
   background: #3b57d6;
 }
-/* ============================
-   모바일 로그인바 ↔ 웰컴배너 완전 밀착 버전
-============================ */
 @media (max-width: 480px) {
 
-  /* 로그인바 아래 여백 제거 */
-  .header-row {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+  /* 상단 전체 높이 줄이기 */
+  .fixed-top {
+    padding: 4px 0 !important;   /* 기존 12px → 4px */
   }
 
-  /* 컨테이너 상단 패딩 제거 */
+  .top-info-bar {
+    padding: 6px 0 !important;   /* 기존 10px → 6px */
+  }
+
+  /* 본문 시작 위치 위쪽 여백 줄이기 */
+  body.homepage {
+    padding-top: 100px !important;  /* 기존 150px → 100px */
+  }
+
+  /* 컨테이너 상단 패딩도 조금 줄이기 */
   body.homepage .container {
-    padding-top: 0 !important;
-  }
-
-  /* 웰컴 배너 위쪽 여백 제거 */
-  #welcomeBanner {
-    margin-top: 0 !important;
+    padding-top: 8px !important;
   }
 }
