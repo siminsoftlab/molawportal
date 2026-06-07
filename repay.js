@@ -45,7 +45,23 @@ function updateLivingCost() {
  * 계산하기
  ****************************************************/
 function calcRepay() {
+  const user = firebase.auth().currentUser;
 
+  if (!user) {
+    alert("🔒 계산 결과는 회원 전용 기능입니다.\n회원가입 후 이용해주세요.");
+    location.href = "/auth/signup.html";
+    return;
+  }
+
+  const tokenSnap = await db.collection("access_tokens")
+    .where("uid", "==", user.uid)
+    .where("is_active", "==", true)
+    .get();
+
+  if (tokenSnap.empty) {
+    document.getElementById("paywallOverlay").style.display = "flex";
+    return;
+  }
   /****************************************************
    * ⭐ 필수 입력 검증 (총 부채, 월소득, 최저 생계비, 변제기간)
    ****************************************************/
@@ -266,32 +282,9 @@ function calcRepay() {
 
 
 /****************************************************
- * 상세보기 클릭 시 — 로그인/이용권 체크 + Paywall 표시
+ * 상세보기 토글
  ****************************************************/
-async function toggleAccordionRepay() {
-  const user = firebase.auth().currentUser;
-
-  // 1) 로그인 안 되어 있으면 회원가입 안내
-  if (!user) {
-    alert("🔒 계산 상세보기는 회원 전용 기능입니다.\n회원가입 후 이용해주세요.");
-    location.href = "/auth/signup.html";
-    return;
-  }
-
-  // 2) Firestore에서 이용권 확인
-  const tokenSnap = await db.collection("access_tokens")
-    .where("uid", "==", user.uid)
-    .where("is_active", "==", true)
-    .get();
-
-  // 3) 이용권 없음 → paywallOverlay 표시
-  if (tokenSnap.empty) {
-    const overlay = document.getElementById("paywallOverlay");
-    overlay.style.display = "flex";   // ⭐ 모달 표시
-    return;
-  }
-
-  // 4) 이용권 있음 → 상세 계산 결과 열기
+function toggleAccordionRepay() {
   const box = $("repayAccordion");
   const btn = document.querySelector(".repay-accordion-btn");
 
@@ -305,7 +298,6 @@ async function toggleAccordionRepay() {
     btn.textContent = "계산 상세 접기 ▲";
   }
 }
-
 
 /****************************************************
  * 초기화
