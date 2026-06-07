@@ -1,0 +1,71 @@
+/* ============================================================
+   회원 목록 페이지 전용 스타일
+============================================================ */
+
+/* 페이지 전체 중앙 정렬 */
+.page-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* 검색 카드 */
+.search-card {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* 카드 간 간격 */
+.section {
+  margin-top: 20px;
+}
+
+/* 테이블 wrapper */
+.table-wrapper {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* 검색창 스타일 */
+#searchInput {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #d0d4e4;
+  background: #fff;
+  font-size: 15px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* 테이블 스타일 */
+.admin-table {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.admin-table th {
+  background: #f0f3ff;
+  padding: 14px;
+  font-size: 15px;
+}
+
+.admin-table td {
+  padding: 14px;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-table tr:hover {
+  background: #f9faff;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 0 12px;
+  }
+
+  #searchInput {
+    font-size: 14px;
+  }
+}
