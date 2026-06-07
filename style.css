@@ -1800,3 +1800,6 @@ button.hl-acc-btn {
   color: #333;
   border: 1px solid #ddd;
 }
+.auth-btn {
+  display: inline-flex !important;
+}
