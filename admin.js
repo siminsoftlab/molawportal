@@ -413,6 +413,28 @@ document.getElementById("token-manage-btn").addEventListener("click", () => {
 });
 
 /* ============================================================
+   회원 통계 불러오기
+============================================================ */
+async function loadUserStats() {
+  const snapshot = await db.collection("users").get();
+
+  const total = snapshot.size;
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  let todayCount = 0;
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const created = new Date(data.created_at).toISOString().slice(0, 10);
+    if (created === todayStr) todayCount++;
+  });
+
+  document.getElementById("user-total-count").textContent = total;
+  document.getElementById("user-today-count").textContent = todayCount;
+}
+
+
+/* ============================================================
    초기 실행
    ============================================================ */
 loadToday();
@@ -421,4 +443,5 @@ loadShards();
 setTodayDate();
 autoLoadDaily();
 loadPaymentStats();   // ← 여기 추가!
+loadUserStats();
 });
