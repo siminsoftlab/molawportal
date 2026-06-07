@@ -78,3 +78,96 @@
   overflow: hidden;
   position: relative;
 }
+
+/* 전체 화면 덮는 오버레이 */
+.app-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  justify-content: flex-end;
+  align-items: flex-end;
+  z-index: 9999;
+}
+
+/* 하단에서 올라오는 앱 스타일 모달 */
+.app-modal {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  padding: 24px;
+  animation: slideUp 0.28s ease-out;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+}
+
+/* 상단 바 (앱 느낌) */
+.app-modal-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.app-modal-bar {
+  width: 42px;
+  height: 5px;
+  background: #ddd;
+  border-radius: 999px;
+}
+
+/* 텍스트 */
+.app-modal-text {
+  color: #444;
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+/* 버튼 스타일 */
+.app-btn-primary {
+  width: 100%;
+  padding: 14px 0;
+  background: #4a6fff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.app-btn-secondary {
+  width: 100%;
+  padding: 14px 0;
+  background: #f2f3f7;
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.app-btn-close {
+  width: 100%;
+  padding: 12px 0;
+  background: transparent;
+  color: #777;
+  border: none;
+  font-size: 14px;
+}
+
+/* 슬라이드 애니메이션 */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
