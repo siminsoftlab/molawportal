@@ -1734,11 +1734,11 @@ button.hl-acc-btn {
     padding-top: 8px !important;
   }
 }
+
 #auth-after {
+   white-space: nowrap;
   display: flex;
-  justify-content: flex-end; /* 오른쪽 끝 정렬 */
   align-items: center;
-  gap: 10px; /* 버튼 간 간격 */
-  width: 100%;
-  padding-right: 16px; /* 오른쪽 여백 */
+  gap: 6px; /* 요소 간 간격 */ 
+  padding: 2px 2px; /* 위아래 6px, 좌우 10px */
 }
