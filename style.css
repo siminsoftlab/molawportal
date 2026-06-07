@@ -1727,20 +1727,6 @@ button.hl-acc-btn {
   }
 }
 
-/* 한 줄 유지 + 요소 간격 균형 */
-#auth-after {
-  display: flex;
-  align-items: center;
-  gap: 4px !important;
-  white-space: nowrap;
-}
-.header-inner {
-  padding-right: 0 !important;   /* 오른쪽 여백 제거 */
-}
-
-#auth-after {
-  margin-right: 0 !important;    /* 로그인 후 영역 오른쪽 여백 제거 */
-}
 /* 로그인바 전체를 화면 끝까지 붙이기 */
 .header-row,
 .header-inner,
@@ -1749,13 +1735,26 @@ button.hl-acc-btn {
   margin-right: 0 !important;
 }
 
-/* 로그인 후 영역도 오른쪽 여백 제거 */
+/* 버튼들이 오른쪽으로 밀리지 않도록 */
+#auth-after .auth-btn {
+  margin-right: 0 !important;
+}
+.header-inner {
+  max-width: 900px;   /* container와 동일한 폭 */
+  margin: 0 auto;     /* 가운데 정렬 */
+  padding: 0 12px;    /* 좌우 여백 최소화 */
+  width: 100%;
+}
 #auth-after {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
   margin-right: 0 !important;
   padding-right: 0 !important;
 }
 
-/* 버튼들이 오른쪽으로 밀리지 않도록 */
-#auth-after .auth-btn {
+#auth-after .auth-btn.logout {
   margin-right: 0 !important;
+  padding-right: 4px !important;
 }
