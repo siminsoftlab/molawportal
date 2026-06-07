@@ -1734,3 +1734,6 @@ button.hl-acc-btn {
     padding-top: 8px !important;
   }
 }
+#auth-bar-wrapper {
+  margin-bottom: 12px; /* 원하는 만큼 조절 */
+}
