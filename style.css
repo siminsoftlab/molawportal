@@ -1734,9 +1734,6 @@ button.hl-acc-btn {
     padding-top: 8px !important;
   }
 }
-#auth-bar-wrapper {
-  margin-bottom: 12px; /* 원하는 만큼 조절 */
-}
 #auth-after {
   display: flex;
   justify-content: flex-end; /* 오른쪽 끝 정렬 */
