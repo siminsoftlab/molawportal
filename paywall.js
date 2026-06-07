@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (payBtn) {
     payBtn.addEventListener("click", () => {
-      window.location.href = "/payment.html"; // 결제 페이지로 이동
+      window.location.href = "/admin/payment.html"; // 결제 페이지로 이동
     });
   }
 
