@@ -1730,7 +1730,7 @@ button.hl-acc-btn {
 
   /* 컨테이너 상단 패딩도 조금 줄이기 */
   body.homepage .container {
-    padding-top: 8px !important;
+    padding-top: 20px !important;
   }
 }
 
