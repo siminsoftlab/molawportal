@@ -41,10 +41,9 @@ async function calcRepay() {
 
   const user = firebase.auth().currentUser;
 
-  /* 1) 회원가입 여부 체크 */
+  /* 1) 로그인 여부 체크 */
   if (!user) {
-    alert("🔒 계산 결과는 회원 전용 기능입니다.\n회원가입 후 이용해주세요.");
-    location.href = "/auth/signup.html";
+    document.getElementById("loginRequiredModal").style.display = "flex";
     return;
   }
 
@@ -64,7 +63,6 @@ async function calcRepay() {
   const expireAt = tokenData.expire_at;
 
   if (expireAt && expireAt.toDate() < new Date()) {
-    alert("🔒 이용권이 만료되었습니다.\n계속 이용하려면 결제가 필요합니다.");
     document.getElementById("paywallOverlay").style.display = "flex";
     return;
   }
@@ -363,11 +361,13 @@ document.addEventListener("DOMContentLoaded", () => {
 /****************************************************
  * Paywall 모달 바깥 클릭 시 닫기
  ****************************************************/
-const paywallEl = document.getElementById("paywallOverlay");
-if (paywallEl) {
-  paywallEl.addEventListener("click", (e) => {
-    if (e.target.id === "paywallOverlay") {
-      e.target.style.display = "none";
-    }
-  });
-}
+["paywallOverlay", "loginRequiredModal"].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("click", (e) => {
+      if (e.target.id === id) {
+        e.target.style.display = "none";
+      }
+    });
+  }
+});
