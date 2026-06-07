@@ -165,25 +165,55 @@
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
 
-<!-- 🔒 로그인 필요 모달 -->
-<div id="loginRequiredModal" class="paywall-overlay">
-  <div class="paywall-content">
-    <h3>🔒 로그인 후 이용 가능합니다</h3>
-    <p>계산 결과 전체 보기는 회원 전용 기능입니다.<br>로그인 또는 회원가입 후 이용해주세요.</p>
+<!-- 🔒 로그인 필요 모달 (앱 UI 스타일) -->
+<div id="loginRequiredModal" class="app-modal-overlay">
+  <div class="app-modal">
+    <div class="app-modal-header">
+      <div class="app-modal-bar"></div>
+    </div>
 
-    <button class="login-btn" onclick="location.href='/auth/login.html'">로그인하기</button>
-    <button class="signup-btn" onclick="location.href='/auth/signup.html'">회원가입하기</button>
+    <h3>🔒 로그인 후 이용 가능합니다</h3>
+    <p class="app-modal-text">
+      계산 결과 전체 보기는 회원 전용 기능입니다.<br>
+      로그인 또는 회원가입 후 이용해주세요.
+    </p>
+
+    <button class="app-btn-primary" onclick="location.href='/auth/login.html'">
+      로그인하기
+    </button>
+
+    <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">
+      회원가입하기
+    </button>
+
+    <button class="app-btn-close" onclick="document.getElementById('loginRequiredModal').style.display='none'">
+      닫기
+    </button>
   </div>
 </div>
 
-<!-- 🔒 이용권 필요 모달 -->
-<div id="paywallOverlay" class="paywall-overlay">
-  <div class="paywall-content">
-    <h3>🔒 이용권이 필요합니다</h3>
-    <p>전체 계산 결과는 이용권 활성화 후 이용 가능합니다.</p>
+<div id="paywallOverlay" class="app-modal-overlay">
+  <div class="app-modal">
+    <div class="app-modal-header">
+      <div class="app-modal-bar"></div>
+    </div>
 
-    <button class="pay-btn" onclick="location.href='/pay/paywall.html'">이용권 결제하기</button>
-    <button class="consult-btn">상담 연결 시 무료 제공</button>
+    <h3>🔒 이용권이 필요합니다</h3>
+    <p class="app-modal-text">
+      전체 계산 결과는 이용권 활성화 후 이용 가능합니다.
+    </p>
+
+    <button class="app-btn-primary" onclick="location.href='/pay/paywall.html'">
+      이용권 결제하기
+    </button>
+
+    <button class="app-btn-secondary">
+      상담 연결 시 무료 제공
+    </button>
+
+    <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">
+      닫기
+    </button>
   </div>
 </div>
 
