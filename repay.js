@@ -1,10 +1,5 @@
 /****************************************************
  * 개인회생 변제금 계산기 — 통합 최적화 버전
- * - 회원 전용: 계산하기(로그인 + 이용권 체크)
- * - 가구 수 선택 시 최저생계비 자동 계산
- * - 숫자 입력 안정화
- * - 요약/상세/설명 출력
- * - Paywall 모달 연동
  ****************************************************/
 
 /* 공통 유틸 */
@@ -19,7 +14,7 @@ function toNumber(v) {
 }
 
 /****************************************************
- * 숫자 입력 안정화 (콤마 제거)
+ * 숫자 입력 안정화
  ****************************************************/
 function sanitizeNumberInput(el) {
   el.value = el.value.replace(/[^\d]/g, "");
@@ -30,7 +25,7 @@ function sanitizeNumberInput(el) {
  ****************************************************/
 function calcCourtLiving(household) {
   const base = 1538523;
-  const w = { 1: 1.0, 2: 1.5, 3: 2.1, 4: 2.6, 5: 3.1 };
+  const w = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
   return Math.round(base * (w[household] || 1));
 }
 
@@ -40,27 +35,37 @@ function updateLivingCost() {
 }
 
 /****************************************************
- * 계산하기 — 회원 전용 + 이용권 체크
+ * 계산하기 — 회원가입 + 이용권 활성화 + 만료일 체크
  ****************************************************/
 async function calcRepay() {
+
   const user = firebase.auth().currentUser;
 
-  // 1) 로그인 체크
+  /* 1) 회원가입 여부 체크 */
   if (!user) {
     alert("🔒 계산 결과는 회원 전용 기능입니다.\n회원가입 후 이용해주세요.");
     location.href = "/auth/signup.html";
     return;
   }
 
-  // 2) 이용권 체크
+  /* 2) 이용권 활성화 여부 체크 */
   const tokenSnap = await db.collection("access_tokens")
     .where("uid", "==", user.uid)
     .where("is_active", "==", true)
     .get();
 
   if (tokenSnap.empty) {
-    const overlay = document.getElementById("paywallOverlay");
-    if (overlay) overlay.style.display = "flex";
+    document.getElementById("paywallOverlay").style.display = "flex";
+    return;
+  }
+
+  /* 3) 이용권 만료일 체크 */
+  const tokenData = tokenSnap.docs[0].data();
+  const expireAt = tokenData.expire_at;
+
+  if (expireAt && expireAt.toDate() < new Date()) {
+    alert("🔒 이용권이 만료되었습니다.\n계속 이용하려면 결제가 필요합니다.");
+    document.getElementById("paywallOverlay").style.display = "flex";
     return;
   }
 
@@ -118,6 +123,7 @@ async function calcRepay() {
 
   summary.innerHTML = `
     <div class="repay-highlight-box">
+
       <div class="row">
         <div class="label">총 부채</div>
         <div class="value">${debt.toLocaleString()}원</div>
@@ -163,6 +169,7 @@ async function calcRepay() {
         <div class="label">청산가치 충족 여부</div>
         <div class="value" style="color:#008000;">✔ 충족</div>
       </div>
+
     </div>
   `;
 
@@ -172,6 +179,7 @@ async function calcRepay() {
   const acc = $("repayAccordion");
   acc.innerHTML = `
     <div class="repay-highlight-box-red">
+
       <div class="row">
         <div class="label">총 부채</div>
         <div class="value">${debt.toLocaleString()}원</div>
@@ -243,6 +251,7 @@ async function calcRepay() {
           <div class="value" style="color:#2a5f9e;">PV 충족 위해 자동 조정됨</div>
         </div>
       ` : ""}
+
     </div>
   `;
 
@@ -322,23 +331,20 @@ function resetRepayInputs() {
  * DOM 로드 후 초기 세팅
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-  // 최저생계비 초기 계산
+
   updateLivingCost();
 
-  // 가구 수 변경 시 자동 계산
   const householdEl = $("household");
   if (householdEl) {
     householdEl.addEventListener("change", updateLivingCost);
   }
 
-  // 숫자 입력 안정화
   ["debt", "income", "living", "extra", "asset"].forEach(id => {
     const el = $(id);
     if (!el) return;
     el.addEventListener("input", () => sanitizeNumberInput(el));
   });
 
-  // FAQ 아코디언
   document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", () => {
       const answer = btn.nextElementSibling;
