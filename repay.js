@@ -1,12 +1,10 @@
 /****************************************************
- * 개인회생 변제금 계산기 — 최신 통합본
- * - 입력: 숫자만
- * - 출력: 콤마 표시
- * - PV 자동조정
- * - 자동조정 안내
- * - 상세 계산 아코디언
- * - 설명 아코디언
- * - 필수 입력 검증 (extra, asset 선택)
+ * 개인회생 변제금 계산기 — 통합 최적화 버전
+ * - 회원 전용: 계산하기(로그인 + 이용권 체크)
+ * - 가구 수 선택 시 최저생계비 자동 계산
+ * - 숫자 입력 안정화
+ * - 요약/상세/설명 출력
+ * - Paywall 모달 연동
  ****************************************************/
 
 /* 공통 유틸 */
@@ -32,57 +30,60 @@ function sanitizeNumberInput(el) {
  ****************************************************/
 function calcCourtLiving(household) {
   const base = 1538523;
-  const w = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
+  const w = { 1: 1.0, 2: 1.5, 3: 2.1, 4: 2.6, 5: 3.1 };
   return Math.round(base * (w[household] || 1));
 }
 
 function updateLivingCost() {
   const household = Number($("household").value || 1);
-  $("living").value = calcCourtLiving(household); // 숫자만
+  $("living").value = calcCourtLiving(household);
 }
 
 /****************************************************
- * 계산하기
+ * 계산하기 — 회원 전용 + 이용권 체크
  ****************************************************/
-function calcRepay() {
+async function calcRepay() {
   const user = firebase.auth().currentUser;
 
+  // 1) 로그인 체크
   if (!user) {
     alert("🔒 계산 결과는 회원 전용 기능입니다.\n회원가입 후 이용해주세요.");
     location.href = "/auth/signup.html";
     return;
   }
 
+  // 2) 이용권 체크
   const tokenSnap = await db.collection("access_tokens")
     .where("uid", "==", user.uid)
     .where("is_active", "==", true)
     .get();
 
   if (tokenSnap.empty) {
-    document.getElementById("paywallOverlay").style.display = "flex";
+    const overlay = document.getElementById("paywallOverlay");
+    if (overlay) overlay.style.display = "flex";
     return;
   }
+
   /****************************************************
-   * ⭐ 필수 입력 검증 (총 부채, 월소득, 최저 생계비, 변제기간)
+   * 필수 입력 검증
    ****************************************************/
   if (
-    $("debt").value.trim() === "" ||      // 총 부채
-    $("income").value.trim() === "" ||    // 월 소득
-    $("living").value.trim() === "" ||    // 최저 생계비
-    $("months").value.trim() === ""       // 변제기간
+    $("debt").value.trim() === "" ||
+    $("income").value.trim() === "" ||
+    $("living").value.trim() === "" ||
+    $("months").value.trim() === ""
   ) {
     alert("총 부채, 월 소득, 최저 생계비, 변제기간(개월)을 모두 입력해주세요.");
 
-    // 기존 초기화 유지
     $("repaySummary").style.display = "none";
     $("repayAccordion").innerHTML = "";
     $("repayExplain").innerHTML = "";
     $("repayExplain").style.display = "none";
-    return; // ← 계산 중단
+    return;
   }
 
   /****************************************************
-   * 기존 계산 로직
+   * 계산 로직
    ****************************************************/
   const debt   = toNumber($("debt").value);
   const income = toNumber($("income").value);
@@ -93,23 +94,23 @@ function calcRepay() {
 
   const disposable = income - living - extra;
   const monthlyPay = Math.max(disposable, 0);
-  const totalPay = monthlyPay * months;
+  const totalPay   = monthlyPay * months;
 
   const discountRate = 0.03;
-  const years = months / 12;
+  const years        = months / 12;
 
   const requiredFinalPay = Math.round(asset * Math.pow(1 + discountRate, years));
-  const finalPay = Math.max(totalPay, asset, requiredFinalPay);
+  const finalPay         = Math.max(totalPay, asset, requiredFinalPay);
 
   const autoAdjusted = finalPay === requiredFinalPay;
 
-  const repayRate = debt > 0 ? ((finalPay / debt) * 100).toFixed(1) : "0.0";
+  const repayRate  = debt > 0 ? ((finalPay / debt) * 100).toFixed(1) : "0.0";
   const reliefRate = (100 - Number(repayRate)).toFixed(1);
 
   const presentValue = Math.round(finalPay / Math.pow(1 + discountRate, years));
 
   /****************************************************
-   * 요약 카드 (초록 박스)
+   * 요약 카드
    ****************************************************/
   const summary = $("repaySummary");
   summary.style.display = "block";
@@ -117,7 +118,6 @@ function calcRepay() {
 
   summary.innerHTML = `
     <div class="repay-highlight-box">
-
       <div class="row">
         <div class="label">총 부채</div>
         <div class="value">${debt.toLocaleString()}원</div>
@@ -163,17 +163,15 @@ function calcRepay() {
         <div class="label">청산가치 충족 여부</div>
         <div class="value" style="color:#008000;">✔ 충족</div>
       </div>
-
     </div>
   `;
 
   /****************************************************
-   * 상세 계산 (빨강 박스)
+   * 상세 계산
    ****************************************************/
   const acc = $("repayAccordion");
   acc.innerHTML = `
     <div class="repay-highlight-box-red">
-
       <div class="row">
         <div class="label">총 부채</div>
         <div class="value">${debt.toLocaleString()}원</div>
@@ -245,7 +243,6 @@ function calcRepay() {
           <div class="value" style="color:#2a5f9e;">PV 충족 위해 자동 조정됨</div>
         </div>
       ` : ""}
-
     </div>
   `;
 
@@ -276,17 +273,16 @@ function calcRepay() {
 
   const btn = document.querySelector(".repay-accordion-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
-  /**showPaywall();**/
 }
 
-
-
 /****************************************************
- * 상세보기 토글
+ * 상세보기 토글 (회원/이용권 체크 없음)
  ****************************************************/
 function toggleAccordionRepay() {
   const box = $("repayAccordion");
   const btn = document.querySelector(".repay-accordion-btn");
+
+  if (!box || !btn) return;
 
   if (box.classList.contains("open")) {
     box.classList.remove("open");
@@ -323,21 +319,26 @@ function resetRepayInputs() {
 }
 
 /****************************************************
- * FAQ + 설명 아코디언 + 숫자 안정화
+ * DOM 로드 후 초기 세팅
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-
+  // 최저생계비 초기 계산
   updateLivingCost();
-  $("household").addEventListener("change", updateLivingCost);
 
-  /* 숫자 입력 안정화 */
+  // 가구 수 변경 시 자동 계산
+  const householdEl = $("household");
+  if (householdEl) {
+    householdEl.addEventListener("change", updateLivingCost);
+  }
+
+  // 숫자 입력 안정화
   ["debt", "income", "living", "extra", "asset"].forEach(id => {
     const el = $(id);
     if (!el) return;
     el.addEventListener("input", () => sanitizeNumberInput(el));
   });
 
-  /* FAQ 아코디언 */
+  // FAQ 아코디언
   document.querySelectorAll(".faq-question").forEach(btn => {
     btn.addEventListener("click", () => {
       const answer = btn.nextElementSibling;
@@ -351,24 +352,16 @@ document.addEventListener("DOMContentLoaded", () => {
         : btn.innerHTML.replace("▲", "▼");
     });
   });
-
-  /* 설명 아코디언 */
-  const descBtn = document.querySelector(".toggle-arrow");
-  const descBox = document.querySelector(".repay-desc-box");
-
-  if (descBtn && descBox) {
-    descBtn.addEventListener("click", () => {
-      const isOpen = descBox.style.display === "block";
-      descBox.style.display = isOpen ? "none" : "block";
-
-      descBtn.innerHTML = isOpen
-        ? "개인회생 변제금 계산기 설명 보기 ▼"
-        : "개인회생 변제금 계산기 설명 접기 ▲";
-    });
-  }
 });
-document.getElementById("paywallOverlay").addEventListener("click", (e) => {
-  if (e.target.id === "paywallOverlay") {
-    e.target.style.display = "none";
-  }
-});
+
+/****************************************************
+ * Paywall 모달 바깥 클릭 시 닫기
+ ****************************************************/
+const paywallEl = document.getElementById("paywallOverlay");
+if (paywallEl) {
+  paywallEl.addEventListener("click", (e) => {
+    if (e.target.id === "paywallOverlay") {
+      e.target.style.display = "none";
+    }
+  });
+}
