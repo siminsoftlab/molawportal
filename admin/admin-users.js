@@ -1,4 +1,4 @@
-const db = firebase.firestore();
+//const db = firebase.firestore();
 
 let allUsers = []; // ⭐ 전체 회원 저장 (검색용)
 
