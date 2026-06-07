@@ -1,8 +1,6 @@
 /****************************************************
- * 개인회생 변제금 계산기 — 통합 최적화 버전
+ * 공통 유틸
  ****************************************************/
-
-/* 공통 유틸 */
 function $(id) {
   return document.getElementById(id);
 }
@@ -35,9 +33,10 @@ function updateLivingCost() {
 }
 
 /****************************************************
- * 계산하기 — 회원가입 + 이용권 활성화 + 만료일 체크
+ * 계산하기 — 로그인 + 이용권 활성 + 만료 체크
  ****************************************************/
 async function calcRepay() {
+
   const user = firebase.auth().currentUser;
 
   /* 1) 로그인 여부 체크 */
@@ -46,10 +45,9 @@ async function calcRepay() {
     return;
   }
 
-  /* 2) 이용권 활성화 여부 체크 */
+  /* 2) Firestore에서 이용권 조회 (user_id 기준) */
   const tokenSnap = await db.collection("access_tokens")
-    .where("uid", "==", user.uid)
-    .where("is_active", "==", true)
+    .where("user_id", "==", user.uid)
     .get();
 
   if (tokenSnap.empty) {
@@ -57,15 +55,39 @@ async function calcRepay() {
     return;
   }
 
-  /* 3) 이용권 만료일 체크 */
-  const tokenData = tokenSnap.docs[0].data();
-  const expireAt = tokenData.expire_at;
+  /* 3) 가장 늦게 만료되는 이용권 선택 */
+  let best = null;
+  tokenSnap.forEach(doc => {
+    const data = doc.data();
+    if (!best || data.expire_at > best.expire_at) {
+      best = data;
+    }
+  });
 
-  if (expireAt && expireAt.toDate() < new Date()) {
+  /* 4) 활성 여부 체크 */
+  if (!best.is_active) {
     document.getElementById("paywallOverlay").style.display = "flex";
     return;
   }
-   /****************************************************
+
+  /* 5) 만료일 체크 (Timestamp/number 모두 지원) */
+  let expireAt = best.expire_at;
+
+  let expireDate;
+  if (expireAt instanceof Date) {
+    expireDate = expireAt;
+  } else if (expireAt?.toDate) {
+    expireDate = expireAt.toDate();
+  } else {
+    expireDate = new Date(expireAt);
+  }
+
+  if (expireDate < new Date()) {
+    document.getElementById("paywallOverlay").style.display = "flex";
+    return;
+  }
+
+  /****************************************************
    * 필수 입력 검증
    ****************************************************/
   if (
@@ -75,11 +97,6 @@ async function calcRepay() {
     $("months").value.trim() === ""
   ) {
     alert("총 부채, 월 소득, 최저 생계비, 변제기간(개월)을 모두 입력해주세요.");
-
-    $("repaySummary").style.display = "none";
-    $("repayAccordion").innerHTML = "";
-    $("repayExplain").innerHTML = "";
-    $("repayExplain").style.display = "none";
     return;
   }
 
@@ -115,57 +132,25 @@ async function calcRepay() {
    ****************************************************/
   const summary = $("repaySummary");
   summary.style.display = "block";
-  summary.style.marginBottom = "25px";
 
   summary.innerHTML = `
     <div class="repay-highlight-box">
+      <div class="row"><div class="label">총 부채</div><div class="value">${debt.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">월 변제 가능 금액</div><div class="value">${monthlyPay.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">총 변제예정액</div><div class="value">${totalPay.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">최종 변제금</div><div class="value">${finalPay.toLocaleString()}원</div></div>
 
-      <div class="row">
-        <div class="label">총 부채</div>
-        <div class="value">${debt.toLocaleString()}원</div>
-      </div>
+      ${autoAdjusted ? `<div class="auto-adjust-msg">⚙️ PV 충족을 위해 자동 조정되었습니다.</div>` : ""}
 
-      <div class="row">
-        <div class="label">월 변제 가능 금액</div>
-        <div class="value">${monthlyPay.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">총 변제예정액(유보액)</div>
-        <div class="value">${totalPay.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">최종 변제금</div>
-        <div class="value">${finalPay.toLocaleString()}원</div>
-      </div>
-
-      ${autoAdjusted ? `
-        <div class="auto-adjust-msg">
-          ⚙️ PV(현재가치) 충족을 위해 변제금이 자동 조정되었습니다.
-        </div>
-      ` : ""}
-
-      <div class="row">
-        <div class="label">변제율</div>
-        <div class="value">${repayRate}%</div>
-      </div>
+      <div class="row"><div class="label">변제율</div><div class="value">${repayRate}%</div></div>
 
       <div class="rate-big">
         탕감률 ${reliefRate}%<br>
-        <span style="font-size:0.9rem; font-weight:600;">(법원에서 탕감되는 비율)</span>
+        <span style="font-size:0.9rem;">(법원에서 탕감되는 비율)</span>
       </div>
 
-      <div class="row">
-        <div class="label">현재가치(PV)</div>
-        <div class="value">${presentValue.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">청산가치 충족 여부</div>
-        <div class="value" style="color:#008000;">✔ 충족</div>
-      </div>
-
+      <div class="row"><div class="label">현재가치(PV)</div><div class="value">${presentValue.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">청산가치 충족 여부</div><div class="value" style="color:#008000;">✔ 충족</div></div>
     </div>
   `;
 
@@ -175,79 +160,21 @@ async function calcRepay() {
   const acc = $("repayAccordion");
   acc.innerHTML = `
     <div class="repay-highlight-box-red">
+      <div class="row"><div class="label">총 부채</div><div class="value">${debt.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">월 소득</div><div class="value">${income.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">법원 생계비</div><div class="value">${living.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">추가 생계비</div><div class="value">${extra.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">가용소득</div><div class="value">${monthlyPay.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">변제기간</div><div class="value">${months}개월</div></div>
+      <div class="row"><div class="label">총 변제예정액</div><div class="value">${totalPay.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">PV 최소 변제금</div><div class="value">${requiredFinalPay.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">현재가치(PV)</div><div class="value">${presentValue.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">청산가치</div><div class="value">${asset.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">최종 변제금</div><div class="value">${finalPay.toLocaleString()}원</div></div>
+      <div class="row"><div class="label">변제율</div><div class="value">${repayRate}%</div></div>
+      <div class="row"><div class="label">탕감률</div><div class="value">${reliefRate}%</div></div>
 
-      <div class="row">
-        <div class="label">총 부채</div>
-        <div class="value">${debt.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">월 소득</div>
-        <div class="value">${income.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">법원 생계비</div>
-        <div class="value">${living.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">추가 생계비</div>
-        <div class="value">${extra.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">가용소득</div>
-        <div class="value">${monthlyPay.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">변제기간</div>
-        <div class="value">${months}개월</div>
-      </div>
-
-      <div class="row">
-        <div class="label">총 변제예정액(유보액)</div>
-        <div class="value">${totalPay.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">PV 충족 최소 변제금(FV)</div>
-        <div class="value">${requiredFinalPay.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">현재가치(PV)</div>
-        <div class="value">${presentValue.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">청산가치</div>
-        <div class="value">${asset.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">최종 변제금</div>
-        <div class="value">${finalPay.toLocaleString()}원</div>
-      </div>
-
-      <div class="row">
-        <div class="label">변제율</div>
-        <div class="value">${repayRate}%</div>
-      </div>
-
-      <div class="row">
-        <div class="label">탕감률</div>
-        <div class="value">${reliefRate}%</div>
-      </div>
-
-      ${autoAdjusted ? `
-        <div class="row">
-          <div class="label">자동 조정</div>
-          <div class="value" style="color:#2a5f9e;">PV 충족 위해 자동 조정됨</div>
-        </div>
-      ` : ""}
-
+      ${autoAdjusted ? `<div class="row"><div class="label">자동 조정</div><div class="value" style="color:#2a5f9e;">PV 충족 위해 자동 조정됨</div></div>` : ""}
     </div>
   `;
 
@@ -258,36 +185,18 @@ async function calcRepay() {
   explain.style.display = "block";
   explain.innerHTML = `
     <h3>📌 변제율·탕감률 계산 설명</h3>
-    <p>
-      총 부채 중 <strong>${repayRate}%</strong>는 실제로 갚아야 하는 금액이며,<br>
-      <strong>${reliefRate}%</strong>는 법원에서 탕감되는 금액입니다.
-    </p>
-    <p>
-      최종 변제금의 현재가치(PV)는 <strong>${presentValue.toLocaleString()}원</strong>이며,<br>
-      청산가치 <strong>${asset.toLocaleString()}원</strong>을 충족합니다.
-    </p>
-    ${autoAdjusted ? `
-      <p style="color:#2a5f9e; font-weight:600;">
-        ⚙️ 이번 계산은 PV 충족을 위해 변제금이 자동 조정되었습니다.
-      </p>
-    ` : ""}
+    <p>총 부채 중 <strong>${repayRate}%</strong>는 실제로 갚아야 하는 금액이며, <strong>${reliefRate}%</strong>는 법원에서 탕감되는 금액입니다.</p>
+    <p>최종 변제금의 현재가치(PV)는 <strong>${presentValue.toLocaleString()}원</strong>이며, 청산가치 <strong>${asset.toLocaleString()}원</strong>을 충족합니다.</p>
+    ${autoAdjusted ? `<p style="color:#2a5f9e;">⚙️ PV 충족을 위해 변제금이 자동 조정되었습니다.</p>` : ""}
   `;
-
-  acc.classList.remove("open");
-  acc.style.maxHeight = null;
-
-  const btn = document.querySelector(".repay-accordion-btn");
-  if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
 
 /****************************************************
- * 상세보기 토글 (회원/이용권 체크 없음)
+ * 상세보기 토글
  ****************************************************/
 function toggleAccordionRepay() {
   const box = $("repayAccordion");
   const btn = document.querySelector(".repay-accordion-btn");
-
-  if (!box || !btn) return;
 
   if (box.classList.contains("open")) {
     box.classList.remove("open");
@@ -317,10 +226,6 @@ function resetRepayInputs() {
   $("repayAccordion").innerHTML = "";
   $("repayExplain").innerHTML = "";
   $("repayExplain").style.display = "none";
-  $("repayExplain").classList.remove("visible");
-
-  const btn = document.querySelector(".repay-accordion-btn");
-  if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
 
 /****************************************************
@@ -340,24 +245,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!el) return;
     el.addEventListener("input", () => sanitizeNumberInput(el));
   });
-
-  document.querySelectorAll(".faq-question").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const answer = btn.nextElementSibling;
-      if (!answer) return;
-
-      const isOpen = answer.style.display === "block";
-      answer.style.display = isOpen ? "none" : "block";
-
-      btn.innerHTML = btn.innerHTML.includes("▼")
-        ? btn.innerHTML.replace("▼", "▲")
-        : btn.innerHTML.replace("▲", "▼");
-    });
-  });
 });
 
 /****************************************************
- * Paywall 모달 바깥 클릭 시 닫기
+ * 모달 바깥 클릭 시 닫기
  ****************************************************/
 ["paywallOverlay", "loginRequiredModal"].forEach(id => {
   const el = document.getElementById(id);
