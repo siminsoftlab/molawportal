@@ -1,8 +1,8 @@
 /* ============================
    페이월 전체 오버레이
 ============================ */
-.paywall-overlay {
-  position: absolute;
+.paywall-overlay {   
+  position: fixed !important;
   top: 0;
   left: 0;
   width: 100%;
@@ -13,7 +13,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 12px;
-  z-index: 20;
+  z-index: 9999;
 }
 
 /* ============================
