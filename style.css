@@ -1738,10 +1738,24 @@ button.hl-acc-btn {
   padding-right: 0 !important;   /* 오른쪽 여백 제거 */
 }
 
-.auth-bar-inner {
-  margin-right: 0 !important;    /* 혹시 모를 margin 제거 */
-}
-
 #auth-after {
   margin-right: 0 !important;    /* 로그인 후 영역 오른쪽 여백 제거 */
+}
+/* 로그인바 전체를 화면 끝까지 붙이기 */
+.header-row,
+.header-inner,
+.auth-bar-inner {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* 로그인 후 영역도 오른쪽 여백 제거 */
+#auth-after {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* 버튼들이 오른쪽으로 밀리지 않도록 */
+#auth-after .auth-btn {
+  margin-right: 0 !important;
 }
