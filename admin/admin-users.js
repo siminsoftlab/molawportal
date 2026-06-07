@@ -38,8 +38,9 @@ function viewUser(uid) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadUsers();
+  loadUsers(); // ⭐ 페이지 로드 시 자동 조회
 
+  // ⭐ 검색 필터링
   document.getElementById("searchInput").addEventListener("input", (e) => {
     const keyword = e.target.value.toLowerCase();
     const rows = document.querySelectorAll("#userTableBody tr");
