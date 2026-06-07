@@ -78,4 +78,14 @@ document.addEventListener("DOMContentLoaded", () => {
     box.style.color = "#4a6fff";
   }
 
+  /* 로그아웃 버튼 */
+const logoutBtn = document.getElementById("logout-btn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    await firebase.auth().signOut();
+    window.location.reload();
+  });
+}
+
 });
+
