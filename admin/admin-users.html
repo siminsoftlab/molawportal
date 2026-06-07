@@ -3,28 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>회원 목록 조회</title>
-  <link rel="stylesheet" href="/admin.css?v=1003">
+
+  <link rel="stylesheet" href="/admin.css?v=1004">
 </head>
 
 <body>
 
+<div class="page-wrapper">
+
+  <!-- 상단 헤더 -->
   <div class="admin-header">
     <div class="title">👥 회원 목록</div>
     <div class="actions">
-      <button onclick="location.href='/admin.html'" class="btn-secondary">대시보드</button>
+      <button onclick="location.href='admin.html'" class="btn-secondary">대시보드</button>
       <button id="logout-btn" class="btn-danger">로그아웃</button>
     </div>
   </div>
 
+  <!-- 검색 박스 -->
   <div class="admin-container section">
-    <div class="card">
+    <div class="card search-card">
       <div class="card-title">회원 검색</div>
-      <input id="searchInput" type="text" placeholder="이름 또는 이메일 검색" style="width:100%; padding:12px;">
+      <input id="searchInput" type="text" placeholder="이름 또는 이메일 검색" style="width:100%;">
     </div>
   </div>
 
+  <!-- 회원 목록 -->
   <div class="admin-container section">
-    <div class="card">
+    <div class="card table-wrapper">
       <div class="card-title">회원 목록</div>
 
       <table class="admin-table">
@@ -42,13 +48,15 @@
     </div>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="/firebase-init.js"></script>
-   <!-- Firebase 초기화 -->
-  <script src="/firebase-init.js"></script>
-  <script src="admin-users.js?v=1001"></script>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="/firebase-init.js"></script>
+
+<script src="admin-users.js?v=1004"></script>
+
 </body>
 </html>
