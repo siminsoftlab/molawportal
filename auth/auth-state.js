@@ -1,8 +1,42 @@
+console.log("auth-state.js loaded");
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ============================================================
-     이용권 남은 기간 불러오기
-  ============================================================ */
+  /* 로그인 상태 감지 */
+  firebase.auth().onAuthStateChanged(async (user) => {
+    console.log("Auth state changed:", user);
+
+    const before = document.getElementById("auth-before");
+    const after = document.getElementById("auth-after");
+    const username = document.getElementById("auth-username");
+
+    if (!before || !after) {
+      console.log("auth DOM 요소 없음");
+      return;
+    }
+
+    if (user) {
+      before.style.display = "none";
+      after.style.display = "flex";
+
+      const doc = await firebase.firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get();
+
+      if (doc.exists && username) {
+        username.textContent = doc.data().name;
+      }
+
+      loadTicketRemaining(user.uid);
+
+    } else {
+      before.style.display = "flex";
+      after.style.display = "none";
+    }
+  });
+
+  /* 이용권 남은 기간 */
   async function loadTicketRemaining(uid) {
     const box = document.getElementById("ticket-remaining");
     if (!box) return;
@@ -26,22 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    if (!best.is_active) {
-      box.textContent = "· 비활성화됨";
-      box.style.color = "red";
-      return;
-    }
-
-    let expireAt = best.expire_at;
-    let expireDate;
-
-    if (expireAt instanceof Date) {
-      expireDate = expireAt;
-    } else if (expireAt?.toDate) {
-      expireDate = expireAt.toDate();
-    } else {
-      expireDate = new Date(expireAt);
-    }
+    let expireDate = best.expire_at?.toDate
+      ? best.expire_at.toDate()
+      : new Date(best.expire_at);
 
     const now = new Date();
     const diff = expireDate - now;
@@ -55,49 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     box.textContent = `· 이용권 ${days}일 남음`;
     box.style.color = "#4a6fff";
-  }
-
-  /* ============================================================
-     로그인 상태 감지
-  ============================================================ */
-  firebase.auth().onAuthStateChanged(async (user) => {
-    const before = document.getElementById("auth-before");
-    const after = document.getElementById("auth-after");
-    const username = document.getElementById("auth-username");
-
-    if (!before || !after) return;
-
-    if (user) {
-      before.style.display = "none";
-      after.style.display = "flex";
-
-      const doc = await firebase.firestore()
-        .collection("users")
-        .doc(user.uid)
-        .get();
-
-      if (doc.exists && username) {
-        username.textContent = doc.data().name;
-      }
-
-      loadTicketRemaining(user.uid);
-
-    } else {
-      before.style.display = "flex";
-      after.style.display = "none";
-    }
-  });
-
-  /* ============================================================
-     로그아웃
-  ============================================================ */
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      firebase.auth().signOut().then(() => {
-        window.location.reload();
-      });
-    });
   }
 
 });
