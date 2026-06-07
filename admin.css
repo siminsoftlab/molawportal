@@ -1,152 +1,139 @@
-/* 전체 기본 스타일 */
+/* ============================================================
+   📱 앱 UI 스타일 (추가)
+   기존 admin.css 위에 자연스럽게 덮어쓰기
+============================================================ */
+
+/* 전체 배경 */
 body {
-  margin: 0;
-  background: #f5f6fa;
-  font-family: "Noto Sans KR", sans-serif;
+  background: #f3f5fb !important;
 }
 
-/* 상단 헤더 */
+/* 상단 헤더 앱 스타일 */
 .admin-header {
-  background: #4a90e2;
-  color: white;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: linear-gradient(90deg, #4a6fff, #6a8bff) !important;
+  padding: 18px 20px !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
 }
 
 .admin-header .title {
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 20px !important;
+  font-weight: 800 !important;
 }
 
-.actions button {
-  margin-left: 10px;
+/* 버튼 앱 스타일 */
+button,
+.btn-secondary,
+.btn-danger {
+  border-radius: 12px !important;
+  padding: 12px 18px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  transition: 0.2s ease !important;
 }
 
-/* 버튼 스타일 */
 .btn-secondary {
-  background: #fff;
-  color: #4a90e2;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: 0.2s;
+  background: #eef2ff !important;
+  color: #3c4bff !important;
+  border: 1px solid #d7ddff !important;
 }
 
 .btn-secondary:hover {
-  background: #e8f1ff;
+  background: #e1e7ff !important;
 }
 
 .btn-danger {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: 0.2s;
+  background: #ff4a4a !important;
 }
 
 .btn-danger:hover {
-  background: #c0392b;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  background: #e63d3d !important;
 }
 
-/* 대시보드 카드 레이아웃 */
-.admin-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-
-/* 카드 공통 */
+/* 카드 앱 스타일 */
 .card {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-radius: 16px !important;
+  padding: 22px !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* 전체폭 카드 */
-.card.full {
-  grid-column: 1 / -1 !important;
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
-/* 카드 텍스트 */
 .card-title {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 10px;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: #444 !important;
 }
 
 .card-value {
-  font-size: 32px;
-  font-weight: bold;
-  color: #333;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: #4a6fff !important;
 }
 
-/* Daily 조회 */
-.daily-controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+/* 테이블 앱 스타일 */
+.admin-table {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
 }
 
-#daily-log {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
-  white-space: pre-wrap;
-  font-size: 14px;
+.admin-table th {
+  background: #f0f3ff !important;
+  padding: 14px !important;
+  font-size: 15px !important;
 }
 
-/* IP 상세 정보 */
-#ip-detail-log {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
-  white-space: pre-wrap;
-  font-size: 14px;
-  line-height: 1.5;
+.admin-table td {
+  padding: 14px !important;
+  font-size: 15px !important;
+  border-bottom: 1px solid #eee !important;
 }
 
-/* 샤드 테이블 */
-.shard-table {
-  white-space: pre-line;
-  font-size: 14px;
-  line-height: 1.5;
+.admin-table tr:hover {
+  background: #f9faff !important;
 }
 
-/* 차트 */
-canvas {
-  margin-top: 10px;
+/* 검색창 앱 스타일 */
+#searchInput {
+  padding: 14px !important;
+  border-radius: 12px !important;
+  border: 1px solid #d0d4e4 !important;
+  background: #fff !important;
+  font-size: 15px !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
-#browserChart,
-#osChart {
-  height: 250px !important;
-  max-height: 250px !important;
+/* 상세 정보 박스 */
+#userDetail {
+  background: #fff !important;
+  padding: 20px !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
 }
 
-/* 반응형 */
-@media (max-width: 600px) {
-  .admin-header {
-    flex-direction: column;
-    align-items: flex-start;
+/* 모바일 최적화 */
+@media (max-width: 480px) {
+  .admin-header .title {
+    font-size: 18px !important;
   }
 
-  .actions {
-    margin-top: 10px;
+  .card {
+    padding: 18px !important;
   }
 
-  /* 모바일에서 2개씩 정렬 */
-  .admin-container {
-    grid-template-columns: repeat(2, 1fr);
+  .card-value {
+    font-size: 24px !important;
+  }
+
+  button {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
   }
 }
