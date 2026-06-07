@@ -4,19 +4,28 @@ async function loadUsers() {
   const tbody = document.getElementById("userTableBody");
   tbody.innerHTML = "";
 
-  const snap = await db.collection("users").orderBy("created_at", "desc").get();
+  const snap = await db.collection("users").get();
+
+  const users = [];
 
   snap.forEach(doc => {
-    const data = doc.data();
+    if (doc.id === "_schema") return; // ⭐ 스키마 제외
+    users.push({ id: doc.id, ...doc.data() });
+  });
+
+  // created_at 기준 정렬
+  users.sort((a, b) => b.created_at - a.created_at);
+
+  users.forEach(user => {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${data.name || "-"}</td>
-      <td>${data.email || "-"}</td>
-      <td>${data.phone || "-"}</td>
-      <td>${new Date(data.created_at).toLocaleString()}</td>
+      <td>${user.name || "-"}</td>
+      <td>${user.email || "-"}</td>
+      <td>${user.phone || "-"}</td>
+      <td>${new Date(user.created_at).toLocaleString()}</td>
       <td>
-        <button class="btn-secondary" onclick="viewUser('${doc.id}')">상세보기</button>
+        <button class="btn-secondary" onclick="viewUser('${user.id}')">상세보기</button>
       </td>
     `;
 
