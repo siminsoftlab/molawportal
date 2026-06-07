@@ -1,22 +1,31 @@
 const db = firebase.firestore();
 
+let allUsers = []; // ⭐ 전체 회원 저장 (검색용)
+
 async function loadUsers() {
   const tbody = document.getElementById("userTableBody");
   tbody.innerHTML = "";
 
   const snap = await db.collection("users").get();
 
-  const users = [];
+  allUsers = []; // 초기화
 
   snap.forEach(doc => {
     if (doc.id === "_schema") return; // ⭐ 스키마 제외
-    users.push({ id: doc.id, ...doc.data() });
+    allUsers.push({ id: doc.id, ...doc.data() });
   });
 
   // created_at 기준 정렬
-  users.sort((a, b) => b.created_at - a.created_at);
+  allUsers.sort((a, b) => b.created_at - a.created_at);
 
-  users.forEach(user => {
+  renderTable(allUsers); // ⭐ 화면에 출력
+}
+
+function renderTable(list) {
+  const tbody = document.getElementById("userTableBody");
+  tbody.innerHTML = "";
+
+  list.forEach(user => {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
@@ -40,14 +49,15 @@ function viewUser(uid) {
 document.addEventListener("DOMContentLoaded", () => {
   loadUsers(); // ⭐ 페이지 로드 시 자동 조회
 
-  // ⭐ 검색 필터링
+  // ⭐ 검색 기능
   document.getElementById("searchInput").addEventListener("input", (e) => {
     const keyword = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll("#userTableBody tr");
 
-    rows.forEach(row => {
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(keyword) ? "" : "none";
-    });
+    const filtered = allUsers.filter(user =>
+      (user.name || "").toLowerCase().includes(keyword) ||
+      (user.email || "").toLowerCase().includes(keyword)
+    );
+
+    renderTable(filtered);
   });
 });
