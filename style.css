@@ -1737,3 +1737,11 @@ button.hl-acc-btn {
 #auth-bar-wrapper {
   margin-bottom: 12px; /* 원하는 만큼 조절 */
 }
+#auth-after {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 끝 정렬 */
+  align-items: center;
+  gap: 10px; /* 버튼 간 간격 */
+  width: 100%;
+  padding-right: 16px; /* 오른쪽 여백 */
+}
