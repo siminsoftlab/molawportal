@@ -76,3 +76,19 @@
     font-size: 14px;
   }
 }
+/* input 박스가 div 밖으로 넘지 않도록 */
+.search-card input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 검색 카드가 grid에서 좁아지지 않도록 */
+.search-card {
+  grid-column: 1 / -1;
+}
+
+/* 테이블 카드도 전체 폭 사용 */
+.table-wrapper {
+  grid-column: 1 / -1;
+}
