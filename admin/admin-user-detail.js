@@ -1,4 +1,4 @@
-const db = firebase.firestore();
+//const db = firebase.firestore();
 
 function getParam(name) {
   return new URLSearchParams(location.search).get(name);
