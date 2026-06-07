@@ -548,8 +548,7 @@ body.subpage .top-info-bar {
   }
    
   /* 홈페이지 컨테이너 */
-  body.homepage .container {
-    margin-top: 5px;
+  body.homepage .container {  
     margin-bottom: 28px;
     padding: 20px;
   }
