@@ -1627,6 +1627,10 @@ button.hl-acc-btn {
   align-items: center;
   gap: 6px; /* 요소 간 간격 */ 
 }
+#auth-after .logout {
+  margin-right: 0 !important;
+  padding-right: 2px !important; /* 필요하면 더 줄여도 됨 */
+}
 /* 공통 버튼 스타일 */
 .common-btn {
   padding: 10px 16px !important;
