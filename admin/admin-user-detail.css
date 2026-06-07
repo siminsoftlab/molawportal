@@ -1,0 +1,38 @@
+/* ============================================================
+   회원 상세 페이지 전용 스타일
+============================================================ */
+
+/* 페이지 전체 중앙 정렬 */
+.page-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* 상세 카드 */
+#userDetail {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* 카드 간 간격 */
+.section {
+  margin-top: 20px;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 0 12px;
+  }
+
+  #userDetail {
+    font-size: 15px;
+    padding: 16px;
+  }
+}
