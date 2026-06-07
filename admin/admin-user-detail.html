@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 상세 정보</title>
+  <link rel="stylesheet" href="admin.css?v=1003">
+</head>
+
+<body>
+
+  <div class="admin-header">
+    <div class="title">📌 회원 상세 정보</div>
+    <div class="actions">
+      <button onclick="history.back()" class="btn-secondary">뒤로가기</button>
+      <button id="logout-btn" class="btn-danger">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="admin-container section">
+    <div class="card">
+      <div class="card-title">회원 정보</div>
+
+      <div id="userDetail" style="white-space:pre-line; font-size:16px;">
+        불러오는 중...
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="/firebase-init.js"></script>
+
+  <script src="admin-user-detail.js?v=1001"></script>
+</body>
+</html>
