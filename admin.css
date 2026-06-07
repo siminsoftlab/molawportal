@@ -137,3 +137,44 @@ button,
     font-size: 14px !important;
   }
 }
+/* ============================================================
+   📌 회원 목록 페이지 레이아웃 정렬 개선
+============================================================ */
+
+/* 전체 페이지 중앙 정렬 */
+.page-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* 검색 박스와 카드 간 여백 */
+.section {
+  margin-top: 20px;
+}
+
+/* 검색 박스 카드 폭 통일 */
+.search-card {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 회원 목록 테이블도 중앙 정렬 */
+.table-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 카드 간 간격 */
+.admin-container.section {
+  margin-top: 20px;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 0 12px;
+  }
+}
