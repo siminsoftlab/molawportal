@@ -1740,12 +1740,12 @@ button.hl-acc-btn {
   display: flex;
   align-items: center;
   gap: 6px; /* 요소 간 간격 */ 
-  padding: 2px 2px; /* 위아래 6px, 좌우 10px */
+  padding: 2px 2px; /* 위아래 2px, 좌우 2px */
 }
 #auth-before .auth-btn {
-  margin-top: 8px; /* 버튼 위쪽 여백 */
+  margin-top: 2px; /* 버튼 위쪽 여백 */
 }
 #auth-after .auth-btn {
-  margin-top: 8px; /* 버튼 위쪽 여백 */
+  margin-top: 2px; /* 버튼 위쪽 여백 */
 }
 
