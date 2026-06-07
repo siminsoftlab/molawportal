@@ -1630,7 +1630,7 @@ button.hl-acc-btn {
 }
 /* 공통 버튼 스타일 */
 .common-btn {
-  padding: 10px 16px !important;
+  padding: 5px 5px !important;
   border-radius: 8px !important;
   font-size: 15px;
   font-weight: 600;
