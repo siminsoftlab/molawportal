@@ -1742,7 +1742,6 @@ button.hl-acc-btn {
   box-sizing: border-box !important;
 }
 
-/* 로그인 후 영역을 오른쪽 끝까지 붙이되 container 안에서만 정렬 */
 #auth-after {
   display: flex !important;
   align-items: center !important;
@@ -1754,14 +1753,16 @@ button.hl-acc-btn {
   padding-right: 0 !important;
 }
 
-/* 로그아웃 버튼 바깥쪽 여백 제거 */
 #auth-after .auth-btn.logout {
   margin-right: 0 !important;
-  padding-right: 6px !important; /* 필요하면 0으로 더 줄여도 됨 */
+  padding-right: 4px !important;
 }
 
-/* 버튼 전체 여백 최소화 */
-#auth-after .auth-btn {
-  margin-right: 2px !important;
-  padding: 6px 10px !important;
+/* PC + 모바일 공통: 로그인바를 container 폭 안으로 정렬 */
+.header-inner {
+  max-width: 900px !important;   /* container와 동일 */
+  margin: 0 auto !important;     /* 가운데 정렬 */
+  padding: 0 12px !important;    /* 좌우 여백 최소화 */
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
