@@ -38,7 +38,6 @@ function updateLivingCost() {
  * 계산하기 — 회원가입 + 이용권 활성화 + 만료일 체크
  ****************************************************/
 async function calcRepay() {
-
   const user = firebase.auth().currentUser;
 
   /* 1) 로그인 여부 체크 */
@@ -66,8 +65,7 @@ async function calcRepay() {
     document.getElementById("paywallOverlay").style.display = "flex";
     return;
   }
-
-  /****************************************************
+   /****************************************************
    * 필수 입력 검증
    ****************************************************/
   if (
