@@ -1726,17 +1726,6 @@ button.hl-acc-btn {
     padding-top: 8px !important;
   }
 }
-/* 로그인 영역 버튼 여백 최소화 */
-#auth-after .auth-btn.logout {
-  margin-right: 0 !important;
-  padding-right: 6px !important; /* 필요하면 0으로 더 줄여도 됨 */
-}
-
-/* 전체 버튼 간격 최소화 */
-#auth-after .auth-btn {
-  margin-right: 4px !important;
-  padding-right: 8px !important;
-}
 
 /* 한 줄 유지 + 요소 간격 균형 */
 #auth-after {
@@ -1744,4 +1733,15 @@ button.hl-acc-btn {
   align-items: center;
   gap: 4px !important;
   white-space: nowrap;
+}
+.header-inner {
+  padding-right: 0 !important;   /* 오른쪽 여백 제거 */
+}
+
+.auth-bar-inner {
+  margin-right: 0 !important;    /* 혹시 모를 margin 제거 */
+}
+
+#auth-after {
+  margin-right: 0 !important;    /* 로그인 후 영역 오른쪽 여백 제거 */
 }
