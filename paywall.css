@@ -88,8 +88,8 @@
   height: 100vh;
   background: rgba(0,0,0,0.45);
   display: none;
-  justify-content: flex-end;
-  align-items: flex-end;
+  justify-content: center;   /* 가로 중앙 */
+  align-items: flex-end;     /* 세로는 아래 */
   z-index: 9999;
 }
 
