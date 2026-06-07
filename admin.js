@@ -418,21 +418,33 @@ document.getElementById("token-manage-btn").addEventListener("click", () => {
 async function loadUserStats() {
   const snapshot = await db.collection("users").get();
 
-  const total = snapshot.size;
-  const todayStr = new Date().toISOString().slice(0, 10);
-
+  let total = 0;
   let todayCount = 0;
 
+  const todayStr = new Date().toISOString().slice(0, 10);
+
   snapshot.forEach(doc => {
+    if (doc.id === "_schema") return; // ⭐ 스키마 제외
+
     const data = doc.data();
-    const created = new Date(data.created_at).toISOString().slice(0, 10);
+    if (!data.created_at) return;
+
+    total++;
+
+    let createdAt = data.created_at;
+
+    // Timestamp 타입이면 변환
+    if (createdAt?.seconds) {
+      createdAt = createdAt.seconds * 1000;
+    }
+
+    const created = new Date(createdAt).toISOString().slice(0, 10);
     if (created === todayStr) todayCount++;
   });
 
   document.getElementById("user-total-count").textContent = total;
   document.getElementById("user-today-count").textContent = todayCount;
 }
-
 
 /* ============================================================
    초기 실행
