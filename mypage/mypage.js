@@ -8,14 +8,13 @@ function getRemainingDays(expireAt) {
 }
 
 /* ============================================================
-   이용권 정보 불러오기
+   이용권 정보 불러오기 + 활성 여부 표시
 ============================================================ */
 async function loadTicket(userId) {
   const ticketBox = document.getElementById("mypage-ticket");
 
   const snap = await db.collection("access_tokens")
     .where("user_id", "==", userId)
-    .where("is_active", "==", true)
     .get();
 
   if (snap.empty) {
@@ -26,6 +25,7 @@ async function loadTicket(userId) {
     return;
   }
 
+  // 가장 늦게 만료되는 이용권 선택
   let best = null;
   snap.forEach(doc => {
     const data = doc.data();
@@ -34,13 +34,35 @@ async function loadTicket(userId) {
     }
   });
 
-  const remaining = getRemainingDays(best.expire_at);
-  const expireDate = new Date(best.expire_at).toLocaleDateString("ko-KR");
+  // expire_at 타입 처리 (Timestamp 또는 number)
+  const expireAt = best.expire_at instanceof Date
+    ? best.expire_at.getTime()
+    : best.expire_at;
+
+  const remaining = getRemainingDays(expireAt);
+  const expireDate = new Date(expireAt).toLocaleDateString("ko-KR");
+
+  // 활성 여부 판단
+  const now = Date.now();
+  let statusText = "";
+  let statusColor = "";
+
+  if (!best.is_active) {
+    statusText = "❌ 비활성화됨";
+    statusColor = "red";
+  } else if (expireAt < now) {
+    statusText = "⛔ 만료됨";
+    statusColor = "gray";
+  } else {
+    statusText = "✔ 활성화됨";
+    statusColor = "green";
+  }
 
   ticketBox.innerHTML = `
     <p><strong>유형:</strong> ${best.type}</p>
     <p><strong>만료일:</strong> ${expireDate}</p>
     <p><strong>남은 기간:</strong> ${remaining}일</p>
+    <p><strong>상태:</strong> <span style="color:${statusColor}; font-weight:700;">${statusText}</span></p>
   `;
 }
 
@@ -58,7 +80,7 @@ async function loadPendingPayment(userId) {
     .get();
 
   if (snap.empty) {
-    box.innerHTML = ""; // 신청 없으면 표시 안 함
+    box.innerHTML = "";
     return;
   }
 
@@ -173,7 +195,7 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById("mypage-email").textContent = data.email;
 
   loadTicket(user.uid);
-  loadPendingPayment(user.uid);   // 🔥 추가됨
+  loadPendingPayment(user.uid);
   checkExpireAlert(user.uid);
   showPushPermissionBanner();
 });
