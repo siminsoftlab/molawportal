@@ -1622,10 +1622,11 @@ button.hl-acc-btn {
 
 
 #auth-after {
+   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 10px; /* 요소 간 간격 */
-  padding: 6px 10px; /* 위아래 6px, 좌우 10px */
+  gap: 6px; /* 요소 간 간격 */ 
+  padding: 2px 2px; /* 위아래 6px, 좌우 10px */
 }
 /* 공통 버튼 스타일 */
 .common-btn {
