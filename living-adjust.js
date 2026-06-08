@@ -1,8 +1,6 @@
 /****************************************************
- * 법원 생계비 계산기 — 순수 생계비 계산 전용 버전
+ * 숫자 처리
  ****************************************************/
-
-/* 숫자 처리 */
 function getInt(id) {
   return parseInt(
     (document.getElementById(id).value || "0").replace(/[^\d]/g, "")
@@ -34,49 +32,70 @@ function updateCourtLiving() {
 }
 
 /****************************************************
- * 상세 계산 아코디언
+ * 🔒 로그인 + 이용권 체크
  ****************************************************/
-function toggleLivingAccordion() {
-  const box = document.getElementById("la_accordion");
-  const btn = document.querySelector(".la-acc-btn");
+async function checkAccessBeforeCalc() {
+  const user = firebase.auth().currentUser;
 
-  if (!box || !btn) return;
-
-  if (box.classList.contains("open")) {
-    box.classList.remove("open");
-    box.style.maxHeight = "0px";
-    btn.textContent = "계산 상세 보기 ▼";
-  } else {
-    box.classList.add("open");
-    box.style.maxHeight = box.scrollHeight + "px";
-    btn.textContent = "계산 상세 접기 ▲";
+  // 1) 로그인 여부 체크
+  if (!user) {
+    document.getElementById("loginRequiredModal").style.display = "flex";
+    return false;
   }
-}
 
+  // 2) Firestore에서 이용권 조회
+  const tokenSnap = await db.collection("access_tokens")
+    .where("user_id", "==", user.uid)
+    .get();
 
-/****************************************************
- * 초기화
- ****************************************************/
-function resetLivingAdjust() {
-  ["la_income","la_extra","la_months"].forEach(id=>{
-    document.getElementById(id).value = id === "la_months" ? "36" : "";
+  if (tokenSnap.empty) {
+    document.getElementById("paywallOverlay").style.display = "flex";
+    return false;
+  }
+
+  // 3) 가장 늦게 만료되는 이용권 선택
+  let best = null;
+  tokenSnap.forEach(doc => {
+    const data = doc.data();
+    if (!best || data.expire_at > best.expire_at) {
+      best = data;
+    }
   });
 
-  document.getElementById("la_summary").style.display = "none";
+  // 4) 활성 여부 체크
+  if (!best.is_active) {
+    document.getElementById("paywallOverlay").style.display = "flex";
+    return false;
+  }
 
-  const acc = document.getElementById("la_accordion");
-  acc.innerHTML = "";
-  acc.classList.remove("open");
-  acc.style.maxHeight = null;
+  // 5) 만료일 체크
+  let expireAt = best.expire_at;
+  let expireDate;
 
-  const explain = document.getElementById("la_explain");
-  explain.innerHTML = "";
-  explain.style.display = "none";
+  if (expireAt instanceof Date) {
+    expireDate = expireAt;
+  } else if (expireAt?.toDate) {
+    expireDate = expireAt.toDate();
+  } else {
+    expireDate = new Date(expireAt);
+  }
 
-  const btn = document.querySelector(".la-acc-btn");
-  if (btn) btn.textContent = "계산 상세 보기 ▼";
+  if (expireDate < new Date()) {
+    document.getElementById("paywallOverlay").style.display = "flex";
+    return false;
+  }
 
-  updateCourtLiving();
+  return true; // 통과
+}
+
+/****************************************************
+ * 계산하기 버튼 → 접근권한 체크 후 계산 실행
+ ****************************************************/
+async function handleLivingCalc() {
+  const ok = await checkAccessBeforeCalc();
+  if (!ok) return;
+
+  calcLivingAdjust();
 }
 
 /****************************************************
@@ -84,9 +103,7 @@ function resetLivingAdjust() {
  ****************************************************/
 function calcLivingAdjust() {
 
-  /****************************************************
-   * ⭐ 필수 입력값 체크 (월소득, 최저 생계비, 추가 생계비, 변제기간)
-   ****************************************************/
+  // ⭐ 필수 입력값 체크
   const incomeInput = document.getElementById('la_income').value.trim();
   const livingInput = document.getElementById('la_court_living').value.trim();
   const extraInputRaw = document.getElementById('la_extra').value.trim();
@@ -94,12 +111,9 @@ function calcLivingAdjust() {
 
   if (incomeInput === "" || livingInput === "" || extraInputRaw === "" || monthsInput === "") {
     alert("월 소득, 최저 생계비, 추가 생계비, 변제기간(개월)을 모두 입력해주세요.");
-    return; // ← 계산 중단
+    return;
   }
 
-  /****************************************************
-   * 기존 계산 로직
-   ****************************************************/
   const income      = getInt('la_income');
   const household   = getInt('la_household');
   const courtLiving = getInt('la_court_living');
@@ -156,7 +170,6 @@ function calcLivingAdjust() {
 
   </div>
 `;
-
 
   /****************************************************
    * 자동 설명
@@ -217,16 +230,54 @@ function calcLivingAdjust() {
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 }
 
+/****************************************************
+ * 상세 계산 아코디언
+ ****************************************************/
+function toggleLivingAccordion() {
+  const box = document.getElementById("la_accordion");
+  const btn = document.querySelector(".la-acc-btn");
+
+  if (!box || !btn) return;
+
+  if (box.classList.contains("open")) {
+    box.classList.remove("open");
+    box.style.maxHeight = "0px";
+    btn.textContent = "계산 상세 보기 ▼";
+  } else {
+    box.classList.add("open");
+    box.style.maxHeight = box.scrollHeight + "px";
+    btn.textContent = "계산 상세 접기 ▲";
+  }
+}
 
 /****************************************************
- * 이벤트 연결
+ * 초기화
  ****************************************************/
-document.addEventListener("DOMContentLoaded", () => {
-  updateCourtLiving();
-  document.getElementById('la_household').addEventListener('change', updateCourtLiving);
-  document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
-});
+function resetLivingAdjust() {
+  ["la_income","la_extra","la_months"].forEach(id=>{
+    document.getElementById(id).value = id === "la_months" ? "36" : "";
+  });
 
+  document.getElementById("la_summary").style.display = "none";
+
+  const acc = document.getElementById("la_accordion");
+  acc.innerHTML = "";
+  acc.classList.remove("open");
+  acc.style.maxHeight = null;
+
+  const explain = document.getElementById("la_explain");
+  explain.innerHTML = "";
+  explain.style.display = "none";
+
+  const btn = document.querySelector(".la-acc-btn");
+  if (btn) btn.textContent = "계산 상세 보기 ▼";
+
+  updateCourtLiving();
+}
+
+/****************************************************
+ * 모달 바깥 클릭 시 닫기
+ ****************************************************/
 ["paywallOverlay", "loginRequiredModal"].forEach(id => {
   const el = document.getElementById(id);
   if (el) {
@@ -236,4 +287,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+});
+
+/****************************************************
+ * DOM 로드 후 초기 세팅
+ ****************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  updateCourtLiving();
+  document.getElementById('la_household').addEventListener('change', updateCourtLiving);
+  document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 });
