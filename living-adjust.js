@@ -226,3 +226,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('la_household').addEventListener('change', updateCourtLiving);
   document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 });
+
+["paywallOverlay", "loginRequiredModal"].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("click", (e) => {
+      if (e.target.id === id) {
+        e.target.style.display = "none";
+      }
+    });
+  }
+});
