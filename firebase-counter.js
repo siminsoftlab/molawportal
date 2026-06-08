@@ -148,7 +148,7 @@ async function saveVisitorGeoIP() {
       .doc(visitorKey)
       .set(
         {
-          ip: data.IPv4 || null,          // ⭐ geolocation-db 필드명
+          ip: data.ip || null,          // ⭐ geolocation-db 필드명
           country: data.country_name || null,
           city: data.city || null,
           browser,
