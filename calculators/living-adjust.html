@@ -262,6 +262,15 @@
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script src="/firebase-init.js"></script>
+<script src="/firebase-counter.js"></script>
+<script src="/auth/auth-state.js"></script>
+
 <script>
   fetch("/footer.html")
     .then(res => res.text())
@@ -270,8 +279,9 @@
     });
 </script>
 
-<script src="../living-adjust.js"></script>
-<script src="../faq.js" defer></script>
+<script src="/living-adjust.js?v=1006"></script>
+<script src="/paywall.js?v=1006"></script>
+<script src="/faq.js?v=1006" defer></script>
 
 </body>
 </html>
