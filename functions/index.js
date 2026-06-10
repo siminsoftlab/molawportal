@@ -8,6 +8,7 @@ const webpush = require("web-push");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const fetch = require("node-fetch");
+const cors = require("cors")({ origin: "https://molawcalculator.com" });
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -269,22 +270,23 @@ exports.fetchBankDeposits = functions.pubsub
   });
 
 /* ============================================================
-   7) GeoIP 우회 API (onCall 방식)
+   7) GeoIP API (onRequest 방식으로 수정)
 ============================================================ */
-exports.geoip = functions.https.onCall(async () => {
-  try {
-    const res = await fetch("https://ipwho.is/");
-    const json = await res.json();
+exports.geoip = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const response = await fetch("https://ipwho.is/");
+      const json = await response.json();
 
-    return {
-      success: true,
-      ip: json.ip || null,
-      country: json.country || null,
-      city: json.city || null
-    };
-
-  } catch (err) {
-    console.error("GeoIP Error:", err);
-    return { success: false, error: err.toString() };
-  }
+      res.status(200).json({
+        success: true,
+        ip: json.ip || null,
+        country: json.country || null,
+        city: json.city || null
+      });
+    } catch (err) {
+      console.error("GeoIP Error:", err);
+      res.status(500).json({ success: false, error: err.toString() });
+    }
+  });
 });
