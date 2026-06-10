@@ -74,10 +74,7 @@ async function updateVisitorCount() {
 ============================================================ */
 async function saveVisitorGeoIP() {
   try {
-    // 같은 도메인에서 호출되도록 /api/geoip 사용
-    const response = await fetch("/api/geoip", {
-      method: "GET"
-    });
+    const response = await fetch("/api/geoip", { method: "GET" });
 
     if (!response.ok) {
       throw new Error(`서버 응답 오류: ${response.status}`);
@@ -87,7 +84,6 @@ async function saveVisitorGeoIP() {
 
     if (data.success) {
       console.log("GeoIP 저장 성공:", data);
-      // Firestore 저장 로직이나 추가 처리 가능
     } else {
       console.error("GeoIP 저장 실패:", data.error);
     }
@@ -99,6 +95,7 @@ async function saveVisitorGeoIP() {
 window.onload = () => {
   saveVisitorGeoIP();
 };
+
 
 /* ============================================================
    브라우저/OS 감지 함수
