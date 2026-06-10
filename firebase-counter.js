@@ -77,10 +77,15 @@ async function saveVisitorGeoIP() {
   const visitorKey = getVisitorKey();
 
   try {
-    // ipwho.is API 호출 (CORS 허용됨)
-    const res = await fetch("https://ipwho.is/");
-    const data = await res.json();
+    const geoipFn = firebase.functions().httpsCallable("geoip");
+    const result = await geoipFn();
 
+    if (!result.data.success) {
+      console.error("GeoIP 서버 오류:", result.data.error);
+      return;
+    }
+
+    const { ip, country, city } = result.data;
     const { browser, os } = getBrowserInfo();
 
     await db.collection("visitors")
@@ -89,15 +94,16 @@ async function saveVisitorGeoIP() {
       .doc(visitorKey)
       .set(
         {
-          ip: data.ip || null,
-          country: data.country || null,
-          city: data.city || null,
+          ip,
+          country,
+          city,
           browser,
           os,
           timestamp: Date.now()
         },
         { merge: true }
       );
+
   } catch (e) {
     console.error("GeoIP 저장 실패:", e);
   }
