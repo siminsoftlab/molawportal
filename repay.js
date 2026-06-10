@@ -274,3 +274,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+window.calcRepay = calcRepay;
