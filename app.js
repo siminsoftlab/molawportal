@@ -336,8 +336,13 @@ document.addEventListener("DOMContentLoaded", function () {
 /****************************************************
  * 로그인 시 배너 자동 숨김
  ****************************************************/
-firebase.auth().onAuthStateChanged(user => {
+import { auth } from "/firebase-init.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
   if (user) {
-    document.getElementById("welcomeBanner").style.display = "none";
+    const banner = document.getElementById("welcomeBanner");
+    if (banner) banner.style.display = "none";
   }
 });
+
