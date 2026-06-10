@@ -8,7 +8,7 @@ const webpush = require("web-push");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const fetch = require("node-fetch");
-const cors = require("cors")({ origin: "https://molawcalculator.com" });
+const cors = require("cors")({ origin: true }); // 모든 도메인 허용
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -270,7 +270,7 @@ exports.fetchBankDeposits = functions.pubsub
   });
 
 /* ============================================================
-   7) GeoIP API (onRequest 방식으로 수정)
+   7) GeoIP API (onRequest 방식)
 ============================================================ */
 exports.geoip = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
