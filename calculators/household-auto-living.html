@@ -272,8 +272,8 @@
 <script src="/check-access.js"></script>
 
 <!-- 방문자 카운터 -->
-<script src="/firebase-counter.js"></script>
-<script src="/auth/auth-state.js"></script>
+<script type="module" src="/firebase-counter.js"></script>
+<script type="module" src="/auth/auth-state.js"></script>
 <script>
   fetch("/footer.html")
     .then(res => res.text())
