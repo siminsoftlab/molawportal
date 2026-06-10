@@ -72,42 +72,30 @@ async function updateVisitorCount() {
 /* ============================================================
    방문자 GeoIP 저장 (Firebase Functions 우회)
 ============================================================ */
+// firebase-counter.js
+
 async function saveVisitorGeoIP() {
-  const today = getTodayString();
-  const visitorKey = getVisitorKey();
-
   try {
-    const geoipFn = firebase.functions().httpsCallable("geoip");
-    const result = await geoipFn();
+    const response = await fetch("https://us-central1-molawcounter.cloudfunctions.net/geoip", {
+      method: "POST"
+    });
+    const data = await response.json();
 
-    if (!result.data.success) {
-      console.error("GeoIP 서버 오류:", result.data.error);
-      return;
+    if (data.success) {
+      console.log("GeoIP 저장 성공:", data);
+      // Firestore에 저장하거나 필요한 로직 추가
+    } else {
+      console.error("GeoIP 저장 실패:", data.error);
     }
-
-    const { ip, country, city } = result.data;
-    const { browser, os } = getBrowserInfo();
-
-    await db.collection("visitors")
-      .doc("geoip")
-      .collection(today)
-      .doc(visitorKey)
-      .set(
-        {
-          ip,
-          country,
-          city,
-          browser,
-          os,
-          timestamp: Date.now()
-        },
-        { merge: true }
-      );
-
-  } catch (e) {
-    console.error("GeoIP 저장 실패:", e);
+  } catch (err) {
+    console.error("GeoIP 저장 실패:", err);
   }
 }
+
+window.onload = () => {
+  saveVisitorGeoIP();
+};
+
 
 /* ============================================================
    브라우저/OS 감지 함수
