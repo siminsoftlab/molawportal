@@ -8,7 +8,6 @@ const webpush = require("web-push");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const fetch = require("node-fetch");
-const cors = require("cors")({ origin: true }); // 모든 도메인 허용
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -270,7 +269,7 @@ exports.fetchBankDeposits = functions.pubsub
   });
 
 /* ============================================================
-   7) GeoIP API (onRequest 방식)
+   7) GeoIP API (onRequest 방식 + CORS 헤더 추가)
 ============================================================ */
 exports.geoip = functions.https.onRequest(async (req, res) => {
   // 모든 응답에 CORS 헤더 추가
