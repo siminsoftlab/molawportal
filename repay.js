@@ -1,4 +1,15 @@
 /****************************************************
+ * Firebase v9 import
+ ****************************************************/
+import { auth, db } from "/firebase-init.js";
+import {
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+/****************************************************
  * 공통 유틸
  ****************************************************/
 function $(id) {
@@ -37,18 +48,21 @@ function updateLivingCost() {
  ****************************************************/
 async function calcRepay() {
 
-  const user = firebase.auth().currentUser;
+  /* 1) 로그인 여부 체크 (v9) */
+  const user = auth.currentUser;
 
-  /* 1) 로그인 여부 체크 */
   if (!user) {
     document.getElementById("loginRequiredModal").style.display = "flex";
     return;
   }
 
-  /* 2) Firestore에서 이용권 조회 (user_id 기준) */
-  const tokenSnap = await db.collection("access_tokens")
-    .where("user_id", "==", user.uid)
-    .get();
+  /* 2) Firestore에서 이용권 조회 (v9) */
+  const q = query(
+    collection(db, "access_tokens"),
+    where("user_id", "==", user.uid)
+  );
+
+  const tokenSnap = await getDocs(q);
 
   if (tokenSnap.empty) {
     document.getElementById("paywallOverlay").style.display = "flex";
@@ -70,10 +84,10 @@ async function calcRepay() {
     return;
   }
 
-  /* 5) 만료일 체크 (Timestamp/number 모두 지원) */
+  /* 5) 만료일 체크 */
   let expireAt = best.expire_at;
-
   let expireDate;
+
   if (expireAt instanceof Date) {
     expireDate = expireAt;
   } else if (expireAt?.toDate) {
