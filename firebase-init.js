@@ -1,6 +1,13 @@
 /* ============================================================
-   Firebase 초기화 (모든 페이지 공통)
+   Firebase 초기화 (v9 모듈 방식)
 ============================================================ */
+
+// Firebase SDK 모듈 불러오기
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getFunctions } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-functions.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
   authDomain: "molawcounter.firebaseapp.com",
@@ -11,12 +18,12 @@ const firebaseConfig = {
   measurementId: "G-D4W34NBWKT"
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+// Firebase 초기화
+const app = initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-const functions = firebase.functions();
+// 서비스 초기화
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const functions = getFunctions(app);
 
-console.log("firebase-init.js initialized");
+console.log("firebase-init.js initialized (v9)");
