@@ -16,9 +16,9 @@ const db = admin.firestore();
    1) VAPID 키 설정 (Push 알림)
 ============================================================ */
 webpush.setVapidDetails(
-  "mailto:admin@molawcounter.com",
-  "YOUR_PUBLIC_VAPID_KEY",
-  "YOUR_PRIVATE_VAPID_KEY"
+  "mailto:siminsoftlab@gmail.com",
+  "BEfuwPwDK4oZGmwQyQWBxOii3S8W_icL9Cw_KoGuwqZxB_cD4ajD0NaSAmLVh_J166gtdUrnBknA6pfyBZjK6rY",
+  "pa6HVUQrk3a7kEh9yrAKjfu2s1mxqBmUV1KBUx0FZYY"
 );
 
 /* ============================================================
@@ -27,8 +27,8 @@ webpush.setVapidDetails(
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "YOUR_EMAIL@gmail.com",
-    pass: "YOUR_APP_PASSWORD"
+    user: "siminsoftlab@gmail.com",
+    pass: "Lina8903!@"
   }
 });
 
