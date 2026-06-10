@@ -17,5 +17,6 @@ if (!firebase.apps.length) {
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const functions = firebase.functions();
 
 console.log("firebase-init.js initialized");
