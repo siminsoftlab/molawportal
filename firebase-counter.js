@@ -1,5 +1,20 @@
 /* ============================================================
-   고유 방문자 키 생성 (localStorage + cookie)
+   Firebase v9 모듈 import
+============================================================ */
+import { db } from "/firebase-init.js";
+import {
+  collection,
+  doc,
+  setDoc,
+  getFirestore,
+  query,
+  where,
+  onSnapshot,
+  increment
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+/* ============================================================
+   고유 방문자 키 생성
 ============================================================ */
 function getVisitorKey() {
   let key = localStorage.getItem("visitor_uuid");
@@ -31,7 +46,7 @@ function getTodayString() {
 }
 
 /* ============================================================
-   방문자 업데이트 (고유 방문자 기반)
+   방문자 업데이트
 ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
@@ -39,83 +54,47 @@ async function updateVisitorCount() {
 
   try {
     // 오늘 방문자 기록
-    await db.collection("visitors")
-      .doc("daily")
-      .collection("days")
-      .doc(today)
-      .collection("visitors")
-      .doc(visitorKey)
-      .set({ visited: true, timestamp: Date.now() }, { merge: true });
+    await setDoc(
+      doc(db, "visitors", "daily", "days", today, "visitors", visitorKey),
+      { visited: true, timestamp: Date.now() },
+      { merge: true }
+    );
 
     // 전체 방문자 기록
-    await db.collection("visitors")
-      .doc("total")
-      .collection("visitors")
-      .doc(visitorKey)
-      .set({ visited: true, firstVisit: Date.now() }, { merge: true });
+    await setDoc(
+      doc(db, "visitors", "total", "visitors", visitorKey),
+      { visited: true, firstVisit: Date.now() },
+      { merge: true }
+    );
 
-    // 조회수 샤드 증가
+    // 샤드 증가
     const shardId = Math.floor(Math.random() * 20).toString();
-    await db.collection("visitors")
-      .doc("counter_shards")
-      .collection("shards")
-      .doc(shardId)
-      .set(
-        { total: firebase.firestore.FieldValue.increment(1) },
-        { merge: true }
-      );
+    await setDoc(
+      doc(db, "visitors", "counter_shards", "shards", shardId),
+      { total: increment(1) },
+      { merge: true }
+    );
   } catch (err) {
     console.error("방문자 업데이트 실패:", err);
   }
 }
 
 /* ============================================================
-   방문자 GeoIP 저장 (Firebase Functions 우회)
+   GeoIP 저장 (Firebase Hosting 필요)
 ============================================================ */
 async function saveVisitorGeoIP() {
   try {
-    const response = await fetch("/api/geoip", { method: "GET" });
+    const response = await fetch("/api/geoip");
 
     if (!response.ok) {
       throw new Error(`서버 응답 오류: ${response.status}`);
     }
 
     const data = await response.json();
-
-    if (data.success) {
-      console.log("GeoIP 저장 성공:", data);
-    } else {
-      console.error("GeoIP 저장 실패:", data.error);
-    }
+    console.log("GeoIP 응답:", data);
   } catch (err) {
     console.error("GeoIP 저장 실패:", err);
   }
-}
-
-window.onload = () => {
-  saveVisitorGeoIP();
-};
-
-
-/* ============================================================
-   브라우저/OS 감지 함수
-============================================================ */
-function getBrowserInfo() {
-  const ua = navigator.userAgent;
-
-  let browser = "Unknown";
-  if (ua.includes("Edg")) browser = "Edge";
-  else if (ua.includes("Chrome")) browser = "Chrome";
-  else if (ua.includes("Safari")) browser = "Safari";
-  else if (ua.includes("Firefox")) browser = "Firefox";
-
-  let os = "Unknown";
-  if (ua.includes("Windows")) os = "Windows";
-  else if (ua.includes("Mac OS")) os = "macOS";
-  else if (ua.includes("Android")) os = "Android";
-  else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
-
-  return { browser, os };
 }
 
 /* ============================================================
@@ -124,30 +103,17 @@ function getBrowserInfo() {
 function listenVisitorCount() {
   const today = getTodayString();
 
-  const dailyRef = db.collection("visitors")
-    .doc("daily")
-    .collection("days")
-    .doc(today)
-    .collection("visitors");
+  const dailyRef = collection(db, "visitors", "daily", "days", today, "visitors");
+  const totalRef = collection(db, "visitors", "total", "visitors");
 
-  const totalRef = db.collection("visitors")
-    .doc("total")
-    .collection("visitors");
-
-  dailyRef.onSnapshot((snap) => {
-    const el1 = document.getElementById("visitor-today");
-    if (el1) el1.textContent = snap.size;
-
-    const el2 = document.getElementById("admin-today");
-    if (el2) el2.textContent = snap.size;
+  onSnapshot(dailyRef, (snap) => {
+    const el = document.getElementById("visitor-today");
+    if (el) el.textContent = snap.size;
   });
 
-  totalRef.onSnapshot((snap) => {
-    const el1 = document.getElementById("visitor-total");
-    if (el1) el1.textContent = snap.size;
-
-    const el2 = document.getElementById("admin-total");
-    if (el2) el2.textContent = snap.size;
+  onSnapshot(totalRef, (snap) => {
+    const el = document.getElementById("visitor-total");
+    if (el) el.textContent = snap.size;
   });
 }
 
