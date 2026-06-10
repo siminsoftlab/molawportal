@@ -146,3 +146,26 @@ window.onload = async () => {
     console.error("listenVisitorCount 실행 오류:", e);
   }
 };
+function listenVisitorCount() {
+  const today = getTodayString();
+
+  const dailyRef = db.collection("visitors")
+    .doc("daily")
+    .collection("days")
+    .doc(today)
+    .collection("visitors");
+
+  const totalRef = db.collection("visitors")
+    .doc("total")
+    .collection("visitors");
+
+  dailyRef.onSnapshot((snap) => {
+    const el = document.getElementById("visitor-today");
+    if (el) el.textContent = snap.size;
+  });
+
+  totalRef.onSnapshot((snap) => {
+    const el = document.getElementById("visitor-total");
+    if (el) el.textContent = snap.size;
+  });
+}
