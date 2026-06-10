@@ -1,9 +1,14 @@
 console.log("auth-state.js loaded");
 
+// firebase-init.js에서 export한 모듈 불러오기
+import { auth, db } from "./firebase-init.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", () => {
 
   /* 로그인 상태 감지 */
-  firebase.auth().onAuthStateChanged(async (user) => {
+  onAuthStateChanged(auth, async (user) => {
     console.log("Auth state changed:", user);
 
     const before = document.getElementById("auth-before");
@@ -19,13 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
       before.style.display = "none";
       after.style.display = "flex";
 
-      const doc = await firebase.firestore()
-        .collection("users")
-        .doc(user.uid)
-        .get();
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
 
-      if (doc.exists && username) {
-        username.textContent = doc.data().name;
+      if (userSnap.exists() && username) {
+        username.textContent = userSnap.data().name;
       }
 
       loadTicketRemaining(user.uid);
@@ -41,10 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const box = document.getElementById("ticket-remaining");
     if (!box) return;
 
-    const snap = await firebase.firestore()
-      .collection("access_tokens")
-      .where("user_id", "==", uid)
-      .get();
+    const q = query(
+      collection(db, "access_tokens"),
+      where("user_id", "==", uid)
+    );
+
+    const snap = await getDocs(q);
 
     if (snap.empty) {
       box.textContent = "· 이용권 없음";
@@ -78,15 +83,13 @@ document.addEventListener("DOMContentLoaded", () => {
     box.style.color = "#4a6fff";
   }
 
-  /* ⭐ 로그아웃 버튼 이벤트 추가 (핵심) */
+  /* 로그아웃 버튼 */
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
-      await firebase.auth().signOut();
+      await signOut(auth);
       window.location.reload();
     });
   }
 
 });
-
-
