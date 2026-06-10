@@ -272,21 +272,29 @@ exports.fetchBankDeposits = functions.pubsub
 /* ============================================================
    7) GeoIP API (onRequest 방식)
 ============================================================ */
-exports.geoip = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
-    try {
-      const response = await fetch("https://ipwho.is/");
-      const json = await response.json();
+exports.geoip = functions.https.onRequest(async (req, res) => {
+  // 모든 응답에 CORS 헤더 추가
+  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
+  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
 
-      res.status(200).json({
-        success: true,
-        ip: json.ip || null,
-        country: json.country || null,
-        city: json.city || null
-      });
-    } catch (err) {
-      console.error("GeoIP Error:", err);
-      res.status(500).json({ success: false, error: err.toString() });
-    }
-  });
+  // Preflight OPTIONS 요청 처리
+  if (req.method === "OPTIONS") {
+    return res.status(204).send("");
+  }
+
+  try {
+    const response = await fetch("https://ipwho.is/");
+    const json = await response.json();
+
+    return res.status(200).json({
+      success: true,
+      ip: json.ip || null,
+      country: json.country || null,
+      city: json.city || null
+    });
+  } catch (err) {
+    console.error("GeoIP Error:", err);
+    return res.status(500).json({ success: false, error: err.toString() });
+  }
 });
