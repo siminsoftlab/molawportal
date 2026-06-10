@@ -70,7 +70,7 @@ async function updateVisitorCount() {
 }
 
 /* ============================================================
-   방문자 GeoIP 저장 (ipwho.is 사용 — CORS 문제 없음)
+   방문자 GeoIP 저장 (Firebase Functions 우회)
 ============================================================ */
 async function saveVisitorGeoIP() {
   const today = getTodayString();
@@ -109,7 +109,6 @@ async function saveVisitorGeoIP() {
   }
 }
 
-
 /* ============================================================
    브라우저/OS 감지 함수
 ============================================================ */
@@ -129,6 +128,39 @@ function getBrowserInfo() {
   else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
 
   return { browser, os };
+}
+
+/* ============================================================
+   실시간 방문자 표시
+============================================================ */
+function listenVisitorCount() {
+  const today = getTodayString();
+
+  const dailyRef = db.collection("visitors")
+    .doc("daily")
+    .collection("days")
+    .doc(today)
+    .collection("visitors");
+
+  const totalRef = db.collection("visitors")
+    .doc("total")
+    .collection("visitors");
+
+  dailyRef.onSnapshot((snap) => {
+    const el1 = document.getElementById("visitor-today");
+    if (el1) el1.textContent = snap.size;
+
+    const el2 = document.getElementById("admin-today");
+    if (el2) el2.textContent = snap.size;
+  });
+
+  totalRef.onSnapshot((snap) => {
+    const el1 = document.getElementById("visitor-total");
+    if (el1) el1.textContent = snap.size;
+
+    const el2 = document.getElementById("admin-total");
+    if (el2) el2.textContent = snap.size;
+  });
 }
 
 /* ============================================================
@@ -153,26 +185,3 @@ window.onload = async () => {
     console.error("listenVisitorCount 실행 오류:", e);
   }
 };
-function listenVisitorCount() {
-  const today = getTodayString();
-
-  const dailyRef = db.collection("visitors")
-    .doc("daily")
-    .collection("days")
-    .doc(today)
-    .collection("visitors");
-
-  const totalRef = db.collection("visitors")
-    .doc("total")
-    .collection("visitors");
-
-  dailyRef.onSnapshot((snap) => {
-    const el = document.getElementById("visitor-today");
-    if (el) el.textContent = snap.size;
-  });
-
-  totalRef.onSnapshot((snap) => {
-    const el = document.getElementById("visitor-total");
-    if (el) el.textContent = snap.size;
-  });
-}
