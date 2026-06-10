@@ -1,14 +1,12 @@
-/*===================================================================
- YOUR_PUBLIC_VAPID_KEY, YOUR_PRIVATE_VAPID_KEY,
-YOUR_EMAIL, YOUR_APP_PASSWORD, OPENBANKING_ACCESS_TOKEN,
-YOUR_FINTECH_USE_NUM, ADMIN_EMAIL 은 반드시 실제 값으로 교체해야 함.
-======================================================================*/
+/* ============================================================
+   Firebase Cloud Functions 전체 통합본 (최종 안정 버전)
+============================================================ */
+
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const webpush = require("web-push");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
-const functions = require("firebase-functions");
 const fetch = require("node-fetch");
 
 admin.initializeApp();
@@ -114,7 +112,7 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
 });
 
 /* ============================================================
-   5) 입금자명 자동 매칭 시스템 + 실패 알림
+   5) 입금자명 자동 매칭 시스템
 ============================================================ */
 exports.autoMatchDeposits = functions.firestore
   .document("bank_deposits/{depositId}")
@@ -129,12 +127,9 @@ exports.autoMatchDeposits = functions.firestore
       .where("depositor_name", "==", depositor)
       .get();
 
-    /* ============================================================
-       자동 매칭 실패 처리
-    ============================================================ */
+    /* 자동 매칭 실패 */
     if (pendingSnap.empty) {
 
-      // 1) Firestore에 실패 로그 저장
       await db.collection("match_failures").add({
         depositor_name: depositor,
         amount: deposit.amount,
@@ -142,7 +137,6 @@ exports.autoMatchDeposits = functions.firestore
         created_at: Date.now()
       });
 
-      // 2) 관리자 이메일 알림
       await transporter.sendMail({
         from: "YOUR_EMAIL@gmail.com",
         to: "ADMIN_EMAIL@gmail.com",
@@ -152,12 +146,9 @@ exports.autoMatchDeposits = functions.firestore
           <p>입금자명: <strong>${depositor}</strong></p>
           <p>금액: <strong>${deposit.amount.toLocaleString()}원</strong></p>
           <p>입금 시간: ${new Date(deposit.timestamp).toLocaleString("ko-KR")}</p>
-          <p>일치하는 결제 신청이 없습니다.</p>
-          <p>관리자 페이지에서 확인해주세요.</p>
         `
       });
 
-      // 3) 관리자 Push 알림
       const adminSub = await db.collection("admin_push").doc("admin").get();
       if (adminSub.exists) {
         await webpush.sendNotification(
@@ -170,24 +161,19 @@ exports.autoMatchDeposits = functions.firestore
         );
       }
 
-      console.log("자동 매칭 실패:", depositor);
       return null;
     }
 
-    /* ============================================================
-       자동 매칭 성공 처리
-    ============================================================ */
+    /* 자동 매칭 성공 */
     for (const doc of pendingSnap.docs) {
       const paymentId = doc.id;
       const payment = doc.data();
 
-      // 1) 결제 승인 처리
       await db.collection("payments").doc(paymentId).update({
         status: "CONFIRMED",
         confirmed_at: Date.now()
       });
 
-      // 2) 이용권 발급
       const tokenId = db.collection("access_tokens").doc().id;
       const now = Date.now();
       const expire = now + (30 * 24 * 60 * 60 * 1000);
@@ -201,7 +187,6 @@ exports.autoMatchDeposits = functions.firestore
         is_active: true
       });
 
-      // 3) 자동 로그 생성
       await db.collection("payments")
         .doc(paymentId)
         .collection("logs")
@@ -211,20 +196,17 @@ exports.autoMatchDeposits = functions.firestore
           timestamp: Date.now()
         });
 
-      // 4) bank_deposits에 matched 표시
       await snap.ref.update({
         matched: true,
         matched_payment_id: paymentId
       });
-
-      console.log("자동 승인 완료:", paymentId);
     }
 
     return null;
   });
 
 /* ============================================================
-   6) 은행 API 자동 입금 수집 (오픈뱅킹)
+   6) 오픈뱅킹 자동 입금 수집
 ============================================================ */
 exports.fetchBankDeposits = functions.pubsub
   .schedule("every 5 minutes")
@@ -264,7 +246,6 @@ exports.fetchBankDeposits = functions.pubsub
           item.tran_date + " " + item.tran_time
         ).getTime();
 
-        // Firestore 중복 체크
         const exists = await db.collection("bank_deposits")
           .where("timestamp", "==", timestamp)
           .where("amount", "==", amount)
@@ -272,15 +253,12 @@ exports.fetchBankDeposits = functions.pubsub
 
         if (!exists.empty) continue;
 
-        // Firestore 저장 → autoMatchDeposits 자동 실행
         await db.collection("bank_deposits").add({
           depositor_name: depositor,
           amount: amount,
           timestamp: timestamp,
           matched: false
         });
-
-        console.log("입금 내역 저장:", depositor, amount);
       }
 
     } catch (err) {
@@ -289,10 +267,11 @@ exports.fetchBankDeposits = functions.pubsub
 
     return null;
   });
-/* ========================================================
-Firebase Cloud Functions 코드 (GeoIP 우회 API)
-==========================================================*/
-exports.geoip = functions.https.onCall(async (data, context) => {
+
+/* ============================================================
+   7) GeoIP 우회 API (onCall 방식)
+============================================================ */
+exports.geoip = functions.https.onCall(async () => {
   try {
     const res = await fetch("https://ipwho.is/");
     const json = await res.json();
@@ -301,7 +280,7 @@ exports.geoip = functions.https.onCall(async (data, context) => {
       success: true,
       ip: json.ip || null,
       country: json.country || null,
-      city: json.city || null,
+      city: json.city || null
     };
 
   } catch (err) {
