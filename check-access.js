@@ -1,30 +1,57 @@
-/* ============================
-   공통 인증 + 이용권 체크 모듈
-============================ */
+/* ============================================================
+   Firebase 기반 공통 인증 + 이용권 체크 (access_tokens 버전)
+============================================================ */
 
-/**
- * 계산기 실행 전 공통 접근 체크
- * @param {Function} onSuccess - 인증/이용권 통과 후 실행할 계산 함수
- */
 async function checkAccess(onSuccess) {
   try {
-    const user = await checkLoginStatus();
-    if (!user.isLoggedIn) {
+    const user = firebase.auth().currentUser;
+
+    /* -----------------------------
+       1) 로그인 체크
+    ----------------------------- */
+    if (!user) {
       openModal("login");
       return;
     }
 
-    const license = await checkLicenseStatus();
-    if (!license.isActive) {
-      if (license.isExpired) {
-        openModal("expired");
-      } else {
-        openModal("purchase");
-      }
+    const uid = user.uid;
+
+    /* -----------------------------
+       2) access_tokens에서 이용권 조회
+          - user_id == uid
+          - is_active == true
+          - expire_at 최신순
+    ----------------------------- */
+    const snap = await db.collection("access_tokens")
+      .where("user_id", "==", uid)
+      .where("is_active", "==", true)
+      .orderBy("expire_at", "desc")
+      .limit(1)
+      .get();
+
+    // 이용권 없음
+    if (snap.empty) {
+      openModal("purchase");
       return;
     }
 
-    // 모든 조건 충족 → 계산 실행
+    const data = snap.docs[0].data();
+
+    const expireDate = data.expire_at?.toDate
+      ? data.expire_at.toDate()
+      : new Date(data.expire_at);
+
+    const now = new Date();
+
+    // 만료된 경우
+    if (expireDate < now) {
+      openModal("expired");
+      return;
+    }
+
+    /* -----------------------------
+       3) 모든 조건 충족 → 계산 실행
+    ----------------------------- */
     onSuccess();
 
   } catch (err) {
@@ -33,25 +60,9 @@ async function checkAccess(onSuccess) {
   }
 }
 
-/* ============================
-   로그인 상태 체크
-============================ */
-async function checkLoginStatus() {
-  const res = await fetch("/api/auth/status");
-  return await res.json();
-}
-
-/* ============================
-   이용권 상태 체크
-============================ */
-async function checkLicenseStatus() {
-  const res = await fetch("/api/license/status");
-  return await res.json();
-}
-
-/* ============================
+/* ============================================================
    모달 열기
-============================ */
+============================================================ */
 function openModal(type) {
   switch (type) {
     case "login":
