@@ -83,7 +83,7 @@ async function saveVisitorGeoIP() {
 
     if (data.success) {
       console.log("GeoIP 저장 성공:", data);
-      // Firestore에 저장하거나 필요한 로직 추가
+      // Firestore 저장 로직 추가 가능
     } else {
       console.error("GeoIP 저장 실패:", data.error);
     }
@@ -95,7 +95,6 @@ async function saveVisitorGeoIP() {
 window.onload = () => {
   saveVisitorGeoIP();
 };
-
 
 /* ============================================================
    브라우저/OS 감지 함수
