@@ -8,6 +8,8 @@ const admin = require("firebase-admin");
 const webpush = require("web-push");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
+const functions = require("firebase-functions");
+const fetch = require("node-fetch");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -287,3 +289,23 @@ exports.fetchBankDeposits = functions.pubsub
 
     return null;
   });
+/* ========================================================
+Firebase Cloud Functions 코드 (GeoIP 우회 API)
+==========================================================*/
+exports.geoip = functions.https.onCall(async (data, context) => {
+  try {
+    const res = await fetch("https://ipwho.is/");
+    const json = await res.json();
+
+    return {
+      success: true,
+      ip: json.ip || null,
+      country: json.country || null,
+      city: json.city || null,
+    };
+
+  } catch (err) {
+    console.error("GeoIP Error:", err);
+    return { success: false, error: err.toString() };
+  }
+});
