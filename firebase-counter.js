@@ -1,6 +1,6 @@
 /* ============================================================
    고유 방문자 키 생성 (localStorage + cookie)
-   ============================================================ */
+============================================================ */
 function getVisitorKey() {
   let key = localStorage.getItem("visitor_uuid");
 
@@ -23,7 +23,7 @@ function getVisitorKey() {
 
 /* ============================================================
    날짜 (KST 기준)
-   ============================================================ */
+============================================================ */
 function getTodayString() {
   const now = new Date();
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
@@ -32,7 +32,7 @@ function getTodayString() {
 
 /* ============================================================
    방문자 업데이트 (고유 방문자 기반)
-   ============================================================ */
+============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = getVisitorKey();
@@ -70,74 +70,15 @@ async function updateVisitorCount() {
 }
 
 /* ============================================================
-   실시간 방문자 표시 (Listen 자동 재연결 적용)
-   ============================================================ */
-function listenVisitorCount() {
-  const today = getTodayString();
-
-  const dailyRef = db.collection("visitors")
-    .doc("daily")
-    .collection("days")
-    .doc(today)
-    .collection("visitors");
-
-  const totalRef = db.collection("visitors")
-    .doc("total")
-    .collection("visitors");
-
-  function attachDailyListener() {
-    return dailyRef.onSnapshot(
-      (snap) => {
-        const count = snap.size;
-
-        const el1 = document.getElementById("visitor-today");
-        if (el1) el1.textContent = count;
-
-        const el2 = document.getElementById("admin-today");
-        if (el2) el2.textContent = count;
-      },
-      (error) => {
-        console.error("🔥 Daily Listen Error:", error);
-        setTimeout(attachDailyListener, 2000);
-      }
-    );
-  }
-
-  function attachTotalListener() {
-    return totalRef.onSnapshot(
-      (snap) => {
-        const count = snap.size;
-
-        const el1 = document.getElementById("visitor-total");
-        if (el1) el1.textContent = count;
-
-        const el2 = document.getElementById("admin-total");
-        if (el2) el2.textContent = count;
-      },
-      (error) => {
-        console.error("🔥 Total Listen Error:", error);
-        setTimeout(attachTotalListener, 2000);
-      }
-    );
-  }
-
-  try {
-    attachDailyListener();
-    attachTotalListener();
-  } catch (err) {
-    console.error("ListenVisitorCount 실행 오류:", err);
-  }
-}
-
-/* ============================================================
-   방문자 GeoIP 저장 (geolocation-db 사용)
-   ============================================================ */
+   방문자 GeoIP 저장 (ipwho.is 사용 — CORS 문제 없음)
+============================================================ */
 async function saveVisitorGeoIP() {
   const today = getTodayString();
   const visitorKey = getVisitorKey();
 
   try {
-    const res = await fetch("https://ipapi.co/json/");
+    // ipwho.is API 호출 (CORS 허용됨)
+    const res = await fetch("https://ipwho.is/");
     const data = await res.json();
 
     const { browser, os } = getBrowserInfo();
@@ -148,8 +89,8 @@ async function saveVisitorGeoIP() {
       .doc(visitorKey)
       .set(
         {
-          ip: data.ip || null,          // ⭐ geolocation-db 필드명
-          country: data.country_name || null,
+          ip: data.ip || null,
+          country: data.country || null,
           city: data.city || null,
           browser,
           os,
@@ -164,7 +105,7 @@ async function saveVisitorGeoIP() {
 
 /* ============================================================
    브라우저/OS 감지 함수
-   ============================================================ */
+============================================================ */
 function getBrowserInfo() {
   const ua = navigator.userAgent;
 
@@ -185,7 +126,7 @@ function getBrowserInfo() {
 
 /* ============================================================
    실행
-   ============================================================ */
+============================================================ */
 window.onload = async () => {
   try {
     await updateVisitorCount();
