@@ -17,8 +17,8 @@ const db = admin.firestore();
 ============================================================ */
 webpush.setVapidDetails(
   "mailto:siminsoftlab@gmail.com",
-  "BEfuwPwDK4oZGmwQyQWBxOii3S8W_icL9Cw_KoGuwqZxB_cD4ajD0NaSAmLVh_J166gtdUrnBknA6pfyBZjK6rY",
-  "pa6HVUQrk3a7kEh9yrAKjfu2s1mxqBmUV1KBUx0FZYY"
+  "BHTPf62KAIOw8EHq4BFZRa1r1aEUPugNuowpPaNSFVgAU7kDsMF1L7HtLR0kSa_6q_ziq8t-lT4ymdEw1jC4ttQ",
+  "uKStwm3T7SvLUtCQWWt4LIx7osPXopl8vlkEA5dNphw"
 );
 
 /* ============================================================
