@@ -8,6 +8,7 @@ const webpush = require("web-push");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const fetch = require("node-fetch");
+const cors = require("cors");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -271,29 +272,27 @@ exports.fetchBankDeposits = functions.pubsub
 /* ============================================================
    7) GeoIP API (onRequest 방식 + CORS 헤더 추가)
 ============================================================ */
-exports.geoip = functions.https.onRequest(async (req, res) => {
-  // 모든 응답에 CORS 헤더 추가
-  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
-  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.set("Access-Control-Allow-Headers", "Content-Type");
+const corsHandler = cors({ origin: "https://molawcalculator.com" });
 
-  // Preflight OPTIONS 요청 처리
-  if (req.method === "OPTIONS") {
-    return res.status(204).send("");
-  }
+exports.geoip = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    if (req.method === "OPTIONS") {
+      return res.status(204).send("");
+    }
 
-  try {
-    const response = await fetch("https://ipwho.is/");
-    const json = await response.json();
+    try {
+      const response = await fetch("https://ipwho.is/");
+      const json = await response.json();
 
-    return res.status(200).json({
-      success: true,
-      ip: json.ip || null,
-      country: json.country || null,
-      city: json.city || null
-    });
-  } catch (err) {
-    console.error("GeoIP Error:", err);
-    return res.status(500).json({ success: false, error: err.toString() });
-  }
+      res.status(200).json({
+        success: true,
+        ip: json.ip || null,
+        country: json.country || null,
+        city: json.city || null
+      });
+    } catch (err) {
+      console.error("GeoIP Error:", err);
+      res.status(500).json({ success: false, error: err.toString() });
+    }
+  });
 });
