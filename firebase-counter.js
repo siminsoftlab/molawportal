@@ -73,8 +73,6 @@ async function updateVisitorCount() {
    방문자 GeoIP 저장 (Firebase Functions 우회)
 ============================================================ */
 // firebase-counter.js
-// firebase-counter.js
-
 async function saveVisitorGeoIP() {
   try {
     // GET 요청으로 변경
@@ -103,7 +101,6 @@ async function saveVisitorGeoIP() {
 window.onload = () => {
   saveVisitorGeoIP();
 };
-
 /* ============================================================
    브라우저/OS 감지 함수
 ============================================================ */
