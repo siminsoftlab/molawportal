@@ -1,4 +1,15 @@
 /****************************************************
+ * Firebase v9 import
+ ****************************************************/
+import { auth, db } from "/firebase-init.js";
+import {
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+/****************************************************
  * 숫자 처리
  ****************************************************/
 function getInt(id) {
@@ -32,21 +43,25 @@ function updateCourtLiving() {
 }
 
 /****************************************************
- * 🔒 로그인 + 이용권 체크
+ * 🔒 로그인 + 이용권 체크 (v9)
  ****************************************************/
 async function checkAccessBeforeCalc() {
-  const user = firebase.auth().currentUser;
 
   // 1) 로그인 여부 체크
+  const user = auth.currentUser;
+
   if (!user) {
     document.getElementById("loginRequiredModal").style.display = "flex";
     return false;
   }
 
-  // 2) Firestore에서 이용권 조회
-  const tokenSnap = await db.collection("access_tokens")
-    .where("user_id", "==", user.uid)
-    .get();
+  // 2) Firestore에서 이용권 조회 (v9)
+  const q = query(
+    collection(db, "access_tokens"),
+    where("user_id", "==", user.uid)
+  );
+
+  const tokenSnap = await getDocs(q);
 
   if (tokenSnap.empty) {
     document.getElementById("paywallOverlay").style.display = "flex";
