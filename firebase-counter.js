@@ -74,16 +74,24 @@ async function updateVisitorCount() {
 ============================================================ */
 // firebase-counter.js
 
+// firebase-counter.js
+
 async function saveVisitorGeoIP() {
   try {
-    const response = await fetch("https://us-central1-molawcounter.cloudfunctions.net/geoip", {
+    // 같은 도메인에서 호출되도록 /api/geoip 사용
+    const response = await fetch("/api/geoip", {
       method: "POST"
     });
+
+    if (!response.ok) {
+      throw new Error(`서버 응답 오류: ${response.status}`);
+    }
+
     const data = await response.json();
 
     if (data.success) {
       console.log("GeoIP 저장 성공:", data);
-      // Firestore 저장 로직 추가 가능
+      // Firestore 저장 로직이나 추가 처리 가능
     } else {
       console.error("GeoIP 저장 실패:", data.error);
     }
@@ -92,9 +100,11 @@ async function saveVisitorGeoIP() {
   }
 }
 
+// 페이지 로드 시 자동 실행
 window.onload = () => {
   saveVisitorGeoIP();
 };
+
 
 /* ============================================================
    브라우저/OS 감지 함수
