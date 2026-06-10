@@ -13,7 +13,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 12px;
-  z-index: 9999;
+  z-index: 999999; /* 최상위로 올림 */
 }
 
 /* ============================
