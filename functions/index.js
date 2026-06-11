@@ -272,10 +272,11 @@ exports.fetchBankDeposits = functions.pubsub
 /* ============================================================
    7) GeoIP API (onRequest 방식 + CORS 헤더 추가)
 ============================================================ */
+const corsHandler = cors({ origin: true });
+
 exports.geoip = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     if (req.method === "OPTIONS") {
-      // Preflight 요청 처리
       res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
       res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
       res.set("Access-Control-Allow-Headers", "Content-Type");
