@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
+  <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>개인회생 변제금 계산기 · 개인회생변제금조회 — 월변제금 자동 계산</title>
+
+  <meta name="description" content="개인회생 변제금 계산기 및 개인회생변제금계산기, 개인회생변제금조회 기능 제공. 월 변제금·변제율·청산가치를 자동 계산합니다. 최저생계비 반영.">
+  <meta name="keywords" content="개인회생 변제금 계산기, 개인회생변제금계산기, 개인회생변제금조회, 개인회생 계산기, 변제율, 청산가치, 최저생계비">
+
+  <link rel="canonical" href="https://molawcalculator.com/calculators/repay.html">
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../faq.css">
+  <link rel="stylesheet" href="../paywall.css">
+
+  <link rel="icon" href="../images/favicon.ico">
+
+  <script src="../block-right-click.js"></script>
+</head>
+
+<body class="subpage">
+
+<header class="fixed-header fixed-top">
+  <h1>개인회생 변제금 계산기 · 개인회생변제금조회</h1>
+  <a href="../index.html" class="home-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
+    </svg>
+  </a>
+</header>
+
+<div class="page-wrap">
+  <div class="container">
+
+    <h1 class="seo-h1" style="position:absolute; left:-9999px;">
+      개인회생 변제금 계산기 · 개인회생변제금계산기 · 개인회생변제금조회 — 월변제금 자동 계산
+    </h1>
+
+    <!-- 네비게이션 -->
+    <div class="calc-nav">
+      <a href="repay.html" class="nav-item active">💰 개인회생 변제금 계산기</a>
+      <a href="living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
+      <a href="household-auto-living.html" class="nav-item">👨‍👩‍👧 가구수 생계비 계산기</a>
+      <a href="interest.html" class="nav-item">📈 연이자 계산기</a>
+    </div>
+
+    <div class="calc-nav">
+      <a href="../blog/repay-guide.html" class="guide-btn">이용 안내 <span class="info-badge">b</span></a>
+      <a href="../blog/repay-calc.html" class="guide-btn">계산 결과 자세히 <span class="info-badge">b</span></a>
+    </div>
+
+    <h2>📌 개인회생 변제금 계산기 · 개인회생변제금조회 — 지금 바로 확인</h2>
+
+    <!-- 설명 -->
+    <div class="faq-item">
+      <button class="faq-question toggle-arrow">개인회생 변제금 계산기 설명 보기 ▼</button>
+      <div class="faq-answer">
+        <p>
+          개인회생 변제금 계산기(개인회생변제금계산기)는  
+          <strong>월 변제금·변제율·탕감률·청산가치</strong>를 자동 계산하는 도구입니다.
+        </p>
+        <p>
+          또한 개인회생변제금조회 기능을 통해  
+          <strong>현재 소득·생계비·부채 기준으로 실제 변제금이 얼마인지</strong> 즉시 확인할 수 있습니다.
+        </p>
+      </div>
+    </div>
+
+    <!-- 입력 영역 -->
+    <div class="input-section">
+      <label>총 부채(원)</label>
+      <input id="debt" type="number">
+
+      <label>월 소득(원)</label>
+      <input id="income" type="number">
+
+      <label>가구 수</label>
+      <select id="household">
+        <option value="1">1인 가구</option>
+        <option value="2">2인 가구</option>
+        <option value="3">3인 가구</option>
+        <option value="4">4인 가구</option>
+        <option value="5">5인 가구</option>
+      </select>
+
+      <label>최저 생계비(자동 계산)</label>
+      <input id="living" type="number" readonly>
+
+      <label>추가 생계비(원)</label>
+      <input id="extra" type="number">
+
+      <label>변제기간(개월)</label>
+      <input id="months" type="number" value="36">
+
+      <label>청산가치(원)</label>
+      <input id="asset" type="number">
+      <p class="notice">※ 청산가치 = 보유 재산을 모두 처분했을 때의 가치</p>
+    </div>
+
+    <div class="btn-row">
+      <button onclick="calcRepay()">계산하기</button>
+      <p class="notice">※ 총 부채, 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.</p>
+      <button onclick="resetRepayInputs()">초기화</button>
+    </div>
+
+    <div id="repaySummary" class="summary-card" style="display:none;"></div>
+
+    <div class="accordion-item">
+      <button class="calc-acc-btn repay-accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
+      <div class="acc-content calc-acc-content" id="repayAccordion"></div>
+    </div>
+
+    <div id="repayExplain" class="explain-box"></div>
+
+    <!-- SEO 문단 -->
+    <div class="seo-box-animated">
+      <p>개인회생 변제금 계산기 및 개인회생변제금조회 기능을 통해 월 변제금·변제율·탕감률을 자동 계산할 수 있습니다.</p>
+      <p>가용소득·총 변제예정액·현재가치(PV)·청산가치 충족 여부까지 확인 가능합니다.</p>
+    </div>
+
+    <!-- 상담 -->
+    <section class="consult-section">
+      <h2 style="font-size:20px; font-weight:700;">365일 무료 상담 가능합니다</h2>
+      <div style="background:#f8f9ff; padding:16px; border-radius:12px; margin-bottom:20px;">
+        개인회생은 <strong>부양가족 인정·추가 생계비·재산 평가</strong> 등 다양한 요소에 따라 결과가 달라집니다.  
+        전문가가 365일 무료로 상담해드립니다.
+      </div>
+
+      <a href="../index.html"
+         style="display:inline-block; padding:14px 26px; background:#4a6fff; color:#fff; font-size:15px; font-weight:600; border-radius:999px; text-decoration:none;">
+        ⬅ 홈 화면 바로가기
+      </a>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+      <h2>개인회생 변제금 계산기 FAQ</h2>
+
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">개인회생 변제금은 어떻게 계산되나요?</button>
+        <div class="faq-answer">
+          <p>소득에서 법원 생계비를 제외한 가용소득을 기준으로 계산합니다.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question toggle-arrow">청산가치는 왜 중요한가요?</button>
+        <div class="faq-answer">
+          <p>변제금 총액은 반드시 청산가치 이상이어야 인가가 가능합니다.</p>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
+
+<!-- 🔒 로그인 필요 모달 (앱 UI 스타일) -->
+<div id="loginRequiredModal" class="app-modal-overlay">
+  <div class="app-modal">
+    <div class="app-modal-header">
+      <div class="app-modal-bar"></div>
+    </div>
+
+    <h3>🔒 로그인 후 이용 가능합니다</h3>
+    <p class="app-modal-text">
+      계산 결과 전체 보기는 회원 전용 기능입니다.<br>
+      로그인 또는 회원가입 후 이용해주세요.
+    </p>
+
+    <button class="app-btn-primary" onclick="location.href='/auth/login.html'">
+      로그인하기
+    </button>
+
+    <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">
+      회원가입하기
+    </button>
+
+    <button class="app-btn-close" onclick="document.getElementById('loginRequiredModal').style.display='none'">
+      닫기
+    </button>
+  </div>
+</div>
+
+<div id="paywallOverlay" class="app-modal-overlay">
+  <div class="app-modal">
+    <div class="app-modal-header">
+      <div class="app-modal-bar"></div>
+    </div>
+
+    <h3>🔒 이용권이 필요합니다</h3>
+    <p class="app-modal-text">
+      전체 계산 결과는 이용권 활성화 후 이용 가능합니다.
+    </p>
+
+    <button class="app-btn-primary" onclick="location.href='/mypage/payments.html'">
+      이용권 결제하기
+    </button>
+
+    <button class="app-btn-secondary">
+      상담 연결 시 무료 제공
+    </button>
+
+    <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">
+      닫기
+    </button>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/firebase-counter.js"></script>
+<script type="module" src="/auth/auth-state.js"></script>
+
+<script>
+  fetch("/footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
+
+<script type="module" src="/repay.js?v=1006" defer></script>
+<script src="/paywall.js?v=1006"></script>
+<script src="/check-access.js"></script>
+</body>
+</html>

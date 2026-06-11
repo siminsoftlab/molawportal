@@ -1,0 +1,1750 @@
+/* ============================
+   공통 기본 레이아웃
+============================ */
+
+/* iOS/Android 최적화된 배경 */
+html {
+  height: 100%;
+  background: #f7f9fc url('/images/calculator_bg_1.jpg') center/cover no-repeat fixed;
+  -webkit-background-size: cover;
+  background-attachment: fixed;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: transparent !important;
+  color: #333;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.container a {
+  text-decoration: none;
+}
+/* ============================
+   상단 시계
+============================ */
+/*========
+#live-clock {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  background: #222;
+  color: #fff;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 0;
+  z-index: 200000;
+}============*/
+
+/* ============================
+   방문자 정보 바
+============================ */
+.top-info-bar {
+  position: fixed;
+  top: 40px; /* 시계 바로 아래 */
+  left: 0;
+  width: 100%;
+  text-align: center;
+  background: #4a90e2;
+  color: #fff;
+  padding: 10px 0;
+  font-size: 15px;
+  font-weight: 600;
+  z-index: 100000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+/* ============================
+   홈페이지(homepage) 레이아웃
+============================ */
+body.homepage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 90px;
+}
+
+body.homepage .page-wrap {
+  flex: 1;
+  padding-top: 100px;
+}
+
+body.homepage .container {
+  width: 92%;
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding: 30px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* 홈페이지 박스 2열 */
+body.homepage .two-box {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+/* PC 기본 크기 */
+body.homepage .calc-img {
+  width: 70%;
+  max-width: 120px;
+}
+body.homepage .left-box,
+body.homepage .right-box {
+  padding: 20px !important;
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+
+
+/* ============================
+   하위 페이지(subpage) 레이아웃
+============================ */
+body.subpage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 140px;
+}
+
+body.subpage .page-wrap {
+  flex: 1;
+}
+
+body.subpage .container {
+  width: 92%;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  padding: 25px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+/* ============================
+   앱 스타일 상단 헤더 (100px 고정)
+============================ */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px; /* ⭐ 요청한 고정 높이 */
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;      /* 세로 중앙 */
+  justify-content: center;  /* 가로 중앙 */
+  padding: 0 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 9999;
+}
+
+/* 헤더 타이틀 중앙 정렬 */
+.fixed-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+/* 홈 버튼 — 앱의 뒤로가기 버튼처럼 좌측 고정 */
+.fixed-header .home-btn {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #444;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ============================
+   모바일에서도 100% 고정되는 헤더
+============================ */
+.fixed-top {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+  background: #000;
+  padding: 12px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 서브페이지에서는 시계/방문자바 제거 */
+body.subpage #live-clock,
+body.subpage .top-info-bar {
+  display: none !important;
+}
+/* ============================
+   입력 폼 공통 스타일
+============================ */
+.container label {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #222;
+}
+
+.container input[type="number"],
+.container input[type="text"],
+.container select {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #f9f9f9;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  margin-bottom: 18px;
+}
+
+.container input:focus,
+.container select:focus {
+  border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.25);
+  outline: none;
+}
+
+.notice {
+  font-size: 13px;
+  color: #666;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+/* ============================
+   버튼 영역
+============================ */
+.btn-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-row button {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 800;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 계산하기 버튼 */
+.btn-row button:first-child {
+  background: linear-gradient(90deg, #4a90e2, #357ABD);
+  color: #fff;
+}
+
+.btn-row button:first-child:hover {
+  background: linear-gradient(90deg, #357ABD, #2F6AA8);
+}
+
+/* 초기화 버튼 */
+.btn-row button:last-child {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+}
+/* ============================
+   아코디언 공통 스타일
+============================ */
+.accordion-item {
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* 아코디언 버튼 공통 */
+.acc-btn,
+.intro-acc-btn {
+  width: 100%;
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 16px;
+  background: #f7f7f7;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  transition: background 0.25s ease;
+}
+
+.acc-btn.active,
+.intro-acc-btn.active {
+  background: #e9f3ff;
+}
+
+/* 아이콘 */
+.acc-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+}
+
+/* 아코디언 내용 */
+.acc-content,
+.accordion-content,
+.calc-acc-content {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 15px;
+  background: #fff;
+  font-size: 15px;
+  line-height: 1.6;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+.acc-content.open,
+.accordion-content.open,
+.calc-acc-content.open {
+  padding: 15px;
+}
+
+/* 전체 펼치기 버튼 */
+.toggle-all-btn {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background: #e9f3ff;
+  border: 1px solid #bcd7ff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ============================
+   계산 상세 보기 버튼 (노란 강조)
+============================ */
+.repay-accordion-btn,
+.interest-accordion-btn {
+  width: 100%;
+  background: #ffe812;
+  color: #3c1e1e;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.repay-accordion-btn:hover,
+.interest-accordion-btn:hover {
+  background: #ffdf00;
+  transform: translateY(-2px);
+}
+
+.repay-accordion-btn:active,
+.interest-accordion-btn:active {
+  transform: translateY(0);
+}
+
+/* ============================
+   FAQ 스타일
+============================ */
+.faq-item {
+  background: #eef6ff;
+  border: 1px solid #c7ddff;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 14px;
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  color: #0a4da3;
+  cursor: pointer;
+  padding: 10px 0;
+  text-align: left;
+}
+
+.faq-answer {
+  background: #fff;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-top: 10px;
+  display: none;
+  color: #333;
+}
+
+.faq-answer.open {
+  display: block;
+}
+/* ============================
+   계산 결과 요약 카드
+============================ */
+.summary-card {
+  display: none;
+  margin-top: 20px;
+  margin-bottom: 20px; /* 원하는 만큼 조절 가능 */
+  padding: 20px;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #fff;
+  border-radius: 14px;
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+
+#repaySummary {
+  margin-bottom: 20px;
+}
+
+/* ============================
+   공통 표형 UI (초록/빨강 박스)
+============================ */
+
+/* 초록 박스 */
+.repay-highlight-box {
+  background: #e8fff0;
+  border: 2px solid #2ecc71;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-top: 15px;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  color: #222;
+  line-height: 1.55;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* 빨강 박스 */
+.repay-highlight-box-red {
+  background: #ffecec;
+  border: 2px solid #ff6b6b;
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-top: 15px;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  color: #222;
+  line-height: 1.55;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* row 공통 */
+.repay-highlight-box .row,
+.repay-highlight-box-red .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.repay-highlight-box .row:last-child,
+.repay-highlight-box-red .row:last-child {
+  border-bottom: none;
+}
+
+/* label/value 공통 */
+.repay-highlight-box .label,
+.repay-highlight-box-red .label {
+  font-weight: 600;
+  color: #222;
+}
+
+.repay-highlight-box .value,
+.repay-highlight-box-red .value {
+  font-weight: 700;
+  color: #222;
+}
+
+/* 강조 비율 박스 */
+.repay-highlight-box .rate-big {
+  margin-top: 12px;
+  padding: 12px;
+  background: #ffecec;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #b80000;
+}
+/* ============================
+   모바일 대응 (max-width: 480px)
+============================ */
+@media (max-width: 480px) {
+
+  /* 상단 시계 */
+  #live-clock {
+    height: 40px !important;
+    line-height: 40px !important;
+    padding: 0 !important;
+    background: #222;
+    z-index: 200000;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* 방문자 바 */
+  .top-info-bar {
+    top: 40px !important;
+  }
+
+  /* 홈페이지 콘텐츠 여백 */
+  body.homepage .content {
+    padding-top: 120px;
+  }
+
+  /* 헤더 */
+  .fixed-header {
+    padding: 14px 16px;
+  }
+
+  .fixed-header h1 {
+    font-size: 16px;
+  }
+
+  .fixed-header .home-btn {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+   
+  /* 홈페이지 컨테이너 */
+  body.homepage .container {  
+    margin-bottom: 28px;
+    padding: 20px;
+  }
+
+  /* 홈페이지 2열 → 1열 */
+  body.homepage .two-box {
+   grid-template-columns: repeat(2, 1fr) !important;
+  }  
+
+  body.homepage .calc-img {
+    width: 70%;
+    max-width: 120px;
+    margin-bottom: 5px !important;
+  }
+
+  body.homepage .calc-desc {
+     font-size: 17px !important;
+    font-weight: 700 !important;
+  }
+    body.subpage .two-box {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px;
+  }
+
+  body.homepage {
+    padding-top: 150px !important;
+  }
+  /* 아코디언 버튼 */
+  .acc-btn {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .acc-content {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  /* 등장 애니메이션 */
+  .two-box > div {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .two-box > div:nth-child(1) { animation-delay: 0.1s; }
+  .two-box > div:nth-child(2) { animation-delay: 0.2s; }
+  .two-box > div:nth-child(3) { animation-delay: 0.3s; }
+  .two-box > div:nth-child(4) { animation-delay: 0.4s; }
+   
+   .two-box {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+  }
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 말풍선 + 타이핑 효과 */
+  .calc-greeting-bubble {
+    font-size: 16px;
+    padding: 10px 14px;
+    border-radius: 14px;
+  }
+
+  #typing-text {
+    font-size: 16px;
+  }
+
+  /* 계산기 박스 — 모바일 2열 */
+  body.homepage .calc-box {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+   .phone-icon svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+  .phone-icon svg path {
+    stroke: #FFE600 !important;
+  }
+    .review-box-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+/* ============================
+   자동 설명문 애니메이션
+============================ */
+.seo-box-animated {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+  margin-top: 20px;
+}
+
+.seo-box-animated.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================
+   설명 박스
+============================ */
+.explain-box {
+  margin-top: 15px;
+  margin-bottom: 30px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  border-left: 6px solid #4a90e2;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ============================
+   온라인 상담 신청
+============================ */
+.container.consult-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  margin-bottom: 80px;
+}
+
+.consult-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.consult-guide {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.container textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+/* 개인정보 동의 */
+.agree-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.agree-box input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.privacy-view {
+  margin-left: 6px;
+  color: #0066ff;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+/* 제출 버튼 */
+.consult-submit {
+  width: 100%;
+  padding: 15px;
+  background: #0066ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.consult-submit.disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* ============================
+   모달
+============================ */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  margin: 120px auto;
+  padding: 25px;
+  border: 2px solid #4a90e2; /* 파란 테두리 */
+  border-radius: 14px;       /* 둥근 모서리 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.close-modal {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* ============================
+   위치 정보 + 지도
+============================ */
+.location-section {
+  margin-top: 60px;
+  margin-bottom: 80px;
+}
+
+.location-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.location-info {
+  flex: 1;
+  min-width: 280px;
+  padding: 20px 25px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.location-info p {
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.custom-map {
+  flex: 2;
+  min-width: 300px;
+  height: 330px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ============================
+   말풍선 + 타이핑 효과
+============================ */
+.calc-greeting {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 15px;
+  opacity: 0;
+  transform: translateY(-15px);
+  animation: greetingFade 1.2s ease-out forwards;
+}
+
+@keyframes greetingFade {
+  0% { opacity: 0; transform: translateY(-15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.calc-greeting-bubble {
+  display: inline-block;
+  background: #fff;
+  border: 2px solid #4a90e2;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 auto 20px;
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  animation: bubbleFade 1s ease-out forwards;
+}
+
+.calc-greeting-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 12px 10px 0 10px;
+  border-style: solid;
+  border-color: #4a90e2 transparent transparent transparent;
+}
+
+@keyframes bubbleFade {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 타이핑 커서 */
+#typing-text {
+  border-right: 2px solid #4a90e2;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  animation: caretBlink 0.7s infinite;
+}
+
+@keyframes caretBlink {
+  0%, 100% { border-color: transparent; }
+  50% { border-color: #4a90e2; }
+}
+
+/* ============================
+   기타
+============================ */
+.error-msg {
+  font-size: 12px;
+  color: red;
+  margin-top: 4px;
+}
+
+#submitBtn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+/* ============================
+   온라인 상담 입력창 — 앱 UI 스타일
+============================ */
+.container.consult-section input[type="text"],
+.container.consult-section input[type="tel"],
+.container.consult-section input[type="email"],
+.container.consult-section select,
+.container.consult-section textarea {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.2s ease;
+}
+
+/* 포커스 시 앱 느낌 강조 */
+.container.consult-section input:focus,
+.container.consult-section select:focus,
+.container.consult-section textarea:focus {
+  border-color: #4a90e2;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.25);
+  outline: none;
+}
+
+/* textarea 앱 스타일 */
+.container.consult-section textarea {
+  resize: none;
+  min-height: 120px;
+  line-height: 1.5;
+}
+/* 계산 상세 보기 아코디언 — 초기 로드시 펼쳐지는 문제 해결 */
+.calc-acc-content {
+  max-height: 0 !important;
+  overflow: hidden;
+}
+
+.calc-acc-content.open {
+  max-height: 2000px !important; /* 충분히 큰 값 */
+  padding: 15px !important;
+}
+/* 개인회생 계산기 자동 박스 — 페이지 로드시 완전 숨김 */
+#repayExplain {
+  display: none;
+}
+/* 법원 생계비 계산기 자동 박스 — 페이지 로드시 완전 숨김 */
+#la_explain {
+  display: none;
+}
+/* 연이자 계산기 자동 박스 — 페이지 로드시 완전 숨김 */
+#interestExplain {
+  display: none;
+}
+
+/* ============================
+  footer
+============================ */
+.site-footer {
+background: #000;
+padding: 32px 20px;
+padding-bottom: 120px;
+text-align: left;
+border-top: 1px solid #333;
+color: #fff;
+margin-top: auto;
+margin-bottom: 0;
+}
+
+.site-footer .footer-inner {
+max-width: 900px;
+margin: 0 auto;
+}
+
+.footer-company {
+font-size: 20px;
+font-weight: 800;
+margin-bottom: 14px;
+}
+
+.footer-info {
+white-space: pre-line;
+line-height: 1.7;
+font-size: 15px;
+color: #ddd;
+margin-bottom: 18px;
+}
+
+.footer-copy {
+font-size: 14px;
+color: #aaa;
+border-top: 1px solid #333;
+padding-top: 14px;
+margin-top: 14px;
+}
+
+/* ============================
+  하단 고정 상담바
+============================ */
+.call-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #b80000, #d60000);
+  padding: 18px 0;
+  text-align: center;
+  z-index: 9999;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.35);
+
+  /* 부드러운 펄스 애니메이션 */
+  animation: pulseBar 1.8s infinite ease-in-out;
+
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes pulseBar {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.call-fixed .consult-call {
+  color: #ffffff !important;
+  font-size: 19px;
+  font-weight: 800;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 전화기 아이콘 색상 + 애니메이션 */
+.phone-icon {
+  font-size: 22px;
+  color: #ffe600 !important; /* ⭐ 원하는 색상으로 변경 가능 */
+  animation: blinkPhone 1.2s infinite;
+}
+/* ⭐ blog 페이지의 a 기본 스타일 덮어쓰기 */
+.call-fixed a {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+/* 전화기 아이콘 — PC/모바일 동일 적용 */
+.phone-icon svg {
+  width: 26px !important;
+  height: 26px !important;
+  display: inline-block;
+}
+
+.phone-icon svg path {
+  stroke: #FFE600 !important; /* 노란색 고정 */
+  stroke-width: 2.6 !important;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@keyframes blinkPhone {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.15); }
+}
+
+
+/* ============================
+  카톡 상담 버튼
+============================ */
+.quick-kakao {
+position: fixed;
+bottom: 80px;
+right: 20px;
+background: #ffe812;
+color: #3c1e1e;
+padding: 14px 18px;
+border-radius: 50px;
+font-size: 16px;
+font-weight: 900;
+text-decoration: none;
+box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+z-index: 10000;
+}
+/* 법원생계비 계산기 — 계산 상세 보기 버튼을 개인회생 계산기와 동일하게 */
+.living-accordion-btn {
+  width: 100%;
+  background: #ffe066;
+  color: #333;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s ease;
+}
+
+.living-accordion-btn:hover {
+  background: #ffd54a;
+}
+
+/* 아코디언 내용 박스도 동일하게 */
+#livingAccordion {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+#livingAccordion.open {
+  display: block;
+  max-height: 2000px;
+  padding: 15px;
+}
+/* 버튼 스타일 통일 */
+.la-acc-btn {
+  width: 100%;
+  background: #ffe066;
+  color: #333;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s ease;
+}
+
+.la-acc-btn:hover {
+  background: #ffd54a;
+}
+
+/* 아코디언 박스 통일 */
+#la_accordion {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+#la_accordion.open {
+  display: block;
+  max-height: 2000px;
+  padding: 15px;
+}
+/* 가구수 생계비 계산기 — 계산 상세 보기 버튼 스타일 통일 */
+.hl-acc-btn {
+  width: 100%;
+  background: #ffe066;
+  color: #333;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s ease;
+  text-align: center; /* ⭐ 텍스트 중앙 정렬 */
+}
+
+.hl-acc-btn:hover {
+  background: #ffd54a;
+}
+
+/* 아코디언 박스 스타일 통일 */
+#hl_accordion {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+#hl_accordion.open {
+  display: block;
+  max-height: 2000px;
+  padding: 15px;
+}
+
+#hl_summary {
+  margin-bottom: 20px;
+}
+.input-field {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+/* ============================
+   헤더 홈 버튼 앱 스타일 (우선순위 강제 적용)
+============================ */
+.fixed-header.fixed-top .home-btn {
+  position: absolute !important;
+  left: 28px !important;        /* 좌측 끝이 아니라 여유 있는 위치 */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+
+  background: rgba(255,255,255,0.18) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 10px 18px !important;
+  border-radius: 12px !important;
+
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25) !important;
+  transition: 0.2s ease !important;
+}
+
+.fixed-header.fixed-top .home-btn:hover {
+  background: rgba(255,255,255,0.28) !important;
+  transform: translateY(-50%) scale(1.05) !important;
+}
+/* ============================================
+   중앙에 떠 있는 홈 버튼 (기존 코드 수정 없음)
+============================================ */
+.home-btn-center {
+  position: fixed;
+  top: 28px;               /* 헤더 중앙 높이 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  padding: 10px 20px;
+  border-radius: 12px;
+
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  transition: 0.2s ease;
+}
+
+.home-btn-center:hover {
+  background: rgba(255,255,255,0.28);
+  transform: translateX(-50%) scale(1.05);
+}
+/* ============================================
+   헤더 그라데이션 적용
+============================================ */
+.fixed-header {
+  background: linear-gradient(90deg, #000000, #2c2c2c) !important;
+}
+
+/* ============================================
+   홈 버튼을 중앙 정렬 + 아이콘 버튼으로 변경
+============================================ */
+.fixed-header .home-btn {
+  position: absolute !important;
+  left: 50% !important;
+  top: 70% !important; /* 타이틀 아래쪽 중앙 */
+  transform: translateX(-50%) !important;
+
+  background: rgba(255,255,255,0.18) !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 10px 20px !important;
+  border-radius: 12px !important;
+
+  font-size: 20px !important; /* 아이콘 크기 */
+  color: #fff !important;
+  text-decoration: none !important;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25) !important;
+  transition: 0.2s ease !important;
+}
+
+/* hover 효과 */
+.fixed-header .home-btn:hover {
+  background: rgba(255,255,255,0.28) !important;
+  transform: translateX(-50%) scale(1.05) !important;
+}
+
+.calc-nav {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0 30px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.calc-nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #f3f5ff;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  border: 1px solid #e0e4ff;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.calc-nav .nav-item:hover {
+  background: #e7ebff;
+}
+
+.calc-nav .nav-item.active {
+  background: #4a6fff;
+  color: #fff;
+  border-color: #4a6fff;
+  font-weight: 600;
+}
+
+.calc-nav .nav-item.active .nav-icon {
+  color: #fff; /* 아이콘도 흰색으로 반전 */
+}
+
+.nav-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+.guide-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.guide-links .guide-btn {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px !important;
+  background: #2E7D32;
+  color: #ffffff;
+  font-size: 14px !important;  
+  border-radius: 10px;
+  border: 1px solid #1B5E20;
+  text-decoration: none;
+  font-weight: 600;
+}
+.guide-btn:hover {
+  background: #1B5E20;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+.guide-btn:active {
+  transform: scale(0.96);
+}
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 3px; /* ⭐ 공백 여유 증가 */
+  padding: 2px;
+  width: 20px !important;
+  height: 20px !important;    
+  border-radius: 50%;
+  background: #FFD84D; /* 노란색 */
+  color: #333;
+  font-size: 13px !important;
+  font-weight: bold;
+  border: 1.5px solid #E0B93A;
+  box-sizing: border-box;
+}
+.youtube-slider-section {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.youtube-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* 슬라이더 썸네일 */
+.youtube-slide-thumb {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+/* 오버레이 박스 */
+.youtube-overlay-box {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+/* 재생 버튼 */
+.youtube-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  background: rgba(0,0,0,0.55);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: background 0.2s ease;
+}
+
+.youtube-play-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 56%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 16px 0 16px 26px;
+  border-color: transparent transparent transparent white;
+}
+
+.youtube-overlay-box:hover .youtube-play-btn {
+  background: rgba(0,0,0,0.75);
+}
+.footer-social {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+  align-items: center;
+}
+
+.footer-social .sns-icon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  transition: 0.2s ease;
+}
+
+.footer-social .sns-icon img:hover {
+  transform: scale(1.12);
+  opacity: 0.85;
+}
+.footer-social svg {
+  transition: 0.2s ease;
+}
+
+.footer-social a:hover svg {
+  transform: scale(1.12);
+  opacity: 0.85;
+}
+button.hl-acc-btn {
+  text-align: center !important;
+  justify-content: center !important;
+}
+.seo-long-desc {
+    margin-top: 40px;
+    padding: 20px;
+    background: #fafbff;
+    border-radius: 12px;
+    line-height: 1.7;
+    font-size: 15px;
+    color: #333;
+  }
+  .seo-long-desc h3 {
+    margin-top: 22px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+.input-section {
+  padding: 22px;
+  border: 2px solid #d0d7ff;
+  border-radius: 14px;
+  background: #f8faff;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-sizing: border-box;   /* ⭐ div 내부 패딩 포함해서 width 계산 */
+}
+.consult-section textarea,
+.input-section input,
+.input-section select {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.review-box-wrap {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.review-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border: 1px solid #eee;
+}
+
+.review-stars {
+  font-size: 18px;
+  color: #FFD700;
+  margin-bottom: 8px;
+}
+
+.review-text {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.review-user {
+  font-size: 14px;
+  color: #666;
+  text-align: right;
+}
+/* ============================
+   로그인바를 container 폭으로 정렬
+============================ */
+.auth-bar {
+  position: fixed;
+  top: 90px; /* 방문자 정보바 바로 아래 */
+  left: 0;
+  width: 100%;
+  background: transparent; /* 배경 제거 */
+  z-index: 200000;
+  display: flex;
+  justify-content: center; /* 가운데에 container를 두기 위해 */
+  pointer-events: none; /* 내부 요소만 클릭 가능하게 */
+}
+
+/* 내부 컨테이너 */
+.auth-bar-inner {
+  width: 92%;
+  max-width: 900px; /* homepage .container와 동일 */
+  display: flex;
+  justify-content: flex-end; /* 버튼 우측 정렬 */
+  gap: 10px;
+  pointer-events: auto; /* 클릭 가능 */
+}
+
+/* 방문자 수 영역 맨 위 */
+.top-info-bar {
+  position: fixed;
+  top: 0 !important;
+  left: 0;
+  width: 100%;
+  background: #4a90e2;
+  color: #fff;
+  padding: 8px 0 !important; /* 6px → 8px (실제 높이 안정화) */
+  text-align: center;
+  font-weight: 600;
+  z-index: 200000;
+  margin: 0 !important;
+  line-height: 1.3;
+  box-shadow: none !important;
+}
+
+/* 방문자 수 아래 2번째 줄 */
+.header-row {
+  position: fixed;
+  top: 36px !important; /* 방문자수 바 실제 높이에 정확히 맞춤 */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 200000;
+  margin: 0 !important;
+}
+
+/* container 폭과 동일하게 */
+.header-inner {
+  width: 92%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 !important;
+  margin: 0 auto !important;
+}
+/* fixed-top이 헤더를 밀어내는 문제 제거 */
+.fixed-top {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+
+/* 내부 container */
+.header-row > div,
+.auth-bar-inner {
+  width: 92%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+}
+
+/* 시간 표시 왼쪽 */
+#live-clock {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  background: transparent !important;
+}
+
+/* 로그인바 오른쪽 */
+.auth-bar-inner {
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+
+/* 버튼 스타일 */
+.auth-btn {
+  padding: 6px 12px;
+  background: #4a6fff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.auth-btn.logout {
+  background: #f44336;
+}
+
+
+#auth-after {
+   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* 요소 간 간격 */ 
+  padding: 2px 2px; /* 위아래 6px, 좌우 10px */
+}
+/* 공통 버튼 스타일 */
+.common-btn {
+  padding: 5px 5px !important;
+  border-radius: 8px !important;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+.auth-before {
+ display: flex !important;
+  gap: 10px !important;
+  justify-content: center;
+  align-items: center;
+}
+.header-inner,
+.auth-bar-inner,
+ {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.auth-bar {
+  top: 90px;
+  justify-content: center;
+}
+.fixed-header {
+  background: #000 !important;
+}
+#auth-before {
+  display: flex;
+  gap: 10px;
+}
+/* ⭐ container와 동일한 폭 + 중앙 정렬 + 스타일 */
+.welcome-banner {
+  width: 92%;
+  max-width: 900px; 
+  background: rgba(255,255,255,0.75);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 2px solid red !important;  
+  margin-bottom: 10px;
+}
+
+/* 아이콘 */
+.welcome-img {
+  width: 100px;
+  height: 38px;
+}
+
+/* 중앙 정렬 */
+.welcome-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+/* 문구 */
+.welcome-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2a3f9d;
+  margin-bottom: 8px;
+}
+
+/* 버튼 */
+.welcome-btn {
+  background: #4a6fff;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.welcome-btn:hover {
+  background: #3b57d6;
+}
+@media (max-width: 480px) {
+
+  /* 상단 전체 높이 줄이기 */
+  .fixed-top {
+    padding: 4px 0 !important;   /* 기존 12px → 4px */
+  }
+
+  .top-info-bar {
+    padding: 6px 0 !important;   /* 기존 10px → 6px */
+  }
+
+  /* 본문 시작 위치 위쪽 여백 줄이기 */
+  body.homepage {
+    padding-top: 100px !important;  /* 기존 150px → 100px */
+  }
+
+  /* 컨테이너 상단 패딩도 조금 줄이기 */
+  body.homepage .container {
+    padding-top: 20px !important;
+  }
+}
+
+#auth-after {
+   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* 요소 간 간격 */ 
+  padding: 2px 2px; /* 위아래 2px, 좌우 2px */
+}
+#auth-before .auth-btn {
+  margin-top: 2px; /* 버튼 위쪽 여백 */
+}
+#auth-after .auth-btn {
+  margin-top: 2px; /* 버튼 위쪽 여백 */
+}
+
