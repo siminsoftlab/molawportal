@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
 /****************************************************
  * 로그인 시 배너 자동 숨김
  ****************************************************/
-import { auth } from "/firebase-init.js";
+import { auth } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 onAuthStateChanged(auth, (user) => {
