@@ -84,7 +84,7 @@ async function updateVisitorCount() {
 ============================================================ */
 async function saveVisitorGeoIP() {
   try {
-    const response = await fetch("/api/geoip");
+    const response = await fetch("https://molawcounter.web.app/api/geoip");
 
     if (!response.ok) {
       throw new Error(`서버 응답 오류: ${response.status}`);
