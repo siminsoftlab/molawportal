@@ -275,9 +275,18 @@ exports.fetchBankDeposits = functions.pubsub
 const corsHandler = cors({ origin: true });
 
 exports.geoip = functions.https.onRequest((req, res) => {
+  const allowedOrigins = [
+    "https://molawcalculator.com",
+    "https://molawcounter.web.app"
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.set("Access-Control-Allow-Origin", origin);
+  }
+
   corsHandler(req, res, async () => {
     if (req.method === "OPTIONS") {
-      res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
       res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
       res.set("Access-Control-Allow-Headers", "Content-Type");
       return res.status(204).send("");
@@ -287,7 +296,6 @@ exports.geoip = functions.https.onRequest((req, res) => {
       const response = await fetch("https://ipwho.is/");
       const json = await response.json();
 
-      res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
       res.status(200).json({
         success: true,
         ip: json.ip || null,
@@ -296,7 +304,6 @@ exports.geoip = functions.https.onRequest((req, res) => {
       });
     } catch (err) {
       console.error("GeoIP Error:", err);
-      res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
       res.status(500).json({ success: false, error: err.toString() });
     }
   });
