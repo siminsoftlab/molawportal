@@ -293,18 +293,23 @@ exports.geoip = functions.https.onRequest((req, res) => {
     }
 
     try {
-      const response = await fetch("https://ipwho.is/");
-      const json = await response.json();
+     const ip =
+       req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+       req.connection.remoteAddress;
+   
+     const geoRes = await fetch(`https://ipwho.is/${ip}`);
+     const geoData = await geoRes.json();
+   
+     res.status(200).json({
+       success: true,
+       ip: ip,
+       country: geoData.country,
+       city: geoData.city
+     });
+   } catch (err) {
+     console.error("GeoIP Error:", err);
+     res.status(500).json({ success: false, error: err.toString() });
+   }
 
-      res.status(200).json({
-        success: true,
-        ip: json.ip || null,
-        country: json.country || null,
-        city: json.city || null
-      });
-    } catch (err) {
-      console.error("GeoIP Error:", err);
-      res.status(500).json({ success: false, error: err.toString() });
-    }
   });
 });
