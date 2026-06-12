@@ -101,7 +101,7 @@
     </div>
 
     <div class="btn-row">
-      <button onclick="calcRepay()">계산하기</button>
+      <button onclick="checkAccess(() => calcRepay())">계산하기</button>
       <p class="notice">※ 총 부채, 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.</p>
       <button onclick="resetRepayInputs()">초기화</button>
     </div>
@@ -218,8 +218,8 @@
 <script type="module" src="/firebase-init.js"></script>
 <script type="module" src="/firebase-counter.js"></script>
 <script type="module" src="/auth/auth-state.js"></script>  
+<script src="/repay.js?v=1006"></script>
 <script type="module" src="/check-access.js"></script>
-<script type="module" src="/repay.js?v=1006"></script>
 <script>
   fetch("/footer.html")
     .then(res => res.text())
