@@ -6,7 +6,7 @@ import {
   collection,
   doc,
   setDoc,
-  getFirestore,
+  getDocs,
   query,
   where,
   onSnapshot,
@@ -46,41 +46,53 @@ function getTodayString() {
 }
 
 /* ============================================================
-   방문자 업데이트
+   방문자 업데이트 (admin.js와 호환되는 구조)
 ============================================================ */
 async function updateVisitorCount() {
   const today = getTodayString();
   const visitorKey = getVisitorKey();
 
   try {
-    // 오늘 방문자 기록
+    /* ------------------------------
+       1) Daily 방문자 로그 저장
+       admin.js가 읽을 수 있는 구조:
+       visitors / daily / days / {date}
+         ├── uuid1: true
+         ├── uuid2: true
+         └── _init: true
+    ------------------------------ */
     await setDoc(
-      doc(db, "visitors", "daily", "days", today, "visitors", visitorKey),
-      { visited: true, timestamp: Date.now() },
+      doc(db, "visitors", "daily", "days", today),
+      { [visitorKey]: true, _init: true },
       { merge: true }
     );
 
-    // 전체 방문자 기록
+    /* ------------------------------
+       2) 전체 방문자 기록
+    ------------------------------ */
     await setDoc(
       doc(db, "visitors", "total", "visitors", visitorKey),
       { visited: true, firstVisit: Date.now() },
       { merge: true }
     );
 
-    // 샤드 증가
+    /* ------------------------------
+       3) 샤드 증가
+    ------------------------------ */
     const shardId = Math.floor(Math.random() * 20).toString();
     await setDoc(
       doc(db, "visitors", "counter_shards", "shards", shardId),
       { total: increment(1) },
       { merge: true }
     );
+
   } catch (err) {
     console.error("방문자 업데이트 실패:", err);
   }
 }
 
 /* ============================================================
-   GeoIP 저장 (Firebase Hosting 필요)
+   GeoIP 저장 (admin.js와 호환되는 구조)
 ============================================================ */
 async function saveVisitorGeoIP() {
   try {
@@ -95,8 +107,8 @@ async function saveVisitorGeoIP() {
 
     const today = getTodayString();
 
-    // Firestore 저장 경로:
-    // visitors / geoip / {YYYY-MM-DD} / {timestamp}
+    // 저장 경로:
+    // visitors / geoip / {date} / {timestamp}
     await setDoc(
       doc(db, "visitors", "geoip", today, String(Date.now())),
       {
@@ -112,21 +124,22 @@ async function saveVisitorGeoIP() {
   }
 }
 
-
 /* ============================================================
    실시간 방문자 표시
 ============================================================ */
 function listenVisitorCount() {
   const today = getTodayString();
 
-  const dailyRef = collection(db, "visitors", "daily", "days", today, "visitors");
+  const dailyRef = collection(db, "visitors", "daily", "days", today);
   const totalRef = collection(db, "visitors", "total", "visitors");
 
+  // Daily 실시간
   onSnapshot(dailyRef, (snap) => {
     const el = document.getElementById("visitor-today");
-    if (el) el.textContent = snap.size;
+    if (el) el.textContent = Object.keys(snap.data() || {}).length - 1; // _init 제외
   });
 
+  // Total 실시간
   onSnapshot(totalRef, (snap) => {
     const el = document.getElementById("visitor-total");
     if (el) el.textContent = snap.size;
