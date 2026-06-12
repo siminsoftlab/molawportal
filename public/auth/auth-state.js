@@ -1,4 +1,4 @@
-console.log("auth-state.js loaded");
+//console.log("auth-state.js loaded");
 
 // firebase-init.js에서 export한 모듈 불러오기
 import { auth, db } from "/firebase-init.js";
