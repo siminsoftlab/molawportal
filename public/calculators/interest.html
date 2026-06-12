@@ -61,7 +61,7 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 
   <!-- 기존 리소스 -->
-  <link rel="icon" href="../images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/style.css?v=1006">
   <link rel="stylesheet" href="/faq.css?v=1006">
   <link rel="stylesheet" href="/paywall.css">  
@@ -88,14 +88,14 @@
 
     <!-- 내부 네비게이션 -->
     <div class="calc-nav">
-      <a href="repay.html" class="nav-item">💰 개인회생 변제금 계산기</a>
-      <a href="living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
-      <a href="household-auto-living.html" class="nav-item">👨‍👩‍👧 가구수 생계비 계산기</a>
-      <a href="interest.html" class="nav-item active">📈 연이자 계산기</a>
+      <a href="/calculators/repay.html" class="nav-item">💰 개인회생 변제금 계산기</a>
+      <a href="/calculators/living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
+      <a href="/calculators/household-auto-living.html" class="nav-item">👨‍👩‍👧 가구수 생계비 계산기</a>
+      <a href="/calculators/interest.html" class="nav-item active">📈 연이자 계산기</a>
     </div>
 
     <div class="calc-nav">
-      <a href="../blog/interest-guide.html" class="guide-btn">
+      <a href="/blog/interest-guide.html" class="guide-btn">
         이용 안내 <span class="info-badge">b</span>
       </a>
     </div>
@@ -268,6 +268,7 @@
 <script type="module" src="/firebase-init.js"></script>
 <script type="module" src="/firebase-counter.js"></script>
 <script type="module" src="/auth/auth-state.js"></script>
+<script type="module" src="/interest.js?v=1006"></script>
 <script>
   fetch("/footer.html")
     .then(res => res.text())
@@ -278,7 +279,6 @@
 <script src="/paywall.js?v=1006"></script>
 <script src="/faq.js?v=1006" defer></script>
 <script src="/check-access.js"></script>
-<script src="/interest.js?v=1006" defer></script>
 <script src="/block-right-click.js?v=1006"></script>
 </body>
 </html>
