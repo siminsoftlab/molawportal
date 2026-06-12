@@ -63,7 +63,7 @@
 
 <header class="fixed-header fixed-top">
   <h1>가구수 생계비 계산기 · 가구원수 생계비</h1>
-  <a href="../index.html" class="home-btn">
+  <a href="/index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -80,10 +80,10 @@
 
     <!-- 네비게이션 -->
     <div class="calc-nav">
-      <a href="repay.html" class="nav-item">💰 개인회생 변제금 계산기</a>
-      <a href="living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
-      <a href="household-auto-living.html" class="nav-item active">👨‍👩‍👧 가구수 생계비 계산기</a>
-      <a href="interest.html" class="nav-item">📈 연이자 계산기</a>
+      <a href="/calculators/repay.html" class="nav-item">💰 개인회생 변제금 계산기</a>
+      <a href="/calculators/living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
+      <a href="/calculators/household-auto-living.html" class="nav-item active">👨‍👩‍👧 가구수 생계비 계산기</a>
+      <a href="/calculators/interest.html" class="nav-item">📈 연이자 계산기</a>
     </div>
 
     <div class="calc-nav">
@@ -162,7 +162,7 @@
         전문가가 365일 무료로 상담해드립니다.
       </div>
 
-      <a href="../index.html"
+      <a href="/index.html"
          style="display:inline-block; padding:14px 26px; background:#4a6fff; color:#fff; font-size:15px; font-weight:600; border-radius:999px; text-decoration:none;">
         ⬅ 홈 화면 바로가기
       </a>
@@ -259,13 +259,11 @@
 
 <!-- Firebase 초기화 -->
 <script type="module" src="/firebase-init.js"></script>
-
-<!-- 공통 모듈 -->
-<script src="/check-access.js"></script>
-
 <!-- 방문자 카운터 -->
 <script type="module" src="/firebase-counter.js"></script>
 <script type="module" src="/auth/auth-state.js"></script>
+<script src="/household-auto-living.js?v=1006" ></script>  
+
 <script>
   fetch("/footer.html")
     .then(res => res.text())
@@ -273,8 +271,7 @@
       document.getElementById("footer").innerHTML = html;
     });
 </script>
-
-<script src="/household-auto-living.js?v=1006" defer></script>
+<script src="/check-access.js"></script>
 <script src="/paywall.js?v=1006"></script>
 <script src="/faq.js?v=1006" defer></script>
 <script src="/block-right-click.js"></script>
