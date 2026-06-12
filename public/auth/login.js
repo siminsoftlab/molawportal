@@ -1,8 +1,6 @@
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-
-const auth = getAuth();
-const db = getFirestore();
+import { auth, db } from "/firebase-init.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 async function login() {
   const email = document.getElementById("email").value.trim();
@@ -17,31 +15,25 @@ async function login() {
   try {
     msg.textContent = "로그인 중...";
 
-    // ✅ v9 문법
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
     msg.textContent = "로그인 성공!";
 
-    // Firestore에서 사용자 정보 가져오기 (v9 문법)
     const userDocRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(userDocRef);
 
-    // 로그인 후 메인 페이지로 이동
     setTimeout(() => {
       window.location.href = "/index.html";
     }, 1000);
 
   } catch (error) {
-    console.error(error); // 실제 에러 확인용
+    console.error(error);
     let message = "";
 
     switch (error.code) {
       case "auth/wrong-password":
-        message = "비밀번호가 일치하지 않습니다.";
-        break;
-
-      case "auth/invalid-login-credentials": // ✅ v9에서 반환되는 실제 코드
+      case "auth/invalid-login-credentials":
         message = "이메일 또는 비밀번호가 잘못되었습니다.";
         break;
 
@@ -63,7 +55,5 @@ async function login() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("loginBtn");
-  if (btn) {
-    btn.addEventListener("click", login);
-  }
+  if (btn) btn.addEventListener("click", login);
 });
