@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>결제내역 조회</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <link rel="stylesheet" href="payments.css">
-  <link rel="icon" href="../images/favicon.ico">  
+  <link rel="stylesheet" href="/mypage/payments.css">
+  <link rel="icon" href="/images/favicon.ico">  
 </head>
 
 <body>
@@ -19,13 +19,10 @@
   
     <button id="backBtn" class="back">← 마이페이지로 돌아가기</button>
   </div>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
   <!-- 2) Firebase 초기화 -->
-  <script src="/firebase-init.js"></script> 
-  <script src="payments.js"></script>
-  <script src="../block-right-click.js"></script>
+  <script type="module" src="/firebase-init.js"></script> 
+  <script type="module" src="/mypage/payments.js"></script>
+  <script src="/block-right-click.js"></script>
   </body>
 </html>
