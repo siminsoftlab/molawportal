@@ -1,15 +1,4 @@
 /****************************************************
- * Firebase v9 import
- ****************************************************/
-import { auth, db } from "/firebase-init.js";
-import {
-  collection,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-/****************************************************
  * 공통 유틸
  ****************************************************/
 function $(id) {
@@ -44,62 +33,9 @@ function updateLivingCost() {
 }
 
 /****************************************************
- * 계산하기 — 로그인 + 이용권 활성 + 만료 체크
+ * 계산하기 — checkAccess 후 실행될 함수
  ****************************************************/
-async function calcRepay() {
-
-  /* 1) 로그인 여부 체크 (v9) */
-  const user = auth.currentUser;
-
-  if (!user) {
-    document.getElementById("loginRequiredModal").style.display = "flex";
-    return;
-  }
-
-  /* 2) Firestore에서 이용권 조회 (v9) */
-  const q = query(
-    collection(db, "access_tokens"),
-    where("user_id", "==", user.uid)
-  );
-
-  const tokenSnap = await getDocs(q);
-
-  if (tokenSnap.empty) {
-    document.getElementById("paywallOverlay").style.display = "flex";
-    return;
-  }
-
-  /* 3) 가장 늦게 만료되는 이용권 선택 */
-  let best = null;
-  tokenSnap.forEach(doc => {
-    const data = doc.data();
-    if (!best || data.expire_at > best.expire_at) {
-      best = data;
-    }
-  });
-
-  /* 4) 활성 여부 체크 */
-  if (!best.is_active) {
-    document.getElementById("paywallOverlay").style.display = "flex";
-    return;
-  }
-
-  /* 5) 만료일 체크 */
-  let expireAt = best.expire_at;
-  let expireDate;
-
-  if (expireAt instanceof Date) {
-    expireDate = expireAt;
-  } else if (expireAt?.toDate) {
-    expireDate = expireAt.toDate();
-  } else {
-    expireDate = new Date(expireAt);
-  }
-
-  if (expireDate < new Date()) {
-    document.getElementById("paywallOverlay").style.display = "flex";
-    return;
-  }
+function calcRepay() {
 
   /****************************************************
    * 필수 입력 검증
@@ -274,4 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+/* HTML onclick에서 접근 가능하도록 등록 */
 window.calcRepay = calcRepay;
