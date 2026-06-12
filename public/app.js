@@ -222,13 +222,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /****************************************************
- * 섹션 등장 애니메이션
+ * 섹션 등장 애니메이션 (완전 안전 버전)
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-  const sections = document.querySelectorAll(".section-animate");
+  const rawList = document.querySelectorAll(".section-animate");
 
-  // 요소가 없으면 종료
-  if (!sections || sections.length === 0) return;
+  // NodeList → Array 변환 + Element만 필터링
+  const sections = Array.from(rawList).filter(
+    (item) => item instanceof Element
+  );
+
+  if (sections.length === 0) return;
 
   const observer = new IntersectionObserver(
     (entries) => {
@@ -241,12 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { threshold: 0.2 }
   );
 
-  sections.forEach((sec) => {
-    // sec가 Element인지 반드시 확인
-    if (sec && sec.nodeType === 1) {
-      observer.observe(sec);
-    }
-  });
+  sections.forEach((sec) => observer.observe(sec));
 });
 
 
