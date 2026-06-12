@@ -333,16 +333,3 @@ document.addEventListener("DOMContentLoaded", function () {
   // 페이지 로드 후 바로 타이핑 시작
   typing2();
 });
-/****************************************************
- * 로그인 시 배너 자동 숨김
- ****************************************************/
-import { auth } from "./firebase-init.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    const banner = document.getElementById("welcomeBanner");
-    if (banner) banner.style.display = "none";
-  }
-});
-
