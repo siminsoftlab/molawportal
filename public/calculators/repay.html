@@ -15,20 +15,17 @@
 
   <link rel="canonical" href="https://molawcalculator.com/calculators/repay.html">
 
-  <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="../faq.css">
-  <link rel="stylesheet" href="../paywall.css">
-
-  <link rel="icon" href="../images/favicon.ico">
-
-  <script src="../block-right-click.js"></script>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/faq.css">
+  <link rel="stylesheet" href="/paywall.css">
+  <link rel="icon" href="/images/favicon.ico">  
 </head>
 
 <body class="subpage">
 
 <header class="fixed-header fixed-top">
   <h1>개인회생 변제금 계산기 · 개인회생변제금조회</h1>
-  <a href="../index.html" class="home-btn">
+  <a href="/index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
     </svg>
@@ -44,15 +41,15 @@
 
     <!-- 네비게이션 -->
     <div class="calc-nav">
-      <a href="repay.html" class="nav-item active">💰 개인회생 변제금 계산기</a>
-      <a href="living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
-      <a href="household-auto-living.html" class="nav-item">👨‍👩‍👧 가구수 생계비 계산기</a>
-      <a href="interest.html" class="nav-item">📈 연이자 계산기</a>
+      <a href="/calculators/repay.html" class="nav-item active">💰 개인회생 변제금 계산기</a>
+      <a href="/calculators/living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
+      <a href="/calculators/household-auto-living.html" class="nav-item">👨‍👩‍👧 가구수 생계비 계산기</a>
+      <a href="/calculators/interest.html" class="nav-item">📈 연이자 계산기</a>
     </div>
 
     <div class="calc-nav">
-      <a href="../blog/repay-guide.html" class="guide-btn">이용 안내 <span class="info-badge">b</span></a>
-      <a href="../blog/repay-calc.html" class="guide-btn">계산 결과 자세히 <span class="info-badge">b</span></a>
+      <a href="/blog/repay-guide.html" class="guide-btn">이용 안내 <span class="info-badge">b</span></a>
+      <a href="/blog/repay-calc.html" class="guide-btn">계산 결과 자세히 <span class="info-badge">b</span></a>
     </div>
 
     <h2>📌 개인회생 변제금 계산기 · 개인회생변제금조회 — 지금 바로 확인</h2>
@@ -132,7 +129,7 @@
         전문가가 365일 무료로 상담해드립니다.
       </div>
 
-      <a href="../index.html"
+      <a href="/index.html"
          style="display:inline-block; padding:14px 26px; background:#4a6fff; color:#fff; font-size:15px; font-weight:600; border-radius:999px; text-decoration:none;">
         ⬅ 홈 화면 바로가기
       </a>
@@ -218,20 +215,21 @@
 </div>
 
 <!-- Firebase -->
-<script type="module" src="../firebase-init.js"></script>
-<script type="module" src="../firebase-counter.js"></script>
-<script type="module" src="../auth/auth-state.js"></script>
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/firebase-counter.js"></script>
+<script type="module" src="/auth/auth-state.js"></script>
 
 <script>
-  fetch("../footer.html")
+  fetch("/footer.html")
     .then(res => res.text())
     .then(html => {
       document.getElementById("footer").innerHTML = html;
     });
 </script>
 
-<script type="module" src="../repay.js?v=1006" defer></script>
-<script src="../paywall.js?v=1006"></script>
-<script src="../check-access.js"></script>
+<script type="module" src="/repay.js?v=1006" defer></script>
+<script src="/paywall.js?v=1006"></script>
+<script src="/check-access.js"></script>
+<script src="/block-right-click.js"></script>
 </body>
 </html>
