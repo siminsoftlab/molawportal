@@ -12,7 +12,7 @@
         "function": "geoip"
       },
       {
-        "source": "!**/*.{js,css,png,jpg,jpeg,gif,svg,ico,json}",
+        "source": "!**/*.{js,css,png,jpg,jpeg,gif,svg,ico,json,map}",
         "destination": "/index.html"
       }
     ]
