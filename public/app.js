@@ -226,6 +226,8 @@ document.addEventListener("DOMContentLoaded", () => {
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll(".section-animate");
+
+  // 요소가 없으면 종료
   if (!sections || sections.length === 0) return;
 
   const observer = new IntersectionObserver(
@@ -240,11 +242,13 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   sections.forEach((sec) => {
-    if (sec instanceof Element) {
+    // sec가 Element인지 반드시 확인
+    if (sec && sec.nodeType === 1) {
       observer.observe(sec);
     }
   });
 });
+
 
 /****************************************************
  * 타이핑 효과
