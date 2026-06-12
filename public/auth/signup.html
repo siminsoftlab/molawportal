@@ -50,5 +50,27 @@
 
 <script type="module" src="/auth/signup.js"></script>
 <script src="/block-right-click.js"></script>
+<!-- ⭐ 이용약관 모달 -->
+<div id="termsModal" class="modal">
+  <div class="modal-content">
+    <h3>이용약관</h3>
+    <div class="modal-body">
+      <iframe src="/policy/terms.html"></iframe>
+    </div>
+    <button id="closeTerms" class="close-btn">닫기</button>
+  </div>
+</div>
+
+<!-- ⭐ 개인정보 제3자 제공 동의 모달 -->
+<div id="privacyModal" class="modal">
+  <div class="modal-content">
+    <h3>개인정보 제3자 제공 동의</h3>
+    <div class="modal-body">
+      <iframe src="/policy/privacy-third.html"></iframe>
+    </div>
+    <button id="closePrivacy" class="close-btn">닫기</button>
+  </div>
+</div>
+
 </body>
 </html>
