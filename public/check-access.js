@@ -1,14 +1,32 @@
 /* ============================================================
-   Firebase 기반 공통 인증 + 이용권 체크 (access_tokens 버전)
+   Firebase v9 기반 공통 인증 + 이용권 체크 (access_tokens 버전)
 ============================================================ */
 
-async function checkAccess(onSuccess) {
-  try {
-    const user = firebase.auth().currentUser;
+// firebase-init.js에서 auth, db 가져오기
+import { auth, db } from "/firebase-init.js";
 
+// Firestore v9 모듈
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+/* ============================================================
+   이용권 체크
+============================================================ */
+export async function checkAccess(onSuccess) {
+  try {
     /* -----------------------------
        1) 로그인 체크
     ----------------------------- */
+    const user = auth.currentUser;
+
     if (!user) {
       openModal("login");
       return;
@@ -17,19 +35,18 @@ async function checkAccess(onSuccess) {
     const uid = user.uid;
 
     /* -----------------------------
-       2) access_tokens에서 이용권 조회
-          - user_id == uid
-          - is_active == true
-          - expire_at 최신순
+       2) access_tokens 조회 (v9 방식)
     ----------------------------- */
-    const snap = await db.collection("access_tokens")
-      .where("user_id", "==", uid)
-      .where("is_active", "==", true)
-      .orderBy("expire_at", "desc")
-      .limit(1)
-      .get();
+    const q = query(
+      collection(db, "access_tokens"),
+      where("user_id", "==", uid),
+      where("is_active", "==", true),
+      orderBy("expire_at", "desc"),
+      limit(1)
+    );
 
-    // 이용권 없음
+    const snap = await getDocs(q);
+
     if (snap.empty) {
       openModal("purchase");
       return;
@@ -43,7 +60,6 @@ async function checkAccess(onSuccess) {
 
     const now = new Date();
 
-    // 만료된 경우
     if (expireDate < now) {
       openModal("expired");
       return;
@@ -70,9 +86,6 @@ function openModal(type) {
       break;
 
     case "purchase":
-      document.getElementById("paywallOverlay").style.display = "flex";
-      break;
-
     case "expired":
       document.getElementById("paywallOverlay").style.display = "flex";
       break;
