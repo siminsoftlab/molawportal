@@ -1,3 +1,16 @@
+// firebase-init.js에서 auth, db 가져오기
+import { auth, db } from "/firebase-init.js";
+
+// Firebase v9 CDN 모듈 import
+import { 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+import { 
+  collection, query, where, orderBy, limit, getDocs, doc, getDoc, setDoc 
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
 /* ============================================================
    남은 일수 계산
 ============================================================ */
@@ -13,9 +26,12 @@ function getRemainingDays(expireAt) {
 async function loadTicket(userId) {
   const ticketBox = document.getElementById("mypage-ticket");
 
-  const snap = await db.collection("access_tokens")
-    .where("user_id", "==", userId)
-    .get();
+  const q = query(
+    collection(db, "access_tokens"),
+    where("user_id", "==", userId)
+  );
+
+  const snap = await getDocs(q);
 
   if (snap.empty) {
     ticketBox.innerHTML = `
@@ -25,16 +41,14 @@ async function loadTicket(userId) {
     return;
   }
 
-  // 가장 늦게 만료되는 이용권 선택
   let best = null;
-  snap.forEach(doc => {
-    const data = doc.data();
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
     if (!best || data.expire_at > best.expire_at) {
       best = data;
     }
   });
 
-  // expire_at 타입 처리 (Timestamp 또는 number)
   const expireAt = best.expire_at instanceof Date
     ? best.expire_at.getTime()
     : best.expire_at;
@@ -42,7 +56,6 @@ async function loadTicket(userId) {
   const remaining = getRemainingDays(expireAt);
   const expireDate = new Date(expireAt).toLocaleDateString("ko-KR");
 
-  // 활성 여부 판단
   const now = Date.now();
   let statusText = "";
   let statusColor = "";
@@ -72,12 +85,15 @@ async function loadTicket(userId) {
 async function loadPendingPayment(userId) {
   const box = document.getElementById("pendingPayment");
 
-  const snap = await db.collection("payments")
-    .where("user_id", "==", userId)
-    .where("status", "==", "pending")
-    .orderBy("created_at", "desc")
-    .limit(1)
-    .get();
+  const q = query(
+    collection(db, "payments"),
+    where("user_id", "==", userId),
+    where("status", "==", "pending"),
+    orderBy("created_at", "desc"),
+    limit(1)
+  );
+
+  const snap = await getDocs(q);
 
   if (snap.empty) {
     box.innerHTML = "";
@@ -102,16 +118,18 @@ async function loadPendingPayment(userId) {
    만료 3일 전 배너 표시
 ============================================================ */
 async function checkExpireAlert(userId) {
-  const snap = await db.collection("access_tokens")
-    .where("user_id", "==", userId)
-    .where("is_active", "==", true)
-    .get();
+  const q = query(
+    collection(db, "access_tokens"),
+    where("user_id", "==", userId),
+    where("is_active", "==", true)
+  );
 
+  const snap = await getDocs(q);
   if (snap.empty) return;
 
   let best = null;
-  snap.forEach(doc => {
-    const data = doc.data();
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
     if (!best || data.expire_at > best.expire_at) {
       best = data;
     }
@@ -171,7 +189,7 @@ async function requestPushPermission() {
 
   const user = auth.currentUser;
 
-  await db.collection("push_subscriptions").doc(user.uid).set({
+  await setDoc(doc(db, "push_subscriptions", user.uid), {
     subscription: JSON.parse(JSON.stringify(subscription)),
     updated_at: Date.now()
   });
@@ -180,7 +198,7 @@ async function requestPushPermission() {
 /* ============================================================
    로그인 확인 후 실행
 ============================================================ */
-auth.onAuthStateChanged(async (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "/auth/login.html";
     return;
@@ -188,7 +206,7 @@ auth.onAuthStateChanged(async (user) => {
 
   await registerServiceWorker();
 
-  const userDoc = await db.collection("users").doc(user.uid).get();
+  const userDoc = await getDoc(doc(db, "users", user.uid));
   const data = userDoc.data();
 
   document.getElementById("mypage-name").textContent = data.name;
@@ -223,10 +241,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      firebase.auth().signOut().then(() => {
-        window.location.href = "/index.html";
-      });
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "/index.html";
     });
   }
 
@@ -236,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
- if (homeBtn) {
+  if (homeBtn) {
     homeBtn.addEventListener("click", () => {
       window.location.href = "/index.html";
     });
