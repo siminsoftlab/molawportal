@@ -56,6 +56,9 @@ input {
   background: #fafafa;
   outline: none;
   transition: 0.2s;
+  height: 48px;          /* ← 높이 통일 */
+  box-sizing: border-box; /* ← padding 포함 크기 유지 */
+  appearance: none;       /* ← select 기본 UI 제거 → input과 동일한 높이 */
 }
 
 select:focus,
