@@ -248,48 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
   sections.forEach((sec) => observer.observe(sec));
 });
 
-
-/****************************************************
- * 타이핑 효과
- ****************************************************/
-document.addEventListener("DOMContentLoaded", function () {
-  const text = "아이콘을 누르면 바로 계산기로 이동합니다.";
-  const typingTarget = document.getElementById("typing-text");
-  const bubble = document.querySelector(".calc-greeting-bubble");
-
-  let isTyping = false;
-
-  function startTyping() {
-    if (isTyping) return;
-    isTyping = true;
-
-    typingTarget.textContent = "";
-    let index = 0;
-
-    function typing() {
-      if (index < text.length) {
-        typingTarget.textContent += text.charAt(index);
-        index++;
-        setTimeout(typing, 60);
-      }
-    }
-    typing();
-  }
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          isTyping = false;
-          startTyping();
-        }
-      });
-    },
-    { threshold: 0.6 }
-  );
-
-  observer.observe(bubble);
-});
 /****************************************************
  * 보기 모달
  ****************************************************/
@@ -320,24 +278,38 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 /****************************************************
- * 온라인 상담 말풍선 타이핑 효과 (확정 작동 버전)
+ * 말풍선 타이핑 효과 (두 개 모두 지원)
  ****************************************************/
-document.addEventListener("DOMContentLoaded", function () {
-  const text2 = "1분이면 상담 신청 가능합니다.";
-  const typingTarget2 = document.getElementById("consult-typing");
+document.addEventListener("DOMContentLoaded", () => {
 
-  if (!typingTarget2) return;
-
-  let index = 0;
-
-  function typing2() {
-    if (index < text2.length) {
-      typingTarget2.textContent += text2.charAt(index);
-      index++;
-      setTimeout(typing2, 60);
+  // 1) 첫 번째 말풍선
+  const typingTarget1 = document.getElementById("typing-text");
+  if (typingTarget1) {
+    const text1 = "아이콘을 누르면 바로 계산기로 이동합니다.";
+    let i = 0;
+    function type1() {
+      if (i < text1.length) {
+        typingTarget1.textContent += text1.charAt(i);
+        i++;
+        setTimeout(type1, 60);
+      }
     }
+    type1();
   }
 
-  // 페이지 로드 후 바로 타이핑 시작
-  typing2();
+  // 2) 두 번째 말풍선
+  const typingTarget2 = document.getElementById("consult-typing");
+  if (typingTarget2) {
+    const text2 = "1분이면 상담 신청 가능합니다.";
+    let j = 0;
+    function type2() {
+      if (j < text2.length) {
+        typingTarget2.textContent += text2.charAt(j);
+        j++;
+        setTimeout(type2, 60);
+      }
+    }
+    type2();
+  }
+
 });
