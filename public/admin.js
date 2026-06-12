@@ -17,6 +17,12 @@ import {
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
 
+  /****************************************************
+   * Chart.js 인스턴스 전역 보관 (중복 생성 방지)
+   ****************************************************/
+  let browserChartInstance = null;
+  let osChartInstance = null;
+
   /* ============================================================
      관리자 접근 로그 기록
      ============================================================ */
@@ -46,15 +52,21 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ============================================================
      버튼 기능
      ============================================================ */
-  document.getElementById("logout-btn").onclick = () => {
-    localStorage.removeItem("admin_token");
-    localStorage.removeItem("admin_token_time");
-    window.location.href = "admin-login.html";
-  };
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      localStorage.removeItem("admin_token");
+      localStorage.removeItem("admin_token_time");
+      window.location.href = "admin-login.html";
+    };
+  }
 
-  document.getElementById("change-pw-btn").onclick = () => {
-    window.location.href = "admin-password.html";
-  };
+  const changePwBtn = document.getElementById("change-pw-btn");
+  if (changePwBtn) {
+    changePwBtn.onclick = () => {
+      window.location.href = "admin-password.html";
+    };
+  }
 
   /* ============================================================
      오늘 방문자
@@ -69,15 +81,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const snap = await getDoc(todayRef);
 
+    const el = document.getElementById("visitor-today");
+    if (!el) return;
+
     if (!snap.exists()) {
-      document.getElementById("admin-today").textContent = 0;
+      el.textContent = 0;
       return;
     }
 
     const data = snap.data();
     const count = Object.keys(data).filter(k => k !== "_init").length;
 
-    document.getElementById("admin-today").textContent = count;
+    el.textContent = count;
   }
 
   /* ============================================================
@@ -89,7 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalVisitorsCol = collection(totalDoc, "visitors");
 
     const snap = await getDocs(totalVisitorsCol);
-    document.getElementById("admin-total").textContent = snap.size;
+
+    const el = document.getElementById("visitor-total");
+    if (!el) return;
+
+    el.textContent = snap.size;
   }
 
   /* ============================================================
@@ -123,14 +142,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const slice = shardData.slice(start, end);
 
-    document.getElementById("shard-list").textContent =
-      slice.join("\n") || "데이터 없음";
+    const listEl = document.getElementById("shard-list");
+    if (!listEl) return;
+
+    listEl.textContent = slice.join("\n") || "데이터 없음";
 
     renderShardButtons();
   }
 
   function renderShardButtons() {
     const container = document.getElementById("shard-buttons");
+    if (!container) return;
+
     container.innerHTML = "";
 
     if (shardPage > 0) {
@@ -171,8 +194,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const snap = await getDoc(dateRef);
 
+    const logEl = document.getElementById("daily-log");
+    if (!logEl) return;
+
     if (!snap.exists()) {
-      document.getElementById("daily-log").textContent = "데이터 없음";
+      logEl.textContent = "데이터 없음";
       return;
     }
 
@@ -192,13 +218,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let text = `📅 ${date} 방문자 수: ${dailyData.length}\n\n`;
     text += slice.join("\n") || "데이터 없음";
 
-    document.getElementById("daily-log").textContent = text;
+    const logEl = document.getElementById("daily-log");
+    if (!logEl) return;
+
+    logEl.textContent = text;
 
     renderDailyButtons();
   }
 
   function renderDailyButtons() {
     const container = document.getElementById("daily-buttons");
+    if (!container) return;
+
     container.innerHTML = "";
 
     if (dailyPage > 0) {
@@ -267,15 +298,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     파이차트 공통 함수
+     파이차트 공통 함수 (중복 생성 방지 포함)
      ============================================================ */
   function drawPieChart(canvasId, dataObj) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
+    if (typeof Chart === "undefined") return;
 
     const ctx = canvas.getContext("2d");
 
-    new Chart(ctx, {
+    if (canvasId === "browserChart" && browserChartInstance) {
+      browserChartInstance.destroy();
+    }
+    if (canvasId === "osChart" && osChartInstance) {
+      osChartInstance.destroy();
+    }
+
+    const newChart = new Chart(ctx, {
       type: "pie",
       data: {
         labels: Object.keys(dataObj),
@@ -288,6 +327,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }]
       }
     });
+
+    if (canvasId === "browserChart") browserChartInstance = newChart;
+    if (canvasId === "osChart") osChartInstance = newChart;
   }
 
   /* ============================================================
@@ -338,13 +380,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (text === "") text = "데이터 없음";
 
-    document.getElementById("ip-detail-log").textContent = text;
+    const el = document.getElementById("ip-detail-log");
+    if (!el) return;
+
+    el.textContent = text;
 
     renderIPButtons();
   }
 
   function renderIPButtons() {
     const container = document.getElementById("ip-buttons");
+    if (!container) return;
+
     container.innerHTML = "";
 
     if (ipPage > 0) {
@@ -373,22 +420,30 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ============================================================
      Daily 조회 버튼
      ============================================================ */
-  document.getElementById("daily-btn").onclick = async () => {
-    const date = document.getElementById("daily-date").value;
-    if (!date) return;
+  const dailyBtn = document.getElementById("daily-btn");
+  if (dailyBtn) {
+    dailyBtn.onclick = async () => {
+      const dateInput = document.getElementById("daily-date");
+      if (!dateInput || !dateInput.value) return;
 
-    await loadDailyLog(date);
-    await loadIPDetails(date);
-    await loadBrowserStats();
-    await loadOSStats();
-  };
+      const date = dateInput.value;
+
+      await loadDailyLog(date);
+      await loadIPDetails(date);
+      await loadBrowserStats();
+      await loadOSStats();
+    };
+  }
 
   /* ============================================================
      페이지 로드시 자동으로 오늘 날짜 선택 + 자동 조회
      ============================================================ */
   function setTodayDate() {
+    const dateInput = document.getElementById("daily-date");
+    if (!dateInput) return;
+
     const today = new Date().toISOString().slice(0, 10);
-    document.getElementById("daily-date").value = today;
+    dateInput.value = today;
   }
 
   async function autoLoadDaily() {
@@ -407,29 +462,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const pendingQ = query(paymentsCol, where("status", "==", "pending"));
     const pendingSnap = await getDocs(pendingQ);
-    document.getElementById("payment-pending-count").textContent = pendingSnap.size;
+    const pendingEl = document.getElementById("payment-pending-count");
+    if (pendingEl) pendingEl.textContent = pendingSnap.size;
 
     const tokensCol = collection(db, "access_tokens");
 
     const activeQ = query(tokensCol, where("is_active", "==", true));
     const activeSnap = await getDocs(activeQ);
-    document.getElementById("token-active-count").textContent = activeSnap.size;
+    const activeEl = document.getElementById("token-active-count");
+    if (activeEl) activeEl.textContent = activeSnap.size;
 
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
     const todayQ = query(tokensCol, where("created_at", ">=", startOfDay.getTime()));
     const todaySnap = await getDocs(todayQ);
-    document.getElementById("token-today-count").textContent = todaySnap.size;
+    const todayEl = document.getElementById("token-today-count");
+    if (todayEl) todayEl.textContent = todaySnap.size;
   }
 
-  document.getElementById("payment-manage-btn").addEventListener("click", () => {
-    window.location.href = "/admin/payments.html";
-  });
+  const paymentManageBtn = document.getElementById("payment-manage-btn");
+  if (paymentManageBtn) {
+    paymentManageBtn.addEventListener("click", () => {
+      window.location.href = "/admin/payments.html";
+    });
+  }
 
-  document.getElementById("token-manage-btn").addEventListener("click", () => {
-    window.location.href = "/admin/tokens.html";
-  });
+  const tokenManageBtn = document.getElementById("token-manage-btn");
+  if (tokenManageBtn) {
+    tokenManageBtn.addEventListener("click", () => {
+      window.location.href = "/admin/tokens.html";
+    });
+  }
 
   /* ============================================================
      회원 통계 불러오기
@@ -461,8 +525,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (created === todayStr) todayCount++;
     });
 
-    document.getElementById("user-total-count").textContent = total;
-    document.getElementById("user-today-count").textContent = todayCount;
+    const totalEl = document.getElementById("user-total-count");
+    const todayEl = document.getElementById("user-today-count");
+
+    if (totalEl) totalEl.textContent = total;
+    if (todayEl) todayEl.textContent = todayCount;
   }
 
   /* ============================================================
