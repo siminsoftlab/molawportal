@@ -318,5 +318,3 @@ function handleLivingCalc() {
 }
 
 window.handleLivingCalc = handleLivingCalc;
-
-window.checkAccess = checkAccess;
