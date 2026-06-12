@@ -212,3 +212,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateCourtLiving();
 });
+
+/****************************************************
+ * checkAccess 후 실행될 실제 계산 함수
+ ****************************************************/
+function handleLivingCalc() {
+  calcHouseholdLiving();
+}
+
+/* HTML onclick에서도 접근 가능하도록 전역 등록 */
+window.handleLivingCalc = handleLivingCalc;
