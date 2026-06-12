@@ -269,7 +269,7 @@
 <script type="module" src="../auth/auth-state.js"></script>
 
 <script>
-  fetch("/footer.html")
+  fetch("../footer.html")
     .then(res => res.text())
     .then(html => {
       document.getElementById("footer").innerHTML = html;
@@ -278,7 +278,7 @@
 
 <script type="module" src="../living-adjust.js?v=1006"></script>
 <script src="../paywall.js?v=1006"></script>
-<script src="../faq.js?v=1006" defer></script>
+<script src="../faq.js?v=1006"></script>
 <script src="../check-access.js"></script>
 </body>
 </html>
