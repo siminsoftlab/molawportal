@@ -21,18 +21,26 @@
     <input id="password" type="password" autocomplete="new-password" placeholder="비밀번호 (6자 이상)">
     <input type="password" id="signup-password-confirm" autocomplete="new-password" placeholder="비밀번호 확인">  
      <!-- ⭐ 이용약관 + 개인정보 제3자 제공 동의 -->
-    <div class="agree-wrap">
-      <label class="agree-item">
-        <input type="checkbox" id="agreeTerms">
-        <span>이용약관에 동의합니다.</span>
-        <a href="/policy/terms.html" target="_self" class="agree-link">[보기]</a>
-      </label>
-
-      <label class="agree-item">
-        <input type="checkbox" id="agreePrivacy">
-        <span>개인정보 제3자 제공에 동의합니다.</span>
-        <a href="/policy/privacy-third.html" target="_self" class="agree-link">[보기]</a>
-      </label>
+    <!-- ⭐ 이용약관 모달 -->
+    <div id="termsModal" class="modal">
+      <div class="modal-content">
+        <h3>이용약관</h3>
+        <div class="modal-body">
+          <iframe src="/policy/terms.html"></iframe>
+        </div>
+        <button id="closeTerms" class="close-btn">닫기</button>
+      </div>
+    </div>
+    
+    <!-- ⭐ 개인정보 제3자 제공 동의 모달 -->
+    <div id="privacyModal" class="modal">
+      <div class="modal-content">
+        <h3>개인정보 제3자 제공 동의</h3>
+        <div class="modal-body">
+          <iframe src="/policy/privacy-third.html"></iframe>
+        </div>
+        <button id="closePrivacy" class="close-btn">닫기</button>
+      </div>
     </div>
     <button id="signupBtn">회원가입</button>
   
@@ -43,6 +51,7 @@
   <span class="divider">|</span>
   <a href="/auth/login.html" class="link">로그인</a>
 </div>
+
 <!-- 2) Firebase 초기화 -->
 <script type="module" src="/firebase-init.js"></script>
 <script type="module" src="/auth/auth-state.js"></script>
@@ -50,27 +59,7 @@
 
 <script type="module" src="/auth/signup.js"></script>
 <script src="/block-right-click.js"></script>
-<!-- ⭐ 이용약관 모달 -->
-<div id="termsModal" class="modal">
-  <div class="modal-content">
-    <h3>이용약관</h3>
-    <div class="modal-body">
-      <iframe src="/policy/terms.html"></iframe>
-    </div>
-    <button id="closeTerms" class="close-btn">닫기</button>
-  </div>
-</div>
 
-<!-- ⭐ 개인정보 제3자 제공 동의 모달 -->
-<div id="privacyModal" class="modal">
-  <div class="modal-content">
-    <h3>개인정보 제3자 제공 동의</h3>
-    <div class="modal-body">
-      <iframe src="/policy/privacy-third.html"></iframe>
-    </div>
-    <button id="closePrivacy" class="close-btn">닫기</button>
-  </div>
-</div>
 <script>
   // ⭐ 이용약관 모달 열기
   const termsLink = document.querySelector('a[href="/policy/terms.html"]');
