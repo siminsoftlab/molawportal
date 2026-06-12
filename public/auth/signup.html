@@ -6,93 +6,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet" href="/auth/signup.css">  
   <link rel="icon" href="/images/favicon.ico">
-  
 </head>
 
 <body class="signup-page">  
+
   <!-- ⭐ 회원가입 박스 -->
   <div class="box">
     <h2>회원가입</h2>
   
     <input id="name" type="text" placeholder="이름">
     <input id="email" type="email" placeholder="이메일">
-      <!-- ⭐ 추가: 휴대전화 입력 -->
     <input id="phone" type="tel" placeholder="휴대전화번호 (숫자만)">
     <input id="password" type="password" autocomplete="new-password" placeholder="비밀번호 (6자 이상)">
-    <input type="password" id="signup-password-confirm" autocomplete="new-password" placeholder="비밀번호 확인">  
-     <!-- ⭐ 이용약관 + 개인정보 제3자 제공 동의 -->
-    <!-- ⭐ 이용약관 모달 -->
-    <div id="termsModal" class="modal">
-      <div class="modal-content">
-        <h3>이용약관</h3>
-        <div class="modal-body">
-          <iframe src="/policy/terms.html"></iframe>
-        </div>
-        <button id="closeTerms" class="close-btn">닫기</button>
-      </div>
+    <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="비밀번호 확인">
+
+    <!-- ⭐ 이용약관 + 개인정보 제3자 제공 동의 -->
+    <div class="agree-wrap">
+      <label class="agree-item">
+        <input type="checkbox" id="agreeTerms">
+        <span>이용약관에 동의합니다.</span>
+        <a href="/policy/terms.html" class="agree-link" id="openTerms">[보기]</a>
+      </label>
+
+      <label class="agree-item">
+        <input type="checkbox" id="agreePrivacy">
+        <span>개인정보 제3자 제공에 동의합니다.</span>
+        <a href="/policy/privacy-third.html" class="agree-link" id="openPrivacy">[보기]</a>
+      </label>
     </div>
-    
-    <!-- ⭐ 개인정보 제3자 제공 동의 모달 -->
-    <div id="privacyModal" class="modal">
-      <div class="modal-content">
-        <h3>개인정보 제3자 제공 동의</h3>
-        <div class="modal-body">
-          <iframe src="/policy/privacy-third.html"></iframe>
-        </div>
-        <button id="closePrivacy" class="close-btn">닫기</button>
-      </div>
-    </div>
+
     <button id="signupBtn">회원가입</button>
-  
     <div class="msg" id="msg"></div>
   </div>
+
   <div class="signup-links">
-  <a href="/" class="link">홈으로</a>
-  <span class="divider">|</span>
-  <a href="/auth/login.html" class="link">로그인</a>
-</div>
+    <a href="/" class="link">홈으로</a>
+    <span class="divider">|</span>
+    <a href="/auth/login.html" class="link">로그인</a>
+  </div>
 
-<!-- 2) Firebase 초기화 -->
-<script type="module" src="/firebase-init.js"></script>
-<script type="module" src="/auth/auth-state.js"></script>
-<script type="module" src="/firebase-counter.js"></script>
+  <!-- ⭐ 이용약관 모달 -->
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <h3>이용약관</h3>
+      <div class="modal-body">
+        <iframe src="/policy/terms.html"></iframe>
+      </div>
+      <button id="closeTerms" class="close-btn">닫기</button>
+    </div>
+  </div>
 
-<script type="module" src="/auth/signup.js"></script>
-<script src="/block-right-click.js"></script>
+  <!-- ⭐ 개인정보 제3자 제공 동의 모달 -->
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <h3>개인정보 제3자 제공 동의</h3>
+      <div class="modal-body">
+        <iframe src="/policy/privacy-third.html"></iframe>
+      </div>
+      <button id="closePrivacy" class="close-btn">닫기</button>
+    </div>
+  </div>
 
-<script>
-  // ⭐ 이용약관 모달 열기
-  const termsLink = document.querySelector('a[href="/policy/terms.html"]');
-  const termsModal = document.getElementById("termsModal");
-  const closeTerms = document.getElementById("closeTerms");
+  <!-- Firebase -->
+  <script type="module" src="/firebase-init.js"></script>
+  <script type="module" src="/auth/auth-state.js"></script>
+  <script type="module" src="/firebase-counter.js"></script>
+  <script type="module" src="/auth/signup.js"></script>
+  <script src="/block-right-click.js"></script>
 
-  if (termsLink && termsModal && closeTerms) {
-    termsLink.addEventListener("click", (e) => {
+  <!-- ⭐ 모달 JS -->
+  <script>
+    // 이용약관 모달
+    document.getElementById("openTerms").addEventListener("click", (e) => {
       e.preventDefault();
-      termsModal.style.display = "flex";
+      document.getElementById("termsModal").style.display = "flex";
+    });
+    document.getElementById("closeTerms").addEventListener("click", () => {
+      document.getElementById("termsModal").style.display = "none";
     });
 
-    closeTerms.addEventListener("click", () => {
-      termsModal.style.display = "none";
-    });
-  }
-
-  // ⭐ 개인정보 제3자 제공 동의 모달 열기
-  const privacyLink = document.querySelector('a[href="/policy/privacy-third.html"]');
-  const privacyModal = document.getElementById("privacyModal");
-  const closePrivacy = document.getElementById("closePrivacy");
-
-  if (privacyLink && privacyModal && closePrivacy) {
-    privacyLink.addEventListener("click", (e) => {
+    // 개인정보 제3자 제공 모달
+    document.getElementById("openPrivacy").addEventListener("click", (e) => {
       e.preventDefault();
-      privacyModal.style.display = "flex";
+      document.getElementById("privacyModal").style.display = "flex";
     });
-
-    closePrivacy.addEventListener("click", () => {
-      privacyModal.style.display = "none";
+    document.getElementById("closePrivacy").addEventListener("click", () => {
+      document.getElementById("privacyModal").style.display = "none";
     });
-  }
-</script>
+  </script>
 
 </body>
 </html>
