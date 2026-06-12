@@ -130,13 +130,19 @@ async function saveVisitorGeoIP() {
 function listenVisitorCount() {
   const today = getTodayString();
 
-  const dailyRef = collection(db, "visitors", "daily", "days", today);
+  // Daily 문서 참조
+  const dailyDocRef = doc(db, "visitors", "daily", "days", today);
+
+  // 전체 방문자 컬렉션
   const totalRef = collection(db, "visitors", "total", "visitors");
 
   // Daily 실시간
-  onSnapshot(dailyRef, (snap) => {
+  onSnapshot(dailyDocRef, (snap) => {
+    const data = snap.data() || {};
+    const count = Object.keys(data).filter(k => k !== "_init").length;
+
     const el = document.getElementById("visitor-today");
-    if (el) el.textContent = Object.keys(snap.data() || {}).length - 1; // _init 제외
+    if (el) el.textContent = count;
   });
 
   // Total 실시간
