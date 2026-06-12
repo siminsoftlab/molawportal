@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>관리자 방문자 모니터링</title>
 
-  <link rel="stylesheet" href="admin.css?v=1003">
+  <link rel="stylesheet" href="/admin.css?v=1003">
 </head>
 
 <body>
@@ -126,7 +126,7 @@
       const time = localStorage.getItem("admin_token_time");
 
       if (!token || !time) {
-        window.location.href = "admin-login.html";
+        window.location.href = "/admin-login.html";
         return;
       }
 
@@ -138,26 +138,19 @@
         localStorage.removeItem("admin_token");
         localStorage.removeItem("admin_token_time");
         alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-        window.location.href = "admin-login.html";
+        window.location.href = "/admin-login.html";
         return;
       }
     })();
   </script>
-
- 
-    <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
   <!-- Firebase 초기화 -->
-  <script src="/firebase-init.js"></script>
-  <script src="firebase-counter.js" defer></script>
+  <script type="module" src="/firebase-init.js"></script>
+  <script type="module" src="/firebase-counter.js" defer></script>
    <!-- admin.js -->
-  <script src="admin.js?v=1003" defer></script>
+  <script src="/admin.js?v=1003" defer></script>
     <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="block-right-click.js"></script>
+  <script src="/block-right-click.js"></script>
 
 </body>
 </html>
