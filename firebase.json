@@ -12,19 +12,8 @@
         "function": "geoip"
       },
       {
-        "source": "**",
+        "source": "!**/*.{js,css,png,jpg,jpeg,gif,svg,ico,json}",
         "destination": "/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(js|css|png|jpg|jpeg|gif|svg|ico)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
       }
     ]
   },
