@@ -71,6 +71,39 @@
     <button id="closePrivacy" class="close-btn">닫기</button>
   </div>
 </div>
+<script>
+  // ⭐ 이용약관 모달 열기
+  const termsLink = document.querySelector('a[href="/policy/terms.html"]');
+  const termsModal = document.getElementById("termsModal");
+  const closeTerms = document.getElementById("closeTerms");
+
+  if (termsLink && termsModal && closeTerms) {
+    termsLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      termsModal.style.display = "flex";
+    });
+
+    closeTerms.addEventListener("click", () => {
+      termsModal.style.display = "none";
+    });
+  }
+
+  // ⭐ 개인정보 제3자 제공 동의 모달 열기
+  const privacyLink = document.querySelector('a[href="/policy/privacy-third.html"]');
+  const privacyModal = document.getElementById("privacyModal");
+  const closePrivacy = document.getElementById("closePrivacy");
+
+  if (privacyLink && privacyModal && closePrivacy) {
+    privacyLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      privacyModal.style.display = "flex";
+    });
+
+    closePrivacy.addEventListener("click", () => {
+      privacyModal.style.display = "none";
+    });
+  }
+</script>
 
 </body>
 </html>
