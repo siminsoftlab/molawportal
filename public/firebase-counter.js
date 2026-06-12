@@ -1,7 +1,7 @@
 /* ============================================================
    Firebase v9 모듈 import
 ============================================================ */
-import { db } from "./firebase-init.js";
+import { db } from "/firebase-init.js";
 import {
   collection,
   doc,
