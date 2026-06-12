@@ -312,3 +312,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('la_household').addEventListener('change', updateCourtLiving);
   document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 });
+
+function handleLivingCalc() {
+  calcLivingAdjust();   // ← 실제 계산 함수 이름으로 변경
+}
+
+window.handleLivingCalc = handleLivingCalc;
+
+window.checkAccess = checkAccess;
