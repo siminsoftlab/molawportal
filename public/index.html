@@ -370,6 +370,26 @@
 </a>
 
 <script>
+  fetch("/footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>  
+<!-- 2) Firebase 초기화 -->
+<script type="module" src="/firebase-init.js" ></script>
+<!-- 3) 방문자수 카운터 (firebase-counter.js) -->
+<script type="module" src="/firebase-counter.js" ></script>
+<!-- 4) 로그인 상태 감지 -->
+<script type="module" src="/auth/auth-state.js" ></script>  
+<script src="/app.js" ></script>
+<script src="/map.js" defer></script>  
+<script src="/consult.js" defer></script>
+<script src="/block-right-click.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> 
+<script>
   // ⭐ 슬라이드 랜덤 셔플
   document.addEventListener("DOMContentLoaded", function () {
     const wrapper = document.querySelector(".youtubeSwiper .swiper-wrapper");
@@ -398,25 +418,5 @@
     }
   });
 </script>
-<script>
-  fetch("/footer.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("footer").innerHTML = html;
-    });
-</script>  
-<!-- 2) Firebase 초기화 -->
-<script type="module" src="/firebase-init.js" ></script>
-<!-- 3) 방문자수 카운터 (firebase-counter.js) -->
-<script type="module" src="/firebase-counter.js" ></script>
-<!-- 4) 로그인 상태 감지 -->
-<script type="module" src="/auth/auth-state.js" ></script>  
-<script src="/app.js" ></script>
-<script src="/map.js" defer></script>  
-<script src="/consult.js" defer></script>
-<script src="/block-right-click.js"></script>  
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> 
 </body>
 </html>
