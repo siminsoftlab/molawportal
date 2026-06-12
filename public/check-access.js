@@ -91,3 +91,5 @@ function openModal(type) {
       break;
   }
 }
+/* HTML onclick에서도 사용 가능하도록 전역 등록 */
+window.checkAccess = checkAccess;
