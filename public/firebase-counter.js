@@ -92,10 +92,26 @@ async function saveVisitorGeoIP() {
 
     const data = await response.json();
     console.log("GeoIP 응답:", data);
+
+    const today = getTodayString();
+
+    // Firestore 저장 경로:
+    // visitors / geoip / {YYYY-MM-DD} / {timestamp}
+    await setDoc(
+      doc(db, "visitors", "geoip", today, String(Date.now())),
+      {
+        ip: data.ip || null,
+        country: data.country || null,
+        city: data.city || null,
+        timestamp: Date.now()
+      }
+    );
+
   } catch (err) {
     console.error("GeoIP 저장 실패:", err);
   }
 }
+
 
 /* ============================================================
    실시간 방문자 표시
