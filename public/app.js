@@ -226,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll(".section-animate");
+  if (!sections || sections.length === 0) return;
 
   const observer = new IntersectionObserver(
     (entries) => {
@@ -238,7 +239,11 @@ document.addEventListener("DOMContentLoaded", () => {
     { threshold: 0.2 }
   );
 
-  sections.forEach((sec) => observer.observe(sec));
+  sections.forEach((sec) => {
+    if (sec instanceof Element) {
+      observer.observe(sec);
+    }
+  });
 });
 
 /****************************************************
