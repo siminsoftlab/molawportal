@@ -1,15 +1,4 @@
 /****************************************************
- * Firebase v9 import
- ****************************************************/
-import { auth, db } from "/firebase-init.js";
-import {
-  collection,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-/****************************************************
  * 숫자 처리
  ****************************************************/
 function getInt(id) {
@@ -43,82 +32,19 @@ function updateCourtLiving() {
 }
 
 /****************************************************
- * 🔒 로그인 + 이용권 체크 (v9)
+ * 계산하기 버튼 → checkAccess 후 실행될 함수
  ****************************************************/
-async function checkAccessBeforeCalc() {
-
-  // 1) 로그인 여부 체크
-  const user = auth.currentUser;
-
-  if (!user) {
-    document.getElementById("loginRequiredModal").style.display = "flex";
-    return false;
-  }
-
-  // 2) Firestore에서 이용권 조회 (v9)
-  const q = query(
-    collection(db, "access_tokens"),
-    where("user_id", "==", user.uid)
-  );
-
-  const tokenSnap = await getDocs(q);
-
-  if (tokenSnap.empty) {
-    document.getElementById("paywallOverlay").style.display = "flex";
-    return false;
-  }
-
-  // 3) 가장 늦게 만료되는 이용권 선택
-  let best = null;
-  tokenSnap.forEach(doc => {
-    const data = doc.data();
-    if (!best || data.expire_at > best.expire_at) {
-      best = data;
-    }
-  });
-
-  // 4) 활성 여부 체크
-  if (!best.is_active) {
-    document.getElementById("paywallOverlay").style.display = "flex";
-    return false;
-  }
-
-  // 5) 만료일 체크
-  let expireAt = best.expire_at;
-  let expireDate;
-
-  if (expireAt instanceof Date) {
-    expireDate = expireAt;
-  } else if (expireAt?.toDate) {
-    expireDate = expireAt.toDate();
-  } else {
-    expireDate = new Date(expireAt);
-  }
-
-  if (expireDate < new Date()) {
-    document.getElementById("paywallOverlay").style.display = "flex";
-    return false;
-  }
-
-  return true; // 통과
-}
-
-/****************************************************
- * 계산하기 버튼 → 접근권한 체크 후 계산 실행
- ****************************************************/
-async function handleLivingCalc() {
-  const ok = await checkAccessBeforeCalc();
-  if (!ok) return;
-
+function handleLivingCalc() {
   calcLivingAdjust();
 }
+
+window.handleLivingCalc = handleLivingCalc;
 
 /****************************************************
  * 계산 (법원 생계비 계산기)
  ****************************************************/
 function calcLivingAdjust() {
 
-  // ⭐ 필수 입력값 체크
   const incomeInput = document.getElementById('la_income').value.trim();
   const livingInput = document.getElementById('la_court_living').value.trim();
   const extraInputRaw = document.getElementById('la_extra').value.trim();
@@ -135,22 +61,13 @@ function calcLivingAdjust() {
   const extraInput  = getInt('la_extra');
   const months      = getInt('la_months');
 
-  /* 추가 생계비 인정 */
   const extraLimit   = preciseRound(courtLiving * 0.3);
   const allowedExtra = Math.min(extraInput, extraLimit);
 
-  /* 총 생계비 */
   const totalLiving  = courtLiving + allowedExtra;
-
-  /* 월 변제 가능 금액 */
   const disposable   = Math.max(income - totalLiving, 0);
-
-  /* 총 변제예정액 */
   const totalRepay   = disposable * months;
 
-  /****************************************************
-   * 요약 카드
-   ****************************************************/
   const summary = document.getElementById("la_summary");
   summary.style.display = "block";
   summary.innerHTML = `
@@ -186,9 +103,6 @@ function calcLivingAdjust() {
   </div>
 `;
 
-  /****************************************************
-   * 자동 설명
-   ****************************************************/
   const explain = document.getElementById("la_explain");
   explain.style.display = "block";
   explain.innerHTML = `
@@ -207,9 +121,6 @@ function calcLivingAdjust() {
     <strong>${totalRepay.toLocaleString()}원</strong>입니다.</p>
   `;
 
-  /****************************************************
-   * 상세 계산
-   ****************************************************/
   const acc = document.getElementById("la_accordion");
   acc.innerHTML = `
   <div class="repay-highlight-box-red">
@@ -291,20 +202,6 @@ function resetLivingAdjust() {
 }
 
 /****************************************************
- * 모달 바깥 클릭 시 닫기
- ****************************************************/
-["paywallOverlay", "loginRequiredModal"].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) {
-    el.addEventListener("click", (e) => {
-      if (e.target.id === id) {
-        e.target.style.display = "none";
-      }
-    });
-  }
-});
-
-/****************************************************
  * DOM 로드 후 초기 세팅
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
@@ -312,9 +209,3 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('la_household').addEventListener('change', updateCourtLiving);
   document.querySelector(".la-acc-btn").addEventListener("click", toggleLivingAccordion);
 });
-
-function handleLivingCalc() {
-  calcLivingAdjust();   // ← 실제 계산 함수 이름으로 변경
-}
-
-window.handleLivingCalc = handleLivingCalc;
