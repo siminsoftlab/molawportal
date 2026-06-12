@@ -1,7 +1,7 @@
 console.log("auth-state.js loaded");
 
 // firebase-init.js에서 export한 모듈 불러오기
-import { auth, db } from "../firebase-init.js";
+import { auth, db } from "/firebase-init.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
