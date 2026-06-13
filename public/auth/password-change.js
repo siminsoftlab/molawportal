@@ -3,7 +3,7 @@
 ============================================================ */
 
 // firebase-init.js 에서 export한 auth 불러오기
-import { auth } from "/firebase/firebase-init.js";
+import { auth } from "/firebase-init.js";
 
 // Firebase v9 모듈
 import {
