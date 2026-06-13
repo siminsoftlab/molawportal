@@ -740,7 +740,7 @@ body.subpage .top-info-bar {
 .modal {
   display: none;
   position: fixed;
-  z-index: 100000;
+  z-index: 9999;
   left: 0;
   top: 0;
   width: 100%;
@@ -991,7 +991,8 @@ margin-top: 14px;
   text-decoration: none;
 }
 
-.modal {
+/* footer 전용 모달 */
+.footer-modal {
   display: none;
   position: fixed;
   top: 0;
@@ -1004,7 +1005,7 @@ margin-top: 14px;
   z-index: 9999;
 }
 
-.modal-content {
+.footer-modal-content {
   width: 90%;
   max-width: 600px;
   background: #fff;
@@ -1013,19 +1014,19 @@ margin-top: 14px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
-.modal-body {
+.footer-modal-body {
   height: 400px;
   overflow: hidden;
 }
 
-.modal-body iframe {
+.footer-modal-body iframe {
   width: 100%;
   height: 100%;
   border: none;
   overflow-y: auto;
 }
 
-.modal-close {
+.footer-modal-close {
   margin-top: 15px;
   width: 100%;
   padding: 12px;
@@ -1036,8 +1037,6 @@ margin-top: 14px;
   border: none;
   cursor: pointer;
 }
-
-
 /* ============================
   하단 고정 상담바
 ============================ */
