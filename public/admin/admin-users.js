@@ -1,18 +1,28 @@
-//const db = firebase.firestore();
+/* ============================================================
+   Firebase v9 모듈식 API import (CDN)
+============================================================ */
+import { db } from "/firebase-init.js";
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 let allUsers = []; // ⭐ 전체 회원 저장 (검색용)
 
+/* ============================================================
+   회원 목록 불러오기
+============================================================ */
 async function loadUsers() {
   const tbody = document.getElementById("userTableBody");
   tbody.innerHTML = "";
 
-  const snap = await db.collection("users").get();
+  const snap = await getDocs(collection(db, "users"));
 
   allUsers = []; // 초기화
 
-  snap.forEach(doc => {
-    if (doc.id === "_schema") return; // ⭐ 스키마 제외
-    allUsers.push({ id: doc.id, ...doc.data() });
+  snap.forEach(docSnap => {
+    if (docSnap.id === "_schema") return; // ⭐ 스키마 제외
+    allUsers.push({ id: docSnap.id, ...docSnap.data() });
   });
 
   // created_at 기준 정렬
@@ -21,6 +31,9 @@ async function loadUsers() {
   renderTable(allUsers); // ⭐ 화면에 출력
 }
 
+/* ============================================================
+   테이블 렌더링
+============================================================ */
 function renderTable(list) {
   const tbody = document.getElementById("userTableBody");
   tbody.innerHTML = "";
@@ -42,10 +55,21 @@ function renderTable(list) {
   });
 }
 
+/* ============================================================
+   상세 페이지 이동
+============================================================ */
 function viewUser(uid) {
-  location.href = `admin-user-detail.html?uid=${uid}`;
+  location.href = `/admin/admin-user-detail.html?uid=${uid}`;
 }
 
+/* ============================================================
+   전역 노출 (onclick에서 호출 가능하도록)
+============================================================ */
+window.viewUser = viewUser;
+
+/* ============================================================
+   실행 및 검색 이벤트
+============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   loadUsers(); // ⭐ 페이지 로드 시 자동 조회
 
