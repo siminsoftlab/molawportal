@@ -1819,10 +1819,13 @@ button.hl-acc-btn {
 /* 모달을 상담전화바보다 위로 올리기 */
 .footer-modal {
   position: fixed !important;
-  z-index: 200000 !important;
+  z-index: 999999 !important;
+  transform: translateZ(0) !important; /* ⭐ 핵심 */
 }
 
 .footer-modal-content {
   position: relative !important;
-  z-index: 200001 !important;
+  z-index: 1000000 !important;
+  transform: translateZ(0) !important; /* ⭐ 핵심 */
 }
+
