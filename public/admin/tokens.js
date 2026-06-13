@@ -1,12 +1,24 @@
 /* ============================================================
+   Firebase v9 모듈식 API import (CDN)
+============================================================ */
+import { db } from "/firebase-init.js";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  orderBy,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+/* ============================================================
    이용권 목록 불러오기
 ============================================================ */
 async function loadTokens() {
   const list = document.getElementById("tokenList");
 
-  const snap = await db.collection("access_tokens")
-    .orderBy("created_at", "desc")
-    .get();
+  const q = query(collection(db, "access_tokens"), orderBy("created_at", "desc"));
+  const snap = await getDocs(q);
 
   if (snap.empty) {
     list.innerHTML = "<p>등록된 이용권이 없습니다.</p>";
@@ -16,8 +28,8 @@ async function loadTokens() {
   const now = Date.now();
   let html = "";
 
-  snap.forEach(doc => {
-    const t = doc.data();
+  snap.forEach(docSnap => {
+    const t = docSnap.data();
 
     const start = t.created_at
       ? new Date(t.created_at).toLocaleString("ko-KR")
@@ -56,7 +68,7 @@ async function loadTokens() {
         </p>
 
         <div class="token-actions">
-          <button class="btn-secondary" onclick="deactivateToken('${doc.id}')">
+          <button class="btn-secondary" onclick="deactivateToken('${docSnap.id}')">
             비활성화
           </button>
         </div>
@@ -73,7 +85,7 @@ async function loadTokens() {
 async function deactivateToken(id) {
   if (!confirm("이 이용권을 비활성화하시겠습니까?")) return;
 
-  await db.collection("access_tokens").doc(id).update({
+  await updateDoc(doc(collection(db, "access_tokens"), id), {
     is_active: false
   });
 
@@ -92,3 +104,8 @@ document.getElementById("backBtn").addEventListener("click", () => {
    실행
 ============================================================ */
 loadTokens();
+
+/* ============================================================
+   전역 노출 (onclick에서 호출 가능하도록)
+============================================================ */
+window.deactivateToken = deactivateToken;
