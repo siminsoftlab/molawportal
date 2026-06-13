@@ -980,19 +980,15 @@ border-top: 1px solid #333;
 padding-top: 14px;
 margin-top: 14px;
 }
-.footer-inner {
-  border-bottom: 1px solid #333;
-  padding-bottom: 20px;  /* 구분선과 아래 요소 사이 여백 */
-  margin-bottom: 20px;   /* footer 아래쪽과의 간격 */
-}
-
 .footer-links {
-  margin-bottom: 16px; /* 텍스트와 구분선 사이 여백 */
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
 }
 
 .footer-link {
-  color: #ffffff;
-  text-decoration: none; /* 글자 밑줄 제거 */
+  color: #fff;
+  text-decoration: none;
 }
 
 .modal {
