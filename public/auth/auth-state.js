@@ -6,40 +6,38 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  /* 로그인 상태 감지 */
   onAuthStateChanged(auth, async (user) => {
+    console.log("Auth state changed:", user);
+
     const before = document.getElementById("auth-before");
     const after = document.getElementById("auth-after");
     const username = document.getElementById("auth-username");
 
-    // 요소가 없으면 footer 삽입 후 다시 시도
     if (!before || !after) {
-      console.log("auth DOM 요소 없음, 500ms 후 재시도");
-      setTimeout(() => {
-        const before2 = document.getElementById("auth-before");
-        const after2 = document.getElementById("auth-after");
-        const username2 = document.getElementById("auth-username");
-        if (user) {
-          before2.style.display = "none";
-          after2.style.display = "flex";
-          if (username2) username2.textContent = user.email;
-        } else {
-          before2.style.display = "flex";
-          after2.style.display = "none";
-        }
-      }, 500);
+      console.log("auth DOM 요소 없음");
       return;
     }
 
     if (user) {
       before.style.display = "none";
       after.style.display = "flex";
-      if (username) username.textContent = user.email;
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists() && username) {
+        username.textContent = userSnap.data().name;
+      }
+
+      loadTicketRemaining(user.uid);
+
     } else {
       before.style.display = "flex";
       after.style.display = "none";
     }
   });
-});
 
   /* 이용권 남은 기간 */
   async function loadTicketRemaining(uid) {
