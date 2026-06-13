@@ -3,14 +3,15 @@
 
     <!-- 상단 링크 영역 -->
     <div class="footer-links">
-      <a class="footer-link" data-modal="termsModal">이용약관</a>
+      <a href="#" class="footer-link" data-modal="termsModal">이용약관</a>
       <span class="footer-divider">|</span>
-      <a class="footer-link" data-modal="privacyModal">개인정보처리방침</a>
+      <a href="#" class="footer-link" data-modal="privacyModal">개인정보처리방침</a>
     </div>
 
-    <!-- 회사 정보 -->
+    <!-- 회사명 -->
     <div class="footer-company">딱요만큼변제</div>
 
+    <!-- SNS -->
     <div class="footer-social">
 
       <!-- 네이버 카페 -->
@@ -91,27 +92,3 @@
     안심 상담 — 클릭 시 전화 연결됩니다
   </a>
 </div>
-
-<script>
-  // 모달 열기
-  document.querySelectorAll('.footer-link').forEach(link => {
-    link.addEventListener('click', function () {
-      const modalId = this.getAttribute('data-modal');
-      document.getElementById(modalId).style.display = 'block';
-    });
-  });
-
-  // 모달 닫기
-  document.querySelectorAll('.modal-close').forEach(btn => {
-    btn.addEventListener('click', function () {
-      this.closest('.modal').style.display = 'none';
-    });
-  });
-
-  // 바깥 클릭 시 닫기
-  window.addEventListener('click', function (e) {
-    if (e.target.classList.contains('modal')) {
-      e.target.style.display = 'none';
-    }
-  });
-</script>
