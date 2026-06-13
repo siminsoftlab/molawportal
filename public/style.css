@@ -1816,34 +1816,6 @@ button.hl-acc-btn {
   margin-top: 2px; /* 버튼 위쪽 여백 */
 }
 
-/* 모달을 GPU 레이어로 강제 승격 */
-.footer-modal {
-  position: fixed !important;
-  z-index: 999999 !important;
-  transform: translateZ(0) !important; /* ⭐ 핵심 */
-  will-change: transform !important;   /* ⭐ GPU 레이어 강제 */
-}
-
-.footer-modal-content {
-  position: relative !important;
-  z-index: 1000000 !important;
-  transform: translateZ(0) !important; /* ⭐ 핵심 */
-  will-change: transform !important;
-}
-/* 모달 전체는 화면 중앙에 고정 */
-.modal {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%; /* 화면 전체 */
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 200000 !important;
-}
-
 /* 모달 박스 크기 제한 + 내부 스크롤 */
 .modal-content.modal-large {
   width: 90%;
