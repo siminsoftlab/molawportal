@@ -1830,4 +1830,33 @@ button.hl-acc-btn {
   transform: translateZ(0) !important; /* ⭐ 핵심 */
   will-change: transform !important;
 }
+/* 모달 전체는 화면 중앙에 고정 */
+.modal {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* 화면 전체 */
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200000 !important;
+}
+
+/* 모달 박스 크기 제한 + 내부 스크롤 */
+.modal-content.modal-large {
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh; /* ⭐ 화면 85%까지만 차지 */
+  overflow-y: auto; /* ⭐ 내부 스크롤 */
+  border-radius: 12px;
+}
+
+/* iframe도 부모 높이에 맞춰 스크롤 */
+.modal-iframe {
+  width: 100%;
+  height: calc(85vh - 60px); /* 제목 + 닫기버튼 제외한 높이 */
+  overflow-y: auto;
+}
 
