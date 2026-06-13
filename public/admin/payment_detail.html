@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>결제 상세 정보</title>
-
-  <link rel="stylesheet" href="payment_detail.css">
- 
+  <link rel="stylesheet" href="/admin/payment_detail.css"> 
 </head>
 
 <body>
@@ -38,13 +36,8 @@
     <button id="backBtn" class="back">← 목록으로</button>
   </div>
 </div>
- <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
   <!-- Firebase 초기화 -->
-  <script src="/firebase-init.js"></script>
-<script src="payment_detail.js"></script>
+  <script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/admin/payment_detail.js"></script>
 </body>
 </html>
