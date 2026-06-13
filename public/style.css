@@ -980,7 +980,11 @@ border-top: 1px solid #333;
 padding-top: 14px;
 margin-top: 14px;
 }
-
+.footer-inner {
+  border-top: 1px solid rgba(255,255,255,0.25);
+  padding-top: 16px;
+  margin-top: 20px;
+}
 /* ============================
   하단 고정 상담바
 ============================ */
