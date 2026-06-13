@@ -1816,3 +1816,11 @@ button.hl-acc-btn {
   margin-top: 2px; /* 버튼 위쪽 여백 */
 }
 
+/* footer 모달이 상담전화바보다 위로 오도록 */
+.footer-modal {
+  z-index: 200000 !important;
+}
+
+.footer-modal-content {
+  z-index: 200001 !important;
+}
