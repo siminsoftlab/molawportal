@@ -419,23 +419,23 @@
   });
 </script>
 <script>
-// footer 모달 열기
 document.addEventListener("click", function(e) {
-  if (e.target.classList.contains("footer-link")) {
+  const link = e.target.closest(".footer-link");
+  if (link) {
     e.preventDefault();
-    const modalId = e.target.getAttribute("data-modal");
-    document.getElementById(modalId).style.display = "flex";
+    const modalId = link.getAttribute("data-modal");
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = "flex";
   }
 });
 
-// footer 모달 닫기
 document.addEventListener("click", function(e) {
   if (e.target.classList.contains("modal-close")) {
-    e.target.closest(".modal").style.display = "none";
+    const modal = e.target.closest(".modal");
+    if (modal) modal.style.display = "none";
   }
 });
 
-// 바깥 클릭 시 닫기
 window.addEventListener("click", function(e) {
   if (e.target.classList.contains("modal")) {
     e.target.style.display = "none";
