@@ -1831,4 +1831,22 @@ button.hl-acc-btn {
   height: calc(85vh - 60px); /* 제목 + 닫기버튼 제외한 높이 */
   overflow-y: auto;
 }
+.welcome-text a {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 2px solid #ffb300;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #ff8c00;
+  background: #fffdf5;
+  animation: welcomePulse 1.4s infinite ease-in-out;
+  text-decoration: none;
+}
+
+@keyframes welcomePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
 
