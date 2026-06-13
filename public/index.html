@@ -424,13 +424,15 @@ document.addEventListener("click", function(e) {
   if (link) {
     e.preventDefault();
     const modalId = link.getAttribute("data-modal");
-    document.getElementById(modalId).style.display = "flex";
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = "flex";
   }
 });
 
 document.addEventListener("click", function(e) {
   if (e.target.classList.contains("modal-close")) {
-    e.target.closest(".modal").style.display = "none";
+    const modal = e.target.closest(".modal");
+    if (modal) modal.style.display = "none";
   }
 });
 
@@ -440,5 +442,6 @@ window.addEventListener("click", function(e) {
   }
 });
 </script>
+
 </body>
 </html>
