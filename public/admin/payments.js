@@ -1,8 +1,8 @@
 /* ============================================================
-   Firebase v9 모듈식 API import
+   Firebase v9 모듈식 API import (CDN)
 ============================================================ */
+import { db } from "/firebase-init.js"; // firebase-init.js에서 export한 db 가져오기
 import {
-  getFirestore,
   collection,
   doc,
   setDoc,
@@ -10,9 +10,7 @@ import {
   query,
   orderBy,
   updateDoc
-} from "firebase/firestore";
-
-const db = getFirestore();
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ============================================================
    이용권 발급 함수
@@ -37,11 +35,10 @@ async function issueToken(userId) {
 /* ============================================================
    결제내역 불러오기
 ============================================================ */
-let allPayments = []; // 전체 결제 데이터 저장
+let allPayments = [];
 
 async function loadPayments() {
   const list = document.getElementById("paymentList");
-
   const q = query(collection(db, "payments"), orderBy("created_at", "desc"));
   const snap = await getDocs(q);
 
@@ -50,13 +47,9 @@ async function loadPayments() {
     return;
   }
 
-  allPayments = []; // 초기화
-
+  allPayments = [];
   snap.forEach(docSnap => {
-    allPayments.push({
-      id: docSnap.id,
-      ...docSnap.data()
-    });
+    allPayments.push({ id: docSnap.id, ...docSnap.data() });
   });
 
   renderPayments(allPayments);
@@ -84,10 +77,7 @@ function renderPayments(payments) {
         <p><strong>상태:</strong> <span class="status ${p.status}">${p.status}</span></p>
         <p><strong>신청일:</strong> ${created}</p>
         <p><strong>확인일:</strong> ${confirmed}</p>
-
-        <button class="detail-btn" onclick="goDetail('${p.id}')">
-          상세 보기
-        </button>
+        <button class="detail-btn" onclick="goDetail('${p.id}')">상세 보기</button>
     `;
 
     if (p.status === "PENDING") {
@@ -110,18 +100,13 @@ function renderPayments(payments) {
 async function confirmPayment(paymentId, userId) {
   if (!confirm("입금 확인 처리하시겠습니까?")) return;
 
-  // 1) 결제 상태 업데이트
   await updateDoc(doc(collection(db, "payments"), paymentId), {
     status: "CONFIRMED",
     confirmed_at: Date.now()
   });
 
-  // 2) 이용권 발급
   await issueToken(userId);
-
   alert("입금 확인 완료! 이용권이 발급되었습니다.");
-
-  // 3) 목록 새로고침
   loadPayments();
 }
 
@@ -147,10 +132,8 @@ async function downloadExcel() {
   }
 
   const rows = [];
-
   snap.forEach(docSnap => {
     const p = docSnap.data();
-
     rows.push({
       결제ID: docSnap.id,
       사용자ID: p.user_id,
@@ -159,9 +142,7 @@ async function downloadExcel() {
       입금자명: p.depositor_name,
       상태: p.status,
       신청일: new Date(p.created_at).toLocaleString("ko-KR"),
-      확인일: p.confirmed_at
-        ? new Date(p.confirmed_at).toLocaleString("ko-KR")
-        : "-"
+      확인일: p.confirmed_at ? new Date(p.confirmed_at).toLocaleString("ko-KR") : "-"
     });
   });
 
@@ -178,16 +159,13 @@ document.getElementById("excelBtn").addEventListener("click", downloadExcel);
 ============================================================ */
 document.getElementById("searchInput").addEventListener("input", (e) => {
   const keyword = e.target.value.trim().toLowerCase();
-
   if (keyword === "") {
     renderPayments(allPayments);
     return;
   }
-
   const filtered = allPayments.filter(p =>
     p.depositor_name.toLowerCase().includes(keyword)
   );
-
   renderPayments(filtered);
 });
 
