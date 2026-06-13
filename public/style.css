@@ -982,8 +982,8 @@ margin-top: 14px;
 }
 .footer-inner {
   border-bottom: 1px solid #333;
-  padding-top: 20px;
-  margin-top: 20px;
+  padding-bottom: 20px;  /* 구분선과 아래 요소 사이 여백 */
+  margin-bottom: 20px;   /* footer 아래쪽과의 간격 */
 }
 
 .footer-links {
@@ -994,6 +994,7 @@ margin-top: 14px;
   color: #ffffff;
   text-decoration: none; /* 글자 밑줄 제거 */
 }
+
 .modal {
   display: none;
   position: fixed;
