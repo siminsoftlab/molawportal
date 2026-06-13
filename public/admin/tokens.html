@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>이용권 관리</title>
-
   <link rel="stylesheet" href="tokens.css">
 </head>
 
@@ -19,16 +18,11 @@
   <button id="backBtn" class="back">← 관리자 대시보드로</button>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
 <!-- Firebase 초기화 -->
-<script src="/firebase-init.js"></script>
+<script type="module" src="/firebase-init.js"></script>
 
 <!-- 이용권 관리 스크립트 -->
-<script src="tokens.js"></script>
+<script type="module" src="/admin/tokens.js"></script>
 
 </body>
 </html>
