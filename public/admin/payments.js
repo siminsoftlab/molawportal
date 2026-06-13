@@ -111,6 +111,19 @@ async function confirmPayment(paymentId, userId) {
 }
 
 /* ============================================================
+   상세 페이지 이동
+============================================================ */
+function goDetail(id) {
+  window.location.href = `/admin/payment_detail.html?id=${id}`;
+}
+
+/* ============================================================
+   전역 노출
+============================================================ */
+window.goDetail = goDetail;
+window.confirmPayment = confirmPayment;
+
+/* ============================================================
    실행
 ============================================================ */
 loadPayments();
@@ -168,10 +181,3 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
   );
   renderPayments(filtered);
 });
-
-/* ============================================================
-   상세 페이지 이동
-============================================================ */
-function goDetail(id) {
-  window.location.href = `/admin/payment_detail.html?id=${id}`;
-}
