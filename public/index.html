@@ -418,5 +418,28 @@
     }
   });
 </script>
+  // footer 모달 열기
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("footer-link")) {
+    e.preventDefault();
+    const modalId = e.target.getAttribute("data-modal");
+    document.getElementById(modalId).style.display = "block";
+  }
+});
+
+// 모달 닫기
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("modal-close")) {
+    e.target.closest(".modal").style.display = "none";
+  }
+});
+
+// 바깥 클릭 시 닫기
+window.addEventListener("click", function(e) {
+  if (e.target.classList.contains("modal")) {
+    e.target.style.display = "none";
+  }
+});
+
 </body>
 </html>
