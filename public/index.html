@@ -191,7 +191,7 @@
     </button>
   </form>
 
-  <div id="consultPrivacyModal" class="modal">
+  <div id="privacyModal" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
       <h3>개인정보 수집·이용 안내</h3>
@@ -363,29 +363,6 @@
     <div id="daumRoughmapContainer1779184856757" class="root_daum_roughmap root_daum_roughmap_landing custom-map"></div>
   </div>
 </div>
-<div id="footer"></div>
- <!-- 이용약관 모달 -->
-<div id="termsModal" class="modal">
-  <div class="modal-content">
-    <h3>이용약관</h3>
-    <div class="modal-body">
-      <iframe src="/policy/terms.html"></iframe>
-    </div>
-    <button class="modal-close">닫기</button>
-  </div>
-</div>
-
-<!-- 개인정보처리방침 모달 -->
-<div id="privacyModal" class="modal">
-  <div class="modal-content">
-    <h3>개인정보처리방침</h3>
-    <div class="modal-body">
-      <iframe src="/policy/privacy.html"></iframe>
-    </div>
-    <button class="modal-close">닫기</button>
-  </div>
-</div>
-
 <!-- footer 전용 모달 -->
 <div id="footerModal" class="footer-modal">
   <div class="footer-modal-content">
@@ -450,23 +427,5 @@
     }
   });
 </script>
-<script>
-document.addEventListener("click", function(e) {
-  if (e.target.classList.contains("modal-close")) {
-    const modal = e.target.closest(".modal");
-    if (modal) modal.style.display = "none";
-  }
-  if (e.target.classList.contains("footer-modal-close")) {
-    const modal = e.target.closest(".footer-modal");
-    if (modal) modal.style.display = "none";
-  }
-});
-
-window.addEventListener("click", function(e) {
-  if (e.target.classList.contains("modal") || e.target.classList.contains("footer-modal")) {
-    e.target.style.display = "none";
-  }
-});
-</script> 
 </body>
 </html>
