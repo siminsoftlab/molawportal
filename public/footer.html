@@ -1,5 +1,14 @@
 <footer class="site-footer">
   <div class="footer-inner">
+
+    <!-- 상단 링크 영역 -->
+    <div class="footer-links">
+      <a class="footer-link" data-modal="termsModal">이용약관</a>
+      <span class="footer-divider">|</span>
+      <a class="footer-link" data-modal="privacyModal">개인정보처리방침</a>
+    </div>
+
+    <!-- 회사 정보 -->
     <div class="footer-company">딱요만큼변제</div>
 
     <div class="footer-social">
@@ -41,6 +50,7 @@
 
     </div>
 
+    <!-- 회사 정보 -->
     <div class="footer-info">
       상호: 법무법인 영민 | 대표: 박희영 | 사업자등록번호: 425-88-00769  
       주소: 06645 서울특별시 서초구 반포대로30길 70, 5층(서초동, 우성빌딩)  
@@ -52,6 +62,23 @@
     <div class="footer-copy">COPYRIGHT©2026 딱요만큼변제. ALL RIGHTS RESERVED.</div>
   </div>
 </footer>
+
+<!-- ⭐ 이용약관 모달 -->
+<div id="termsModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <iframe src="/policy/terms.html"></iframe>
+  </div>
+</div>
+
+<!-- ⭐ 개인정보처리방침 모달 -->
+<div id="privacyModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <iframe src="/policy/privacy.html"></iframe>
+  </div>
+</div>
+
 <!-- ⭐ 하단 상담 전화 고정바 -->
 <div class="call-fixed">
   <a href="tel:025955706" class="consult-call">
@@ -64,3 +91,27 @@
     안심 상담 — 클릭 시 전화 연결됩니다
   </a>
 </div>
+
+<script>
+  // 모달 열기
+  document.querySelectorAll('.footer-link').forEach(link => {
+    link.addEventListener('click', function () {
+      const modalId = this.getAttribute('data-modal');
+      document.getElementById(modalId).style.display = 'block';
+    });
+  });
+
+  // 모달 닫기
+  document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', function () {
+      this.closest('.modal').style.display = 'none';
+    });
+  });
+
+  // 바깥 클릭 시 닫기
+  window.addEventListener('click', function (e) {
+    if (e.target.classList.contains('modal')) {
+      e.target.style.display = 'none';
+    }
+  });
+</script>
