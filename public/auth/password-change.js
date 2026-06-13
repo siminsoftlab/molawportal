@@ -1,7 +1,19 @@
-//const auth = firebase.auth();
+/* ============================================================
+   Firebase v9 비밀번호 변경
+============================================================ */
+
+// firebase-init.js 에서 export한 auth 불러오기
+import { auth } from "/firebase/firebase-init.js";
+
+// Firebase v9 모듈
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 /* ============================================================
-   비밀번호 변경
+   비밀번호 변경 함수
 ============================================================ */
 async function changePassword() {
   const currentPassword = document.getElementById("currentPassword").value.trim();
@@ -23,13 +35,13 @@ async function changePassword() {
     return;
   }
 
-  // 🔥 현재 비밀번호와 새 비밀번호 동일한지 체크
+  // 현재 비밀번호와 동일한지 체크
   if (currentPassword === newPassword) {
     msg.textContent = "현재 비밀번호와 다른 번호를 입력해 주세요.";
     return;
   }
 
-  // 🔥 새 비밀번호와 확인 비밀번호 일치 체크
+  // 새 비밀번호 확인 체크
   if (newPassword !== newPasswordConfirm) {
     msg.textContent = "신규 비밀번호가 일치하지 않습니다.";
     return;
@@ -44,15 +56,16 @@ async function changePassword() {
   try {
     msg.textContent = "비밀번호 확인 중...";
 
-    // 현재 비밀번호 재인증
-    const credential = firebase.auth.EmailAuthProvider.credential(
+    // 🔥 v9 방식 재인증
+    const credential = EmailAuthProvider.credential(
       user.email,
       currentPassword
     );
-    await user.reauthenticateWithCredential(credential);
 
-    // 새 비밀번호 업데이트
-    await user.updatePassword(newPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    // 🔥 v9 방식 비밀번호 업데이트
+    await updatePassword(user, newPassword);
 
     msg.textContent = "비밀번호가 성공적으로 변경되었습니다.";
 
@@ -62,23 +75,25 @@ async function changePassword() {
 
   } catch (error) {
 
-     // 🔥 현재 비밀번호가 틀린 경우
-     if (error.code === "auth/wrong-password" ||
-         error.code === "auth/invalid-credential" ||
-         error.message.includes("INVALID_LOGIN_CREDENTIALS")) {
-       msg.textContent = "현재 비밀번호가 올바르지 않습니다.";
-       return;
-     }
-   
-     // 🔥 너무 약한 비밀번호 등 Firebase 정책 위반
-     if (error.code === "auth/weak-password") {
-       msg.textContent = "새 비밀번호가 너무 약합니다. 다른 비밀번호를 입력해주세요.";
-       return;
-     }
-   
-     // 🔥 기타 오류
-     msg.textContent = "오류: " + error.message;
-   }
+    // 🔥 현재 비밀번호 오류
+    if (
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/invalid-credential" ||
+      (error.message && error.message.includes("INVALID_LOGIN_CREDENTIALS"))
+    ) {
+      msg.textContent = "현재 비밀번호가 올바르지 않습니다.";
+      return;
+    }
+
+    // 🔥 약한 비밀번호
+    if (error.code === "auth/weak-password") {
+      msg.textContent = "새 비밀번호가 너무 약합니다. 다른 비밀번호를 입력해주세요.";
+      return;
+    }
+
+    // 🔥 기타 오류
+    msg.textContent = "오류: " + error.message;
+  }
 }
 
 /* ============================================================
