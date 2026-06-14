@@ -40,18 +40,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         : "-";
 
       tr.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.phone}</td>
-        <td>${item.email}</td>
-        <td>${item.type}</td>
-        <td style="max-width:200px; white-space:normal;">${item.message}</td>
-        <td>${date}</td>
-        <td>${item.status || "신규"}</td>
-        <td>
-          <button class="btn-secondary" onclick="editConsult('${item.id}')">관리</button>
-        </td>
-      `;
-
+      <td>${item.name}</td>
+      <td>${item.phone}</td>
+      <td>${item.email}</td>
+      <td>${item.applyType || "-"}</td>
+      <td style="max-width:200px; white-space:normal;">${item.content || "-"}</td>
+      <td>${date}</td>
+      <td>${item.status || "신규"}</td>
+      <td>
+        <button class="btn-secondary" onclick="editConsult('${item.id}')">관리</button>
+      </td>
+    `;
       tbody.appendChild(tr);
     });
   }
