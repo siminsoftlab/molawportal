@@ -31,8 +31,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("name").textContent = data.name;
   document.getElementById("phone").textContent = data.phone;
   document.getElementById("email").textContent = data.email;
-  document.getElementById("type").textContent = data.type;
-  document.getElementById("message").textContent = data.message;
+  document.getElementById("type").textContent = data.applyType || "-";
+  document.getElementById("message").textContent = data.content || "-";
 
   document.getElementById("createdAt").textContent =
     data.createdAt?.toDate
