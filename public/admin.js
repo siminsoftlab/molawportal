@@ -17,9 +17,6 @@ import {
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
 
-  /****************************************************
-   * Chart.js 인스턴스 전역 보관 (중복 생성 방지)
-   ****************************************************/
   let browserChartInstance = null;
   let osChartInstance = null;
 
@@ -112,6 +109,46 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
+     ⭐ 상담신청 통계 추가
+     ============================================================ */
+  async function loadConsultStats() {
+    const consultCol = collection(db, "consult_requests");
+    const snap = await getDocs(consultCol);
+
+    let total = 0;
+    let todayCount = 0;
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    snap.forEach(d => {
+      const data = d.data();
+      total++;
+
+      if (data.createdAt?.seconds) {
+        const created = new Date(data.createdAt.seconds * 1000)
+          .toISOString()
+          .slice(0, 10);
+
+        if (created === todayStr) todayCount++;
+      }
+    });
+
+    const totalEl = document.getElementById("consult-total-count");
+    const todayEl = document.getElementById("consult-today-count");
+
+    if (totalEl) totalEl.textContent = total;
+    if (todayEl) todayEl.textContent = todayCount;
+  }
+
+  /* 상담신청 목록 버튼 */
+  const consultManageBtn = document.getElementById("consult-manage-btn");
+  if (consultManageBtn) {
+    consultManageBtn.onclick = () => {
+      window.location.href = "/admin/admin-consult.html";
+    };
+  }
+
+  /* ============================================================
      샤드 상태 (페이징)
      ============================================================ */
   let shardData = [];
@@ -180,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     Daily 방문자 로그 (정렬 없음 + 페이징)
+     Daily 방문자 로그
      ============================================================ */
   let dailyData = [];
   let dailyPage = 0;
@@ -256,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     브라우저 통계
+     브라우저 / OS 통계
      ============================================================ */
   async function loadBrowserStats() {
     const visitorsCol = collection(db, "visitors");
@@ -276,9 +313,6 @@ document.addEventListener("DOMContentLoaded", () => {
     drawPieChart("browserChart", browserCount);
   }
 
-  /* ============================================================
-     OS 통계
-     ============================================================ */
   async function loadOSStats() {
     const visitorsCol = collection(db, "visitors");
     const statsDoc = doc(visitorsCol, "stats");
@@ -298,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     파이차트 공통 함수 (중복 생성 방지 포함)
+     파이차트 공통 함수
      ============================================================ */
   function drawPieChart(canvasId, dataObj) {
     const canvas = document.getElementById(canvasId);
@@ -333,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     IP 상세 정보 (최신순 정렬 + 페이징)
+     IP 상세 정보
      ============================================================ */
   let ipData = [];
   let ipPage = 0;
@@ -436,7 +470,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     페이지 로드시 자동으로 오늘 날짜 선택 + 자동 조회
+     페이지 로드시 자동 조회
      ============================================================ */
   function setTodayDate() {
     const dateInput = document.getElementById("daily-date");
@@ -496,7 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     회원 통계 불러오기
+     회원 통계
      ============================================================ */
   async function loadUserStats() {
     const usersCol = collection(db, "users");
@@ -542,4 +576,5 @@ document.addEventListener("DOMContentLoaded", () => {
   autoLoadDaily();
   loadPaymentStats();
   loadUserStats();
+  loadConsultStats();   // ⭐ 상담신청 통계 추가
 });
