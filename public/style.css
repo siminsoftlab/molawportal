@@ -1856,4 +1856,20 @@ button.hl-acc-btn {
   50% { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
+/* ⭐ blog-section을 consult-section과 동일한 스타일로 */
+.blog-section {
+  width: 92%;
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding: 40px 20px;
+
+  background: rgba(255,255,255,0.7);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  line-height: 1.7;
+  color: #333;
+}
 
