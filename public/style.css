@@ -1871,5 +1871,6 @@ button.hl-acc-btn {
 
   line-height: 1.7;
   color: #333;
+  margin-bottom: 60px !important; /* 원하는 만큼 조절 가능 */
 }
 
