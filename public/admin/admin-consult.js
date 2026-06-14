@@ -57,17 +57,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 검색 기능
   searchInput.addEventListener("input", () => {
-    const keyword = searchInput.value.trim().toLowerCase();
+  const keyword = searchInput.value.trim().toLowerCase();
 
-    const filtered = consultList.filter(item =>
-      item.name.toLowerCase().includes(keyword) ||
-      item.phone.toLowerCase().includes(keyword) ||
-      item.email.toLowerCase().includes(keyword) ||
-      item.type.toLowerCase().includes(keyword)
-    );
+  const filtered = consultList.filter(item =>
+    (item.name || "").toLowerCase().includes(keyword) ||
+    (item.phone || "").toLowerCase().includes(keyword) ||
+    (item.email || "").toLowerCase().includes(keyword) ||
+    (item.applyType || "").toLowerCase().includes(keyword) ||
+    (item.content || "").toLowerCase().includes(keyword)
+  );
 
-    renderTable(filtered);
-  });
+  renderTable(filtered);
+});
+
 
   // 관리 버튼 클릭 시 (추후 상세 관리 페이지 연결 가능)
   window.editConsult = function(id) {
