@@ -103,3 +103,14 @@
 .section .card {
   padding: 30px 20px;
 }
+/* ⭐ 모든 콘텐츠 박스를 상담신청 박스와 동일한 폭으로 강제 통일 */
+.page-wrap main .section {
+  max-width: 900px !important;
+  margin: 0 auto 40px !important;
+}
+
+.page-wrap main .section .card {
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  padding: 30px 20px !important;
+}
