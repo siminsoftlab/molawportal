@@ -1843,7 +1843,14 @@ button.hl-acc-btn {
   animation: welcomePulse 1.4s infinite ease-in-out;
   text-decoration: none;
 }
-
+/* 입력 요소가 모달 밖으로 넘치지 않도록 강제 */
+.app-input,
+.app-textarea,
+.app-select {
+  width: 100%;
+  box-sizing: border-box; /* ⭐ 패딩/보더 포함해서 100% 유지 */
+  max-width: 100%;        /* ⭐ 어떤 상황에서도 넘지 않음 */
+}
 @keyframes welcomePulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.04); }
