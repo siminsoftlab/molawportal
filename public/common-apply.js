@@ -30,15 +30,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ⭐ 블로그/메인 페이지에서 호출하는 함수 */
 window.openApplyModal = function(type) {
+  const modal = document.getElementById("commonApplyModal");
   const typeEl = document.getElementById("applyType");
   const titleEl = document.getElementById("applyTitle");
 
-  // 신청유형은 페이지에서 넘겨준 값으로 자동 선택
-  if (typeEl) typeEl.value = type;
+  // ⭐ 신청유형 자동 선택
+  if (typeEl) {
+    typeEl.value = type;
+  }
 
-  // 모달 타이틀은 항상 동일하게
-  if (titleEl) titleEl.textContent = "온라인 상담 신청";
+  // ⭐ 모달 타이틀은 항상 동일
+  if (titleEl) {
+    titleEl.textContent = "온라인 상담 신청";
+  }
 
+  // ⭐ 모달 열기
   modal.style.display = "block";
 };
 
