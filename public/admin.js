@@ -535,6 +535,12 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "/admin/tokens.html";
     });
   }
+const userManageBtn = document.getElementById("user-manage-btn");
+if (userManageBtn) {
+  userManageBtn.addEventListener("click", () => {
+    window.location.href = "/admin/admin-users.html";
+  });
+}
 
   /* ============================================================
      회원 통계
