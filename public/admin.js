@@ -54,14 +54,21 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutBtn.onclick = () => {
       localStorage.removeItem("admin_token");
       localStorage.removeItem("admin_token_time");
-      window.location.href = "admin-login.html";
+      window.location.href = "/admin-login.html";
     };
   }
 
   const changePwBtn = document.getElementById("change-pw-btn");
   if (changePwBtn) {
     changePwBtn.onclick = () => {
-      window.location.href = "admin-password.html";
+      window.location.href = "/admin-password.html";
+    };
+  }
+
+  const homeBtn = document.getElementById("home-btn");
+  if (homeBtn) {
+    homeBtn.onclick = () => {
+      window.location.href = "/index.html";
     };
   }
 
