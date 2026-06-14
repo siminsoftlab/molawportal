@@ -61,38 +61,7 @@
 <div class="page-wrap">
   <div class="container">
 
-    <h2>신청 정보 입력</h2>
-
-    <form id="garnishForm">
-
-      <label>성명</label>
-      <input type="text" name="name" required>
-
-      <label>연락처</label>
-      <input type="tel" name="phone" required>
-
-      <label>이메일</label>
-      <input type="email" name="email" required>
-
-      <label>주민등록번호(또는 식별번호)</label>
-      <input type="text" name="idNumber" required>
-
-      <label>사건번호</label>
-      <input type="text" name="caseNumber" required>
-
-      <label>신청 내용</label>
-      <textarea name="content" rows="5" required></textarea>
-
-      <div class="agree-box">
-        <input type="checkbox" id="agree" required>
-        <label for="agree">개인정보 수집·이용에 동의합니다.</label>
-      </div>
-
-      <div class="btn-row">
-        <button type="submit">신청하기</button>
-      </div>
-
-    </form>
+    <h2>신청 정보 입력</h2>    
 
     <p id="submitStatus" style="margin-top:12px; font-size:14px;"></p>
 
@@ -111,6 +80,7 @@
 </script>
 <script type="module" src="/firebase-init.js"></script>
 <script type="module" src="/firebase-counter.js"></script>
+<script type="module" src="/common-apply.js"></script>
 <script src="/block-right-click.js"></script>
 <script src="/app.js" defer></script>
 </body>
