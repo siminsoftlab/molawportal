@@ -1,4 +1,49 @@
-/* 앱 스타일 공통 버튼 */
+/* 🔥 앱 스타일 모달 */
+.app-modal {
+  background: #fff;
+  border-radius: 22px;
+  padding: 26px;
+  width: 90%;
+  max-width: 420px;
+  margin: 80px auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  animation: fadeUp 0.25s ease-out;
+  position: relative;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.app-modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+/* 🔥 입력폼 */
+.app-input,
+.app-select,
+.app-textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  background: #fafafa;
+  margin-bottom: 12px;
+}
+
+/* 🔥 selectbox 화살표 */
+.app-select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23999" height="24" viewBox="0 0 24 24" width="24"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+/* 🔥 버튼 */
 .app-btn {
   width: 100%;
   background: linear-gradient(135deg, #ffb300, #ff8a00);
@@ -15,4 +60,38 @@
 .app-btn:active {
   transform: scale(0.97);
   box-shadow: 0 2px 6px rgba(255, 140, 0, 0.25);
+}
+
+/* 🔥 개인정보 동의 */
+.privacy-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #ff8a00;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 🔥 상태 메시지 */
+.app-status {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 🔥 모달 배경 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
 }
