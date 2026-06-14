@@ -39,12 +39,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? item.createdAt.toDate().toLocaleString()
         : "-";
 
-      tr.innerHTML = `
+     tr.innerHTML = `
       <td>${item.name}</td>
       <td>${item.phone}</td>
-      <td>${item.email}</td>
       <td>${item.applyType || "-"}</td>
-      <td style="max-width:200px; white-space:normal;">${item.content || "-"}</td>
       <td>${date}</td>
       <td>${item.status || "신규"}</td>
       <td>
