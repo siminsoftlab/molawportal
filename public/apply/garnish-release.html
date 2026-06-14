@@ -152,54 +152,6 @@
 
 </div>
 
-<!-- ⭐ 공통 상담신청 모달 -->
-<div id="commonApplyModal" class="modal">
-  <div class="modal-content">
-    <span class="close-modal">&times;</span>
-    <h3 id="applyTitle">상담 신청</h3>
-
-    <form id="commonApplyForm">
-      <label>성명</label>
-      <input type="text" name="name" required>
-
-      <label>연락처</label>
-      <input type="tel" name="phone" required>
-
-      <label>이메일</label>
-      <input type="email" name="email" required>
-
-      <label>신청 유형</label>
-      <input type="text" name="applyType" id="applyType" readonly>
-
-      <label>상담 내용</label>
-      <textarea name="content" rows="5" required></textarea>
-
-      <div style="margin-top:10px;">
-        <input type="checkbox" id="agreePrivacy" required>
-        <label for="agreePrivacy">개인정보 수집·이용에 동의합니다.</label>
-        <button type="button" id="openPrivacy" class="btn-link">자세히 보기</button>
-      </div>
-
-      <button type="submit" class="btn-primary" style="margin-top:15px;">신청하기</button>
-    </form>
-
-    <p id="applyStatus" style="margin-top:10px; font-size:14px;"></p>
-  </div>
-</div>
-
-<!-- ⭐ 개인정보 수집·이용 안내 모달 -->
-<div id="privacyModal" class="modal">
-  <div class="modal-content">
-    <span class="close-privacy">&times;</span>
-    <h3>개인정보 수집·이용 안내</h3>
-
-    <p><strong>1. 수집 항목</strong><br>이름, 연락처, 이메일, 상담 유형, 상담 내용</p>
-    <p><strong>2. 수집 목적</strong><br>상담 요청 확인 및 상담 진행을 위한 연락</p>
-    <p><strong>3. 보유 기간</strong><br>상담 완료 후 1년 보관 후 즉시 파기</p>
-    <p><strong>4. 동의 거부 권리</strong><br>동의를 거부할 수 있으나 상담 신청이 제한될 수 있습니다.</p>
-  </div>
-</div>
-
 <div id="footer"></div>
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
@@ -218,6 +170,63 @@
 <script type="module" src="/apply/garnish-release.js"></script>
 <script src="/block-right-click.js"></script>
 <script src="/app.js" defer></script>
+<!-- ⭐ 공통 상담신청 모달 -->
+<div id="commonApplyModal" class="modal">
+  <div class="app-modal">
+    <span class="close-modal">&times;</span>
+    <h3 id="applyTitle" class="app-modal-title">상담 신청</h3>
 
+    <form id="commonApplyForm">
+      <label>성명</label>
+      <input type="text" name="name" class="app-input" required>
+
+      <label>연락처</label>
+      <input type="tel" name="phone" class="app-input" required>
+
+      <label>이메일</label>
+      <input type="email" name="email" class="app-input" required>
+
+      <label>신청 유형</label>
+      <select name="applyType" id="applyType" class="app-select" required>
+        <option value="개인회생">개인회생</option>
+        <option value="개인파산">개인파산</option>
+        <option value="법인회생">법인회생</option>
+        <option value="법인파산">법인파산</option>
+        <option value="채권압류해제">채권압류해제</option>
+        <option value="명부등재말소">명부등재말소</option>
+        <option value="채무자대리인">채무자대리인</option>
+        <option value="법원제증명발급">법원제증명발급</option>
+        <option value="준비서류발급">준비서류발급</option>
+      </select>
+
+      <label>상담 내용</label>
+      <textarea name="content" rows="5" class="app-textarea" required></textarea>
+
+      <!-- 개인정보 동의 -->
+      <div class="privacy-row">
+        <input type="checkbox" id="agreePrivacy" required>
+        <label for="agreePrivacy">개인정보 수집·이용에 동의합니다.</label>
+        <button type="button" id="openPrivacy" class="btn-link">자세히 보기</button>
+      </div>
+
+      <button type="submit" class="app-btn app-modal-btn">신청하기</button>
+    </form>
+
+    <p id="applyStatus" class="app-status"></p>
+  </div>
+</div>
+
+<!-- ⭐ 개인정보 수집·이용 안내 모달 -->
+<div id="privacyModal" class="modal">
+  <div class="app-modal">
+    <span class="close-privacy">&times;</span>
+    <h3 class="app-modal-title">개인정보 수집·이용 안내</h3>
+
+    <p><strong>1. 수집 항목</strong><br>이름, 연락처, 이메일, 상담 유형, 상담 내용</p>
+    <p><strong>2. 수집 목적</strong><br>상담 요청 확인 및 상담 진행을 위한 연락</p>
+    <p><strong>3. 보유 기간</strong><br>상담 완료 후 1년 보관 후 즉시 파기</p>
+    <p><strong>4. 동의 거부 권리</strong><br>동의를 거부할 수 있으나 상담 신청이 제한될 수 있습니다.</p>
+  </div>
+</div>
 </body>
 </html>
