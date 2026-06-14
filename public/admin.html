@@ -45,10 +45,29 @@
     </div>
   </div>
 
+  <!-- ⭐ 1-2 상담 신청 통계 카드 (추가됨) -->
+  <div class="admin-container section">
+    <div class="card">
+      <div class="card-title">📞 전체 상담 신청 수</div>
+      <div id="consult-total-count" class="card-value">0</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🆕 오늘 상담 신청 수</div>
+      <div id="consult-today-count" class="card-value">0</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 상담 신청 목록</div>
+      <button id="consult-manage-btn" class="btn-secondary" style="margin-top:10px;">
+        상담 신청 목록 보기
+      </button>
+    </div>
+  </div>
+
   <!-- 2 결제 / 이용권 관리 -->
 <div class="admin-container section">
 
-  <!-- 결제 신청 (pending) 개수 -->
   <div class="card">
     <div class="card-title">🧾 결제 신청 (PENDING)</div>
     <div id="payment-pending-count" class="card-value">0</div>
@@ -57,7 +76,6 @@
     </button>
   </div>
 
-  <!-- 활성 이용권 개수 -->
   <div class="card">
     <div class="card-title">🎟 활성 이용권 수</div>
     <div id="token-active-count" class="card-value">0</div>
@@ -66,7 +84,6 @@
     </button>
   </div>
 
-  <!-- 오늘 발급된 이용권 수 -->
   <div class="card">
     <div class="card-title">📅 오늘 발급된 이용권</div>
     <div id="token-today-count" class="card-value">0</div>
@@ -87,31 +104,25 @@
     </div>
   </div>
 
-  <!-- 4 샤드 / Daily / IP 상세정보 (3개 한 줄) -->
+  <!-- 4 샤드 / Daily / IP 상세정보 -->
 <div class="admin-container section"> 
 
-  <!-- Daily 방문자 로그 -->
   <div class="card">
     <div class="card-title">📅 Daily 방문자 로그</div>
-
     <div class="daily-controls">
       <input type="date" id="daily-date">
       <button id="daily-btn" class="btn-secondary">조회</button>
     </div>
-
     <pre id="daily-log">날짜를 선택하세요.</pre>
     <div id="daily-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
   </div>
 
-  <!-- 방문자 상세 정보 -->
   <div class="card">
-    <div class="card-title">📌 방문자 상세 정보 (IP / 국가 / 도시 / 접속시간)</div>
-
+    <div class="card-title">📌 방문자 상세 정보</div>
     <pre id="ip-detail-log">날짜를 선택하면 표시됩니다.</pre>
     <div id="ip-buttons" style="margin-top:10px; display:flex; gap:10px;"></div>
   </div>
 
-   <!-- 샤드 상태 -->
   <div class="card">
     <div class="card-title">🧩 샤드 상태</div>
     <pre id="shard-list" class="shard-table"></pre>
@@ -132,7 +143,7 @@
 
       const now = Date.now();
       const diff = now - Number(time);
-      const SESSION_LIMIT = 2 * 60 * 60 * 1000; // 2시간
+      const SESSION_LIMIT = 2 * 60 * 60 * 1000;
 
       if (diff > SESSION_LIMIT) {
         localStorage.removeItem("admin_token");
@@ -143,12 +154,10 @@
       }
     })();
   </script>
-  <!-- Firebase 초기화 -->
+
   <script type="module" src="/firebase-init.js"></script>
   <script type="module" src="/firebase-counter.js" defer></script>
-   <!-- admin.js -->
   <script type="module" src="/admin.js"></script>
-    <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/block-right-click.js"></script>
 
