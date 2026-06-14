@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>상담 신청 목록</title>
+
+  <link rel="stylesheet" href="/admin.css?v=1004">
+  <link rel="stylesheet" href="/admin/admin-users.css?v=1001">
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+  <!-- 상단 헤더 -->
+  <div class="admin-header">
+    <div class="title">📞 상담 신청 목록</div>
+    <div class="actions">
+      <button onclick="location.href='/admin.html'" class="btn-secondary">대시보드</button>
+      <button id="logout-btn" class="btn-danger">로그아웃</button>
+    </div>
+  </div>
+
+  <!-- 검색 박스 -->
+  <div class="admin-container section">
+    <div class="card search-card">
+      <div class="card-title">상담 검색</div>
+      <input id="searchInput" type="text" placeholder="이름, 연락처, 이메일, 유형 검색" style="width:100%;">
+    </div>
+  </div>
+
+  <!-- 상담 목록 -->
+  <div class="admin-container section">
+    <div class="card table-wrapper">
+      <div class="card-title">상담 신청 목록</div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>연락처</th>
+            <th>이메일</th>
+            <th>유형</th>
+            <th>신청내용</th>
+            <th>신청일</th>
+            <th>진행상태</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody id="consultTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/admin/admin-consult.js"></script>
+
+</body>
+</html>
