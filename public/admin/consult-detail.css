@@ -1,0 +1,86 @@
+/* ============================
+   상담 상세 페이지 앱 UI 스타일
+============================ */
+.detail-box {
+  background: rgba(255,255,255,0.85);
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px);
+  margin-bottom: 30px;
+}
+
+.detail-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 18px;
+  color: #222;
+}
+
+.detail-row {
+  margin-bottom: 14px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.detail-label {
+  font-weight: 700;
+  color: #333;
+  display: inline-block;
+  width: 110px;
+}
+
+.detail-value {
+  color: #444;
+}
+
+/* 관리 항목 */
+.manage-box {
+  background: rgba(255,255,255,0.9);
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px);
+}
+
+.manage-box label {
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.manage-box input,
+.manage-box select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  margin-bottom: 18px;
+  font-size: 15px;
+}
+
+.manage-box input:focus,
+.manage-box select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.25);
+  outline: none;
+}
+
+/* 저장 버튼 */
+#saveBtn {
+  width: 100%;
+  padding: 16px;
+  background: #0066ff;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#saveBtn:hover {
+  background: #0055dd;
+}
