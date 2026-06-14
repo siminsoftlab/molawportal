@@ -150,6 +150,13 @@ document.addEventListener("DOMContentLoaded", () => {
       email: emailInput.value,
       type: typeSelect.value,
       message: messageInput.value,
+
+      // ⭐ 관리용 필드 (기본값)
+      manager: "",
+      partner: "",
+      status: "신규",
+      contractCode: "",
+
       createdAt: serverTimestamp()
     };
 
