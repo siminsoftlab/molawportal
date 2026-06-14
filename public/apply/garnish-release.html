@@ -98,6 +98,20 @@
 
   </div>
 </div>
+<div id="footer"></div>
 
+<a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
+
+<script>
+  fetch("/footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/firebase-counter.js"></script>
+<script src="/block-right-click.js"></script>
+<script src="/app.js" defer></script>
 </body>
 </html>
