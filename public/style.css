@@ -286,7 +286,8 @@ body.subpage .top-info-bar {
    아코디언 공통 스타일
 ============================ */
 .accordion-item {
-  margin-bottom: 12px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 6px;
   overflow: hidden;
@@ -674,7 +675,7 @@ body.subpage .top-info-bar {
    온라인 상담 신청
 ============================ */
 .container.consult-section {
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 40px 20px;
   margin-top: 80px;
