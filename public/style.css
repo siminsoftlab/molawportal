@@ -1949,8 +1949,6 @@ button.hl-acc-btn {
 /* ============================
    상담 신청 현황 — 한 줄 리스트형
 ============================ */
-/* 전체 그리드: 한 줄에 4칸 */
-/* 조회 결과 전체 박스 스타일 */
 .apply-status-cards {
   background: #000;          /* ⭐ 검정 배경 */
   color: #fff;               /* ⭐ 글자색 흰색 */
@@ -1987,4 +1985,11 @@ button.hl-acc-btn {
 .status {
   font-weight: 700;
   color: #1565c0;
+}
+#applyStatusCards.apply-status-cards {
+  background: #000 !important;   /* 검정 배경 */
+  color: #fff !important;        /* 흰색 글자 */
+  padding: 20px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
 }
