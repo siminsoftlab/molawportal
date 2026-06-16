@@ -1969,18 +1969,6 @@ button.hl-acc-btn {
   }
 }
 
-/* 각 칸 */
-.apply-status-card .col {
-  padding: 8px 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.15); /* ⭐ 흰색 라인 */
-  white-space: nowrap;
-}
-
-/* 한 줄(row) */
-.apply-status-card {
-  display: contents; /* 핵심: 카드 박스 제거 */
-}
-
 /* 상태 강조 */
 .status {
   font-weight: 700;
@@ -1993,6 +1981,15 @@ button.hl-acc-btn {
   border-radius: 12px !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
 }
+
+.apply-status-wrapper {
+  background: #000;
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+/* 조회 결과 전체 박스 */
 #applyStatusCards {
   background: #000 !important;   /* 검정 배경 */
   color: #fff !important;        /* 흰색 글자 */
@@ -2000,10 +1997,16 @@ button.hl-acc-btn {
   border-radius: 12px !important;
   margin-top: 16px;
 }
-.apply-status-wrapper {
-  background: #000;
-  color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 16px;
+
+/* 한 줄(row) */
+.apply-status-card {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+/* 각 칸 */
+.apply-status-card .col {
+  white-space: nowrap;
 }
