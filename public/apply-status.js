@@ -12,24 +12,18 @@ import {
 
 /* ============================================================
    1) 이름 마스킹 — 최종 규칙
-   - 2글자 → 이O
-   - 3글자 → 김O수
-   - 4글자 이상 → 박OO준
 ============================================================ */
 function maskName(name) {
   if (!name || name.length < 2) return name;
 
-  // 2글자 → 이O
   if (name.length === 2) {
     return name[0] + "O";
   }
 
-  // 3글자 → 김O수
   if (name.length === 3) {
     return name[0] + "O" + name[2];
   }
 
-  // 4글자 이상 → 박OO준
   return name[0] + "OO" + name.slice(-1);
 }
 
@@ -43,17 +37,16 @@ function getStatusTag(status) {
 
 /* ============================================================
    3) Firestore에서 최근 5건 불러오기
-   ※ consult_requests 기준
 ============================================================ */
 async function loadApplyStatus() {
   const listEl = document.getElementById("applyStatusList");
   if (!listEl) return;
 
-  listEl.innerHTML = "<li>불러오는 중...</li>";
+  listEl.innerHTML = "";
 
   try {
     const q = query(
-      collection(db, "consult_requests"),   // ← ★ 여기 변경됨
+      collection(db, "consult_requests"),
       orderBy("createdAt", "desc"),
       limit(5)
     );
@@ -65,28 +58,43 @@ async function loadApplyStatus() {
       return;
     }
 
-    listEl.innerHTML = "";
-
     snapshot.forEach(doc => {
       const data = doc.data();
-       console.log("문서 데이터:", data);   // ← 여기에 넣어야 함
+
       const name = maskName(data.name || "이름 없음");
       const type = data.applyType || "유형 없음";
       const status = data.status || "신규";
       const date = data.createdAt?.toDate().toLocaleDateString("ko-KR") || "";
 
-      const item = `
-        <li>
-          <span>${name}</span>
-          <span>${type}</span>
-          ${getStatusTag(status)}
-          <span>${date}</span>
-        </li>
-      `;
-      listEl.innerHTML += item;
+      // li 생성
+      const li = document.createElement("li");
+
+      // 이름
+      const spanName = document.createElement("span");
+      spanName.textContent = name;
+
+      // 유형
+      const spanType = document.createElement("span");
+      spanType.textContent = type;
+
+      // 상태
+      const spanStatus = document.createElement("span");
+      spanStatus.innerHTML = getStatusTag(status);
+
+      // 날짜
+      const spanDate = document.createElement("span");
+      spanDate.textContent = date;
+
+      // li에 추가
+      li.appendChild(spanName);
+      li.appendChild(spanType);
+      li.appendChild(spanStatus);
+      li.appendChild(spanDate);
+
+      listEl.appendChild(li);
     });
 
-    startRolling(); // 자동 롤링 시작
+    startRolling();
 
   } catch (e) {
     console.error("상담현황 불러오기 오류:", e);
@@ -101,7 +109,6 @@ function startRolling() {
   const items = document.querySelectorAll("#applyStatusList li");
   let index = 0;
 
-  // 초기 위치 설정
   items.forEach((item, i) => {
     item.style.transform = `translateY(${i * 60}px)`;
   });
