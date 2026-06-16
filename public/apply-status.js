@@ -10,89 +10,63 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-/* ============================================================
-   이름 마스킹
-============================================================ */
+/* 이름 마스킹 */
 function maskName(name) {
   if (!name || name.length < 2) return name;
-
   if (name.length === 2) return name[0] + "O";
   if (name.length === 3) return name[0] + "O" + name[2];
   return name[0] + "OO" + name.slice(-1);
 }
 
-/* ============================================================
-   상태 태그
-============================================================ */
+/* 상태 태그 */
 function getStatusTag(status) {
   const cls = "status-" + status.replace(/\s/g, "");
-  return `<div class="status-tag ${cls}">${status}</div>`;
+  return `<span class="status-tag ${cls}">${status}</span>`;
 }
 
-/* ============================================================
-   Firestore 불러오기
-============================================================ */
+/* Firestore 불러오기 */
 async function loadApplyStatus() {
-  const listEl = document.getElementById("applyStatusList");
-  if (!listEl) return;
-
-  listEl.innerHTML = "<li>불러오는 중...</li>";
+  const container = document.getElementById("applyStatusCards");
+  container.innerHTML = "불러오는 중...";
 
   try {
     const q = query(
       collection(db, "consult_requests"),
       orderBy("createdAt", "desc"),
-      limit(5)
+      limit(8)
     );
 
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      listEl.innerHTML = "<li>최근 신청 내역이 없습니다.</li>";
+      container.innerHTML = "<div>최근 신청 내역이 없습니다.</div>";
       return;
     }
 
-    listEl.innerHTML = "";
+    container.innerHTML = "";
 
-    snapshot.forEach(doc => {
+    snapshot.forEach((doc, i) => {
       const data = doc.data();
 
-      const name = maskName(data.name || "이름 없음");
-      const type = data.applyType || "유형 없음";
-      const status = data.status || "신규";
-      const date = data.createdAt?.toDate().toLocaleDateString("ko-KR") || "";
+      const card = document.createElement("div");
+      card.className = "apply-status-card";
 
-      // li 생성
-      const li = document.createElement("li");
+      card.innerHTML = `
+        ${getStatusTag(data.status || "신규")}
+        <div>${data.applyType || "유형 없음"}</div>
+        <div>${maskName(data.name || "이름 없음")}</div>
+        <div>${data.createdAt?.toDate().toLocaleDateString("ko-KR")}</div>
+      `;
 
-      // 상태
-      const divStatus = document.createElement("div");
-      divStatus.innerHTML = getStatusTag(status);
+      container.appendChild(card);
 
-      // 신청유형
-      const divType = document.createElement("div");
-      divType.textContent = type;
-
-      // 성명
-      const divName = document.createElement("div");
-      divName.textContent = name;
-
-      // 날짜
-      const divDate = document.createElement("div");
-      divDate.textContent = date;
-
-      // 순서: 상태 → 신청유형 → 성명 → 날짜
-      li.appendChild(divStatus);
-      li.appendChild(divType);
-      li.appendChild(divName);
-      li.appendChild(divDate);
-
-      listEl.appendChild(li);
+      // 순차 등장 애니메이션
+      setTimeout(() => card.classList.add("visible"), i * 200);
     });
 
   } catch (e) {
     console.error("상담현황 불러오기 오류:", e);
-    listEl.innerHTML = "<li>불러오는 중 오류 발생</li>";
+    container.innerHTML = "<div>불러오는 중 오류 발생</div>";
   }
 }
 
