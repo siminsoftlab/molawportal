@@ -674,7 +674,7 @@ body.subpage .top-info-bar {
 /* ============================
    온라인 상담 신청
 ============================ */
-.container.consult-section {
+.consult-section {
   max-width: 800px;
   margin: 0 auto;
   padding: 40px 20px;
