@@ -64,14 +64,25 @@
   </a>
 </header>
 <!-- ⭐ 온라인 상담 신청 -->
-<div class="consult-section">
-  <div class="calc-greeting-bubble">
-    <span id="consultMessage"></span>
+<div class="container">  
+  <div class="consult-section app-ui-box">
+    <div class="calc-greeting-bubble">
+      <span id="consultMessage"></span>
+    </div>
+  
+    <h2 class="consult-title">온라인 상담 신청</h2>
+    <p class="consult-guide">회원가입 없이 지금 바로 무료 상담 가능합니다!</p>
+  
+    <div class="consult-btn-grid">
+      <button class="mini-app-btn" onclick="openApplyModal('온라인 상담신청')">
+        📩 신청하기
+      </button>
+  
+      <button class="mini-app-btn secondary" onclick="location.href='tel:025955706'">
+        📞 전화 상담
+      </button>
+    </div>
   </div>
-
-  <h2 class="consult-title">온라인 상담 신청</h2>
-  <p class="consult-guide">회원가입 없이 지금 바로 무료 상담 가능합니다!</p>
-  <button class="app-btn" onclick="openApplyModal('온라인 상담신청')">상담 신청하기</button>
 </div>
 <div class="blog-wrap">
 <main>
@@ -228,14 +239,16 @@
       <label>신청 유형</label>
       <select name="applyType" id="applyType" class="app-select" required>
         <option value="개인회생">개인회생</option>
-        <option value="개인파산">개인파산</option>
-        <option value="법인회생">법인회생</option>
-        <option value="법인파산">법인파산</option>
+        <option value="개인파산">개인파산</option>       
         <option value="채권압류해제">채권압류해제</option>
-        <option value="명부등재말소">명부등재말소</option>
+        <option value="채무불이행말소">채무불이행말소</option>
         <option value="채무자대리인">채무자대리인</option>
         <option value="법원제증명발급">법원제증명발급</option>
         <option value="준비서류발급">준비서류발급</option>
+	      <option value="상속">상속</option>
+        <option value="이혼">이혼</option>
+	      <option value="형사">형사</option>
+	      <option value="기타">기타</option>
       </select>
 
       <label>상담 내용</label>
