@@ -83,7 +83,7 @@ body.homepage .container {
   width: 92%;
   max-width: 900px;
   margin: 0 auto 40px;
-  padding: 30px;
+  padding: 16px;
   background: rgba(255,255,255,0.75);
   border-radius: 14px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -552,7 +552,7 @@ body.subpage .top-info-bar {
   /* 홈페이지 컨테이너 */
   body.homepage .container {  
     margin-bottom: 28px;
-    padding: 20px;
+    padding: 16px;
   }
 
   /* 홈페이지 2열 → 1열 */
@@ -1806,7 +1806,7 @@ button.hl-acc-btn {
 
   /* 컨테이너 상단 패딩도 조금 줄이기 */
   body.homepage .container {
-    padding-top: 20px !important;
+    padding-top: 16px !important;
   }
 
     .consult-section {
