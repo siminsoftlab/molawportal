@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const el = document.getElementById("consult-typing");
+  const el = document.getElementById("consultMessage");
   if (!el) return;
 
   // 순환 재생할 문장들
