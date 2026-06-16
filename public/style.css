@@ -1945,3 +1945,17 @@ button.hl-acc-btn {
 .left-box:hover .calc-img,
 .right-box:hover .calc-img {
   transform: scale(1.08);
+
+.apply-status-list li {
+  padding: 12px 14px;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+  color: #374151;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr; /* 이름 / 유형 / 상태 / 날짜 */
+  gap: 10px;
+}
