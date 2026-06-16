@@ -1,9 +1,3 @@
-console.log("Firestore data:", data);
-
-snapshot.forEach(doc => {
-  console.log("문서 데이터:", doc.data());
-});
-
 /* ============================================================
    Firebase Firestore v9.22.2 모듈
 ============================================================ */
@@ -75,7 +69,7 @@ async function loadApplyStatus() {
 
     snapshot.forEach(doc => {
       const data = doc.data();
-
+       console.log("문서 데이터:", data);   // ← 여기에 넣어야 함
       const name = maskName(data.name || "이름 없음");
       const type = data.applyType || "유형 없음";
       const status = data.status || "신규";
