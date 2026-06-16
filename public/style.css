@@ -252,6 +252,7 @@ body.subpage .top-info-bar {
   flex-direction: column;
   gap: 12px;
   margin-top: 10px;
+  margin-bottom: 30px; /* 원하는 만큼 조절 */
 }
 
 .btn-row button {
