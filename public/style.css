@@ -1950,42 +1950,51 @@ button.hl-acc-btn {
    상담 신청 현황 — 한 줄 리스트형
 ============================ */
 .apply-status-cards {
-  display: block; /* 세로 리스트 */
-  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* PC: 4개 */
+  gap: 16px;
+  margin-top: 20px;
 }
 
+/* 모바일 (최대 768px)에서는 2개 */
+@media (max-width: 768px) {
+  .apply-status-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 카드 스타일 */
 .apply-status-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  padding: 10px 0;
-  border-bottom: 1px solid #e5e7eb;
-
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
 }
 
-.apply-status-card:last-child {
-  border-bottom: none;
+/* JS에서 visible 클래스 추가됨 */
+.apply-status-card.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* 상태 태그 */
+/* 상태 태그 스타일 */
 .status-tag {
+  display: inline-block;
   padding: 4px 8px;
   border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-  flex-shrink: 0;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: bold;
 }
 
 /* 상태별 색상 */
-.status-신규 { background: #3b82f6; }
-.status-진행중 { background: #f59e0b; }
-.status-완료 { background: #10b981; }
-.status-보류 { background: #6b7280; }
+.status-신규 { background: #e3f2fd; color: #1565c0; }
+.status-진행중 { background: #fff3cd; color: #856404; }
+.status-완료 { background: #d4edda; color: #155724; }
+.status-보류 { background: #6b7280; color: #10b981; }
 
 /* 모바일 최적화 */
 @media (max-width: 480px) {
