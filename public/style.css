@@ -1946,7 +1946,20 @@ button.hl-acc-btn {
 .right-box:hover .calc-img {
   transform: scale(1.08);
 
-/* 리스트 영역 */
+/* ============================
+   상담 신청 현황 (apply-status)
+============================ */
+.apply-status-section {
+  margin-top: 20px;
+}
+
+.apply-status-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* 리스트 전체 영역 */
 .apply-status-list {
   list-style: none;
   padding: 0;
@@ -1956,6 +1969,7 @@ button.hl-acc-btn {
   position: relative;
 }
 
+/* 각 항목 */
 .apply-status-list li {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr; /* 이름 / 유형 / 상태 / 날짜 */
@@ -1974,7 +1988,7 @@ button.hl-acc-btn {
   transition: transform 0.6s ease;
 }
 
-/* 상태 색상 태그 */
+/* 상태 태그 */
 .status-tag {
   padding: 4px 8px;
   border-radius: 8px;
@@ -1985,6 +1999,7 @@ button.hl-acc-btn {
   text-align: center;
 }
 
+/* 상태별 색상 */
 .status-신규 { background: #3b82f6; }
 .status-접수완료 { background: #2563eb; }
 .status-진행중 { background: #f59e0b; }
