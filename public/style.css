@@ -1897,4 +1897,27 @@ button.hl-acc-btn {
 .calc-greeting-bubble {
   margin-bottom: 20px;
 }
+/* 공통 박스 스타일 */
+.two-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.service-box {
+  width: calc(25% - 12px); /* PC: 4개 1줄 */
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* 모바일: 2개 1줄 */
+@media (max-width: 768px) {
+  .service-box {
+    width: calc(50% - 8px);
+  }
+}
 
