@@ -1991,8 +1991,8 @@ button.hl-acc-btn {
 }
 /* 조회 결과 전체 박스 */
 #applyStatusCards {
-  background: #000 !important;   /* 검정 배경 */
-  color: #fff !important;        /* 흰색 글자 */
+  background: #000 !important;
+  color: #fff !important;
   padding: 20px !important;
   border-radius: 12px !important;
   margin-top: 16px;
@@ -2000,6 +2000,8 @@ button.hl-acc-btn {
 
 /* 한 줄(row) */
 .apply-status-card {
+  background: #000 !important;   /* 각 row도 검정 배경 */
+  color: #fff !important;        /* 글자 흰색 */
   display: grid !important;
   grid-template-columns: repeat(4, 1fr);
   padding: 8px 0;
