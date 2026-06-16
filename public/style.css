@@ -1937,3 +1937,10 @@ button.hl-acc-btn {
   100% { background-position: 200% 50%; }
 }
 
+.calc-img {
+  transition: transform 0.3s ease;
+}
+
+.left-box:hover .calc-img,
+.right-box:hover .calc-img {
+  transform: scale(1.08);
