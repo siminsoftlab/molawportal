@@ -675,11 +675,14 @@ body.subpage .top-info-bar {
    온라인 상담 신청
 ============================ */
 .consult-section {
+  width: 100%;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 40px 20px;
-  margin-top: 80px;
-  margin-bottom: 80px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
 }
 
 .consult-title {
