@@ -11,24 +11,18 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ============================================================
-   1) 이름 마스킹 — 최종 규칙
+   이름 마스킹
 ============================================================ */
 function maskName(name) {
   if (!name || name.length < 2) return name;
 
-  if (name.length === 2) {
-    return name[0] + "O";
-  }
-
-  if (name.length === 3) {
-    return name[0] + "O" + name[2];
-  }
-
+  if (name.length === 2) return name[0] + "O";
+  if (name.length === 3) return name[0] + "O" + name[2];
   return name[0] + "OO" + name.slice(-1);
 }
 
 /* ============================================================
-   2) 상태(status) 색상 태그
+   상태 태그
 ============================================================ */
 function getStatusTag(status) {
   const cls = "status-" + status.replace(/\s/g, "");
@@ -36,13 +30,13 @@ function getStatusTag(status) {
 }
 
 /* ============================================================
-   3) Firestore에서 최근 5건 불러오기
+   Firestore 불러오기 (슬라이드 제거)
 ============================================================ */
 async function loadApplyStatus() {
   const listEl = document.getElementById("applyStatusList");
   if (!listEl) return;
 
-  listEl.innerHTML = "";
+  listEl.innerHTML = "<li>불러오는 중...</li>";
 
   try {
     const q = query(
@@ -58,6 +52,8 @@ async function loadApplyStatus() {
       return;
     }
 
+    listEl.innerHTML = "";
+
     snapshot.forEach(doc => {
       const data = doc.data();
 
@@ -69,32 +65,30 @@ async function loadApplyStatus() {
       // li 생성
       const li = document.createElement("li");
 
-      // 이름
-      const spanName = document.createElement("span");
-      spanName.textContent = name;
-
-      // 유형
-      const spanType = document.createElement("span");
-      spanType.textContent = type;
-
       // 상태
       const spanStatus = document.createElement("span");
       spanStatus.innerHTML = getStatusTag(status);
+
+      // 신청유형
+      const spanType = document.createElement("span");
+      spanType.textContent = type;
+
+      // 성명
+      const spanName = document.createElement("span");
+      spanName.textContent = name;
 
       // 날짜
       const spanDate = document.createElement("span");
       spanDate.textContent = date;
 
-      // li에 추가
-      li.appendChild(spanName);
-      li.appendChild(spanType);
+      // 순서: 상태 → 신청유형 → 성명 → 날짜
       li.appendChild(spanStatus);
+      li.appendChild(spanType);
+      li.appendChild(spanName);
       li.appendChild(spanDate);
 
       listEl.appendChild(li);
     });
-
-    startRolling();
 
   } catch (e) {
     console.error("상담현황 불러오기 오류:", e);
@@ -102,27 +96,4 @@ async function loadApplyStatus() {
   }
 }
 
-/* ============================================================
-   4) 자동 슬라이드 롤링 (3초 간격)
-============================================================ */
-function startRolling() {
-  const items = document.querySelectorAll("#applyStatusList li");
-  let index = 0;
-
-  items.forEach((item, i) => {
-    item.style.transform = `translateY(${i * 60}px)`;
-  });
-
-  setInterval(() => {
-    index = (index + 1) % items.length;
-
-    items.forEach((item, i) => {
-      item.style.transform = `translateY(${(i - index) * 60}px)`;
-    });
-  }, 3000);
-}
-
-/* ============================================================
-   실행
-============================================================ */
 loadApplyStatus();
