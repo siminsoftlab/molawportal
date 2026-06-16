@@ -139,5 +139,53 @@
       ]]></description>
     </item>
 
+        <!-- 신청 서비스: 개인회생 -->
+    <item>
+      <title>개인회생 신청 — 온라인 간편 접수</title>
+      <link>https://molawcalculator.com/apply/rehab.html</link>
+      <guid>https://molawcalculator.com/apply/rehab.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        개인회생 신청을 온라인으로 간편하게 접수할 수 있는 공식 신청 페이지입니다.
+        준비서류·자격요건·절차를 확인하고 상담 신청까지 한 번에 가능합니다.
+      ]]></description>
+    </item>
+
+    <!-- 신청 서비스: 파산 및 면책 -->
+    <item>
+      <title>개인파산·면책 신청 — 온라인 간편 접수</title>
+      <link>https://molawcalculator.com/apply/bankruptcy.html</link>
+      <guid>https://molawcalculator.com/apply/bankruptcy.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        개인파산 및 면책 신청을 온라인으로 접수할 수 있는 공식 페이지입니다.
+        파산 요건·면책 기준·필요서류를 확인하고 상담 신청을 진행할 수 있습니다.
+      ]]></description>
+    </item>
+
+    <!-- 신청 서비스: 채권압류해제 -->
+    <item>
+      <title>채권압류해제 신청 — 온라인 간편 접수</title>
+      <link>https://molawcalculator.com/apply/garnish-release.html</link>
+      <guid>https://molawcalculator.com/apply/garnish-release.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        급여·통장·카드매출 압류를 해제하기 위한 채권압류해제 신청 페이지입니다.
+        필요서류와 절차를 확인하고 온라인으로 상담 신청이 가능합니다.
+      ]]></description>
+    </item>
+
+    <!-- 신청 서비스: 채무불이행등재말소 -->
+    <item>
+      <title>채무불이행등재말소 신청 — 온라인 간편 접수</title>
+      <link>https://molawcalculator.com/apply/credit-delist.html</link>
+      <guid>https://molawcalculator.com/apply/credit-delist.html</guid>
+      <pubDate>Sat, 30 May 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[
+        신용정보원·금융기관에 등재된 채무불이행기록을 말소하기 위한 신청 페이지입니다.
+        말소 요건·절차·필요서류를 확인하고 온라인 상담 신청을 진행할 수 있습니다.
+      ]]></description>
+    </item>
+
   </channel>
 </rss>
