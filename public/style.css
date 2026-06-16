@@ -676,12 +676,12 @@ body.subpage .top-info-bar {
 ============================ */
 .consult-section {
   width: 100%;
-  max-width: 900px;
+  max-width: 860px;
   margin: 20px auto;
   padding: 40px 20px;
   background: rgba(255,255,255,0.75);
   border-radius: 12px;
-  border: 2px solid #4A90E2; /* ⭐ 개인회생에 가장 잘 맞는 테두리 */
+  border: 2px solid #2F5FE0; /* ⭐ 개인회생에 가장 잘 맞는 테두리 */
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   backdrop-filter: blur(4px);
 }
