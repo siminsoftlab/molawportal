@@ -1,3 +1,9 @@
+console.log("Firestore data:", data);
+
+snapshot.forEach(doc => {
+  console.log("문서 데이터:", doc.data());
+});
+
 /* ============================================================
    Firebase Firestore v9.22.2 모듈
 ============================================================ */
