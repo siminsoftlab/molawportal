@@ -51,12 +51,13 @@ async function loadApplyStatus() {
       const card = document.createElement("div");
       card.className = "apply-status-card";
 
-      card.innerHTML = `
-        ${getStatusTag(data.status || "신규")}
-        <div>${data.applyType || "유형 없음"}</div>
-        <div>${maskName(data.name || "이름 없음")}</div>
-        <div>${data.createdAt?.toDate().toLocaleDateString("ko-KR")}</div>
+     card.innerHTML = `
+        <span class="col">${data.status}</span>
+        <span class="col">${data.applyType}</span>
+        <span class="col">${maskName(data.name)}</span>
+        <span class="col">${data.createdAt?.toDate().toLocaleDateString("ko-KR")}</span>
       `;
+
 
       container.appendChild(card);
 
