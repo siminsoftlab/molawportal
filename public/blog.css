@@ -2,10 +2,18 @@
    블로그 전체 레이아웃
 ============================ */
 .blog-wrap {
-  width: 100%;
-  max-width: 800px; /* 온라인 상담 width와 동일 */
-  margin: 0 auto;
-  padding: 0 20px;
+ width: 100%;
+  max-width: 800px; /* 온라인 상담과 동일 */
+  margin: 30px auto 60px;
+  padding: 40px 24px;
+
+  background: rgba(255,255,255,0.85); /* 앱 스타일 반투명 화이트 */
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  box-sizing: border-box;
 }
 
 /* 섹션 간격 */
