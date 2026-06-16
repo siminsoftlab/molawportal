@@ -13,3 +13,53 @@
   0%, 100% { border-color: transparent; }
   50% { border-color: #4a90e2; }
 }
+
+/* 앱 UI 카드 스타일 */
+.app-ui-box {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 2px solid #4A90E2;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* 버튼 2개 컬럼 */
+.consult-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* 기본 앱 버튼 스타일 */
+.mini-app-btn {
+  padding: 14px 0;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  background: #4A90E2;
+  color: #fff;
+  border: none;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.mini-app-btn:hover {
+  background: #357ABD;
+  transform: translateY(-2px);
+}
+
+/* 전화 상담 버튼 (secondary) */
+.mini-app-btn.secondary {
+  background: #e8f5e9;      /* 연한 초록 */
+  color: #2e7d32;           /* 진한 초록 */
+  border: 1px solid #a5d6a7;
+}
+
+.mini-app-btn.secondary:hover {
+  background: #c8e6c9;
+  transform: translateY(-2px);
+}
