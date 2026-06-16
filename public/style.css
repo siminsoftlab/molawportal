@@ -1874,4 +1874,15 @@ button.hl-acc-btn {
   color: #333;
   margin-bottom: 60px !important; /* 원하는 만큼 조절 가능 */
 }
+.accordion {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.accordion-content {
+  padding: 20px 15px;
+}
+.calc-greeting-bubble {
+  margin-bottom: 20px;
+}
 
