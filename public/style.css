@@ -570,7 +570,7 @@ body.subpage .top-info-bar {
      font-size: 17px !important;
     font-weight: 700 !important;
   }
-    body.subpage .two-box {
+    body.subpage  {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 14px;
   }
@@ -590,7 +590,7 @@ body.subpage .top-info-bar {
   }
 
   /* 등장 애니메이션 */
-  .two-box > div {
+   > div {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeUp 0.6s ease forwards;
@@ -1919,5 +1919,11 @@ button.hl-acc-btn {
   .service-box {
     width: calc(50% - 8px);
   }
+}
+/* index의 계산기4종 */
+.two-box.calc-box {
+  border: 3px solid #4A90E2;
+  border-radius: 14px;
+  padding: 20px;
 }
 
