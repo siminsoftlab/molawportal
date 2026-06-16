@@ -1984,7 +1984,9 @@ button.hl-acc-btn {
   display: inline-block;
   text-align: center;
 }
+
 .status-신규 { background: #3b82f6; }
+.status-접수완료 { background: #2563eb; }
 .status-진행중 { background: #f59e0b; }
 .status-완료 { background: #10b981; }
 .status-보류 { background: #6b7280; }
