@@ -2,10 +2,21 @@ import { db } from "/firebase-init.js";
 import { collection, query, orderBy, limit, getDocs } 
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 이름 마스킹 (성만 표시)
+// 이름 마스킹: 김O수 형태
 function maskName(name) {
   if (!name || name.length < 2) return name;
-  return name[0] + "*".repeat(name.length - 1);
+
+  if (name.length === 2) {
+    return name[0] + "O";
+  }
+
+  return name[0] + "O" + name.slice(2);
+}
+
+// 상태 색상 태그
+function getStatusTag(status) {
+  const cls = "status-" + status.replace(/\s/g, "");
+  return `<span class="status-tag ${cls}">${status}</span>`;
 }
 
 async function loadApplyStatus() {
@@ -35,23 +46,44 @@ async function loadApplyStatus() {
 
       const name = maskName(data.name || "이름 없음");
       const type = data.applyType || "유형 없음";
-      const status = data.status || "진행중"; // Firestore에 status 필드가 있다고 가정
+      const status = data.status || "진행중";
       const date = data.timestamp?.toDate().toLocaleDateString("ko-KR") || "";
 
       const item = `
         <li>
           <span>${name}</span>
           <span>${type}</span>
-          <span>${status}</span>
+          ${getStatusTag(status)}
           <span>${date}</span>
         </li>
       `;
       listEl.innerHTML += item;
     });
+
+    startRolling(); // 자동 롤링 시작
+
   } catch (e) {
     console.error(e);
     listEl.innerHTML = "<li>불러오는 중 오류 발생</li>";
   }
+}
+
+// 자동 롤링
+function startRolling() {
+  const items = document.querySelectorAll("#applyStatusList li");
+  let index = 0;
+
+  items.forEach((item, i) => {
+    item.style.transform = `translateY(${i * 60}px)`;
+  });
+
+  setInterval(() => {
+    index = (index + 1) % items.length;
+
+    items.forEach((item, i) => {
+      item.style.transform = `translateY(${(i - index) * 60}px)`;
+    });
+  }, 3000);
 }
 
 loadApplyStatus();
