@@ -146,3 +146,32 @@
     padding: 30px 18px;
   }
 }
+/* 1) 헤더와 온라인 상담 신청 사이 여백 줄이기 */
+body.subpage {
+  padding-top: 110px !important; /* 기존 140px → 110px */
+}
+
+.consult-section {
+  margin-top: 30px !important; /* 기존 80px → 30px */
+  margin-bottom: 40px !important; /* 아래 section과 간격도 줄임 */
+}
+
+/* 2) section 간 여백 줄이기 */
+.section {
+  margin: 28px 0 !important; /* 기존 40px → 28px */
+}
+
+/* 3) 버튼이 div 밖으로 넘치지 않도록 수정 */
+.btn-primary {
+  width: 100%;
+  box-sizing: border-box; /* padding 포함하여 overflow 방지 */
+  display: block;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* 혹시 카드 내부 padding 때문에 넘치는 경우 대비 */
+.section .card {
+  box-sizing: border-box;
+  overflow: hidden; /* 안전장치 */
+}
