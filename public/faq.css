@@ -1,4 +1,4 @@
-/* FAQ 섹션을 .container와 동일한 폭으로 맞춤 */
+/* FAQ 섹션 */
 .faq-section {
   width: 100%;
   max-width: 800px;
@@ -11,7 +11,6 @@
   -webkit-backdrop-filter: blur(4px);
   box-sizing: border-box;
 }
-
 
 .faq-section h2 {
   font-size: 20px;
@@ -39,13 +38,23 @@
   background: #f0f0f0;
 }
 
+/* 개선된 FAQ 답변 애니메이션 */
 .faq-answer {
-  display: none;
-  padding: 10px 15px 20px;
+  max-height: 0;              /* 기본 닫힘 상태 */
+  overflow: hidden;
+  padding: 0 15px;             /* 닫힌 상태에서는 padding 최소화 */
   font-size: 15px;
   color: #444;
   line-height: 1.5;
+  transition: max-height 0.3s ease, padding 0.3s ease;
 }
+
+.faq-answer.open {
+  max-height: 500px;           /* 충분히 큰 값으로 설정 */
+  padding: 10px 15px 20px;     /* 열릴 때 원래 padding 복원 */
+}
+
+/* 상담 섹션 */
 .consult-section {
   width: 100%;
   max-width: 800px;
