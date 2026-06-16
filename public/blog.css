@@ -1,0 +1,148 @@
+/* ============================
+   블로그 전체 레이아웃
+============================ */
+.blog-wrap {
+  width: 100%;
+  max-width: 800px; /* 온라인 상담 width와 동일 */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 섹션 간격 */
+.section {
+  margin: 40px 0;
+}
+
+/* ============================
+   카드형 UI (앱 스타일)
+============================ */
+.section .card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 28px;
+  transition: 0.2s ease;
+}
+
+.section .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* 제목 */
+.section .card h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+/* 본문 텍스트 */
+.section .card p,
+.section .card li {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+/* 리스트 */
+.section .card ul {
+  padding-left: 18px;
+}
+
+/* ============================
+   FAQ (블로그 전용 스타일)
+============================ */
+.card.faq {
+  padding: 28px 24px;
+}
+
+.card.faq .section-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #1e3a8a;
+}
+
+.card.faq .faq-item {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.card.faq .faq-q {
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.card.faq .faq-a {
+  color: #374151;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* ============================
+   CTA 버튼 (블로그 전용)
+============================ */
+.btn-primary {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 14px 18px;
+  background: #4a6fff;
+  color: #fff;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 14px;
+  transition: 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #3f5ae0;
+  transform: translateY(-2px);
+}
+
+/* ============================
+   온라인 상담 박스와 동일한 폭 유지
+============================ */
+.consult-section {
+  width: 100%;
+  max-width: 800px;
+  margin: 80px auto;
+  padding: 40px 20px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 12px;
+  border: 2px solid #4A90E2;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(4px);
+}
+
+/* ============================
+   모바일 대응
+============================ */
+@media (max-width: 480px) {
+  .section .card {
+    padding: 22px 18px;
+  }
+
+  .section .card h2 {
+    font-size: 20px;
+  }
+
+  .btn-primary {
+    font-size: 15px;
+  }
+
+  .consult-section {
+    padding: 30px 18px;
+  }
+}
