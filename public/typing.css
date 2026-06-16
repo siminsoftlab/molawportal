@@ -1,15 +1,15 @@
 /* 타이핑 텍스트 */
-#consult-typing {
+#consultMessage {
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   border-right: 3px solid #4a90e2;
   font-weight: 600;
-  animation: caretBlink 0.7s infinite;
+  animation: consultCaretBlink 0.7s infinite;
 }
 
 /* 커서 깜빡임 강화 */
-@keyframes caretBlink {
+@keyframes consultCaretBlink {
   0%, 100% { border-color: transparent; }
   50% { border-color: #4a90e2; }
 }
