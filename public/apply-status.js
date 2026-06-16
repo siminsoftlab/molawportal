@@ -1,24 +1,49 @@
+/* ============================================================
+   Firebase Firestore v9.22.2 모듈
+============================================================ */
 import { db } from "/firebase-init.js";
-import { collection, query, orderBy, limit, getDocs } 
-  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-// 이름 마스킹: 김O수 형태
+/* ============================================================
+   1) 이름 마스킹 — 최종 규칙
+   - 2글자 → 이O
+   - 3글자 → 김O수
+   - 4글자 이상 → 박OO준
+============================================================ */
 function maskName(name) {
   if (!name || name.length < 2) return name;
 
+  // 2글자 → 이O
   if (name.length === 2) {
     return name[0] + "O";
   }
 
-  return name[0] + "O" + name.slice(2);
+  // 3글자 → 김O수
+  if (name.length === 3) {
+    return name[0] + "O" + name[2];
+  }
+
+  // 4글자 이상 → 박OO준
+  return name[0] + "OO" + name.slice(-1);
 }
 
-// 상태 색상 태그
+/* ============================================================
+   2) 상태(status) 색상 태그
+============================================================ */
 function getStatusTag(status) {
   const cls = "status-" + status.replace(/\s/g, "");
   return `<span class="status-tag ${cls}">${status}</span>`;
 }
 
+/* ============================================================
+   3) Firestore에서 최근 5건 불러오기
+============================================================ */
 async function loadApplyStatus() {
   const listEl = document.getElementById("applyStatusList");
   if (!listEl) return;
@@ -63,16 +88,19 @@ async function loadApplyStatus() {
     startRolling(); // 자동 롤링 시작
 
   } catch (e) {
-    console.error(e);
+    console.error("상담현황 불러오기 오류:", e);
     listEl.innerHTML = "<li>불러오는 중 오류 발생</li>";
   }
 }
 
-// 자동 롤링
+/* ============================================================
+   4) 자동 슬라이드 롤링 (3초 간격)
+============================================================ */
 function startRolling() {
   const items = document.querySelectorAll("#applyStatusList li");
   let index = 0;
 
+  // 초기 위치 설정
   items.forEach((item, i) => {
     item.style.transform = `translateY(${i * 60}px)`;
   });
@@ -86,4 +114,7 @@ function startRolling() {
   }, 3000);
 }
 
+/* ============================================================
+   실행
+============================================================ */
 loadApplyStatus();
