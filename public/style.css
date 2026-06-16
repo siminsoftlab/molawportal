@@ -1871,8 +1871,8 @@ button.hl-acc-btn {
 }
 /* ⭐ blog-section을 consult-section과 동일한 스타일로 */
 .blog-section {
-  width: 92%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 800px;
   margin: 0 auto 40px;
   padding: 40px 20px;
 
