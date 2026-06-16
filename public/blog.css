@@ -14,6 +14,7 @@
   -webkit-backdrop-filter: blur(6px);
 
   box-sizing: border-box;
+   margin-top: 20px !important;
 }
 
 /* 섹션 간격 */
