@@ -52,11 +52,12 @@ async function loadApplyStatus() {
       card.className = "apply-status-card";
 
      card.innerHTML = `
-        <span class="col">${data.status}</span>
-        <span class="col">${data.applyType}</span>
-        <span class="col">${maskName(data.name)}</span>
-        <span class="col">${data.createdAt?.toDate().toLocaleDateString("ko-KR")}</span>
+        <span class="col status">${data.status}</span>
+        <span class="col type">${data.applyType}</span>
+        <span class="col name">${maskName(data.name)}</span>
+        <span class="col date">${data.createdAt?.toDate().toLocaleDateString("ko-KR")}</span>
       `;
+
 
 
       container.appendChild(card);
