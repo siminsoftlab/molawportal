@@ -1957,16 +1957,13 @@ button.hl-acc-btn {
 
 .apply-status-list li {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr; /* 상태 / 유형 / 성명 / 날짜 */
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 10px;
-
   padding: 12px 14px;
   background: #f9fafb;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
-  font-size: 15px;
-  color: #374151;
-  margin-bottom: 8px; /* 줄 간격 정상화 */
+  margin-bottom: 8px;
 }
 
 /* 상태 태그 */
