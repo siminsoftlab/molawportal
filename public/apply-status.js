@@ -43,6 +43,7 @@ function getStatusTag(status) {
 
 /* ============================================================
    3) Firestore에서 최근 5건 불러오기
+   ※ consult_requests 기준
 ============================================================ */
 async function loadApplyStatus() {
   const listEl = document.getElementById("applyStatusList");
@@ -52,8 +53,8 @@ async function loadApplyStatus() {
 
   try {
     const q = query(
-      collection(db, "apply"),
-      orderBy("timestamp", "desc"),
+      collection(db, "consult_requests"),   // ← ★ 여기 변경됨
+      orderBy("createdAt", "desc"),
       limit(5)
     );
 
@@ -71,8 +72,8 @@ async function loadApplyStatus() {
 
       const name = maskName(data.name || "이름 없음");
       const type = data.applyType || "유형 없음";
-      const status = data.status || "진행중";
-      const date = data.timestamp?.toDate().toLocaleDateString("ko-KR") || "";
+      const status = data.status || "신규";
+      const date = data.createdAt?.toDate().toLocaleDateString("ko-KR") || "";
 
       const item = `
         <li>
