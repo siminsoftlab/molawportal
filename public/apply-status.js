@@ -26,11 +26,11 @@ function maskName(name) {
 ============================================================ */
 function getStatusTag(status) {
   const cls = "status-" + status.replace(/\s/g, "");
-  return `<span class="status-tag ${cls}">${status}</span>`;
+  return `<div class="status-tag ${cls}">${status}</div>`;
 }
 
 /* ============================================================
-   Firestore 불러오기 (슬라이드 제거)
+   Firestore 불러오기
 ============================================================ */
 async function loadApplyStatus() {
   const listEl = document.getElementById("applyStatusList");
@@ -66,26 +66,26 @@ async function loadApplyStatus() {
       const li = document.createElement("li");
 
       // 상태
-      const spanStatus = document.createElement("span");
-      spanStatus.innerHTML = getStatusTag(status);
+      const divStatus = document.createElement("div");
+      divStatus.innerHTML = getStatusTag(status);
 
       // 신청유형
-      const spanType = document.createElement("span");
-      spanType.textContent = type;
+      const divType = document.createElement("div");
+      divType.textContent = type;
 
       // 성명
-      const spanName = document.createElement("span");
-      spanName.textContent = name;
+      const divName = document.createElement("div");
+      divName.textContent = name;
 
       // 날짜
-      const spanDate = document.createElement("span");
-      spanDate.textContent = date;
+      const divDate = document.createElement("div");
+      divDate.textContent = date;
 
       // 순서: 상태 → 신청유형 → 성명 → 날짜
-      li.appendChild(spanStatus);
-      li.appendChild(spanType);
-      li.appendChild(spanName);
-      li.appendChild(spanDate);
+      li.appendChild(divStatus);
+      li.appendChild(divType);
+      li.appendChild(divName);
+      li.appendChild(divDate);
 
       listEl.appendChild(li);
     });
