@@ -1946,16 +1946,42 @@ button.hl-acc-btn {
 .right-box:hover .calc-img {
   transform: scale(1.08);
 
+.apply-status-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 50px; /* 한 줄 높이 */
+  overflow: hidden;
+  position: relative;
+}
+
 .apply-status-list li {
+  display: flex;
+  justify-content: space-between;
   padding: 12px 14px;
   background: #f9fafb;
   border-radius: 12px;
-  margin-bottom: 10px;
   border: 1px solid #e5e7eb;
   font-size: 15px;
   color: #374151;
-
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr; /* 이름 / 유형 / 상태 / 날짜 */
-  gap: 10px;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  transition: transform 0.6s ease;
 }
+
+.status-tag {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  display: inline-block;
+  text-align: center;
+}
+
+.status-신규 { background: #3b82f6; }
+.status-진행중 { background: #f59e0b; }
+.status-완료 { background: #10b981; }
+.status-보류 { background: #6b7280; }
+
