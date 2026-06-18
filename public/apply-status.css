@@ -60,6 +60,9 @@
 .status-신청 {
   color: #3a7afe; /* 파란색 */
 }
+.status-접수 {
+  color: #ffe8a3; /* 파란색 */
+}
 .status-상담중 {
   color: #ff9800; /* 주황색 */
 }
