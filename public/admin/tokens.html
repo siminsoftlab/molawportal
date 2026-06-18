@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>이용권 관리</title>
-  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="/admin.css">
+  <link rel="stylesheet" href="/tokens.css">
 </head>
 
 <body>
+ <!-- 상단 헤더 -->
+<div class="admin-header">
+  <div class="title">🎟 이용권 관리</div>
 
+  <div class="actions">
+    <button id="home-btn" class="btn-secondary">메인으로</button>
+    <button id="logout-btn" class="btn-danger">로그아웃</button>
+  </div>
+</div>
 <div class="box">
-  <h2>🎟 이용권 관리</h2>
-
   <div id="tokenList" class="section">
     <p>불러오는 중...</p>
   </div>
