@@ -34,7 +34,7 @@ function loadApplyStatus() {
   const q = query(
     collection(db, "consult_requests"),
     orderBy("createdAt", "desc"),
-    limit(5) // 취소 제외하면 실제 표시 수가 줄 수 있으니 5개로 늘림
+    limit(10) // 취소 제외하면 실제 표시 수가 줄 수 있으니 10개로 늘림
   );
 
   onSnapshot(q, (snapshot) => {
