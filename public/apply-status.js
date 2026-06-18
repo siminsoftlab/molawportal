@@ -63,8 +63,8 @@ function loadApplyStatus() {
 
       card.innerHTML = `
         <span class="col status">${data.status}</span>
-        <span class="col type">${data.applyType}</span>
         <span class="col name">${maskName(data.name)}</span>
+        <span class="col type">${data.applyType}</span>
         <span class="col date">${data.createdAt?.toDate().toLocaleDateString("ko-KR")}</span>
       `;
 
