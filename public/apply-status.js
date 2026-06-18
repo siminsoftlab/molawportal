@@ -7,9 +7,9 @@ import {
   query,
   orderBy,
   limit,
-  where,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
 /* 이름 마스킹 */
 function maskName(name) {
   if (!name || name.length < 2) return name;
@@ -33,21 +33,30 @@ function loadApplyStatus() {
 
   const q = query(
     collection(db, "consult_requests"),
-    where("status", "!=", "취소"),   // 🔥 취소 상태 제외 
-    orderBy("createdAt", "desc"),   // 🔥 Firestore 규칙: where != 사용 시 orderBy 필요
-    limit(5)
+    orderBy("createdAt", "desc"),
+    limit(10) // 취소 제외하면 실제 표시 수가 줄 수 있으니 10개로 늘림
   );
 
   onSnapshot(q, (snapshot) => {
+    // 스피너 제거
+    container.innerHTML = "";
+
     if (snapshot.empty) {
       container.innerHTML = "<div>최근 신청 내역이 없습니다.</div>";
       return;
     }
 
-    container.innerHTML = ""; // 스피너 제거
+    let count = 0;
 
     snapshot.forEach((doc, i) => {
       const data = doc.data();
+
+      // 🔥 JS에서 취소 상태 필터링
+      if (data.status === "취소") return;
+
+      // 최대 5개만 표시
+      if (count >= 5) return;
+      count++;
 
       const card = document.createElement("div");
       card.className = "apply-status-card";
@@ -63,7 +72,12 @@ function loadApplyStatus() {
 
       setTimeout(() => card.classList.add("visible"), i * 150);
     });
-  }, 200); // 🔥 스피너가 0.2초는 보이도록
+
+    // 필터링 후에도 아무것도 없을 때
+    if (count === 0) {
+      container.innerHTML = "<div>최근 신청 내역이 없습니다.</div>";
+    }
+  });
 }
 
 loadApplyStatus();
