@@ -21,7 +21,7 @@ function getRemainingDays(expireAt) {
 }
 
 /* ============================================================
-   이용권 정보 불러오기 + 활성 여부 표시
+   이용권 정보 불러오기
 ============================================================ */
 async function loadTicket(userId) {
   const ticketBox = document.getElementById("mypage-ticket");
@@ -80,7 +80,7 @@ async function loadTicket(userId) {
 }
 
 /* ============================================================
-   현재 결제 신청 상태 표시 (pending)
+   결제 신청 상태 표시
 ============================================================ */
 async function loadPendingPayment(userId) {
   const box = document.getElementById("pendingPayment");
@@ -115,7 +115,7 @@ async function loadPendingPayment(userId) {
 }
 
 /* ============================================================
-   만료 3일 전 배너 표시
+   만료 3일 전 배너
 ============================================================ */
 async function checkExpireAlert(userId) {
   const q = query(
@@ -149,10 +149,15 @@ async function checkExpireAlert(userId) {
 }
 
 /* ============================================================
-   Push 알림 권한 요청 배너
+   Push 알림 배너 (하루 1번만 표시)
 ============================================================ */
 function showPushPermissionBanner() {
-  if (Notification.permission === "granted") return;
+  if (Notification.permission !== "default") return;
+
+  const lastShown = localStorage.getItem("pushBannerLastShown");
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (lastShown === today) return;
 
   const banner = document.getElementById("pushBanner");
   banner.style.display = "flex";
@@ -160,15 +165,17 @@ function showPushPermissionBanner() {
   document.getElementById("pushAllow").onclick = async () => {
     await requestPushPermission();
     banner.style.display = "none";
+    localStorage.setItem("pushBannerLastShown", today);
   };
 
   document.getElementById("pushLater").onclick = () => {
     banner.style.display = "none";
+    localStorage.setItem("pushBannerLastShown", today);
   };
 }
 
 /* ============================================================
-   Push 알림 권한 요청 + Service Worker 등록
+   Push 권한 요청 + SW 등록
 ============================================================ */
 async function registerServiceWorker() {
   if ("serviceWorker" in navigator) {
@@ -196,26 +203,30 @@ async function requestPushPermission() {
 }
 
 /* ============================================================
-   로그인 확인 후 실행
+   로그인 후 실행
 ============================================================ */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "/auth/login.html";
-    return;
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "/auth/login.html";
+      return;
+    }
 
-  await registerServiceWorker();
+    await registerServiceWorker();
 
-  const userDoc = await getDoc(doc(db, "users", user.uid));
-  const data = userDoc.data();
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const data = userDoc.data();
 
-  document.getElementById("mypage-name").textContent = data.name;
-  document.getElementById("mypage-email").textContent = data.email;
+    document.getElementById("mypage-name").textContent = data.name;
+    document.getElementById("mypage-email").textContent = data.email;
 
-  loadTicket(user.uid);
-  loadPendingPayment(user.uid);
-  checkExpireAlert(user.uid);
-  showPushPermissionBanner();
+    loadTicket(user.uid);
+    loadPendingPayment(user.uid);
+    checkExpireAlert(user.uid);
+
+    // 🔥 DOM이 준비된 뒤에 실행 → 버튼 이벤트 정상 연결
+    showPushPermissionBanner();
+  });
 });
 
 /* ============================================================
@@ -228,34 +239,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const buyBtn = document.getElementById("buyTicketBtn");
   const homeBtn = document.getElementById("homeBtn");
 
-  if (editBtn) {
-    editBtn.addEventListener("click", () => {
-      window.location.href = "/auth/password-change.html";
-    });
-  }
+  editBtn?.addEventListener("click", () => {
+    window.location.href = "/auth/password-change.html";
+  });
 
-  if (payBtn) {
-    payBtn.addEventListener("click", () => {
-      window.location.href = "/mypage/payment-history.html";
-    });
-  }
+  payBtn?.addEventListener("click", () => {
+    window.location.href = "/mypage/payment-history.html";
+  });
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "/index.html";
-    });
-  }
+  logoutBtn?.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "/index.html";
+  });
 
-  if (buyBtn) {
-    buyBtn.addEventListener("click", () => {
-      window.location.href = "/mypage/payments.html";
-    });
-  }
+  buyBtn?.addEventListener("click", () => {
+    window.location.href = "/mypage/payments.html";
+  });
 
-  if (homeBtn) {
-    homeBtn.addEventListener("click", () => {
-      window.location.href = "/index.html";
-    });
-  }
+  homeBtn?.addEventListener("click", () => {
+    window.location.href = "/index.html";
+  });
 });
