@@ -33,9 +33,8 @@ function loadApplyStatus() {
 
   const q = query(
     collection(db, "consult_requests"),
-    where("status", "!=", "취소"),   // 🔥 취소 상태 제외
-    orderBy("status"),               // 🔥 Firestore 규칙: where != 사용 시 orderBy 필요
-    orderBy("createdAt", "desc"),
+    where("status", "!=", "취소"),   // 🔥 취소 상태 제외 
+    orderBy("createdAt", "desc"),   // 🔥 Firestore 규칙: where != 사용 시 orderBy 필요
     limit(5)
   );
 
