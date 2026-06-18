@@ -9,7 +9,21 @@ import {
   limit,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+/* 이름 마스킹 */
+function maskName(name) {
+  if (!name || name.length < 2) return name;
+  if (name.length === 2) return name[0] + "O";
+  if (name.length === 3) return name[0] + "O" + name[2];
+  return name[0] + "OO" + name.slice(-1);
+}
 
+/* 상태 태그 */
+function getStatusTag(status) {
+  const cls = "status-" + status.replace(/\s/g, "");
+  return `<span class="status-tag ${cls}">${status}</span>`;
+}
+
+/* Firestore 불러오기 */
 function loadApplyStatus() {
   const container = document.getElementById("applyStatusCards");
 
