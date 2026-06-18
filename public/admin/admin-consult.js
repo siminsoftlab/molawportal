@@ -2,31 +2,32 @@
 import { db } from "/firebase-init.js";
 import {
   collection,
-  getDocs,
   query,
-  orderBy
+  orderBy,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   const tbody = document.getElementById("consultTableBody");
   const searchInput = document.getElementById("searchInput");
 
   let consultList = [];
 
-  async function loadConsults() {
+  function loadConsultsRealtime() {
     const q = query(
       collection(db, "consult_requests"),
       orderBy("createdAt", "desc")
     );
 
-    const snap = await getDocs(q);
+    // 🔥 실시간 업데이트
+    onSnapshot(q, (snap) => {
+      consultList = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
 
-    consultList = snap.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    renderTable(consultList);
+      renderTable(consultList);
+    });
   }
 
   function renderTable(list) {
@@ -39,41 +40,41 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? item.createdAt.toDate().toLocaleString()
         : "-";
 
-     tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.phone}</td>
-      <td>${item.applyType || "-"}</td>
-      <td>${date}</td>
-      <td>${item.status || "신규"}</td>
-      <td>
-        <button class="btn-secondary" onclick="editConsult('${item.id}')">관리</button>
-      </td>
-    `;
+      tr.innerHTML = `
+        <td>${item.name}</td>
+        <td>${item.phone}</td>
+        <td>${item.applyType || "-"}</td>
+        <td>${date}</td>
+        <td>${item.status || "신규"}</td>
+        <td>
+          <button class="btn-secondary" onclick="editConsult('${item.id}')">관리</button>
+        </td>
+      `;
+
       tbody.appendChild(tr);
     });
   }
 
   // 검색 기능
   searchInput.addEventListener("input", () => {
-  const keyword = searchInput.value.trim().toLowerCase();
+    const keyword = searchInput.value.trim().toLowerCase();
 
-  const filtered = consultList.filter(item =>
-    (item.name || "").toLowerCase().includes(keyword) ||
-    (item.phone || "").toLowerCase().includes(keyword) ||
-    (item.email || "").toLowerCase().includes(keyword) ||
-    (item.applyType || "").toLowerCase().includes(keyword) ||
-    (item.content || "").toLowerCase().includes(keyword)
-  );
+    const filtered = consultList.filter(item =>
+      (item.name || "").toLowerCase().includes(keyword) ||
+      (item.phone || "").toLowerCase().includes(keyword) ||
+      (item.email || "").toLowerCase().includes(keyword) ||
+      (item.applyType || "").toLowerCase().includes(keyword) ||
+      (item.content || "").toLowerCase().includes(keyword)
+    );
 
-  renderTable(filtered);
-});
+    renderTable(filtered);
+  });
 
-
-  // 관리 버튼 클릭 시 (추후 상세 관리 페이지 연결 가능)
+  // 관리 버튼
   window.editConsult = function(id) {
     location.href = `/admin/consult-detail.html?id=${id}`;
   };
 
-  // 최초 로드
-  loadConsults();
+  // 🔥 최초 로드 → 실시간 구독 시작
+  loadConsultsRealtime();
 });
