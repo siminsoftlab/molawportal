@@ -33,7 +33,7 @@ async function loadApplyStatus() {
     const q = query(
       collection(db, "consult_requests"),
       orderBy("createdAt", "desc"),
-      limit(8)
+      limit(5)   // 🔥 최근 5개만 불러오기
     );
 
     const snapshot = await getDocs(q);
@@ -51,14 +51,12 @@ async function loadApplyStatus() {
       const card = document.createElement("div");
       card.className = "apply-status-card";
 
-     card.innerHTML = `
+      card.innerHTML = `
         <span class="col status">${data.status}</span>
         <span class="col type">${data.applyType}</span>
         <span class="col name">${maskName(data.name)}</span>
         <span class="col date">${data.createdAt?.toDate().toLocaleDateString("ko-KR")}</span>
       `;
-
-
 
       container.appendChild(card);
 
