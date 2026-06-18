@@ -10,10 +10,11 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-/* Firestore 실시간 불러오기 */
 function loadApplyStatus() {
   const container = document.getElementById("applyStatusCards");
-  container.innerHTML = "불러오는 중...";
+
+  // 스피너 표시
+  container.innerHTML = `<div class="loading-spinner"></div>`;
 
   const q = query(
     collection(db, "consult_requests"),
@@ -27,7 +28,7 @@ function loadApplyStatus() {
       return;
     }
 
-    container.innerHTML = "";
+    container.innerHTML = ""; // 스피너 제거
 
     snapshot.forEach((doc, i) => {
       const data = doc.data();
@@ -44,7 +45,7 @@ function loadApplyStatus() {
 
       container.appendChild(card);
 
-      setTimeout(() => card.classList.add("visible"), i * 200);
+      setTimeout(() => card.classList.add("visible"), i * 150);
     });
   });
 }
