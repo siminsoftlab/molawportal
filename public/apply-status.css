@@ -57,7 +57,7 @@
 }
 
 /* 상태별 색상 */
-.status-신청완료 {
+.status-신청 {
   color: #3a7afe; /* 파란색 */
 }
 .status-상담중 {
