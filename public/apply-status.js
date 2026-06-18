@@ -63,7 +63,7 @@ function loadApplyStatus() {
 
       setTimeout(() => card.classList.add("visible"), i * 150);
     });
-  });
+  }, 200); // 🔥 스피너가 0.2초는 보이도록
 }
 
 loadApplyStatus();
