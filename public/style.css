@@ -1739,16 +1739,15 @@ button.hl-acc-btn {
 /* ⭐ container와 동일한 폭 + 중앙 정렬 + 스타일 */
 .welcome-banner {
   width: 92%;
-  max-width: 900px; 
-  background: rgba(255,255,255,0.75);
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0; /* 내부 여백 제거 */
+  background: none !important; /* 배경 제거 */
+  border: none !important;     /* 테두리 제거 */
+  box-shadow: none !important; /* 그림자 제거 */
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 16px;
-  border: 2px solid red !important;  
-  margin-bottom: 10px;
 }
 
 /* 아이콘 */
