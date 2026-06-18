@@ -3,13 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>관리자 결제 관리</title>
+  <link rel="stylesheet" href="/admin.css"> 
   <link rel="stylesheet" href="/admin/payments.css"> 
 </head>
 
 <body>
+ <!-- 상단 헤더 -->
+  <div class="admin-header">
+    <div class="title">💰 결제 관리 대시보드</div>
 
+    <div class="actions">
+      <button id="home-btn" class="btn-secondary">홈으로</button>
+      <button id="change-pw-btn" class="btn-secondary">비밀번호 변경</button>
+      <button id="logout-btn" class="btn-danger">로그아웃</button>
+    </div>
+  </div>
 <div class="box">
-  <h2>💰 결제 관리 대시보드</h2>
   <input 
   type="text" 
   id="searchInput" 
