@@ -53,10 +53,10 @@
   color: #3a7afe;
 }
 
-/* 🔹 모바일 2열 */
+/* 🔹 모바일 4열 */
 @media (max-width: 768px) {
   .apply-status-card {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     row-gap: 6px;
   }
 }
