@@ -10,6 +10,9 @@
   margin-top: 20px;
   border: 1px solid #eef0f3;
 }
+.apply-status-section {  
+  margin-bottom: 20px;
+}
 
 /* 🔹 흰 바탕 박스 (신청현황 컨테이너) */
 .apply-status-cards {
