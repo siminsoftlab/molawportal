@@ -99,3 +99,29 @@ h2 {
   font-size: 15px;
   box-sizing: border-box;
 }
+.detail-btn {
+  display: inline-block;
+  padding: 12px 20px;
+  background: #6ea8fe; /* 파스텔 블루 */
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px; /* 앱 스타일 둥근 버튼 */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(110, 168, 254, 0.3); /* 파스텔 그림자 */
+}
+
+/* 호버 효과 */
+.detail-btn:hover {
+  background: #5a96f5;
+  box-shadow: 0 6px 14px rgba(110, 168, 254, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 클릭 효과 */
+.detail-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 3px 8px rgba(110, 168, 254, 0.25);
+}
