@@ -1947,60 +1947,52 @@ button.hl-acc-btn {
   transform: scale(1.08);
 
 /* ============================
-   상담 신청 현황 — 최종 완성본
+   상담 신청 현황 — 전체 최종본
 ============================ */
 
-/* 부모 박스: 검정 배경 + 흰 글자 */
+/* 🔹 전체 배경 박스 */
+.apply-status-wrapper {
+  background: #f5f5f5; /* 전체 배경색 (원하는 색으로 변경 가능) */
+  padding: 25px;
+  border-radius: 14px;
+  margin-top: 20px;
+}
+
+/* 🔹 흰 바탕 박스 (신청현황이 표시되는 영역) */
 .apply-status-cards {
-  background: #000;          /* 검정 배경 */
-  color: #fff;               /* 흰 글자 */
+  background: #fff;          /* 흰 바탕 */
+  color: #000;               /* 글자색 검정 */
   padding: 20px;             /* 내부 여백 */
   border-radius: 12px;       /* 둥근 모서리 */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 부드러운 그림자 */
+  margin-top: 10px;
 
-  /* ❗ 부모는 grid 아님 — block 박스여야 배경이 꽉 찬다 */
   display: block;
 }
 
-/* 한 줄(row) — 4칸 그리드 */
+/* 🔹 한 줄(row) — 4칸 그리드 */
 .apply-status-card {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.1); /* 밝은 회색 구분선 */
 }
 
-/* 각 칸 */
+/* 🔹 각 칸 */
 .apply-status-card .col {
   white-space: nowrap;
 }
 
-/* 상태 강조 */
+/* 🔹 상태 강조 */
 .status {
   font-weight: 700;
-  color: #4da3ff; /* 검정 배경에서 잘 보이는 파란색 */
+  color: #007bff; /* 흰 배경에서도 잘 보이는 파란색 */
 }
 
-/* 모바일 2열 */
+/* 🔹 모바일 2열 */
 @media (max-width: 768px) {
   .apply-status-card {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 4px solid #ddd;
-  border-top-color: #4a90e2;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 20px auto;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
