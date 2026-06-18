@@ -51,9 +51,28 @@
 }
 
 /* 🔹 상태 강조 (스타트업 포인트 컬러) */
+/* 기본 스타일 */
 .status {
   font-weight: 700;
-  color: #3a7afe;
+}
+
+/* 상태별 색상 */
+.status-신청완료 {
+  color: #3a7afe; /* 파란색 */
+}
+.status-상담중 {
+  color: #ff9800; /* 주황색 */
+}
+.status-완료 {
+  color: #4caf50; /* 초록색 */
+}
+.status-보류 {
+  color: #9c27b0; /* 보라색 */
+}
+.status-취소 {
+  color: #f44336; /* 빨간색 */
+  text-decoration: line-through;
+  opacity: 0.6;
 }
 
 /* 🔹 모바일 4열 */
