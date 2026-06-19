@@ -95,7 +95,7 @@ window.openApplyModal = function(type) {
       // 관리용 필드
       manager: "",
       partner: "",
-      status: "신규",
+      status: "신청",
       contractCode: "",
 
       createdAt: serverTimestamp()
