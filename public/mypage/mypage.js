@@ -312,12 +312,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     await registerServiceWorker();
 
-    /* 🔥 userDoc가 없을 때 오류 방지 */
+    /* 🔥 userDoc가 없을 때도 절대 오류 안 나도록 보호 */
     const userDoc = await getDoc(doc(db, "users", user.uid));
     const data = userDoc.exists() ? userDoc.data() : {};
 
-    document.getElementById("mypage-name").textContent = data.name || "사용자";
-    document.getElementById("mypage-email").textContent = data.email || user.email;
+    const nameEl = document.getElementById("mypage-name");
+    const emailEl = document.getElementById("mypage-email");
+
+    if (nameEl) nameEl.textContent = data.name || "사용자";
+    if (emailEl) emailEl.textContent = data.email || user.email;
 
     loadTicket(user.uid);
     loadPendingPayment(user.uid);
