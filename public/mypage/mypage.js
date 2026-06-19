@@ -205,7 +205,7 @@ async function requestPushPermission() {
 }
 
 /* ============================================================
-   🔥 회원탈퇴 기능 (함수로 분리)
+   🔥 회원탈퇴 기능
 ============================================================ */
 async function handleDeleteAccount() {
   const confirmDelete = confirm(
@@ -312,11 +312,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     await registerServiceWorker();
 
+    /* 🔥 userDoc가 없을 때 오류 방지 */
     const userDoc = await getDoc(doc(db, "users", user.uid));
-    const data = userDoc.data();
+    const data = userDoc.exists() ? userDoc.data() : {};
 
-    document.getElementById("mypage-name").textContent = data.name;
-    document.getElementById("mypage-email").textContent = data.email;
+    document.getElementById("mypage-name").textContent = data.name || "사용자";
+    document.getElementById("mypage-email").textContent = data.email || user.email;
 
     loadTicket(user.uid);
     loadPendingPayment(user.uid);
@@ -325,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showPushPermissionBanner();
 
     /* ============================================================
-       🔥 버튼 이벤트 연결 (여기서 해야 안정적)
+       🔥 버튼 이벤트 연결
     ============================================================ */
     document.getElementById("editInfoBtn")?.addEventListener("click", () => {
       window.location.href = "/auth/password-change.html";
