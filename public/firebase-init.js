@@ -25,5 +25,5 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const functions = getFunctions(app);
-
+export const storage = getStorage(app);   // ⭐ 추가된 부분
 console.log("firebase-init.js initialized (v9)");
