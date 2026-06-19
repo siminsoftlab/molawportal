@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>탈퇴 회원 조회</title>
+  <link rel="stylesheet" href="/admin/admin-deleted-users.css">
+</head>
+<body>
+
+  <h1>탈퇴 회원 조회</h1>
+
+  <table id="deletedTable">
+    <thead>
+      <tr>
+        <th>UID</th>
+        <th>이름</th>
+        <th>이메일</th>
+        <th>탈퇴일</th>
+        <th>결제내역</th>
+        <th>이용권</th>
+        <th>쿠폰</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <p id="emptyMsg" class="empty" style="display:none;">탈퇴한 회원이 없습니다.</p>
+
+  <script type="module" src="/admin/admin-deleted-users.js"></script>
+</body>
+</html>
