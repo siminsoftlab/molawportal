@@ -319,23 +319,36 @@ exports.geoip = functions.https.onRequest((req, res) => {
 
 /**
  * 관리자 권한 부여
- * 프론트에서 httpsCallable로 호출
  * 예: setAdminRole({ uid: "USER_UID" })
  */
 exports.setAdminRole = functions.https.onCall(async (data, context) => {
-  // 호출한 사람이 관리자여야 함 → ⭐ 임시로 주석 처리
-  /*
+
+  // ⭐ 관리자 체크 (관리자 계정 생성 후 다시 활성화)
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
-  */
 
   const uid = data.uid;
 
+  // 1) Custom Claims 저장
   await admin.auth().setCustomUserClaims(uid, { role: "admin" });
+
+  // 2) Firestore users 컬렉션에도 저장
+  await db.collection("users").doc(uid).update({
+    role: "admin",
+    role_updated_at: Date.now()
+  });
+
+  // 3) (선택) 권한 변경 로그 기록
+  await db.collection("role_logs").add({
+    uid,
+    role: "admin",
+    changed_by: context.auth.uid,
+    timestamp: Date.now()
+  });
 
   return { message: `관리자 권한이 부여되었습니다: ${uid}` };
 });
@@ -346,19 +359,33 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
  * 예: setManagerRole({ uid: "USER_UID" })
  */
 exports.setManagerRole = functions.https.onCall(async (data, context) => {
-  // 호출한 사람이 관리자여야 함 → ⭐ 임시로 주석 처리
-  /*
+
+  // ⭐ 관리자 체크 (관리자 계정 생성 후 다시 활성화)
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
-  */
 
   const uid = data.uid;
 
+  // 1) Custom Claims 저장
   await admin.auth().setCustomUserClaims(uid, { role: "manager" });
+
+  // 2) Firestore users 컬렉션에도 저장
+  await db.collection("users").doc(uid).update({
+    role: "manager",
+    role_updated_at: Date.now()
+  });
+
+  // 3) (선택) 권한 변경 로그 기록
+  await db.collection("role_logs").add({
+    uid,
+    role: "manager",
+    changed_by: context.auth.uid,
+    timestamp: Date.now()
+  });
 
   return { message: `담당자 권한이 부여되었습니다: ${uid}` };
 });
