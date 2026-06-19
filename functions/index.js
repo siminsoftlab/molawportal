@@ -313,3 +313,47 @@ exports.geoip = functions.https.onRequest((req, res) => {
 
   });
 });
+/* ============================================================
+   8) 관리자 / 담당자 권한 설정 (Custom Claims)
+============================================================ */
+
+/**
+ * 관리자 권한 부여
+ * 프론트에서 httpsCallable로 호출
+ * 예: setAdminRole({ uid: "USER_UID" })
+ */
+exports.setAdminRole = functions.https.onCall(async (data, context) => {
+  // 호출한 사람이 관리자여야 함
+  if (!context.auth || context.auth.token.role !== "admin") {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "관리자만 권한을 변경할 수 있습니다."
+    );
+  }
+
+  const uid = data.uid;
+
+  await admin.auth().setCustomUserClaims(uid, { role: "admin" });
+
+  return { message: `관리자 권한이 부여되었습니다: ${uid}` };
+});
+
+
+/**
+ * 담당자 권한 부여
+ * 예: setManagerRole({ uid: "USER_UID" })
+ */
+exports.setManagerRole = functions.https.onCall(async (data, context) => {
+  if (!context.auth || context.auth.token.role !== "admin") {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "관리자만 권한을 변경할 수 있습니다."
+    );
+  }
+
+  const uid = data.uid;
+
+  await admin.auth().setCustomUserClaims(uid, { role: "manager" });
+
+  return { message: `담당자 권한이 부여되었습니다: ${uid}` };
+});
