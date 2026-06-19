@@ -541,6 +541,12 @@ if (userManageBtn) {
     window.location.href = "/admin/admin-users.html";
   });
 }
+const deluserManageBtn = document.getElementById("deluser-manage-btn");
+if (deluserManageBtn) {
+  deluserManageBtn.addEventListener("click", () => {
+    window.location.href = "/admin/admin-deleted-users.html";
+  });
+}
 
   /* ============================================================
      회원 통계
