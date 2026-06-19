@@ -1945,3 +1945,17 @@ button.hl-acc-btn {
 .right-box:hover .calc-img {
   transform: scale(1.08);
 
+.service-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 12px 0;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .service-title {
+    white-space: nowrap;        /* 줄바꿈 방지 */
+    font-size: 4vw;             /* 화면 너비에 따라 자동 축소 */
+    line-height: 1.2;
+  }
+}
+
