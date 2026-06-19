@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let consultList = [];
 
+  /** 🔥 실시간 상담 목록 로드 */
   function loadConsultsRealtime() {
     const q = query(
       collection(db, "consult_requests"),
@@ -30,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /** 🔥 테이블 렌더링 */
   function renderTable(list) {
     tbody.innerHTML = "";
 
@@ -56,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 검색 기능
+  /** 🔍 검색 기능 */
   searchInput.addEventListener("input", () => {
     const keyword = searchInput.value.trim().toLowerCase();
 
@@ -71,18 +73,18 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTable(filtered);
   });
 
-  // 상세 페이지 이동
+  /** 🔗 상세 페이지 이동 */
   window.editConsult = function(id) {
     location.href = `/admin/consult-detail.html?id=${id}`;
   };
 
-  // 담당자 배정
+  /** 🔥 담당자 배정 (UID 기반) */
   window.assignManager = async function(id) {
-    const name = prompt("담당자 이름을 입력하세요:");
-    if (!name) return;
+    const uid = prompt("담당자 UID를 입력하세요:");
+    if (!uid) return;
 
     await updateDoc(doc(db, "consult_requests", id), {
-      manager: name,
+      assignedTo: uid,     // ⭐ 담당자 UID 저장
       status: "배정"
     });
 
