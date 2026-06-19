@@ -323,13 +323,15 @@ exports.geoip = functions.https.onRequest((req, res) => {
  * 예: setAdminRole({ uid: "USER_UID" })
  */
 exports.setAdminRole = functions.https.onCall(async (data, context) => {
-  // 호출한 사람이 관리자여야 함
+  // 호출한 사람이 관리자여야 함 → ⭐ 임시로 주석 처리
+  /*
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
+  */
 
   const uid = data.uid;
 
@@ -344,12 +346,15 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
  * 예: setManagerRole({ uid: "USER_UID" })
  */
 exports.setManagerRole = functions.https.onCall(async (data, context) => {
+  // 호출한 사람이 관리자여야 함 → ⭐ 임시로 주석 처리
+  /*
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
+  */
 
   const uid = data.uid;
 
