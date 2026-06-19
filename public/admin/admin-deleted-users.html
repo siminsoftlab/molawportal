@@ -3,11 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>탈퇴 회원 조회</title>
+  <link rel="stylesheet" href="/admin.css">
   <link rel="stylesheet" href="/admin/admin-deleted-users.css">
 </head>
 <body>
-
-  <h1>탈퇴 회원 조회</h1>
+<!-- 상단 헤더 -->
+  <div class="admin-header">
+    <div class="title">탈퇴 회원 조</div>
+    <div class="actions">
+      <button onclick="location.href='/admin.html'" class="btn-secondary">대시보드</button>
+      <button id="logout-btn" class="btn-danger">로그아웃</button>
+    </div>
+  </div>
 
   <table id="deletedTable">
     <thead>
