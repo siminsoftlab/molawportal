@@ -323,7 +323,7 @@ exports.geoip = functions.https.onRequest((req, res) => {
  */
 exports.setAdminRole = functions.https.onCall(async (data, context) => {
 
-  // ⭐ 관리자 체크 (관리자 계정 생성 후 다시 활성화)
+  // 관리자 체크
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
@@ -333,34 +333,38 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
 
   const uid = data.uid;
 
-  // 1) Custom Claims 저장
-  await admin.auth().setCustomUserClaims(uid, { role: "admin" });
+  try {
+    // 1) Custom Claims 저장
+    await admin.auth().setCustomUserClaims(uid, { role: "admin" });
 
-  // 2) Firestore users 컬렉션에도 저장
-  await db.collection("users").doc(uid).update({
-    role: "admin",
-    role_updated_at: Date.now()
-  });
+    // 2) Firestore users 문서가 없으면 생성
+    await db.collection("users").doc(uid).set(
+      {
+        role: "admin",
+        role_updated_at: Date.now()
+      },
+      { merge: true }
+    );
 
-  // 3) (선택) 권한 변경 로그 기록
-  await db.collection("role_logs").add({
-    uid,
-    role: "admin",
-    changed_by: context.auth.uid,
-    timestamp: Date.now()
-  });
+    // 3) 로그 기록
+    await db.collection("role_logs").add({
+      uid,
+      role: "admin",
+      changed_by: context.auth.uid,
+      timestamp: Date.now()
+    });
 
-  return { message: `관리자 권한이 부여되었습니다: ${uid}` };
+    return { message: `관리자 권한이 부여되었습니다: ${uid}` };
+
+  } catch (err) {
+    console.error("권한 설정 오류:", err);
+    throw new functions.https.HttpsError("unknown", "권한 설정 중 오류 발생");
+  }
 });
 
 
-/**
- * 담당자 권한 부여
- * 예: setManagerRole({ uid: "USER_UID" })
- */
 exports.setManagerRole = functions.https.onCall(async (data, context) => {
 
-  // ⭐ 관리자 체크 (관리자 계정 생성 후 다시 활성화)
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
@@ -370,22 +374,28 @@ exports.setManagerRole = functions.https.onCall(async (data, context) => {
 
   const uid = data.uid;
 
-  // 1) Custom Claims 저장
-  await admin.auth().setCustomUserClaims(uid, { role: "manager" });
+  try {
+    await admin.auth().setCustomUserClaims(uid, { role: "manager" });
 
-  // 2) Firestore users 컬렉션에도 저장
-  await db.collection("users").doc(uid).update({
-    role: "manager",
-    role_updated_at: Date.now()
-  });
+    await db.collection("users").doc(uid).set(
+      {
+        role: "manager",
+        role_updated_at: Date.now()
+      },
+      { merge: true }
+    );
 
-  // 3) (선택) 권한 변경 로그 기록
-  await db.collection("role_logs").add({
-    uid,
-    role: "manager",
-    changed_by: context.auth.uid,
-    timestamp: Date.now()
-  });
+    await db.collection("role_logs").add({
+      uid,
+      role: "manager",
+      changed_by: context.auth.uid,
+      timestamp: Date.now()
+    });
 
-  return { message: `담당자 권한이 부여되었습니다: ${uid}` };
+    return { message: `담당자 권한이 부여되었습니다: ${uid}` };
+
+  } catch (err) {
+    console.error("권한 설정 오류:", err);
+    throw new functions.https.HttpsError("unknown", "권한 설정 중 오류 발생");
+  }
 });
