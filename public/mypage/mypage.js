@@ -4,11 +4,13 @@ import { auth, db } from "/firebase-init.js";
 // Firebase v9 CDN 모듈 import
 import { 
   onAuthStateChanged, 
-  signOut 
+  signOut,
+  deleteUser
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 import { 
-  collection, query, where, orderBy, limit, getDocs, doc, getDoc, setDoc 
+  collection, query, where, orderBy, limit, getDocs, doc, getDoc, setDoc,
+  deleteDoc, addDoc
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ============================================================
@@ -224,13 +226,12 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPendingPayment(user.uid);
     checkExpireAlert(user.uid);
 
-    // 🔥 DOM이 준비된 뒤에 실행 → 버튼 이벤트 정상 연결
     showPushPermissionBanner();
   });
 });
 
 /* ============================================================
-   버튼 기능
+   버튼 기능 + 회원탈퇴 기능
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("editInfoBtn");
@@ -238,6 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const buyBtn = document.getElementById("buyTicketBtn");
   const homeBtn = document.getElementById("homeBtn");
+  const deleteBtn = document.getElementById("deleteAccountBtn");
 
   editBtn?.addEventListener("click", () => {
     window.location.href = "/auth/password-change.html";
@@ -258,5 +260,101 @@ document.addEventListener("DOMContentLoaded", () => {
 
   homeBtn?.addEventListener("click", () => {
     window.location.href = "/index.html";
+  });
+
+  /* ============================================================
+     🔥 회원탈퇴 기능
+  ============================================================ */
+  deleteBtn?.addEventListener("click", async () => {
+    const confirmDelete = confirm(
+      "정말 회원탈퇴 하시겠습니까?\n모든 데이터가 삭제되며 복구할 수 없습니다."
+    );
+
+    if (!confirmDelete) return;
+
+    const user = auth.currentUser;
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      const uid = user.uid;
+
+      /* -----------------------------
+         1) Firestore 데이터 조회
+      ----------------------------- */
+      const userDoc = await getDoc(doc(db, "users", uid));
+      const userData = userDoc.exists() ? userDoc.data() : {};
+
+      const tokenSnap = await getDocs(
+        query(collection(db, "access_tokens"), where("user_id", "==", uid))
+      );
+      const accessTokens = tokenSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const paySnap = await getDocs(
+        query(collection(db, "payments"), where("user_id", "==", uid))
+      );
+      const payments = paySnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      let coupons = [];
+      try {
+        const couponSnap = await getDocs(
+          query(collection(db, "coupons"), where("user_id", "==", uid))
+        );
+        coupons = couponSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch (e) {
+        console.log("쿠폰 컬렉션 없음 또는 오류:", e);
+      }
+
+      /* -----------------------------
+         2) deleted_users 기록 저장
+      ----------------------------- */
+      await addDoc(collection(db, "deleted_users"), {
+        uid: uid,
+        email: userData.email || null,
+        name: userData.name || null,
+        deleted_at: Date.now(),
+        payments: payments,
+        access_tokens: accessTokens,
+        coupons: coupons
+      });
+
+      /* -----------------------------
+         3) 원본 데이터 삭제
+      ----------------------------- */
+      await deleteDoc(doc(db, "users", uid));
+      await deleteDoc(doc(db, "push_subscriptions", uid));
+
+      for (const d of tokenSnap.docs) {
+        await deleteDoc(doc(db, "access_tokens", d.id));
+      }
+
+      for (const d of paySnap.docs) {
+        await deleteDoc(doc(db, "payments", d.id));
+      }
+
+      for (const d of coupons) {
+        await deleteDoc(doc(db, "coupons", d.id));
+      }
+
+      /* -----------------------------
+         4) Firebase Auth 계정 삭제
+      ----------------------------- */
+      await deleteUser(user);
+
+      alert("회원탈퇴가 완료되었습니다.");
+      window.location.href = "/index.html";
+
+    } catch (error) {
+      console.error("회원탈퇴 오류:", error);
+
+      if (error.code === "auth/requires-recent-login") {
+        alert("보안을 위해 다시 로그인 후 회원탈퇴를 진행해주세요.");
+        window.location.href = "/auth/login.html";
+      } else {
+        alert("회원탈퇴 중 오류가 발생했습니다.");
+      }
+    }
   });
 });
