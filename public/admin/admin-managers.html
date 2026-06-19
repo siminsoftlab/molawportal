@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>담당자 등록</title>
+  <link rel="stylesheet" href="/admin.css">
+</head>
+
+<body>
+
+<div class="admin-header">
+  <div class="title">👤 담당자 등록</div>
+  <div class="actions">
+    <button onclick="location.href='/admin.html'" class="btn-secondary">대시보드</button>
+    <button id="logout-btn" class="btn-danger">로그아웃</button>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <div class="admin-container section">
+    <div class="card">
+      <div class="card-title">담당자 정보 입력</div>
+
+      <label>담당자 UID</label>
+      <input id="managerUid" type="text" placeholder="Firebase Auth UID 입력">
+
+      <label>담당자 이름</label>
+      <input id="managerName" type="text" placeholder="홍길동">
+
+      <label>담당자 이메일</label>
+      <input id="managerEmail" type="email" placeholder="manager@example.com">
+
+      <button id="saveManagerBtn" class="btn-primary" style="margin-top:15px;">
+        담당자 등록
+      </button>
+    </div>
+  </div>
+
+  <div class="admin-container section">
+    <div class="card">
+      <div class="card-title">등록된 담당자 목록</div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>UID</th>
+            <th>이름</th>
+            <th>이메일</th>
+          </tr>
+        </thead>
+        <tbody id="managerTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/admin/admin-managers.js"></script>
+
+</body>
+</html>
