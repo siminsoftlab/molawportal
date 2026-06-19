@@ -13,8 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const tbody = document.getElementById("consultTableBody");
   const searchInput = document.getElementById("searchInput");
 
+  const modal = document.getElementById("managerModal");
+  const managerSelect = document.getElementById("managerSelect");
+  const btnConfirm = document.getElementById("assignConfirm");
+  const btnCancel = document.getElementById("assignCancel");
+
   let consultList = [];
-  let managerList = []; // 🔥 담당자 목록 저장
+  let managerList = [];
+  let selectedConsultId = null;
 
   /** 🔥 담당자 목록 불러오기 */
   async function loadManagers() {
@@ -25,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
-  /** 🔥 실시간 상담 목록 로드 */
+  /** 🔥 상담 목록 실시간 로드 */
   function loadConsultsRealtime() {
     const q = query(
       collection(db, "consult_requests"),
@@ -89,46 +95,35 @@ document.addEventListener("DOMContentLoaded", () => {
     location.href = `/admin/consult-detail.html?id=${id}`;
   };
 
-  /** 🔥 담당자 배정 (드롭다운) */
-  window.assignManager = async function(id) {
-    if (managerList.length === 0) {
-      alert("담당자 목록이 없습니다.");
-      return;
-    }
+  /** 🔥 담당자 배정 버튼 클릭 */
+  window.assignManager = function(id) {
+    selectedConsultId = id;
 
-    // 🔥 드롭다운 HTML 생성
-    let options = managerList
+    // 드롭다운 초기화
+    managerSelect.innerHTML = managerList
       .map(m => `<option value="${m.uid}">${m.name} (${m.email})</option>`)
       .join("");
 
-    const html = `
-      <div>
-        <label>담당자 선택:</label>
-        <select id="managerSelect">${options}</select>
-      </div>
-    `;
+    modal.style.display = "flex";
+  };
 
-    // 🔥 드롭다운을 prompt 대신 custom modal로 띄우기
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = html;
-    document.body.appendChild(wrapper);
+  /** 🔥 배정하기 버튼 */
+  btnConfirm.addEventListener("click", async () => {
+    const uid = managerSelect.value;
 
-    const selected = await new Promise(resolve => {
-      const select = wrapper.querySelector("#managerSelect");
-      select.addEventListener("change", () => resolve(select.value));
-    });
-
-    document.body.removeChild(wrapper);
-
-    if (!selected) return;
-
-    await updateDoc(doc(db, "consult_requests", id), {
-      assignedTo: selected, // ⭐ 담당자 UID 저장
+    await updateDoc(doc(db, "consult_requests", selectedConsultId), {
+      assignedTo: uid,
       status: "배정"
     });
 
+    modal.style.display = "none";
     alert("담당자 배정 완료!");
-  };
+  });
+
+  /** ❌ 취소 버튼 */
+  btnCancel.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
 
   /** 초기 실행 */
   loadManagers().then(loadConsultsRealtime);
