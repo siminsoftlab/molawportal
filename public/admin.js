@@ -154,6 +154,14 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "/admin/admin-consult.html";
     };
   }
+ /* 담당자 배정 목록 버튼 */
+  const damdangManageBtn = document.getElementById("damdang-manage-btn");
+  if (damdangManageBtn) {
+    damdangManageBtn.onclick = () => {
+      window.location.href = "/manager/manager-consult.html";
+    };
+  }
+  
 
   /* ============================================================
      샤드 상태 (페이징)
