@@ -5,7 +5,8 @@ import {
   orderBy,
   onSnapshot,
   updateDoc,
-  doc
+  doc,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,6 +14,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
 
   let consultList = [];
+  let managerList = []; // 🔥 담당자 목록 저장
+
+  /** 🔥 담당자 목록 불러오기 */
+  async function loadManagers() {
+    const snap = await getDocs(collection(db, "managers"));
+    managerList = snap.docs.map(doc => ({
+      uid: doc.id,
+      ...doc.data()
+    }));
+  }
 
   /** 🔥 실시간 상담 목록 로드 */
   function loadConsultsRealtime() {
@@ -78,18 +89,47 @@ document.addEventListener("DOMContentLoaded", () => {
     location.href = `/admin/consult-detail.html?id=${id}`;
   };
 
-  /** 🔥 담당자 배정 (UID 기반) */
+  /** 🔥 담당자 배정 (드롭다운) */
   window.assignManager = async function(id) {
-    const uid = prompt("담당자 UID를 입력하세요:");
-    if (!uid) return;
+    if (managerList.length === 0) {
+      alert("담당자 목록이 없습니다.");
+      return;
+    }
+
+    // 🔥 드롭다운 HTML 생성
+    let options = managerList
+      .map(m => `<option value="${m.uid}">${m.name} (${m.email})</option>`)
+      .join("");
+
+    const html = `
+      <div>
+        <label>담당자 선택:</label>
+        <select id="managerSelect">${options}</select>
+      </div>
+    `;
+
+    // 🔥 드롭다운을 prompt 대신 custom modal로 띄우기
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = html;
+    document.body.appendChild(wrapper);
+
+    const selected = await new Promise(resolve => {
+      const select = wrapper.querySelector("#managerSelect");
+      select.addEventListener("change", () => resolve(select.value));
+    });
+
+    document.body.removeChild(wrapper);
+
+    if (!selected) return;
 
     await updateDoc(doc(db, "consult_requests", id), {
-      assignedTo: uid,     // ⭐ 담당자 UID 저장
+      assignedTo: selected, // ⭐ 담당자 UID 저장
       status: "배정"
     });
 
     alert("담당자 배정 완료!");
   };
 
-  loadConsultsRealtime();
+  /** 초기 실행 */
+  loadManagers().then(loadConsultsRealtime);
 });
