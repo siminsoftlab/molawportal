@@ -324,14 +324,14 @@ exports.geoip = functions.https.onRequest((req, res) => {
 exports.setAdminRole = functions.https.onCall(async (data, context) => {
 
   // ⭐ 관리자 체크 임시 비활성화 (최초 관리자 생성용)
-  /*
+  
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
-  */
+  
 
   const uid = data.uid;
 
@@ -372,14 +372,14 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
 exports.setManagerRole = functions.https.onCall(async (data, context) => {
 
   // ⭐ 관리자 체크 임시 비활성화 (최초 관리자 생성용)
-  /*
+  
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
-  */
+  
 
   const uid = data.uid;
 
