@@ -1,10 +1,11 @@
-// admin-consult.js
 import { db } from "/firebase-init.js";
 import {
   collection,
   query,
   orderBy,
-  onSnapshot
+  onSnapshot,
+  updateDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
       orderBy("createdAt", "desc")
     );
 
-    // 🔥 실시간 업데이트
     onSnapshot(q, (snap) => {
       consultList = snap.docs.map(doc => ({
         id: doc.id,
@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${date}</td>
         <td>${item.status || "신규"}</td>
         <td>
+          <button class="btn-primary" onclick="assignManager('${item.id}')">담당자 배정</button>
           <button class="btn-secondary" onclick="editConsult('${item.id}')">관리</button>
         </td>
       `;
@@ -70,11 +71,23 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTable(filtered);
   });
 
-  // 관리 버튼
+  // 상세 페이지 이동
   window.editConsult = function(id) {
     location.href = `/admin/consult-detail.html?id=${id}`;
   };
 
-  // 🔥 최초 로드 → 실시간 구독 시작
+  // 담당자 배정
+  window.assignManager = async function(id) {
+    const name = prompt("담당자 이름을 입력하세요:");
+    if (!name) return;
+
+    await updateDoc(doc(db, "consult_requests", id), {
+      manager: name,
+      status: "배정"
+    });
+
+    alert("담당자 배정 완료!");
+  };
+
   loadConsultsRealtime();
 });
