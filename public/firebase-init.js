@@ -7,6 +7,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebas
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { getFunctions } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-functions.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyACfN4_r2hUAn1NQPWRZzpegjyIESYGK3I",
