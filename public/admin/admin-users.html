@@ -5,11 +5,12 @@
   <title>회원 목록 조회</title>
 
   <link rel="stylesheet" href="/admin.css?v=1004">
-<link rel="stylesheet" href="/admin/admin-users.css?v=1001">
+  <link rel="stylesheet" href="/admin/admin-users.css?v=1001">
 </head>
 
 <body>
- <!-- 상단 헤더 -->
+
+  <!-- 상단 헤더 -->
   <div class="admin-header">
     <div class="title">👥 회원 목록</div>
     <div class="actions">
@@ -17,41 +18,61 @@
       <button id="logout-btn" class="btn-danger">로그아웃</button>
     </div>
   </div>
-<div class="page-wrapper">
 
-  <!-- 검색 박스 -->
-  <div class="admin-container section">
-    <div class="card search-card">
-      <div class="card-title">회원 검색</div>
-      <input id="searchInput" type="text" placeholder="이름 또는 이메일 검색" style="width:100%;">
+  <div class="page-wrapper">
+
+    <!-- 검색 박스 -->
+    <div class="admin-container section">
+      <div class="card search-card">
+        <div class="card-title">회원 검색</div>
+        <input id="searchInput" type="text" placeholder="이름 또는 이메일 검색" style="width:100%;">
+      </div>
     </div>
+
+    <!-- 회원 목록 -->
+    <div class="admin-container section">
+      <div class="card table-wrapper">
+        <div class="card-title">회원 목록</div>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>이름</th>
+              <th>이메일</th>
+              <th>휴대전화</th>
+              <th>가입일</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ⭐ 사용자 권한 관리 UI 추가 -->
+    <div class="admin-container section">
+      <div class="card table-wrapper">
+        <div class="card-title">사용자 권한 관리</div>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>이름</th>
+              <th>이메일</th>
+              <th>UID</th>
+              <th>현재 권한</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="roleTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
-  <!-- 회원 목록 -->
-  <div class="admin-container section">
-    <div class="card table-wrapper">
-      <div class="card-title">회원 목록</div>
-
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>이름</th>
-            <th>이메일</th>
-            <th>휴대전화</th>
-            <th>가입일</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-        <tbody id="userTableBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-</div>
-
-<script type="module" src="/firebase-init.js"></script>
-
-<script type="module" src="admin-users.js"></script>
+  <script type="module" src="/firebase-init.js"></script>
+  <script type="module" src="admin-users.js"></script>
 
 </body>
 </html>
