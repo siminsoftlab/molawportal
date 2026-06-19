@@ -323,13 +323,15 @@ exports.geoip = functions.https.onRequest((req, res) => {
  */
 exports.setAdminRole = functions.https.onCall(async (data, context) => {
 
-  // 관리자 체크
+  // ⭐ 관리자 체크 임시 비활성화 (최초 관리자 생성용)
+  /*
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
+  */
 
   const uid = data.uid;
 
@@ -337,7 +339,7 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
     // 1) Custom Claims 저장
     await admin.auth().setCustomUserClaims(uid, { role: "admin" });
 
-    // 2) Firestore users 문서가 없으면 생성
+    // 2) Firestore users 문서 업데이트 (없으면 생성)
     await db.collection("users").doc(uid).set(
       {
         role: "admin",
@@ -350,7 +352,7 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
     await db.collection("role_logs").add({
       uid,
       role: "admin",
-      changed_by: context.auth.uid,
+      changed_by: context.auth ? context.auth.uid : "system",
       timestamp: Date.now()
     });
 
@@ -363,20 +365,29 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
 });
 
 
+/**
+ * 담당자 권한 부여
+ * 예: setManagerRole({ uid: "USER_UID" })
+ */
 exports.setManagerRole = functions.https.onCall(async (data, context) => {
 
+  // ⭐ 관리자 체크 임시 비활성화 (최초 관리자 생성용)
+  /*
   if (!context.auth || context.auth.token.role !== "admin") {
     throw new functions.https.HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
   }
+  */
 
   const uid = data.uid;
 
   try {
+    // 1) Custom Claims 저장
     await admin.auth().setCustomUserClaims(uid, { role: "manager" });
 
+    // 2) Firestore users 문서 업데이트
     await db.collection("users").doc(uid).set(
       {
         role: "manager",
@@ -385,10 +396,11 @@ exports.setManagerRole = functions.https.onCall(async (data, context) => {
       { merge: true }
     );
 
+    // 3) 로그 기록
     await db.collection("role_logs").add({
       uid,
       role: "manager",
-      changed_by: context.auth.uid,
+      changed_by: context.auth ? context.auth.uid : "system",
       timestamp: Date.now()
     });
 
@@ -399,3 +411,4 @@ exports.setManagerRole = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("unknown", "권한 설정 중 오류 발생");
   }
 });
+
