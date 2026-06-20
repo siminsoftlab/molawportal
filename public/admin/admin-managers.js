@@ -48,20 +48,41 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 검색 결과 목록 표시
-    let html = "<div><b>검색 결과 (" + results.length + "명)</b></div>";
+    // 검색 결과 테이블 생성
+    let html = `
+      <div><b>검색 결과 (${results.length}명)</b></div>
+      <table class="admin-table" style="margin-top:10px;">
+        <thead>
+          <tr>
+            <th>UID</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>선택</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
 
     results.forEach(user => {
       html += `
-        <div style="padding:8px; border:1px solid #ddd; margin-top:5px; border-radius:6px;">
-          <div><b>${user.name}</b> (${user.email})</div>
-          <button class="btn-secondary" style="margin-top:5px;"
-            onclick="selectUser('${user.uid}', '${user.name}', '${user.email}')">
-            선택
-          </button>
-        </div>
+        <tr>
+          <td>${user.uid}</td>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>
+            <button class="btn-secondary"
+              onclick="selectUser('${user.uid}', '${user.name}', '${user.email}')">
+              선택
+            </button>
+          </td>
+        </tr>
       `;
     });
+
+    html += `
+        </tbody>
+      </table>
+    `;
 
     searchResults.innerHTML = html;
   });
@@ -110,8 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${data.email}</td>
         <td>
           <div class="manager-actions">
-            <button class="btn-secondary" onclick="editManager('${docSnap.id}', '${data.name}', '${data.email}')">수정</button>
-            <button class="btn-danger" onclick="deleteManager('${docSnap.id}')">삭제</button>
+            <button class="btn-secondary"
+              onclick="editManager('${docSnap.id}', '${data.name}', '${data.email}')">수정</button>
+            <button class="btn-danger"
+              onclick="deleteManager('${docSnap.id}')">삭제</button>
           </div>
         </td>
       `;
