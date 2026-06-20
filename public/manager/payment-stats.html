@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>입금 통계</title>
+
+  <link rel="stylesheet" href="/manager/payment-stats.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>입금 통계 (월별 / 연도별)</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="summary-cards">
+  <div class="card">
+    <h3>총 입금액</h3>
+    <p id="totalPayment">0원</p>
+  </div>
+
+  <div class="card">
+    <h3>평균 입금액</h3>
+    <p id="avgPayment">0원</p>
+  </div>
+
+  <div class="card">
+    <h3>최고 입금액</h3>
+    <p id="maxPayment">0원</p>
+  </div>
+</section>
+
+<section class="chart-section">
+  <h2>월별 입금액</h2>
+  <canvas id="monthlyAmountChart"></canvas>
+</section>
+
+<section class="chart-section">
+  <h2>월별 입금 건수</h2>
+  <canvas id="monthlyCountChart"></canvas>
+</section>
+
+<section class="chart-section">
+  <h2>연도별 입금액</h2>
+  <canvas id="yearlyAmountChart"></canvas>
+</section>
+
+<script type="module" src="/manager/payment-stats.js"></script>
+
+</body>
+</html>
