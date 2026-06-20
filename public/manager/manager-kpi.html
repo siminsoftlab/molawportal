@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>매니저 KPI 대시보드</title>
+
+  <link rel="stylesheet" href="/manager/manager-kpi.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>매니저 KPI 대시보드</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="manager-info">
+  <h2>매니저 정보</h2>
+  <div class="info-row"><label>이름</label><div id="managerName"></div></div>
+  <div class="info-row"><label>이메일</label><div id="managerEmail"></div></div>
+</section>
+
+<section class="summary-cards">
+  <div class="card">
+    <h3>총 상담</h3>
+    <p id="totalConsult">0건</p>
+  </div>
+
+  <div class="card">
+    <h3>총 계약</h3>
+    <p id="totalContract">0건</p>
+  </div>
+
+  <div class="card">
+    <h3>총 입금액</h3>
+    <p id="totalPayment">0원</p>
+  </div>
+</section>
+
+<section class="kpi-cards">
+  <div class="card">
+    <h3>상담 → 계약 전환율</h3>
+    <p id="consultToContractRate">0%</p>
+  </div>
+
+  <div class="card">
+    <h3>계약 → 입금 전환율</h3>
+    <p id="contractToPaymentRate">0%</p>
+  </div>
+
+  <div class="card">
+    <h3>평균 계약 금액</h3>
+    <p id="avgContractAmount">0원</p>
+  </div>
+
+  <div class="card">
+    <h3>평균 입금 금액</h3>
+    <p id="avgPaymentAmount">0원</p>
+  </div>
+</section>
+
+<script type="module" src="/manager/manager-kpi.js"></script>
+
+</body>
+</html>
