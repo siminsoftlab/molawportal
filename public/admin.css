@@ -133,6 +133,81 @@ canvas {
   height: 250px !important;
   max-height: 250px !important;
 }
+/* ================================
+   🔍 회원 검색 앱 UI 스타일
+================================ */
+
+.search-title {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  background: #f1f3f5;
+  padding: 12px;
+  border-radius: 12px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-box button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+/* 검색 결과 테이블 */
+#searchResults table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#searchResults th,
+#searchResults td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  text-align: left;
+}
+
+#searchResults th {
+  background: #f8f9fa;
+  font-weight: bold;
+}
+
+#searchResults tr:hover {
+  background: #f1f3f5;
+}
+
+/* 선택 버튼 */
+#searchResults .btn-secondary {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+/* 담당자 관리 버튼 */
+.manager-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.manager-actions button {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
 
 /* ============================================================
    ⭐ 모바일에서도 PC 화면 그대로 보이도록 축소
