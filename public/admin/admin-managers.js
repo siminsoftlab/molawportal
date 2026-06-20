@@ -176,3 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
     auth.signOut();
   });
 });
+searchNameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    searchUserBtn.click();
+  }
+});
