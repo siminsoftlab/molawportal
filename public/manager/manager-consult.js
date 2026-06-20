@@ -8,6 +8,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const tbody = document.getElementById("consultTableBody");
@@ -15,20 +16,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let consultList = [];
 
-  // ⭐ Firebase 9 방식 — 인증 준비 완료 후 실행됨
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (!user) {
       alert("로그인이 필요합니다.");
       location.href = "/login.html";
       return;
     }
 
-    console.log("담당자 로그인됨:", user.uid);
+    // 🔥 로그인한 사용자 role 가져오기
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    const role = userSnap.data()?.role || "none";
 
-    loadMyConsults(user.uid);
+    console.log("로그인:", user.uid, "역할:", role);
+
+    if (role === "admin") {
+      loadAllConsults();        // ⭐ 관리자 → 전체 조회
+    } else {
+      loadMyConsults(user.uid); // ⭐ 담당자 → assignedTo 조회
+    }
   });
 
-  // 내 상담건 불러오기
+  // ⭐ 관리자 전체 조회
+  function loadAllConsults() {
+    const q = query(
+      collection(db, "consult_requests"),
+      orderBy("createdAt", "desc")
+    );
+
+    onSnapshot(q, (snap) => {
+      consultList = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      renderTable(consultList);
+    });
+  }
+
+  // ⭐ 담당자 본인 상담 조회
   function loadMyConsults(uid) {
     const q = query(
       collection(db, "consult_requests"),
@@ -41,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
         id: doc.id,
         ...doc.data()
       }));
-
       renderTable(consultList);
     });
   }
