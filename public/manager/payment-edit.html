@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>입금 수정</title>
+
+  <link rel="stylesheet" href="/manager/payment-edit.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>입금 수정</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="form-box">
+
+  <div class="row">
+    <label>고객명</label>
+    <input id="customerName" type="text" readonly>
+  </div>
+
+  <div class="row">
+    <label>계약 코드</label>
+    <input id="contractCode" type="text" readonly>
+  </div>
+
+  <div class="row">
+    <label>입금 금액</label>
+    <input id="amount" type="number">
+  </div>
+
+  <div class="row">
+    <label>입금일</label>
+    <input id="paymentDate" type="date">
+  </div>
+
+  <div class="row">
+    <label>상태</label>
+    <select id="status">
+      <option value="확인 필요">확인 필요</option>
+      <option value="확인 완료">확인 완료</option>
+      <option value="오류">오류</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <label>메모</label>
+    <textarea id="memo"></textarea>
+  </div>
+
+  <button id="saveBtn" class="btn-save">수정 완료</button>
+
+</section>
+
+<script type="module" src="/manager/payment-edit.js"></script>
+
+</body>
+</html>
