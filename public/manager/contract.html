@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>계약 관리</title>
+
+  <link rel="stylesheet" href="/manager/contract.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>계약 관리</h1>
+  <button onclick="location.href='/manager/dashboard.html'" class="btn-back">← 대시보드</button>
+</header>
+
+<section class="filter-box">
+  <input id="searchInput" type="text" placeholder="이름 / 연락처 / 계약코드 검색">
+
+  <select id="statusFilter">
+    <option value="all">전체 상태</option>
+    <option value="진행중">진행중</option>
+    <option value="완료">완료</option>
+    <option value="취소">취소</option>
+  </select>
+</section>
+
+<section class="table-box">
+  <table>
+    <thead>
+      <tr>
+        <th>고객명</th>
+        <th>연락처</th>
+        <th>계약코드</th>
+        <th>계약일</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="contractTableBody"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/manager/contract.js"></script>
+
+</body>
+</html>
