@@ -19,6 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchUserBtn = document.getElementById("searchUserBtn");
   const searchResults = document.getElementById("searchResults");
 
+  // ✅ 엔터키로 검색 (이제 정상 작동)
+  searchNameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      searchUserBtn.click();
+    }
+  });
+
   // 🔍 이름으로 회원 검색
   searchUserBtn.addEventListener("click", async () => {
     const name = searchNameInput.value.trim();
@@ -175,9 +183,4 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("logout-btn").addEventListener("click", () => {
     auth.signOut();
   });
-});
-searchNameInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    searchUserBtn.click();
-  }
 });
