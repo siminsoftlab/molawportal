@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>고객 히스토리</title>
+
+  <link rel="stylesheet" href="/manager/customer-history.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>고객 히스토리</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="customer-info">
+  <h2>고객 정보</h2>
+  <div class="info-row"><label>이름</label><div id="name"></div></div>
+  <div class="info-row"><label>연락처</label><div id="phone"></div></div>
+  <div class="info-row"><label>이메일</label><div id="email"></div></div>
+</section>
+
+<section class="history-section">
+  <h2>상담 히스토리</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>신청일</th>
+        <th>유형</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="consultHistory"></tbody>
+  </table>
+</section>
+
+<section class="history-section">
+  <h2>계약 히스토리</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>계약코드</th>
+        <th>계약일</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="contractHistory"></tbody>
+  </table>
+</section>
+
+<section class="history-section">
+  <h2>입금 히스토리</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>입금액</th>
+        <th>입금일</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="paymentHistory"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/manager/customer-history.js"></script>
+
+</body>
+</html>
