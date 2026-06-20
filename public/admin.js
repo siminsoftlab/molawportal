@@ -592,6 +592,51 @@ if (deluserManageBtn) {
     if (totalEl) totalEl.textContent = total;
     if (todayEl) todayEl.textContent = todayCount;
   }
+  /* ============================================================
+     ⭐ 상담 배정 통계 (전체 배정 수 / 오늘 배정 수)
+     ============================================================ */
+  async function loadAssignStats() {
+    const consultCol = collection(db, "consult_requests");
+    const snap = await getDocs(consultCol);
+
+    let totalAssigned = 0;
+    let todayAssigned = 0;
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    snap.forEach(d => {
+      const data = d.data();
+
+      // assignedTo가 존재하면 배정된 상담
+      if (data.assignedTo) {
+        totalAssigned++;
+
+        // 오늘 배정된 상담
+        if (data.createdAt?.seconds) {
+          const created = new Date(data.createdAt.seconds * 1000)
+            .toISOString()
+            .slice(0, 10);
+
+          if (created === todayStr) {
+            todayAssigned++;
+          }
+        }
+      }
+    });
+
+    const totalEl = document.getElementById("assign-total-count");
+    const todayEl = document.getElementById("assign-today-count");
+
+    if (totalEl) totalEl.textContent = totalAssigned;
+    if (todayEl) todayEl.textContent = todayAssigned;
+  }
+  /* 담당자 관리 페이지 이동 */
+  const managerManageBtn = document.getElementById("manager-manage-btn");
+  if (managerManageBtn) {
+    managerManageBtn.onclick = () => {
+      window.location.href = "/admin/admin-managers.html";
+    };
+  }
 
   /* ============================================================
      초기 실행
@@ -604,4 +649,5 @@ if (deluserManageBtn) {
   loadPaymentStats();
   loadUserStats();
   loadConsultStats();   // ⭐ 상담신청 통계 추가
+   loadAssignStats();   // ⭐ 상담 배정 통계 추가
 });
