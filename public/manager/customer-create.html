@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>고객 생성</title>
+
+  <link rel="stylesheet" href="/manager/customer-create.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>고객 생성</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="form-box">
+
+  <div class="row">
+    <label>고객명</label>
+    <input id="name" type="text" placeholder="고객명을 입력하세요">
+  </div>
+
+  <div class="row">
+    <label>연락처</label>
+    <input id="phone" type="text" placeholder="연락처를 입력하세요">
+  </div>
+
+  <div class="row">
+    <label>이메일</label>
+    <input id="email" type="email" placeholder="이메일을 입력하세요">
+  </div>
+
+  <div class="row">
+    <label>메모</label>
+    <textarea id="memo" placeholder="고객 관련 메모를 입력하세요"></textarea>
+  </div>
+
+  <button id="saveBtn" class="btn-save">고객 생성</button>
+
+</section>
+
+<script type="module" src="/manager/customer-create.js"></script>
+
+</body>
+</html>
