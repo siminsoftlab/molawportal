@@ -15,6 +15,66 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("saveManagerBtn");
   const tbody = document.getElementById("managerTableBody");
 
+  const searchNameInput = document.getElementById("searchName");
+  const searchUserBtn = document.getElementById("searchUserBtn");
+  const searchResults = document.getElementById("searchResults");
+
+  // 🔍 이름으로 회원 검색
+  searchUserBtn.addEventListener("click", async () => {
+    const name = searchNameInput.value.trim();
+    if (!name) {
+      alert("이름을 입력해주세요.");
+      return;
+    }
+
+    const usersCol = collection(db, "users");
+    const snap = await getDocs(usersCol);
+
+    let results = [];
+
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      if (data.name && data.name.includes(name)) {
+        results.push({
+          uid: docSnap.id,
+          name: data.name,
+          email: data.email
+        });
+      }
+    });
+
+    if (results.length === 0) {
+      searchResults.innerHTML = "<div>검색 결과가 없습니다.</div>";
+      return;
+    }
+
+    // 검색 결과 목록 표시
+    let html = "<div><b>검색 결과 (" + results.length + "명)</b></div>";
+
+    results.forEach(user => {
+      html += `
+        <div style="padding:8px; border:1px solid #ddd; margin-top:5px; border-radius:6px;">
+          <div><b>${user.name}</b> (${user.email})</div>
+          <button class="btn-secondary" style="margin-top:5px;"
+            onclick="selectUser('${user.uid}', '${user.name}', '${user.email}')">
+            선택
+          </button>
+        </div>
+      `;
+    });
+
+    searchResults.innerHTML = html;
+  });
+
+  // 선택 시 입력창 자동 채우기
+  window.selectUser = function(uid, name, email) {
+    uidInput.value = uid;
+    nameInput.value = name;
+    emailInput.value = email;
+
+    alert("회원 정보를 불러왔습니다!");
+  };
+
   // 🔥 담당자 등록
   saveBtn.addEventListener("click", async () => {
     const uid = uidInput.value.trim();
