@@ -140,12 +140,12 @@ canvas {
 /* 모바일에서도 PC 화면 그대로 축소해서 보이기 */
 @media (max-width: 600px) {
   html {
-    width: 1200px; /* PC 기준 고정폭 */
-    transform: scale(0.75);
+    width: 1400px; /* PC 기준 고정폭을 더 크게 설정 */
+    transform: scale(0.65); /* 더 강한 축소 */
     transform-origin: top left;
   }
 
   body {
-    width: 1200px;
+    width: 1400px;
   }
 }
