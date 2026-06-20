@@ -98,6 +98,11 @@ async function checkAutoLogin() {
   }
 }
 
+document.getElementById("pw").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") adminLogin();
+});
+
+
 /* ============================================================
    실행 (DOMContentLoaded)
 ============================================================ */
