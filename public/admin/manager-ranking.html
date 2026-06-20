@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>매니저 랭킹 시스템</title>
+
+  <link rel="stylesheet" href="/admin/manager-ranking.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>매니저 랭킹 시스템</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="table-section">
+  <table>
+    <thead>
+      <tr>
+        <th>순위</th>
+        <th>매니저명</th>
+        <th>총 상담</th>
+        <th>총 계약</th>
+        <th>총 입금액</th>
+        <th>전환율 점수</th>
+        <th>총 점수</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="rankingTableBody"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/admin/manager-ranking.js"></script>
+
+</body>
+</html>
