@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>매니저 대시보드</title>
+  <link rel="stylesheet" href="/manager/dashboard.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>매니저 대시보드</h1>
+  <button id="logoutBtn">로그아웃</button>
+</header>
+
+<section class="stats">
+  <div class="card">
+    <h3>오늘 상담</h3>
+    <p id="todayConsult">0건</p>
+  </div>
+
+  <div class="card">
+    <h3>전체 상담</h3>
+    <p id="totalConsult">0건</p>
+  </div>
+
+  <div class="card">
+    <h3>계약 진행</h3>
+    <p id="contractCount">0건</p>
+  </div>
+
+  <div class="card">
+    <h3>입금 완료</h3>
+    <p id="paymentCount">0건</p>
+  </div>
+</section>
+
+<section class="menu">
+  <a href="/manager/consult.html" class="menu-btn">상담 관리</a>
+  <a href="/manager/contract.html" class="menu-btn">계약 관리</a>
+  <a href="/manager/payment.html" class="menu-btn">입금 관리</a>
+  <a href="/manager/customers.html" class="menu-btn">고객 관리</a>
+</section>
+
+<script type="module" src="/manager/dashboard.js"></script>
+
+</body>
+</html>
