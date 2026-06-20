@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>상담 상세</title>
+
+  <link rel="stylesheet" href="/manager/consult-detail.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>상담 상세</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="detail-box">
+  <div class="row">
+    <label>이름</label>
+    <div id="name"></div>
+  </div>
+
+  <div class="row">
+    <label>연락처</label>
+    <div id="phone"></div>
+  </div>
+
+  <div class="row">
+    <label>이메일</label>
+    <div id="email"></div>
+  </div>
+
+  <div class="row">
+    <label>신청 유형</label>
+    <div id="applyType"></div>
+  </div>
+
+  <div class="row">
+    <label>상담 내용</label>
+    <div id="content"></div>
+  </div>
+
+  <div class="row">
+    <label>상태</label>
+    <select id="statusSelect">
+      <option value="배정">배정</option>
+      <option value="진행중">진행중</option>
+      <option value="완료">완료</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <label>메모</label>
+    <textarea id="memo" placeholder="상담 메모를 입력하세요"></textarea>
+  </div>
+
+  <button id="saveBtn" class="btn-save">저장하기</button>
+</section>
+
+<script type="module" src="/manager/consult-detail.js"></script>
+
+</body>
+</html>
