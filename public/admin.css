@@ -134,7 +134,6 @@ canvas {
   max-height: 250px !important;
 }
 
-/* 반응형 */
 @media (max-width: 600px) {
   .admin-header {
     flex-direction: column;
@@ -145,8 +144,8 @@ canvas {
     margin-top: 10px;
   }
 
-  /* 모바일에서 2개씩 정렬 */
+  /* PC와 동일하게 유지 */
   .admin-container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
 }
