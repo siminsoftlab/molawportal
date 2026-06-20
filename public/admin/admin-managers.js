@@ -3,7 +3,9 @@ import {
   collection,
   doc,
   setDoc,
-  getDocs
+  getDocs,
+  deleteDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -46,6 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${docSnap.id}</td>
         <td>${data.name}</td>
         <td>${data.email}</td>
+        <td>
+          <div class="manager-actions">
+            <button class="btn-secondary" onclick="editManager('${docSnap.id}', '${data.name}', '${data.email}')">수정</button>
+            <button class="btn-danger" onclick="deleteManager('${docSnap.id}')">삭제</button>
+          </div>
+        </td>
       `;
 
       tbody.appendChild(tr);
@@ -53,6 +61,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   loadManagers();
+
+  // 🔥 담당자 삭제
+  window.deleteManager = async function(uid) {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    await deleteDoc(doc(db, "managers", uid));
+    alert("삭제 완료!");
+    loadManagers();
+  };
+
+  // 🔥 담당자 수정
+  window.editManager = async function(uid, name, email) {
+    const newName = prompt("새 이름 입력:", name);
+    if (!newName) return;
+
+    const newEmail = prompt("새 이메일 입력:", email);
+    if (!newEmail) return;
+
+    await updateDoc(doc(db, "managers", uid), {
+      name: newName,
+      email: newEmail
+    });
+
+    alert("수정 완료!");
+    loadManagers();
+  };
 
   // 로그아웃
   document.getElementById("logout-btn").addEventListener("click", () => {
