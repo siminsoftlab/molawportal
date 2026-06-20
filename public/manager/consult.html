@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>매니저 상담 목록</title>
+
+  <link rel="stylesheet" href="/manager/consult.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>상담 목록</h1>
+  <button id="logoutBtn">로그아웃</button>
+</header>
+
+<section class="filter-box">
+  <input id="searchInput" type="text" placeholder="이름 / 연락처 / 이메일 검색">
+</section>
+
+<section class="table-box">
+  <table>
+    <thead>
+      <tr>
+        <th>이름</th>
+        <th>연락처</th>
+        <th>유형</th>
+        <th>신청일</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="consultTableBody"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/manager/consult.js"></script>
+
+</body>
+</html>
