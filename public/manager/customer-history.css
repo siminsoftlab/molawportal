@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  background: #f5f6fa;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.header {
+  background: #4a6fff;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-back {
+  background: white;
+  color: #4a6fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.customer-info, .history-section {
+  padding: 20px;
+}
+
+.customer-info h2, .history-section h2 {
+  margin-bottom: 12px;
+}
+
+.info-row {
+  margin-bottom: 12px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.info-row div {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+th, td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+tr:hover {
+  background: #f0f4ff;
+}
+
+.btn-secondary {
+  padding: 6px 12px;
+  background: #4a6fff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
