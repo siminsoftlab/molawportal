@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>입금 관리</title>
+
+  <link rel="stylesheet" href="/manager/payment.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>입금 관리</h1>
+  <button onclick="location.href='/manager/dashboard.html'" class="btn-back">← 대시보드</button>
+</header>
+
+<section class="filter-box">
+  <input id="searchInput" type="text" placeholder="고객명 / 연락처 / 계약코드 검색">
+
+  <select id="statusFilter">
+    <option value="all">전체 상태</option>
+    <option value="입금대기">입금대기</option>
+    <option value="입금완료">입금완료</option>
+    <option value="환불">환불</option>
+  </select>
+</section>
+
+<section class="table-box">
+  <table>
+    <thead>
+      <tr>
+        <th>고객명</th>
+        <th>연락처</th>
+        <th>계약코드</th>
+        <th>입금액</th>
+        <th>입금일</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="paymentTableBody"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/manager/payment.js"></script>
+
+</body>
+</html>
