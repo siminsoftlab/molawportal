@@ -2,7 +2,6 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>담당자 관리</title>
   <link rel="stylesheet" href="/admin.css">
 
@@ -35,7 +34,17 @@
     <div class="card">
       <div class="card-title">담당자 등록</div>
 
-      <label>담당자 UID</label>
+      <!-- 이름 검색 -->
+      <label>회원 이름 검색</label>
+      <div style="display:flex; gap:10px;">
+        <input id="searchName" type="text" placeholder="회원 이름 입력">
+        <button id="searchUserBtn" class="btn-secondary">검색</button>
+      </div>
+
+      <!-- 검색 결과 -->
+      <div id="searchResults" style="margin-top:10px;"></div>
+
+      <label style="margin-top:15px;">담당자 UID</label>
       <input id="managerUid" type="text" placeholder="Firebase Auth UID 입력">
 
       <label>담당자 이름</label>
