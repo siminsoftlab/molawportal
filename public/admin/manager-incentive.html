@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>매니저 인센티브 계산</title>
+
+  <link rel="stylesheet" href="/admin/manager-incentive.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>매니저 인센티브 계산</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="filter-box">
+  <label>계산할 월 선택</label>
+  <input id="monthInput" type="month">
+  <button id="calcBtn" class="btn-primary">인센티브 계산</button>
+</section>
+
+<section class="table-section">
+  <table>
+    <thead>
+      <tr>
+        <th>매니저명</th>
+        <th>상담</th>
+        <th>계약</th>
+        <th>입금액</th>
+        <th>총 인센티브</th>
+        <th>저장</th>
+      </tr>
+    </thead>
+    <tbody id="incentiveTableBody"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/admin/manager-incentive.js"></script>
+
+</body>
+</html>
