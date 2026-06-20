@@ -214,19 +214,10 @@ canvas {
    ============================================================ */
 /* 모바일에서도 PC 화면 그대로 축소해서 보이기 */
 @media (max-width: 600px) {
-
-  /* 1) PC 레이아웃을 강제로 고정 */
-  html {
-    width: 2000px !important;   /* PC 화면보다 훨씬 넓게 */
-    height: auto;
-    overflow-x: hidden;
-  }
-
-  /* 2) body 전체를 축소 */
   body {
-    transform: scale(0.35);     /* 확실하게 작아짐 */
+    transform: scale(0.8);
     transform-origin: top left;
-    width: 2000px !important;
+    width: 125%;
   }
 }
 
