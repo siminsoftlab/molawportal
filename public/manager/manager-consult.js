@@ -7,19 +7,23 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const tbody = document.getElementById("consultTableBody");
   const searchInput = document.getElementById("searchInput");
 
   let consultList = [];
 
-  // 로그인 체크
-  auth.onAuthStateChanged((user) => {
+  // ⭐ Firebase 9 방식 — 인증 준비 완료 후 실행됨
+  onAuthStateChanged(auth, (user) => {
     if (!user) {
       alert("로그인이 필요합니다.");
       location.href = "/login.html";
       return;
     }
+
+    console.log("담당자 로그인됨:", user.uid);
 
     loadMyConsults(user.uid);
   });
