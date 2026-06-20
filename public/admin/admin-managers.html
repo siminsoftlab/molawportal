@@ -2,14 +2,25 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>담당자 등록</title>
+  <title>담당자 관리</title>
   <link rel="stylesheet" href="/admin.css">
+
+  <style>
+    .manager-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .manager-actions button {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="admin-header">
-  <div class="title">👤 담당자 등록</div>
+  <div class="title">👤 담당자 관리</div>
   <div class="actions">
     <button onclick="location.href='/admin.html'" class="btn-secondary">대시보드</button>
     <button id="logout-btn" class="btn-danger">로그아웃</button>
@@ -18,9 +29,10 @@
 
 <div class="page-wrapper">
 
+  <!-- 담당자 등록 -->
   <div class="admin-container section">
     <div class="card">
-      <div class="card-title">담당자 정보 입력</div>
+      <div class="card-title">담당자 등록</div>
 
       <label>담당자 UID</label>
       <input id="managerUid" type="text" placeholder="Firebase Auth UID 입력">
@@ -37,15 +49,18 @@
     </div>
   </div>
 
+  <!-- 담당자 목록 -->
   <div class="admin-container section">
     <div class="card">
       <div class="card-title">등록된 담당자 목록</div>
+
       <table class="admin-table">
         <thead>
           <tr>
             <th>UID</th>
             <th>이름</th>
             <th>이메일</th>
+            <th>관리</th>
           </tr>
         </thead>
         <tbody id="managerTableBody"></tbody>
