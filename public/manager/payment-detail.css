@@ -68,3 +68,20 @@ textarea {
 .btn-save:hover {
   background: #3a56d4;
 }
+
+.btn-delete {
+  width: 100%;
+  padding: 14px;
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.btn-delete:hover {
+  background: #d9363e;
+}
+
