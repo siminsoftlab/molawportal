@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>고객 태그/등급 관리</title>
+
+  <link rel="stylesheet" href="/manager/customer-tags.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>고객 태그 / 등급 관리</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="tag-box">
+
+  <h2>고객 태그</h2>
+  <div class="tag-list" id="tagList"></div>
+
+  <h2>고객 등급</h2>
+  <select id="gradeSelect">
+    <option value="">등급 선택</option>
+    <option value="S">S - 최우수 고객</option>
+    <option value="A">A - 우수 고객</option>
+    <option value="B">B - 일반 고객</option>
+    <option value="C">C - 관심 필요 고객</option>
+  </select>
+
+  <button id="saveBtn" class="btn-save">저장하기</button>
+
+</section>
+
+<script type="module" src="/manager/customer-tags.js"></script>
+
+</body>
+</html>
