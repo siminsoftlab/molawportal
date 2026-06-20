@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>매니저 성장 리포트</title>
+
+  <link rel="stylesheet" href="/manager/manager-growth.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>매니저 성장 리포트</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="manager-info">
+  <h2>매니저 정보</h2>
+  <div class="info-row"><label>이름</label><div id="managerName"></div></div>
+  <div class="info-row"><label>이메일</label><div id="managerEmail"></div></div>
+</section>
+
+<section class="growth-summary">
+  <h2>전월 대비 성장률</h2>
+
+  <div class="growth-grid">
+    <div class="growth-card">
+      <h3>상담 성장률</h3>
+      <p id="consultGrowth">0%</p>
+    </div>
+
+    <div class="growth-card">
+      <h3>계약 성장률</h3>
+      <p id="contractGrowth">0%</p>
+    </div>
+
+    <div class="growth-card">
+      <h3>입금 성장률</h3>
+      <p id="paymentGrowth">0%</p>
+    </div>
+
+    <div class="growth-card">
+      <h3>전환율 성장률</h3>
+      <p id="conversionGrowth">0%</p>
+    </div>
+  </div>
+</section>
+
+<section class="chart-section">
+  <h2>연간 성장 그래프</h2>
+  <canvas id="growthChart"></canvas>
+</section>
+
+<section class="score-section">
+  <h2>성장 점수 (Growth Score)</h2>
+  <div id="growthScore" class="score-box">0점</div>
+</section>
+
+<script type="module" src="/manager/manager-growth.js"></script>
+
+</body>
+</html>
