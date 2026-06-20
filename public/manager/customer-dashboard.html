@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>고객 통합 대시보드</title>
+
+  <link rel="stylesheet" href="/manager/customer-dashboard.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>고객 통합 대시보드</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="customer-info">
+  <h2>고객 정보</h2>
+  <div class="info-row"><label>이름</label><div id="name"></div></div>
+  <div class="info-row"><label>연락처</label><div id="phone"></div></div>
+  <div class="info-row"><label>이메일</label><div id="email"></div></div>
+  <div class="info-row"><label>메모</label><div id="memo"></div></div>
+
+  <button class="btn-secondary" onclick="openDetail()">고객 상세 보기</button>
+  <button class="btn-secondary" onclick="openHistory()">히스토리 보기</button>
+</section>
+
+<section class="summary-cards">
+  <div class="card">
+    <h3>총 상담</h3>
+    <p id="consultCount">0건</p>
+  </div>
+
+  <div class="card">
+    <h3>총 계약</h3>
+    <p id="contractCount">0건</p>
+  </div>
+
+  <div class="card">
+    <h3>총 입금</h3>
+    <p id="paymentCount">0건</p>
+  </div>
+</section>
+
+<section class="history-section">
+  <h2>최근 상담</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>신청일</th>
+        <th>유형</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="recentConsult"></tbody>
+  </table>
+</section>
+
+<section class="history-section">
+  <h2>최근 계약</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>계약코드</th>
+        <th>계약일</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="recentContract"></tbody>
+  </table>
+</section>
+
+<section class="history-section">
+  <h2>최근 입금</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>입금액</th>
+        <th>입금일</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="recentPayment"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/manager/customer-dashboard.js"></script>
+
+</body>
+</html>
