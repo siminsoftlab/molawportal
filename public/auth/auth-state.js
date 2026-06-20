@@ -1,5 +1,3 @@
-// auth-state.js 샘플
-
 import { auth, db } from "/firebase-init.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
@@ -12,17 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const after = document.getElementById("auth-after");
     const username = document.getElementById("auth-username");
 
+    // ⭐ 페이지에 auth UI가 없는 경우 → 그냥 패스
     if (!before || !after) {
-      console.warn("auth DOM 요소 없음");
+      console.warn("auth UI 요소 없음 — UI 업데이트 생략");
       return;
     }
 
     if (user) {
-      // 로그인 상태
       before.style.display = "none";
       after.style.display = "flex";
 
-      // Firestore에서 사용자 이름 가져오기
       try {
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
@@ -30,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (userSnap.exists() && username) {
           username.textContent = userSnap.data().name;
         } else if (username) {
-          // 문서가 없으면 기본적으로 이메일 표시
           username.textContent = user.email;
         }
       } catch (err) {
@@ -38,11 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (username) username.textContent = user.email;
       }
 
-      // 이용권 남은 기간 표시
       loadTicketRemaining(user.uid);
 
     } else {
-      // 로그아웃 상태
       before.style.display = "flex";
       after.style.display = "none";
     }
@@ -93,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 로그아웃 버튼 이벤트
+  // ⭐ 로그아웃 버튼은 어떤 페이지든 존재할 수 있으므로 안전하게 처리
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
