@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>고객 관리</title>
+
+  <link rel="stylesheet" href="/manager/customers.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>고객 관리</h1>
+  <button onclick="location.href='/manager/dashboard.html'" class="btn-back">← 대시보드</button>
+</header>
+
+<section class="filter-box">
+  <input id="searchInput" type="text" placeholder="고객명 / 연락처 / 이메일 검색">
+</section>
+
+<section class="table-box">
+  <table>
+    <thead>
+      <tr>
+        <th>고객명</th>
+        <th>연락처</th>
+        <th>이메일</th>
+        <th>최근 상담일</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody id="customerTableBody"></tbody>
+  </table>
+</section>
+
+<script type="module" src="/manager/customers.js"></script>
+
+</body>
+</html>
