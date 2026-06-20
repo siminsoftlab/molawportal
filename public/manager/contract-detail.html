@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>계약 상세</title>
+
+  <link rel="stylesheet" href="/manager/contract-detail.css">
+</head>
+
+<body>
+
+<header class="header">
+  <h1>계약 상세</h1>
+  <button onclick="history.back()" class="btn-back">← 뒤로가기</button>
+</header>
+
+<section class="detail-box">
+
+  <div class="row">
+    <label>고객명</label>
+    <div id="customerName"></div>
+  </div>
+
+  <div class="row">
+    <label>연락처</label>
+    <div id="customerPhone"></div>
+  </div>
+
+  <div class="row">
+    <label>계약 코드</label>
+    <div id="contractCode"></div>
+  </div>
+
+  <div class="row">
+    <label>계약 금액</label>
+    <div id="amount"></div>
+  </div>
+
+  <div class="row">
+    <label>계약 상태</label>
+    <select id="statusSelect">
+      <option value="진행중">진행중</option>
+      <option value="완료">완료</option>
+      <option value="취소">취소</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <label>메모</label>
+    <textarea id="memo" placeholder="계약 관련 메모를 입력하세요"></textarea>
+  </div>
+
+  <button id="saveBtn" class="btn-save">저장하기</button>
+
+</section>
+
+<script type="module" src="/manager/contract-detail.js"></script>
+
+</body>
+</html>
