@@ -74,13 +74,13 @@
     <div class="calc-template">
 
       <div class="calc-card">
-    
+
         <h2>📌 가구수 생계비 계산기 · 가구원수 생계비 — 지금 바로 확인</h2>
-    
+
         <!-- 설명 아코디언 -->
         <div class="faq-item">
           <button class="faq-question toggle-arrow">가구수 생계비 계산기 설명 보기 ▼</button>
-          <div class="faq-answer">
+          <div class="faq-answer" style="display:none;">
             <p>
               가구수 생계비 계산기(가구수생계비계산기)는  
               <strong>가구 규모</strong>에 따라 달라지는 법원 기준 <strong>가구별 생계비</strong>를 자동 계산합니다.
@@ -92,13 +92,13 @@
             </p>
           </div>
         </div>
-    
+
         <!-- 입력 영역 -->
         <div class="input-section">
-    
+
           <label>월 소득(원)</label>
           <input id="hl_income" type="number" placeholder="예: 2,500,000">
-    
+
           <label>가구 수</label>
           <select id="hl_household">
             <option value="1">1인 가구</option>
@@ -107,71 +107,72 @@
             <option value="4">4인 가구</option>
             <option value="5">5인 가구</option>
           </select>
-    
+
           <label>최저 생계비(자동 계산)</label>
           <input id="hl_court_living" type="number" readonly>
-    
+
           <label>추가 생계비(원)</label>
           <input id="hl_extra" type="number" placeholder="예: 150,000">
-    
+
           <label>변제기간(개월)</label>
           <input id="hl_months" type="number" value="36">
         </div>
-    
+
         <!-- 버튼 -->
         <button class="calc-btn" onclick="checkAccess(() => handleLivingCalc())">계산하기</button>
         <button class="calc-btn reset-btn" onclick="resetHouseholdLiving()">초기화</button>
-    
+
         <p class="notice" style="margin-top:10px; font-size:14px; color:#777;">
           ※ 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.
         </p>
-    
+
         <!-- 요약 결과 -->
         <div id="hl_summary" class="summary-card" style="display:none;"></div>
-    
-        <!-- 상세 결과 아코디언 (⭐ 카드 내부로 이동) -->
-        <button class="calc-acc-btn" onclick="toggleHouseholdAccordion()">계산 상세 보기 ▼</button>
-        <div class="calc-acc-content" id="hl_accordion"></div>
-    
+
+        <!-- ⭐ 상세 결과 아코디언 -->
+        <button class="calc-acc-btn">계산 상세 보기 ▼</button>
+        <div class="calc-acc-content" id="hl_accordion" style="display:none;"></div>
+
         <!-- 설명 박스 -->
         <div id="hl_explain" class="explain-box"></div>
-    
+
       </div>
-    
-      <!-- SEO 문단 (카드와 분리) -->
+
+      <!-- SEO 문단 -->
       <div class="explain-box" style="margin-top:30px;">
         <p>가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 기능을 통해 개인회생 생계비와 변제 가능 금액을 자동 계산할 수 있습니다.</p>
         <p>월 소득, 가구 수, 추가 생계비 등을 입력하면 실제 변제금 산정에 필요한 핵심 데이터를 제공합니다.</p>
       </div>
-    
+
     </div>
-    
-    <!-- FAQ는 완전히 분리 -->
+
+    <!-- ⭐ FAQ는 완전히 분리 -->
     <section class="faq-section" style="margin-top:40px;">
       <h2>가구수 생계비 계산기 FAQ</h2>
-    
+
       <div class="faq-item">
         <button class="faq-question">가구 수에 따라 생계비는 어떻게 달라지나요?</button>
         <div class="faq-answer">
           <p>가구원 수가 많을수록 법원 기준 생계비는 증가합니다.</p>
         </div>
       </div>
-    
+
       <div class="faq-item">
         <button class="faq-question">성인과 아동은 어떻게 구분되나요?</button>
         <div class="faq-answer">
           <p>일반적으로 만 19세 미만은 아동으로 구분됩니다.</p>
         </div>
       </div>
-    
+
       <div class="faq-item">
         <button class="faq-question">추가 생계비는 어떤 경우 인정되나요?</button>
         <div class="faq-answer">
           <p>장애·질병·교육비 등 특별지출 사유가 있는 경우 인정됩니다.</p>
         </div>
       </div>
-    
+
     </section>
+
   </div>
 </div>
 
