@@ -43,6 +43,7 @@
   <link rel="stylesheet" href="/typing.css">
   <link rel="stylesheet" href="/apply-status.css">
   <link rel="stylesheet" href="/review.css">
+  <link rel="stylesheet" href="/youtube.css">
 </head>
 <body class="homepage">
 <div class="fixed-top">
@@ -355,40 +356,35 @@
 
 <!-- ⭐ YouTube 영상 슬라이더 -->
 <div class="container youtube-slider-section">
-  <h2 class="youtube-title">추천 영상(랜덤)</h2>
+  <h2 class="youtube-title">추천 영상</h2>
 
   <div class="swiper youtubeSwiper">
     <div class="swiper-wrapper">
 
-      <!-- 영상 1 -->
       <div class="swiper-slide">
         <a href="https://www.youtube.com/watch?v=Rcg5QzMVFSg" target="_blank">
           <img src="https://img.youtube.com/vi/Rcg5QzMVFSg/maxresdefault.jpg" class="youtube-slide-thumb">
         </a>
       </div>
 
-      <!-- 영상 2 -->
       <div class="swiper-slide">
         <a href="https://www.youtube.com/watch?v=PPuVM1MtGSY" target="_blank">
           <img src="https://img.youtube.com/vi/PPuVM1MtGSY/maxresdefault.jpg" class="youtube-slide-thumb">
         </a>
       </div>
 
-      <!-- 영상 3 -->
       <div class="swiper-slide">
         <a href="https://www.youtube.com/watch?v=jLEQ8MyWcmA" target="_blank">
           <img src="https://img.youtube.com/vi/jLEQ8MyWcmA/maxresdefault.jpg" class="youtube-slide-thumb">
         </a>
       </div>
 
-      <!-- 영상 4 -->
       <div class="swiper-slide">
         <a href="https://www.youtube.com/watch?v=yzNsDj0x3Zo" target="_blank">
           <img src="https://img.youtube.com/vi/yzNsDj0x3Zo/maxresdefault.jpg" class="youtube-slide-thumb">
         </a>
       </div>
 
-       <!-- 영상 5 -->
       <div class="swiper-slide">
         <a href="https://www.youtube.com/watch?v=Ms9RKrPDys0" target="_blank">
           <img src="https://img.youtube.com/vi/Ms9RKrPDys0/maxresdefault.jpg" class="youtube-slide-thumb">
@@ -445,35 +441,7 @@
 <script src="/typing.js"></script>
 <script type="module" src="/apply-status.js?v=2000"></script>
 <script src="/review.js"></script>
-<script>
-  // ⭐ 슬라이드 랜덤 셔플
-  document.addEventListener("DOMContentLoaded", function () {
-    const wrapper = document.querySelector(".youtubeSwiper .swiper-wrapper");
-    const slides = Array.from(wrapper.children);
-
-    // Fisher–Yates Shuffle
-    for (let i = slides.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      wrapper.appendChild(slides[j]);
-      slides.splice(j, 1);
-    }
-  });
-</script>
-
-<script>
-  new Swiper(".youtubeSwiper", {
-    slidesPerView: 1.1,
-    spaceBetween: 16,
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    breakpoints: {
-      768: { slidesPerView: 2.2 },
-      1024: { slidesPerView: 3.2 }
-    }
-  });
-</script>  
+<script src="/youtube.js"></script>
 <!-- ⭐ 공통 상담신청 모달 -->
 <div id="commonApplyModal" class="modal">
   <div class="app-modal">
