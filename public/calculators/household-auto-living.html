@@ -3,92 +3,45 @@
 <head>
   <meta charset="UTF-8">
 
-  <!-- ⭐ 네이버/구글 사이트 인증 -->
   <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
   <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ⭐ SEO Title: 가구수 + 붙여쓰기 + 가구원수 모두 포함 -->
   <title>가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 — 개인회생 생계비 자동 계산</title>
 
-  <!-- ⭐ SEO Description -->
   <meta name="description" content="가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 자동 계산. 가구 규모에 따른 생계비와 개인회생 생계비를 즉시 계산할 수 있습니다.">
-
-  <!-- ⭐ Keywords -->
   <meta name="keywords" content="가구수 생계비 계산기, 가구수생계비계산기, 가구원수 생계비, 개인회생 생계비, 최저생계비, 변제금 계산">
 
   <link rel="canonical" href="https://molawcalculator.com/calculators/household-auto-living.html">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="가구수 생계비 계산기 · 가구원수 생계비 — 생계비 자동 계산">
-  <meta property="og:description" content="가구수·가구원수 기준 생계비와 개인회생 생계비를 자동 계산하는 무료 계산기입니다.">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="딱요만큼변제">
-  <meta property="og:url" content="https://molawcalculator.com/calculators/household-auto-living.html">
-  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="가구수 생계비 계산기 · 가구원수 생계비">
-  <meta name="twitter:description" content="가구수 생계비와 개인회생 생계비를 자동 계산하는 무료 계산기.">
-  <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
-
-  <!-- ⭐ 구조화 데이터 -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FinancialService",
-    "name": "가구수 생계비 계산기 · 가구원수 생계비",
-    "url": "https://molawcalculator.com/calculators/household-auto-living.html",
-    "description": "가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 자동 계산. 개인회생 생계비 산정 지원.",
-    "serviceType": "Household Living Expense Calculation",
-    "provider": {
-      "@type": "LegalService",
-      "name": "법무법인 영민",
-      "url": "https://molawcalculator.com"
-    }
-  }
-  </script>
-
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-
   <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/faq.css">
-  <link rel="stylesheet" href="/paywall.css">  
+  <link rel="stylesheet" href="/paywall.css">
   <link rel="stylesheet" href="/app-ui.css">
   <link rel="stylesheet" href="/typing.css">
 </head>
 
 <body class="subpage">
 
+<!-- ⭐ 고정 헤더 -->
 <header class="fixed-header fixed-top">
   <h1>가구수 생계비 계산기 · 가구원수 생계비</h1>
   <a href="/index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
     </svg>
   </a>
 </header>
-<!-- ⭐ 온라인 상담 신청 -->
-<div class="container">  
-  <div class="consult-section app-ui-box">
-    <div class="calc-greeting-bubble">
-      <span id="consultMessage"></span>
-    </div>
-  
-    <h2 class="consult-title">온라인 상담 신청</h2>
-    <p class="consult-guide">회원가입 없이 지금 바로 무료 상담 가능합니다!</p>
-  
-    <div class="consult-btn-grid">
-      <button class="mini-app-btn" onclick="openApplyModal('온라인 상담신청')">
-        📩 신청하기
-      </button>
-  
-      <button class="mini-app-btn secondary" onclick="location.href='tel:025955706'">
-        📞 전화 상담
-      </button>
+
+<!-- ⭐ 무료 이용권 배너 (공통) -->
+<div class="welcome-banner">
+  <div class="welcome-center">
+    <div class="welcome-text">
+      <a href="/coupon/welcome-detail.html">
+        🎁 회원가입 즉시 <b>무료 이용권</b> 지급 <span class="detail-link">[자세히]</span>
+      </a>
     </div>
   </div>
 </div>
@@ -101,23 +54,23 @@
       가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 — 개인회생 생계비 자동 계산
     </h1>
 
-    <!-- 네비게이션 -->
-    <div class="calc-nav">
+    <!-- ⭐ 계산기 네비게이션 (4종 공통) -->
+    <nav class="calc-nav">
       <a href="/calculators/repay.html" class="nav-item">💰 개인회생 변제금 계산기</a>
       <a href="/calculators/living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
       <a href="/calculators/household-auto-living.html" class="nav-item active">👨‍👩‍👧 가구수 생계비 계산기</a>
       <a href="/calculators/interest.html" class="nav-item">📈 연이자 계산기</a>
+    </nav>
+
+    <!-- ⭐ 서브 메뉴 -->
+    <div class="calc-nav">
+      <a href="/blog/household-guide.html" class="guide-btn">이용 안내</a>
     </div>
 
-    <div class="calc-nav">
-      <a href="/blog/household-guide.html" class="guide-btn">
-        이용 안내</a>
-    </div>
-    
-    <!-- ⭐ SEO 강화 H2 -->
+    <!-- ⭐ 계산기 제목 -->
     <h2>📌 가구수 생계비 계산기 · 가구원수 생계비 — 지금 바로 확인</h2>
 
-    <!-- 설명 -->
+    <!-- ⭐ 설명 -->
     <div class="faq-item">
       <button class="faq-question toggle-arrow">가구수 생계비 계산기 설명 보기 ▼</button>
       <div class="faq-answer">
@@ -133,11 +86,11 @@
       </div>
     </div>
 
-    <!-- 입력 영역 -->
+    <!-- ⭐ 입력 영역 -->
     <div class="input-section">
       <label>월 소득(원)</label>
       <input id="hl_income" type="number">
-  
+
       <label>가구 수</label>
       <select id="hl_household">
         <option value="1">1인 가구</option>
@@ -146,39 +99,43 @@
         <option value="4">4인 가구</option>
         <option value="5">5인 가구</option>
       </select>
-  
+
       <label>최저 생계비(자동 계산)</label>
       <input id="hl_court_living" type="number" readonly>
-  
+
       <label>추가 생계비(원)</label>
       <input id="hl_extra" type="number">
-  
+
       <label>변제기간(개월)</label>
       <input id="hl_months" type="number" value="36">
     </div>
-    
+
+    <!-- ⭐ 버튼 -->
     <div class="btn-row">
       <button onclick="checkAccess(() => handleLivingCalc())">계산하기</button>
       <p class="notice">※ 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.</p>
       <button onclick="resetHouseholdLiving()">초기화</button>
     </div>
 
-    <div id="hl_summary" class="summary-card"></div>
+    <!-- ⭐ 요약 결과 -->
+    <div id="hl_summary" class="summary-card" style="display:none;"></div>
 
+    <!-- ⭐ 상세 결과 아코디언 -->
     <div class="accordion-item">
-      <button class="acc-btn calc-acc-btn hl-acc-btn" onclick="toggleHouseholdAccordion()">
-        계산 상세 보기 ▼
-      </button>
+      <button class="calc-acc-btn" onclick="toggleHouseholdAccordion()">계산 상세 보기 ▼</button>
       <div class="acc-content calc-acc-content" id="hl_accordion"></div>
     </div>
-   
-    <!-- SEO 문단 -->
-    <div id="hl_seo" class="seo-box-animated">
+
+    <!-- ⭐ 설명 박스 -->
+    <div id="hl_explain" class="explain-box"></div>
+
+    <!-- ⭐ SEO 문단 -->
+    <div class="seo-box-animated">
       <p>가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 기능을 통해 개인회생 생계비와 변제 가능 금액을 자동 계산할 수 있습니다.</p>
       <p>월 소득, 가구 수, 추가 생계비 등을 입력하면 실제 변제금 산정에 필요한 핵심 데이터를 제공합니다.</p>
-    </div>   
+    </div>
 
-    <!-- FAQ -->
+    <!-- ⭐ FAQ -->
     <section class="faq-section">
       <h2>가구수 생계비 계산기 FAQ</h2>
 
@@ -207,140 +164,57 @@
 
   </div>
 </div>
-<!-- 🔒 로그인 필요 모달 (앱 UI 스타일) -->
+
+<!-- ⭐ 로그인 필요 모달 -->
 <div id="loginRequiredModal" class="app-modal-overlay" style="display:none;">
   <div class="app-modal">
-    <div class="app-modal-header">
-      <div class="app-modal-bar"></div>
-    </div>
-
+    <div class="app-modal-header"><div class="app-modal-bar"></div></div>
     <h3>🔒 로그인 후 이용 가능합니다</h3>
     <p class="app-modal-text">
       계산 결과 전체 보기는 회원 전용 기능입니다.<br>
       로그인 또는 회원가입 후 이용해주세요.
     </p>
-
-    <button class="app-btn-primary" onclick="location.href='/auth/login.html'">
-      로그인하기
-    </button>
-
-    <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">
-      회원가입하기
-    </button>
-
-    <button class="app-btn-close" onclick="document.getElementById('loginRequiredModal').style.display='none'">
-      닫기
-    </button>
+    <button class="app-btn-primary" onclick="location.href='/auth/login.html'">로그인하기</button>
+    <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">회원가입하기</button>
+    <button class="app-btn-close" onclick="document.getElementById('loginRequiredModal').style.display='none'">닫기</button>
   </div>
 </div>
 
-<!-- 🔒 이용권 필요 모달 -->
+<!-- ⭐ 이용권 필요 모달 -->
 <div id="paywallOverlay" class="app-modal-overlay" style="display:none;">
   <div class="app-modal">
-    <div class="app-modal-header">
-      <div class="app-modal-bar"></div>
-    </div>
-
+    <div class="app-modal-header"><div class="app-modal-bar"></div></div>
     <h3>🔒 이용권이 필요합니다</h3>
-    <p class="app-modal-text">
-      전체 계산 결과는 이용권 활성화 후 이용 가능합니다.
-    </p>
-
-    <button class="app-btn-primary" onclick="location.href='/mypage/payments.html'">
-      이용권 결제하기
-    </button>
-
-    <button class="app-btn-secondary">
-      상담 연결 시 무료 제공
-    </button>
-
-    <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">
-      닫기
-    </button>
+    <p class="app-modal-text">전체 계산 결과는 이용권 활성화 후 이용 가능합니다.</p>
+    <button class="app-btn-primary" onclick="location.href='/mypage/payments.html'">이용권 결제하기</button>
+    <button class="app-btn-secondary">상담 연결 시 무료 제공</button>
+    <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">닫기</button>
   </div>
 </div>
 
+<!-- ⭐ 푸터 -->
 <div id="footer"></div>
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
-<!-- Firebase 초기화 -->
+
+<!-- ⭐ 스크립트 -->
 <script type="module" src="/firebase-init.js"></script>
-<!-- 방문자 카운터 -->
 <script type="module" src="/firebase-counter.js"></script>
 <script type="module" src="/auth/auth-state.js"></script>
-<script src="/household-auto-living.js?v=1006" ></script>  
+<script src="/household-auto-living.js?v=1006"></script>
 <script type="module" src="/check-access.js"></script>
 <script src="/typing.js"></script>
+<script src="/paywall.js?v=1006"></script>
+<script src="/faq.js?v=1006"></script>
+<script src="/block-right-click.js"></script>
+<script type="module" src="/common-apply.js"></script>
+
 <script>
   fetch("/footer.html")
     .then(res => res.text())
     .then(html => {
-      document.getElementById("footer").innerHTML = html;
-    });
+      document.getElementById("footer").innerHTML = html);
 </script>
-<script src="/paywall.js?v=1006"></script>
-<script src="/faq.js?v=1006" defer></script>
-<script src="/block-right-click.js"></script>
-<script type="module" src="/common-apply.js"></script>
-  <!-- ⭐ 공통 상담신청 모달 -->
-<div id="commonApplyModal" class="modal">
-  <div class="app-modal">
-    <span class="close-modal">&times;</span>
-    <h3 id="applyTitle" class="app-modal-title">상담 신청</h3>
 
-    <form id="commonApplyForm">
-      <label>성명</label>
-      <input type="text" name="name" class="app-input" required>
-
-      <label>연락처</label>
-      <input type="tel" name="phone" class="app-input" required>
-
-      <label>이메일</label>
-      <input type="email" name="email" class="app-input" required>
-
-      <label>신청 유형</label>
-      <select name="applyType" id="applyType" class="app-select" required>
-        <option value="개인회생">개인회생</option>
-        <option value="개인파산">개인파산</option>       
-        <option value="채권압류해제">채권압류해제</option>
-        <option value="채무불이행자말소">채무불이행자말소</option>
-        <option value="채무자대리인">채무자대리인</option>
-        <option value="법원제증명발급">법원제증명발급</option>
-        <option value="준비서류발급">준비서류발급</option>
-	      <option value="상속">상속</option>
-        <option value="이혼">이혼</option>
-	      <option value="형사">형사</option>
-	      <option value="기타">기타</option>
-      </select>
-
-      <label>상담 내용</label>
-      <textarea name="content" rows="5" class="app-textarea" required></textarea>
-
-      <!-- 개인정보 동의 -->
-      <div class="privacy-row">
-        <input type="checkbox" id="agreePrivacy" required>
-        <label for="agreePrivacy">개인정보 수집·이용에 동의합니다.</label>
-        <button type="button" id="openPrivacy" class="btn-link">자세히 보기</button>
-      </div>
-
-      <button type="submit" class="app-btn app-modal-btn">신청하기</button>
-    </form>
-
-    <p id="applyStatus" class="app-status"></p>
-  </div>
-</div>
-
-<!-- ⭐ 개인정보 수집·이용 안내 모달 -->
-<div id="privacyModal" class="modal">
-  <div class="app-modal">
-    <span class="close-privacy">&times;</span>
-    <h3 class="app-modal-title">개인정보 수집·이용 안내</h3>
-
-    <p><strong>1. 수집 항목</strong><br>이름, 연락처, 이메일, 상담 유형, 상담 내용</p>
-    <p><strong>2. 수집 목적</strong><br>상담 요청 확인 및 상담 진행을 위한 연락</p>
-    <p><strong>3. 보유 기간</strong><br>상담 완료 후 1년 보관 후 즉시 파기</p>
-    <p><strong>4. 동의 거부 권리</strong><br>동의를 거부할 수 있으나 상담 신청이 제한될 수 있습니다.</p>
-  </div>
-</div>
 </body>
 </html>
