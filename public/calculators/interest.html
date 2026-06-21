@@ -121,16 +121,16 @@
     <div class="input-section">
       <label>원금(원)</label>
       <input id="principal" type="number">
-  
+    
       <label>연 이자율(%)</label>
       <input id="rate" type="number" value="20">
-  
+    
       <label>시작일 (From)</label>
       <input id="fromDate" type="date" class="input-field">
-  
+    
       <label>종료일 (To)</label>
       <input id="toDate" type="date" class="input-field">
-  
+    
       <label>기간(일수)</label>
       <input id="days" type="number">
       <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
@@ -141,19 +141,22 @@
       <p class="notice">※ 원금, 연이자율, 기간(일수) 항목은 필수 입력입니다.</p>
       <button onclick="resetInterestInputs()" style="margin-bottom:16px;">초기화</button>
     </div>
-
+    
     <!-- 요약 -->
     <div id="interestSummary" class="summary-card"></div>
-
+    
     <!-- 상세 계산 -->
     <div class="accordion">
       <button class="interest-accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
       <div id="interestAccordion" class="acc-content calc-acc-content"></div>
     </div>
-
+    
     <!-- 설명 -->
-    <div id="interestExplain" class="explain-box"></div> 
-
+    <div id="interestExplain" class="explain-box"></div>
+  </div>
+</div>
+<div class="page-wrap">
+  <div class="container">
     <!-- FAQ -->
     <section class="faq-section">
       <h2>연이자 계산기 FAQ</h2>
@@ -185,7 +188,6 @@
           <p>총상환금액 = <strong>원금 + 총이자</strong>입니다.</p>
         </div>
       </div>
-
     </section>
 
   </div>
