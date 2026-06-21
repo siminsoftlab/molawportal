@@ -1,0 +1,30 @@
+/* 유튜브 슬라이더 썸네일 */
+.youtube-slide-thumb {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+/* 슬라이더 전체 영역 */
+.youtube-slider-section {
+  margin-top: 40px;
+}
+
+/* 제목 스타일 */
+.youtube-title {
+  margin-bottom: 16px;
+}
+
+/* Swiper 기본 스타일 보완 */
+.youtubeSwiper {
+  padding-bottom: 30px;
+}
+
+.youtubeSwiper .swiper-pagination-bullet {
+  background: #ccc;
+  opacity: 1;
+}
+
+.youtubeSwiper .swiper-pagination-bullet-active {
+  background: #333;
+}
