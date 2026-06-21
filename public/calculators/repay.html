@@ -20,8 +20,9 @@
   <link rel="stylesheet" href="/paywall.css">
   <link rel="stylesheet" href="/app-ui.css">
   <link rel="stylesheet" href="/typing.css">
+  <link rel="stylesheet" href="/template/calculator.css">
   <link rel="icon" href="/images/favicon.ico">
-</head>
+  </head>
 
 <body class="subpage">
 
@@ -89,10 +90,10 @@
     <div class="input-section">
       <label>총 부채(원)</label>
       <input id="debt" type="number">
-
+    
       <label>월 소득(원)</label>
       <input id="income" type="number">
-
+    
       <label>가구 수</label>
       <select id="household">
         <option value="1">1인 가구</option>
@@ -101,46 +102,49 @@
         <option value="4">4인 가구</option>
         <option value="5">5인 가구</option>
       </select>
-
+    
       <label>최저 생계비(자동 계산)</label>
       <input id="living" type="number" readonly>
-
+    
       <label>추가 생계비(원)</label>
       <input id="extra" type="number">
-
+    
       <label>변제기간(개월)</label>
       <input id="months" type="number" value="36">
-
+    
       <label>청산가치(원)</label>
       <input id="asset" type="number">
       <p class="notice">※ 청산가치 = 보유 재산을 모두 처분했을 때의 가치</p>
     </div>
-
+    
     <!-- ⭐ 버튼 -->
     <div class="btn-row">
       <button onclick="checkAccess(() => calcRepay())">계산하기</button>
       <p class="notice">※ 총 부채, 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.</p>
       <button onclick="resetRepayInputs()">초기화</button>
     </div>
-
+    
     <!-- ⭐ 요약 결과 -->
     <div id="repaySummary" class="summary-card" style="display:none;"></div>
-
+    
     <!-- ⭐ 상세 결과 아코디언 -->
     <div class="accordion-item">
       <button class="calc-acc-btn repay-accordion-btn" onclick="toggleAccordionRepay()">계산 상세 보기 ▼</button>
       <div class="acc-content calc-acc-content" id="repayAccordion"></div>
     </div>
-
+    
     <!-- ⭐ 설명 박스 -->
     <div id="repayExplain" class="explain-box"></div>
-
+    
     <!-- ⭐ SEO 문단 -->
     <div class="seo-box-animated">
       <p>개인회생 변제금 계산기 및 개인회생변제금조회 기능을 통해 월 변제금·변제율·탕감률을 자동 계산할 수 있습니다.</p>
       <p>가용소득·총 변제예정액·현재가치(PV)·청산가치 충족 여부까지 확인 가능합니다.</p>
     </div>
-
+  </div>
+</div>
+<div class="page-wrap">
+  <div class="container">
     <!-- ⭐ FAQ -->
     <section class="faq-section">
       <h2>개인회생 변제금 계산기 FAQ</h2>
