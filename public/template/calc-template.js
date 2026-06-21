@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ============================
-     ⭐ FAQ 토글 (기존 toggle-btn)
+     ⭐ FAQ 토글
   ============================ */
-  const faqToggles = document.querySelectorAll(".toggle-btn, .toggle-arrow");
+  const faqToggles = document.querySelectorAll(".toggle-arrow, .faq-question");
 
   faqToggles.forEach(btn => {
     btn.addEventListener("click", () => {
