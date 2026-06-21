@@ -152,3 +152,37 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDots(index);
   });
 });
+// ⭐ 자동 슬라이드 + hover stop
+function startAutoplay() {
+  const slider = document.querySelector(".review-slider");
+  const cards = slider.children;
+  const cardWidth = cards[0].offsetWidth + 16;
+
+  let index = 0;
+  let autoplayInterval;
+
+  function play() {
+    autoplayInterval = setInterval(() => {
+      index++;
+      if (index >= cards.length) index = 0;
+
+      slider.scrollTo({
+        left: cardWidth * index,
+        behavior: "smooth"
+      });
+
+      updateDots(index);
+    }, 3500);
+  }
+
+  function stop() {
+    clearInterval(autoplayInterval);
+  }
+
+  // ⭐ hover 시 autoplay 정지
+  slider.addEventListener("mouseenter", stop);
+  slider.addEventListener("mouseleave", play);
+
+  // autoplay 시작
+  play();
+}
