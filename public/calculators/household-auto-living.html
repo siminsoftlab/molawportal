@@ -119,7 +119,7 @@
         </div>
     
         <!-- 버튼 -->
-        <button class="calc-btn" onclick="checkAccess(() => handleLivingCalc())">계산하기</button>
+        <button class="calc-btn" onclick="checkAccess(() => { handleLivingCalc(); afterLivingCalcUI(); })">계산하기</button>
         <button class="calc-btn reset-btn" onclick="resetHouseholdLiving()">초기화</button>
     
         <p class="notice" style="margin-top:10px; font-size:14px; color:#777;">
