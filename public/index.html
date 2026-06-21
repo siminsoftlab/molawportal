@@ -290,13 +290,12 @@
     </div>      
   </div>  
 </div>
-  <!-- ⭐ 리뷰 박스 2개 추가 -->
-  <div class="container">
+  <!-- ⭐ 리뷰 박스 5개 추가 -->
+<div class="container">
   <h2>리뷰</h2>
 
-  <!-- 슬라이더 -->
-  <div class="review-slider">
-
+  <div class="review-slider-wrap">
+    <div class="review-slider">
     <div class="review-card" onclick="openReview(1)">
       <div class="review-stars">★★★★★</div>
       <p class="review-text">
@@ -304,7 +303,6 @@
       </p>
       <div class="review-user">— 전기쟁이 님</div>
     </div>
-
     <div class="review-card" onclick="openReview(2)">
       <div class="review-stars">★★★★★</div>
       <p class="review-text">
@@ -336,9 +334,8 @@
       </p>
       <div class="review-user">— 만두 님</div>
     </div>
-
+    <div class="review-dots"></div>
   </div>
-
   <!-- 아코디언 -->
   <div id="reviewAccordion" class="review-accordion">
     <div id="reviewContent"></div>
