@@ -1,30 +1,131 @@
 /****************************************************
- * 가구수 생계비 계산기 — 청산가치 제거 최종 버전 (수정)
+ * 숫자 처리
  ****************************************************/
+function getInt(id) {
+  return parseInt(
+    (document.getElementById(id).value || "0").replace(/[^\d]/g, "")
+  ) || 0;
+}
 
-/* 전역 변수: 상세 계산 결과 저장 */
-let householdCalcResult = null;
+/* 반올림 */
+function preciseRound(num) {
+  return Math.round((num + Number.EPSILON));
+}
+
+/* 가구수 텍스트 */
+function getHouseholdLabel(household) {
+  return `${household}인 가구`;
+}
 
 /****************************************************
- * 아코디언 토글 (CSS transition 기반)
+ * 가구 수 선택 시 법원 기준 생계비 자동 계산
+ ****************************************************/
+function updateCourtLiving() {
+  const household = getInt('hl_household') || 1;
+
+  const baseLiving1 = 1538523;
+  const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
+
+  const courtLiving = preciseRound(baseLiving1 * (weights[household] || 1));
+
+  document.getElementById('hl_court_living').value = courtLiving;
+}
+
+/****************************************************
+ * 계산하기 버튼 → checkAccess 후 실행될 함수
+ ****************************************************/
+function handleLivingCalc() {
+  calcHouseholdLiving();
+}
+window.handleLivingCalc = handleLivingCalc;
+
+/****************************************************
+ * 계산 (가구수 생계비 계산기)
+ ****************************************************/
+function calcHouseholdLiving() {
+  const incomeInput = document.getElementById('hl_income').value.trim();
+  const livingInput = document.getElementById('hl_court_living').value.trim();
+  const monthsInput = document.getElementById('hl_months').value.trim();
+
+  if (incomeInput === "" || livingInput === "" || monthsInput === "") {
+    alert("월 소득, 최저 생계비, 변제기간(개월)을 모두 입력해주세요.");
+    return;
+  }
+
+  const income      = getInt('hl_income');
+  const household   = getInt('hl_household');
+  const courtLiving = getInt('hl_court_living');
+  const extraInput  = getInt('hl_extra');
+  const months      = getInt('hl_months');
+
+  const extraLimit   = preciseRound(courtLiving * 0.3);
+  const allowedExtra = Math.min(extraInput, extraLimit);
+
+  const totalLiving  = courtLiving + allowedExtra;
+  const disposable   = Math.max(income - totalLiving, 0);
+  const totalRepay   = disposable * months;
+  const monthly      = months > 0 ? Math.ceil(totalRepay / months) : 0;
+
+  // 요약 카드
+  const summary = document.getElementById("hl_summary");
+  summary.style.display = "block";
+  summary.innerHTML = `
+  <div class="repay-highlight-box">
+    <div class="row"><div class="label">월 소득</div><div class="value">${income.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">법원 기준 생계비 (${getHouseholdLabel(household)})</div><div class="value">${courtLiving.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">추가 생계비</div><div class="value">입력 ${extraInput.toLocaleString()}원 → 인정 ${allowedExtra.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">월 변제 가능 금액</div><div class="value">${disposable.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">최종 변제금 / 월 변제금</div><div class="value">${totalRepay.toLocaleString()}원 / ${monthly.toLocaleString()}원</div></div>
+  </div>
+`;
+
+  // 상세 계산 결과
+  const acc = document.getElementById("hl_accordion");
+  acc.innerHTML = `
+  <div class="repay-highlight-box-red">
+    <div class="row"><div class="label">가구 수</div><div class="value">${getHouseholdLabel(household)}</div></div>
+    <div class="row"><div class="label">법원 기준 생계비</div><div class="value">${courtLiving.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">추가 생계비 (입력)</div><div class="value">${extraInput.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">추가 생계비 (인정)</div><div class="value">${allowedExtra.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">총 인정 생계비</div><div class="value">${totalLiving.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">월 변제 가능 금액</div><div class="value">${disposable.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">최종 변제금</div><div class="value">${totalRepay.toLocaleString()}원</div></div>
+    <div class="row"><div class="label">월 변제금</div><div class="value">${monthly.toLocaleString()}원</div></div>
+  </div>
+`;
+
+  // SEO 설명문
+  const seo = document.getElementById("hl_seo");
+  seo.innerHTML = `
+    <div class="explain-box">
+      <h3>📌 가구수 생계비 계산 설명</h3>
+      <p>${getHouseholdLabel(household)} 기준 법원 생계비는 ${courtLiving.toLocaleString()}원입니다.</p>
+      <p>추가 생계비 인정액은 ${allowedExtra.toLocaleString()}원이며, 총 생계비는 ${totalLiving.toLocaleString()}원입니다.</p>
+      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 최종 변제금은 ${totalRepay.toLocaleString()}원입니다.</p>
+    </div>
+  `;
+  seo.classList.add("visible");
+
+  // 버튼 초기화
+  const btn = document.querySelector(".hl-acc-btn");
+  if (btn) btn.textContent = "계산 상세 보기 ▼";
+}
+
+/****************************************************
+ * 상세 계산 아코디언
  ****************************************************/
 function toggleHouseholdAccordion() {
   const box = document.getElementById("hl_accordion");
   const btn = document.querySelector(".hl-acc-btn");
 
-  if (!householdCalcResult) return;
+  if (!box || !btn) return;
 
-  const isOpen = box.classList.contains("open");
-
-  if (isOpen) {
+  if (box.classList.contains("open")) {
     box.classList.remove("open");
-    box.style.maxHeight = null;
-    box.style.padding = "0px";
+    box.style.maxHeight = "0px";
     btn.textContent = "계산 상세 보기 ▼";
   } else {
-    box.innerHTML = householdCalcResult;
     box.classList.add("open");
-    box.style.padding = "15px";
     box.style.maxHeight = box.scrollHeight + "px";
     btn.textContent = "계산 상세 접기 ▲";
   }
@@ -34,123 +135,34 @@ function toggleHouseholdAccordion() {
  * 초기화
  ****************************************************/
 function resetHouseholdLiving() {
-  document.getElementById('hl_income').value = "";
-  document.getElementById('hl_household').value = "1";
-  document.getElementById('hl_extra').value = "";
-  document.getElementById('hl_months').value = "36";
-  document.getElementById('hl_court_living').value = "";
+  ["hl_income","hl_extra","hl_months"].forEach(id=>{
+    document.getElementById(id).value = id === "hl_months" ? "36" : "";
+  });
+  document.getElementById("hl_household").value = "1";
+  document.getElementById("hl_court_living").value = "";
 
-  document.getElementById('hl_summary').style.display = "none";
+  document.getElementById("hl_summary").style.display = "none";
 
-  const acc = document.getElementById('hl_accordion');
+  const acc = document.getElementById("hl_accordion");
   acc.innerHTML = "";
-  acc.style.maxHeight = null;
-  acc.style.padding = "0px";
   acc.classList.remove("open");
+  acc.style.maxHeight = null;
+
+  const seo = document.getElementById("hl_seo");
+  seo.innerHTML = "";
+  seo.classList.remove("visible");
 
   const btn = document.querySelector(".hl-acc-btn");
   if (btn) btn.textContent = "계산 상세 보기 ▼";
 
-  const seo = document.getElementById('hl_seo');
-  seo.classList.remove('visible');
-  seo.innerHTML = "";
-
-  householdCalcResult = null;
+  updateCourtLiving();
 }
 
 /****************************************************
- * 가구 수 선택 시 법원 기준 생계비 자동 계산
- ****************************************************/
-function updateCourtLiving() {
-  const household = Number(document.getElementById('hl_household').value || 1);
-
-  const baseLiving1 = 1538523;
-  const weights = {1:1.0, 2:1.5, 3:2.1, 4:2.6, 5:3.1};
-  const living = Math.round(baseLiving1 * (weights[household] || 1));
-
-  document.getElementById("hl_court_living").value = living;
-}
-
-document.getElementById("hl_household").addEventListener("change", updateCourtLiving);
-
-/****************************************************
- * 계산
- ****************************************************/
-function calcHouseholdLiving() {
-  const incomeInput = document.getElementById('hl_income').value.trim();
-  const livingInput = document.getElementById('hl_court_living').value.trim();
-  const monthsInput = document.getElementById('hl_months').value.trim();
-
-  if (incomeInput === "" || livingInput === "" || monthsInput === "") {
-    alert("월 소득, 최저 생계비, 변제기간을 모두 입력해주세요.");
-    return;
-  }
-
-  const income = Number(incomeInput);
-  const household = Number(document.getElementById('hl_household').value || 1);
-  const extra = Number(document.getElementById('hl_extra').value || 0);
-  const months = Number(monthsInput);
-  const living = Number(livingInput);
-
-  const extraLimit = Math.round(living * 0.3);
-  const extraAllowed = Math.min(extra, extraLimit);
-
-  const totalLiving = living + extraAllowed;
-  const disposable = Math.max(income - totalLiving, 0);
-  const totalByIncome = disposable * months;
-  const finalTotal = totalByIncome;
-  const monthly = months > 0 ? Math.ceil(finalTotal / months) : 0;
-
-  const summary = document.getElementById('hl_summary');
-  summary.innerHTML = `
-  <div class="repay-highlight-box">
-    <div class="row"><div class="label">월 소득</div><div class="value">${income.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">법원 기준 생계비 (${household}인 가구)</div><div class="value">${living.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">추가 생계비</div><div class="value">입력 ${extra.toLocaleString()}원 → 인정 ${extraAllowed.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">월 변제 가능 금액</div><div class="value">${disposable.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">최종 변제금 / 월 변제금</div><div class="value">${finalTotal.toLocaleString()}원 / ${monthly.toLocaleString()}원</div></div>
-  </div>`;
-  summary.style.display = "block";
-
-  householdCalcResult = `
-  <div class="repay-highlight-box-red">
-    <div class="row"><div class="label">가구 수</div><div class="value">${household}인 가구</div></div>
-    <div class="row"><div class="label">법원 기준 생계비</div><div class="value">${living.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">추가 생계비 (입력)</div><div class="value">${extra.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">추가 생계비 (인정)</div><div class="value">${extraAllowed.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">총 인정 생계비</div><div class="value">${totalLiving.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">월 변제 가능 금액</div><div class="value">${disposable.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">소득 기준 총 변제금</div><div class="value">${totalByIncome.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">최종 변제금</div><div class="value">${finalTotal.toLocaleString()}원</div></div>
-    <div class="row"><div class="label">월 변제금</div><div class="value">${monthly.toLocaleString()}원</div></div>
-  </div>`;
-
-  const seo = document.getElementById('hl_seo');
-  seo.innerHTML = `
-    <div class="explain-box">
-      <h3>📌 가구수 생계비 계산 설명</h3>
-      <p>${household}인 가구 기준 법원 생계비는 ${living.toLocaleString()}원입니다.</p>
-      <p>추가 생계비 인정액은 ${extraAllowed.toLocaleString()}원이며, 총 생계비는 ${totalLiving.toLocaleString()}원입니다.</p>
-      <p>월 변제 가능 금액은 ${disposable.toLocaleString()}원이며, 최종 변제금은 ${finalTotal.toLocaleString()}원입니다.</p>
-    </div>`;
-  setTimeout(() => seo.classList.add('visible'), 50);
-}
-
-/****************************************************
- * 페이지 로드시 자동 실행
+ * DOM 로드 후 초기 세팅
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.querySelector(".hl-acc-btn");
-  if (btn) btn.addEventListener("click", toggleHouseholdAccordion);
   updateCourtLiving();
+  document.getElementById('hl_household').addEventListener('change', updateCourtLiving);
+  document.querySelector(".hl-acc-btn").addEventListener("click", toggleHouseholdAccordion);
 });
-
-/****************************************************
- * checkAccess 후 실행될 실제 계산 함수
- ****************************************************/
-function handleLivingCalc() {
-  calcHouseholdLiving();
-}
-
-/* HTML onclick에서도 접근 가능하도록 전역 등록 */
-window.handleLivingCalc = handleLivingCalc;
