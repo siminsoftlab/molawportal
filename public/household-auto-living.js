@@ -164,5 +164,7 @@ function resetHouseholdLiving() {
 document.addEventListener("DOMContentLoaded", () => {
   updateCourtLiving();
   document.getElementById('hl_household').addEventListener('change', updateCourtLiving);
+
+  // HTML onclick 제거했으므로 JS에서만 이벤트 연결
   document.querySelector(".hl-acc-btn").addEventListener("click", toggleHouseholdAccordion);
 });
