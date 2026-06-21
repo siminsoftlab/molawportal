@@ -1,0 +1,72 @@
+/* 계산기 템플릿 전체 */
+.calc-template {
+  font-family: inherit;
+  width: 100%;
+}
+
+/* 공통 박스 */
+.calc-template .calc-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+/* 제목 */
+.calc-template h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+/* 입력 필드 */
+.calc-template input,
+.calc-template select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+/* 버튼 */
+.calc-template .calc-btn {
+  width: 100%;
+  background: #ffe680;
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* 계산 상세 보기 버튼 */
+.calc-template .toggle-btn {
+  background: #ffe680;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* 결과 박스 */
+.calc-template .result-box {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+  display: none;
+}
+
+/* 애니메이션 */
+.calc-template .fade {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
