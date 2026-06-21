@@ -41,36 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* ============================
-   ⭐ 계산하기 실행 후 결과 표시
+   ⭐ 기존 handleLivingCalc() 흐름을 유지하면서
+      UI만 제어하는 후처리 함수
 ============================ */
-function handleLivingCalc() {
-  // 기존 계산 함수 실행
-  calculateHouseholdLiving(); // ← 기존 함수 그대로 유지
-
-  // 요약 결과 표시
-  document.getElementById("hl_summary").style.display = "block";
-
-  // 상세 결과 자동 표시
+function afterLivingCalcUI() {
+  const summary = document.getElementById("hl_summary");
   const accBox = document.getElementById("hl_accordion");
   const accBtn = document.querySelector(".calc-acc-btn");
 
-  accBox.style.display = "block";
-  accBtn.innerHTML = "계산 상세 닫기 ▲";
-}
+  // 요약 결과 표시
+  if (summary) summary.style.display = "block";
 
+  // 상세 결과 표시
+  if (accBox) accBox.style.display = "block";
 
-/* ============================
-   ⭐ 초기화 버튼
-============================ */
-function resetHouseholdLiving() {
-  document.getElementById("hl_income").value = "";
-  document.getElementById("hl_household").value = "1";
-  document.getElementById("hl_court_living").value = "";
-  document.getElementById("hl_extra").value = "";
-  document.getElementById("hl_months").value = "36";
-
-  document.getElementById("hl_summary").style.display = "none";
-  document.getElementById("hl_accordion").style.display = "none";
-
-  document.querySelector(".calc-acc-btn").innerHTML = "계산 상세 보기 ▼";
+  // 버튼 텍스트 변경
+  if (accBtn) accBtn.innerHTML = "계산 상세 닫기 ▲";
 }
