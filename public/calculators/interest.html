@@ -9,13 +9,58 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- ⭐ SEO Title: 붙여쓰기/띄어쓰기 키워드 모두 포함 -->
   <title>연이자 계산기 · 연이자계산기 — 총이자·일할계산 자동 계산</title>
 
+  <!-- ⭐ SEO Description: 두 키워드 포함 -->
   <meta name="description" content="연이자 계산기 및 연이자계산기 자동 계산. 원금·연이율·기간 입력 시 총이자와 총상환금액을 즉시 계산합니다. 일할계산 지원.">
+
+  <!-- ⭐ Keywords -->
   <meta name="keywords" content="연이자 계산기, 연이자계산기, 이자계산기, 일할계산, 총이자 계산">
 
+  <!-- Canonical -->
   <link rel="canonical" href="https://molawcalculator.com/calculators/interest.html">
 
+  <!-- Open Graph -->
+  <meta property="og:title" content="연이자 계산기 · 연이자계산기 — 총이자 자동 계산">
+  <meta property="og:description" content="연이자 계산기 및 연이자계산기 자동 계산. 원금·연이율·기간 입력 시 총이자와 총상환금액을 즉시 확인.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="딱요만큼변제">
+  <meta property="og:url" content="https://molawcalculator.com/calculators/interest.html">
+  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="연이자 계산기 · 연이자계산기 — 자동 계산">
+  <meta name="twitter:description" content="연이자 계산 공식 기반 자동 계산기. 일할계산 지원.">
+  <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
+
+  <!-- ⭐ 구조화 데이터 (Calculator + FinancialService) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FinancialService",
+    "name": "연이자 계산기 · 연이자계산기",
+    "url": "https://molawcalculator.com/calculators/interest.html",
+    "description": "연이자 계산기 및 연이자계산기 자동 계산 서비스. 원금·연이율·기간 입력 시 총이자와 총상환금액을 계산합니다.",
+    "serviceType": "Interest Calculation",
+    "provider": {
+      "@type": "LegalService",
+      "name": "법무법인 영민",
+      "url": "https://molawcalculator.com"
+    },
+    "hasCalculator": {
+      "@type": "Calculator",
+      "name": "연이자 계산기",
+      "keywords": "연이자 계산기, 연이자계산기, 이자계산기, 일할계산"
+    }
+  }
+  </script>
+
+  <!-- Robots -->
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+
+  <!-- 기존 리소스 -->
   <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/style.css?v=1006">
   <link rel="stylesheet" href="/faq.css?v=1006">
@@ -26,106 +71,90 @@
 
 <body class="subpage">
 
-<!-- ⭐ 고정 헤더 -->
 <header class="fixed-header fixed-top">
-  <h1>연이자 계산기</h1>
-  <a href="/index.html" class="home-btn">
+  <h1>연이자 계산기 · 연이자계산기</h1>
+  <a href="../index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </a>
 </header>
-
-<!-- ⭐ 무료 이용권 배너 (공통) -->
-<div class="welcome-banner">
-  <div class="welcome-center">
-    <div class="welcome-text">
-      <a href="/coupon/welcome-detail.html">
-        🎁 회원가입 즉시 <b>무료 이용권</b> 지급 <span class="detail-link">[자세히]</span>
-      </a>
-    </div>
-  </div>
-</div>
-
 <div class="page-wrap">
   <div class="container">
 
-    <!-- ⭐ SEO용 H1 -->
-    <h1 class="seo-h1" style="position:absolute; left:-9999px;">
+    <!-- ⭐ SEO용 H1 (검색엔진용) -->
+    <h1 class="seo-h1" style="position:absolute; left:-9999px; top:-9999px;">
       연이자 계산기 · 연이자계산기 — 총이자·일할계산 자동 계산
     </h1>
 
-    <!-- ⭐ 계산기 네비게이션 (4종 공통) -->
-    <nav class="calc-nav">
+    <!-- 내부 네비게이션 -->
+    <div class="calc-nav">
       <a href="/calculators/repay.html" class="nav-item">💰 개인회생 변제금 계산기</a>
       <a href="/calculators/living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
       <a href="/calculators/household-auto-living.html" class="nav-item">👨‍👩‍👧 가구수 생계비 계산기</a>
       <a href="/calculators/interest.html" class="nav-item active">📈 연이자 계산기</a>
-    </nav>
-
-    <!-- ⭐ 서브 메뉴 -->
-    <div class="calc-nav">
-      <a href="/blog/interest-guide.html" class="guide-btn">이용 안내</a>
     </div>
 
-    <!-- ⭐ 계산기 제목 -->
+    <div class="calc-nav">
+      <a href="/blog/interest-guide.html" class="guide-btn">
+        이용 안내</a>
+    </div>
+    
+    <!-- ⭐ SEO 강화 H2 -->
     <h2>📌 연이자 계산기 · 연이자계산기 — 지금 바로 확인</h2>
 
-    <!-- ⭐ 설명 -->
+    <!-- 설명 아코디언 -->
     <div class="faq-item">
       <button class="faq-question toggle-arrow">연이자 계산기 설명 보기 ▼</button>
       <div class="faq-answer">
         <p>
           연이자 계산기(연이자계산기)는 원금·연이율·기간을 입력하면  
           해당 기간 동안 발생하는 <strong>총이자</strong>와  
-          최종 상환해야 하는 <strong>총상환금액</strong>을 자동 계산합니다.
-        </p>
-        <p>
+          최종 상환해야 하는 <strong>총상환금액</strong>을 자동 계산합니다.  
           연이자 공식(원금 × 연이율 ÷ 100 × 일수 ÷ 365)을 기반으로  
           복잡한 계산 없이 이자 부담을 빠르게 확인할 수 있습니다.
         </p>
       </div>
     </div>
 
-    <!-- ⭐ 입력 영역 -->
+    <!-- 입력 영역 -->
     <div class="input-section">
       <label>원금(원)</label>
       <input id="principal" type="number">
-
+  
       <label>연 이자율(%)</label>
       <input id="rate" type="number" value="20">
-
+  
       <label>시작일 (From)</label>
-      <input id="fromDate" type="date">
-
+      <input id="fromDate" type="date" class="input-field">
+  
       <label>종료일 (To)</label>
-      <input id="toDate" type="date">
-
+      <input id="toDate" type="date" class="input-field">
+  
       <label>기간(일수)</label>
       <input id="days" type="number">
-      <p class="notice">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
+      <p class="date-info-text">※ 시작일과 종료일을 선택하면 기간(일수)이 자동 계산됩니다.</p>
     </div>
-
-    <!-- ⭐ 버튼 -->
+    
     <div class="btn-row">
       <button onclick="checkAccess(() => calcInterest())">계산하기</button>
-      <p class="notice">※ 원금, 연이자율, 기간(일수)은 필수 입력입니다.</p>
-      <button onclick="resetInterestInputs()">초기화</button>
+      <p class="notice">※ 원금, 연이자율, 기간(일수) 항목은 필수 입력입니다.</p>
+      <button onclick="resetInterestInputs()" style="margin-bottom:16px;">초기화</button>
     </div>
 
-    <!-- ⭐ 요약 결과 -->
-    <div id="interestSummary" class="summary-card" style="display:none;"></div>
+    <!-- 요약 -->
+    <div id="interestSummary" class="summary-card"></div>
 
-    <!-- ⭐ 상세 결과 아코디언 -->
-    <div class="accordion-item">
-      <button class="calc-acc-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
+    <!-- 상세 계산 -->
+    <div class="accordion">
+      <button class="interest-accordion-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
       <div id="interestAccordion" class="acc-content calc-acc-content"></div>
     </div>
 
-    <!-- ⭐ 설명 박스 -->
-    <div id="interestExplain" class="explain-box"></div>
+    <!-- 설명 -->
+    <div id="interestExplain" class="explain-box"></div> 
 
-    <!-- ⭐ FAQ -->
+    <!-- FAQ -->
     <section class="faq-section">
       <h2>연이자 계산기 FAQ</h2>
 
@@ -161,51 +190,69 @@
 
   </div>
 </div>
-
-<!-- ⭐ 로그인 필요 모달 -->
+<!-- 🔒 로그인 필요 모달 (앱 UI 스타일) -->
 <div id="loginRequiredModal" class="app-modal-overlay" style="display:none;">
   <div class="app-modal">
-    <div class="app-modal-header"><div class="app-modal-bar"></div></div>
+    <div class="app-modal-header">
+      <div class="app-modal-bar"></div>
+    </div>
+
     <h3>🔒 로그인 후 이용 가능합니다</h3>
     <p class="app-modal-text">
       계산 결과 전체 보기는 회원 전용 기능입니다.<br>
       로그인 또는 회원가입 후 이용해주세요.
     </p>
-    <button class="app-btn-primary" onclick="location.href='/auth/login.html'">로그인하기</button>
-    <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">회원가입하기</button>
-    <button class="app-btn-close" onclick="document.getElementById('loginRequiredModal').style.display='none'">닫기</button>
+
+    <button class="app-btn-primary" onclick="location.href='/auth/login.html'">
+      로그인하기
+    </button>
+
+    <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">
+      회원가입하기
+    </button>
+
+    <button class="app-btn-close" onclick="document.getElementById('loginRequiredModal').style.display='none'">
+      닫기
+    </button>
   </div>
 </div>
 
-<!-- ⭐ 이용권 필요 모달 -->
+<!-- 🔒 이용권 필요 모달 -->
 <div id="paywallOverlay" class="app-modal-overlay" style="display:none;">
   <div class="app-modal">
-    <div class="app-modal-header"><div class="app-modal-bar"></div></div>
+    <div class="app-modal-header">
+      <div class="app-modal-bar"></div>
+    </div>
+
     <h3>🔒 이용권이 필요합니다</h3>
-    <p class="app-modal-text">전체 계산 결과는 이용권 활성화 후 이용 가능합니다.</p>
-    <button class="app-btn-primary" onclick="location.href='/mypage/payments.html'">이용권 결제하기</button>
-    <button class="app-btn-secondary">상담 연결 시 무료 제공</button>
-    <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">닫기</button>
+    <p class="app-modal-text">
+      전체 계산 결과는 이용권 활성화 후 이용 가능합니다.
+    </p>
+
+    <button class="app-btn-primary" onclick="location.href='/mypage/payments.html'">
+      이용권 결제하기
+    </button>
+
+    <button class="app-btn-secondary">
+      상담 연결 시 무료 제공
+    </button>
+
+    <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">
+      닫기
+    </button>
   </div>
 </div>
 
-<!-- ⭐ 푸터 -->
+<!-- footer -->
 <div id="footer"></div>
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
-
-<!-- ⭐ 스크립트 -->
+<!-- Firebase -->
 <script type="module" src="/firebase-init.js"></script>
 <script type="module" src="/firebase-counter.js"></script>
 <script type="module" src="/auth/auth-state.js"></script>
 <script type="module" src="/check-access.js"></script>
 <script src="/interest.js?v=1006"></script>
-<script src="/paywall.js?v=1006"></script>
-<script src="/faq.js?v=1006"></script>
-<script src="/block-right-click.js?v=1006"></script>
-<script type="module" src="/common-apply.js"></script>
-<script src="/typing.js"></script>
-
 <script>
   fetch("/footer.html")
     .then(res => res.text())
@@ -213,6 +260,10 @@
       document.getElementById("footer").innerHTML = html;
     });
 </script>
-
+<script src="/paywall.js?v=1006"></script>
+<script src="/faq.js?v=1006" defer></script>
+<script src="/block-right-click.js?v=1006"></script>
+<script type="module" src="/common-apply.js"></script>
+<script src="/typing.js"></script>
 </body>
 </html>
