@@ -93,14 +93,62 @@ const reviewData = {
   `
 };
 
-// 리뷰 클릭 → 아코디언 열기
+let currentOpen = null;
+
+// 아코디언 열기/닫기
 function openReview(id) {
   const box = document.getElementById("reviewAccordion");
   const content = document.getElementById("reviewContent");
 
+  if (currentOpen === id) {
+    box.style.display = "none";
+    currentOpen = null;
+    return;
+  }
+
   content.innerHTML = reviewData[id];
   box.style.display = "block";
+  currentOpen = id;
 
-  // 부드럽게 스크롤 이동
   box.scrollIntoView({ behavior: "smooth" });
 }
+
+// 랜덤 셔플
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+// 슬라이더 점 업데이트
+function updateDots(index) {
+  const dots = document.querySelectorAll(".review-dots span");
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === index);
+  });
+}
+
+// 초기화
+document.addEventListener("DOMContentLoaded", () => {
+  const slider = document.querySelector(".review-slider");
+  const cards = Array.from(slider.children);
+
+  // 랜덤 정렬
+  const shuffled = shuffle(cards);
+  slider.innerHTML = "";
+  shuffled.forEach(card => slider.appendChild(card));
+
+  // 슬라이더 점 생성
+  const dotsWrap = document.querySelector(".review-dots");
+  dotsWrap.innerHTML = "";
+  shuffled.forEach((_, i) => {
+    const dot = document.createElement("span");
+    if (i === 0) dot.classList.add("active");
+    dotsWrap.appendChild(dot);
+  });
+
+  // 스크롤 시 점 업데이트
+  slider.addEventListener("scroll", () => {
+    const cardWidth = slider.children[0].offsetWidth + 16;
+    const index = Math.round(slider.scrollLeft / cardWidth);
+    updateDots(index);
+  });
+});
