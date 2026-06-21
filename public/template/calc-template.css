@@ -13,6 +13,10 @@
   margin-bottom: 20px;
 }
 
+.calc-template .calc-acc-content {
+  display: none;
+}
+
 /* 제목 */
 .calc-template h2 {
   font-size: 22px;
