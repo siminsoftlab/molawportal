@@ -21,6 +21,8 @@
   <link rel="stylesheet" href="/paywall.css">
   <link rel="stylesheet" href="/app-ui.css">
   <link rel="stylesheet" href="/typing.css">
+
+  <!-- ⭐ 프리미엄 계산기 템플릿 CSS -->
   <link rel="stylesheet" href="/template/calc-template.css">
 </head>
 
@@ -36,7 +38,7 @@
   </a>
 </header>
 
-<!-- ⭐ 무료 이용권 배너 (공통) -->
+<!-- ⭐ 무료 이용권 배너 -->
 <div class="welcome-banner">
   <div class="welcome-center">
     <div class="welcome-text">
@@ -55,7 +57,7 @@
       가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 — 개인회생 생계비 자동 계산
     </h1>
 
-    <!-- ⭐ 계산기 네비게이션 (4종 공통) -->
+    <!-- ⭐ 계산기 네비게이션 -->
     <nav class="calc-nav">
       <a href="/calculators/repay.html" class="nav-item">💰 개인회생 변제금 계산기</a>
       <a href="/calculators/living-adjust.html" class="nav-item">⚖️ 법원 생계비 계산기</a>
@@ -68,76 +70,85 @@
       <a href="/blog/household-guide.html" class="guide-btn">이용 안내</a>
     </div>
 
-    <!-- ⭐ 계산기 제목 -->
-    <h2>📌 가구수 생계비 계산기 · 가구원수 생계비 — 지금 바로 확인</h2>
+    <!-- ⭐ 프리미엄 계산기 UI 시작 -->
+    <div class="calc-template">
 
-    <!-- ⭐ 설명 -->
-    <div class="faq-item">
-      <button class="faq-question toggle-arrow">가구수 생계비 계산기 설명 보기 ▼</button>
-      <div class="faq-answer">
-        <p>
-          가구수 생계비 계산기(가구수생계비계산기)는  
-          <strong>가구 규모</strong>에 따라 달라지는 법원 기준 <strong>가구별 생계비</strong>를 자동 계산합니다.
+      <div class="calc-card">
+
+        <h2>📌 가구수 생계비 계산기 · 가구원수 생계비 — 지금 바로 확인</h2>
+
+        <!-- 설명 아코디언 -->
+        <div class="faq-item">
+          <button class="faq-question toggle-arrow">가구수 생계비 계산기 설명 보기 ▼</button>
+          <div class="faq-answer">
+            <p>
+              가구수 생계비 계산기(가구수생계비계산기)는  
+              <strong>가구 규모</strong>에 따라 달라지는 법원 기준 <strong>가구별 생계비</strong>를 자동 계산합니다.
+            </p>
+            <p>
+              또한 가구원수 생계비 기준을 반영하여  
+              개인회생 절차에서 필요한 <strong>생계비·가용소득·변제 가능 금액</strong>을  
+              빠르게 확인할 수 있습니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- 입력 영역 -->
+        <div class="input-section">
+
+          <label>월 소득(원)</label>
+          <input id="hl_income" type="number" placeholder="예: 2,500,000">
+
+          <label>가구 수</label>
+          <select id="hl_household">
+            <option value="1">1인 가구</option>
+            <option value="2">2인 가구</option>
+            <option value="3">3인 가구</option>
+            <option value="4">4인 가구</option>
+            <option value="5">5인 가구</option>
+          </select>
+
+          <label>최저 생계비(자동 계산)</label>
+          <input id="hl_court_living" type="number" readonly>
+
+          <label>추가 생계비(원)</label>
+          <input id="hl_extra" type="number" placeholder="예: 150,000">
+
+          <label>변제기간(개월)</label>
+          <input id="hl_months" type="number" value="36">
+        </div>
+
+        <!-- 버튼 -->
+        <button class="calc-btn" onclick="checkAccess(() => handleLivingCalc())">계산하기</button>
+        <button class="calc-btn reset-btn" onclick="resetHouseholdLiving()">초기화</button>
+
+        <p class="notice" style="margin-top:10px; font-size:14px; color:#777;">
+          ※ 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.
         </p>
-        <p>
-          또한 가구원수 생계비 기준을 반영하여  
-          개인회생 절차에서 필요한 <strong>생계비·가용소득·변제 가능 금액</strong>을  
-          빠르게 확인할 수 있습니다.
-        </p>
+
+        <!-- 요약 결과 -->
+        <div id="hl_summary" class="summary-card" style="display:none;"></div>
+
+        <!-- 상세 결과 아코디언 -->
+        <button class="calc-acc-btn" onclick="toggleHouseholdAccordion()">계산 상세 보기 ▼</button>
+        <div class="calc-acc-content" id="hl_accordion"></div>
+
+        <!-- 설명 박스 -->
+        <div id="hl_explain" class="explain-box"></div>
+
       </div>
+
+      <!-- SEO 문단 -->
+      <div class="explain-box">
+        <p>가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 기능을 통해 개인회생 생계비와 변제 가능 금액을 자동 계산할 수 있습니다.</p>
+        <p>월 소득, 가구 수, 추가 생계비 등을 입력하면 실제 변제금 산정에 필요한 핵심 데이터를 제공합니다.</p>
+      </div>
+
     </div>
+    <!-- 프리미엄 계산기 UI 끝 -->
 
-    <!-- ⭐ 입력 영역 -->
-    <div class="input-section">
-      <label>월 소득(원)</label>
-      <input id="hl_income" type="number">
-
-      <label>가구 수</label>
-      <select id="hl_household">
-        <option value="1">1인 가구</option>
-        <option value="2">2인 가구</option>
-        <option value="3">3인 가구</option>
-        <option value="4">4인 가구</option>
-        <option value="5">5인 가구</option>
-      </select>
-
-      <label>최저 생계비(자동 계산)</label>
-      <input id="hl_court_living" type="number" readonly>
-
-      <label>추가 생계비(원)</label>
-      <input id="hl_extra" type="number">
-
-      <label>변제기간(개월)</label>
-      <input id="hl_months" type="number" value="36">
-    </div>
-
-    <!-- ⭐ 버튼 -->
-    <div class="btn-row">
-      <button onclick="checkAccess(() => handleLivingCalc())">계산하기</button>
-      <p class="notice">※ 월 소득, 최저 생계비, 변제기간은 필수 입력입니다.</p>
-      <button onclick="resetHouseholdLiving()">초기화</button>
-    </div>
-
-    <!-- ⭐ 요약 결과 -->
-    <div id="hl_summary" class="summary-card" style="display:none;"></div>
-
-    <!-- ⭐ 상세 결과 아코디언 -->
-    <div class="accordion-item">
-      <button class="calc-acc-btn" onclick="toggleHouseholdAccordion()">계산 상세 보기 ▼</button>
-      <div class="acc-content calc-acc-content" id="hl_accordion"></div>
-    </div>
-
-    <!-- ⭐ 설명 박스 -->
-    <div id="hl_explain" class="explain-box"></div>
-
-    <!-- ⭐ SEO 문단 -->
-    <div class="seo-box-animated">
-      <p>가구수 생계비 계산기 · 가구수생계비계산기 · 가구원수 생계비 기능을 통해 개인회생 생계비와 변제 가능 금액을 자동 계산할 수 있습니다.</p>
-      <p>월 소득, 가구 수, 추가 생계비 등을 입력하면 실제 변제금 산정에 필요한 핵심 데이터를 제공합니다.</p>
-    </div>
-
-    <!-- ⭐ FAQ -->
-    <section class="faq-section">
+    <!-- ⭐ FAQ는 계산기와 완전히 분리된 별도 section -->
+    <section class="faq-section" style="margin-top:40px;">
       <h2>가구수 생계비 계산기 FAQ</h2>
 
       <div class="faq-item">
@@ -166,34 +177,9 @@
   </div>
 </div>
 
-<!-- ⭐ 로그인 필요 모달 -->
-<div id="loginRequiredModal" class="app-modal-overlay" style="display:none;">
-  <div class="app-modal">
-    <div class="app-modal-header"><div class="app-modal-bar"></div></div>
-    <h3>🔒 로그인 후 이용 가능합니다</h3>
-    <p class="app-modal-text">
-      계산 결과 전체 보기는 회원 전용 기능입니다.<br>
-      로그인 또는 회원가입 후 이용해주세요.
-    </p>
-    <button class="app-btn-primary" onclick="location.href='/auth/login.html'">로그인하기</button>
-    <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">회원가입하기</button>
-    <button class="app-btn-close" onclick="document.getElementById('loginRequiredModal').style.display='none'">닫기</button>
-  </div>
-</div>
-
-<!-- ⭐ 이용권 필요 모달 -->
-<div id="paywallOverlay" class="app-modal-overlay" style="display:none;">
-  <div class="app-modal">
-    <div class="app-modal-header"><div class="app-modal-bar"></div></div>
-    <h3>🔒 이용권이 필요합니다</h3>
-    <p class="app-modal-text">전체 계산 결과는 이용권 활성화 후 이용 가능합니다.</p>
-    <button class="app-btn-primary" onclick="location.href='/mypage/payments.html'">이용권 결제하기</button>
-    <button class="app-btn-secondary">상담 연결 시 무료 제공</button>
-    <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">닫기</button>
-  </div>
-</div>
-
-<!-- ⭐ 푸터 -->
+<!-- ⭐ 로그인 모달 / 이용권 모달 / 푸터 -->
+<div id="loginRequiredModal" class="app-modal-overlay" style="display:none;"></div>
+<div id="paywallOverlay" class="app-modal-overlay" style="display:none;"></div>
 <div id="footer"></div>
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
@@ -209,12 +195,16 @@
 <script src="/faq.js?v=1006"></script>
 <script src="/block-right-click.js"></script>
 <script type="module" src="/common-apply.js"></script>
+
+<!-- ⭐ 프리미엄 계산기 JS -->
 <script src="/template/calc-template.js"></script>
+
 <script>
   fetch("/footer.html")
     .then(res => res.text())
     .then(html => {
-      document.getElementById("footer").innerHTML = html);
+      document.getElementById("footer").innerHTML = html;
+    });
 </script>
 
 </body>
