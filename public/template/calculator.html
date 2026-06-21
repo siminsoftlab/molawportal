@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{계산기_제목}}</title>
+  <meta name="description" content="{{계산기_설명}}">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/app-ui.css">
+  <link rel="stylesheet" href="/faq.css">
+</head>
+
+<body class="subpage">
+
+<!-- ⭐ 고정 헤더 -->
+<header class="fixed-header fixed-top">
+  <h1>{{계산기_제목}}</h1>
+  <a href="/index.html" class="home-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2"/>
+    </svg>
+  </a>
+</header>
+
+<!-- ⭐ 무료 이용권 배너 (공통) -->
+<div class="welcome-banner">
+  <div class="welcome-center">
+    <div class="welcome-text">
+      <a href="/coupon/welcome-detail.html">
+        🎁 회원가입 즉시 <b>무료 이용권</b> 지급 <span class="detail-link">[자세히]</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <div class="container">
+
+    <!-- ⭐ 계산기 네비게이션 (4종 공통) -->
+    <nav class="calc-nav">
+      <a href="/calculators/repay.html" class="nav-item {{active_repay}}">💰 변제금 계산기</a>
+      <a href="/calculators/living-adjust.html" class="nav-item {{active_living}}">⚖️ 법원 생계비 계산기</a>
+      <a href="/calculators/household-auto-living.html" class="nav-item {{active_household}}">👨‍👩‍👧 가구수 생계비 계산기</a>
+      <a href="/calculators/interest.html" class="nav-item {{active_interest}}">📈 연이자 계산기</a>
+    </nav>
+
+    <!-- ⭐ 계산기 제목 -->
+    <h2>{{계산기_아이콘}} {{계산기_제목}}</h2>
+
+    <!-- ⭐ 계산기 설명 -->
+    <p class="calc-desc">{{계산기_설명}}</p>
+
+    <!-- ⭐ 입력 폼 (각 계산기별로만 교체) -->
+    <div class="input-section">
+      {{입력폼_영역}}
+    </div>
+
+    <!-- ⭐ 버튼 -->
+    <div class="btn-row">
+      <button onclick="checkAccess(() => {{계산함수}}())">계산하기</button>
+      <button onclick="{{초기화함수}}()">초기화</button>
+    </div>
+
+    <!-- ⭐ 요약 결과 -->
+    <div id="summaryBox" class="summary-card" style="display:none;"></div>
+
+    <!-- ⭐ 상세 결과 아코디언 -->
+    <div class="accordion-item">
+      <button class="calc-acc-btn" onclick="toggleAccordion()">계산 상세 보기 ▼</button>
+      <div class="acc-content" id="detailAccordion"></div>
+    </div>
+
+    <!-- ⭐ 설명 박스 -->
+    <div id="explainBox" class="explain-box"></div>
+
+    <!-- ⭐ FAQ -->
+    <section class="faq-section">
+      <h2>{{계산기_제목}} FAQ</h2>
+      {{FAQ_영역}}
+    </section>
+
+  </div>
+</div>
+
+<!-- ⭐ 푸터 -->
+<div id="footer"></div>
+
+<script>
+  fetch("/footer.html")
+    .then(res => res.text())
+    .then(html => document.getElementById("footer").innerHTML = html);
+</script>
+
+<script src="/check-access.js"></script>
+<script src="/faq.js"></script>
+<script src="{{계산기_스크립트}}"></script>
+
+</body>
+</html>
