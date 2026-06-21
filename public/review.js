@@ -95,7 +95,7 @@ const reviewData = {
 
 let currentOpen = null;
 
-/* ⭐ 아코디언 열기/닫기 */
+/* ⭐ 아코디언 */
 function openReview(id) {
   const box = document.getElementById("reviewAccordion");
   const content = document.getElementById("reviewContent");
@@ -176,6 +176,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const dot = document.createElement("span");
     if (i === 0) dot.classList.add("active");
     dotsWrap.appendChild(dot);
+
+    /* ⭐ 도트 클릭 이벤트 */
+    dot.addEventListener("click", () => {
+      const cardWidth = slider.children[0].offsetWidth + 16;
+      slider.scrollTo({
+        left: cardWidth * i,
+        behavior: "smooth"
+      });
+      updateDots(i);
+    });
   });
 
   /* 스크롤 시 dot 업데이트 */
@@ -185,6 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDots(index);
   });
 
-  /* autoplay 시작 */
-  startAutoplay();
+  /* ⭐ autoplay는 DOM 렌더링 후 100ms 지연 실행 */
+  setTimeout(() => startAutoplay(), 100);
 });
