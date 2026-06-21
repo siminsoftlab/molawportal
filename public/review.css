@@ -1,10 +1,10 @@
-/* 슬라이더 전체 래퍼 */
+/* ⭐ 리뷰 전체 래퍼 */
 .review-slider-wrap {
   position: relative;
   margin-bottom: 20px;
 }
 
-/* 좌우 페이드 효과 */
+/* ⭐ 좌우 페이드 효과 */
 .review-slider-wrap::before,
 .review-slider-wrap::after {
   content: "";
@@ -26,20 +26,21 @@
   background: linear-gradient(to left, #fff, transparent);
 }
 
-/* 슬라이더 */
+/* ⭐ 슬라이더 */
 .review-slider {
   display: flex;
   overflow-x: auto;
   gap: 16px;
   padding-bottom: 10px;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
 }
 
 .review-slider::-webkit-scrollbar {
   display: none;
 }
 
-/* 카드 */
+/* ⭐ 리뷰 카드 */
 .review-card {
   flex: 0 0 75%; /* 다음 카드가 보이도록 */
   background: #fff;
@@ -56,20 +57,23 @@
   box-shadow: 0 4px 14px rgba(0,0,0,0.12);
 }
 
-/* 아코디언 */
-.review-accordion {
-  display: none;
-  background: #fafafa;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+.review-stars {
+  font-size: 18px;
+  margin-bottom: 8px;
 }
 
-.review-accordion h3 {
-  margin-bottom: 10px;
+.review-text {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 12px;
 }
 
-/* 슬라이더 점 */
+.review-user {
+  font-size: 13px;
+  color: #666;
+}
+
+/* ⭐ 도트 인디케이터 */
 .review-dots {
   text-align: center;
   margin-top: 10px;
@@ -86,4 +90,17 @@
 
 .review-dots .active {
   background: #333;
+}
+
+/* ⭐ 아코디언 */
+.review-accordion {
+  display: none;
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.review-accordion h3 {
+  margin-bottom: 10px;
 }
