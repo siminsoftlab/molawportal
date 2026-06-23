@@ -43,6 +43,7 @@ async function loadTicket(userId) {
     return;
   }
 
+  // 만료일이 가장 늦은 토큰 선택
   let best = null;
   snap.forEach(docSnap => {
     const data = docSnap.data();
@@ -73,14 +74,33 @@ async function loadTicket(userId) {
     statusColor = "green";
   }
 
-  ticketBox.innerHTML = `
+  // 가장 늦은 토큰 정보
+  let html = `
+    <h4>📌 현재 이용권</h4>
     <p><strong>유형:</strong> ${best.type}</p>
     <p><strong>만료일:</strong> ${expireDate}</p>
     <p><strong>남은 기간:</strong> ${remaining}일</p>
     <p><strong>상태:</strong> <span style="color:${statusColor}; font-weight:700;">${statusText}</span></p>
+    <hr>
+    <h4>📜 전체 토큰 내역</h4>
   `;
-}
 
+  // 조회된 모든 토큰 리스트 출력
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+    const expireDate = new Date(data.expire_at).toLocaleDateString("ko-KR");
+    const remaining = getRemainingDays(data.expire_at);
+    html += `
+      <div class="ticket-item">
+        <p><strong>유형:</strong> ${data.type}</p>
+        <p><strong>만료일:</strong> ${expireDate}</p>
+        <p><strong>남은 기간:</strong> ${remaining}일</p>
+      </div>
+    `;
+  });
+
+  ticketBox.innerHTML = html;
+}
 /* ============================================================
    결제 신청 상태 표시
 ============================================================ */
