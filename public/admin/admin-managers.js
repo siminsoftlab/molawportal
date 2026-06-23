@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🔥 담당자 등록
   saveBtn.addEventListener("click", async () => {
-    const uid = uidInput.value.trim();
+     const uid = uidInput.value.trim();
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
 
@@ -114,12 +114,20 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("모든 정보를 입력해주세요.");
       return;
     }
-
+  
+    // managers 컬렉션에 등록
     await setDoc(doc(db, "managers", uid), {
       name,
       email
     });
-
+  
+    // users 컬렉션에도 role 업데이트
+    await updateDoc(doc(db, "users", uid), {
+      role: "manager",
+      name,
+      email
+    });
+  
     alert("담당자 등록 완료!");
     loadManagers();
   });
