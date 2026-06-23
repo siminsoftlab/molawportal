@@ -120,8 +120,7 @@ async function loadPendingPayment(userId) {
     collection(db, "payments"),
     where("user_id", "==", userId),
     where("status", "==", "pending"),
-    orderBy("created_at", "desc"),
-    limit(1)
+    orderBy("created_at", "desc")
   );
 
   const snap = await getDocs(q);
@@ -131,19 +130,26 @@ async function loadPendingPayment(userId) {
     return;
   }
 
-  const p = snap.docs[0].data();
-  const created = new Date(p.created_at).toLocaleString("ko-KR");
+  let html = `<h4>🕒 결제 신청 내역</h4>`;
 
-  box.innerHTML = `
-    <div class="pending-box">
-      <p><strong>결제방법:</strong> ${p.method}</p>
-      <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
-      <p><strong>입금자명:</strong> ${p.depositor_name}</p>
-      <p><strong>상태:</strong> 승인 대기중</p>
-      <p><strong>신청일:</strong> ${created}</p>
-    </div>
-  `;
+  snap.forEach(docSnap => {
+    const p = docSnap.data();
+    const created = new Date(p.created_at).toLocaleString("ko-KR");
+
+    html += `
+      <div class="pending-box">
+        <p><strong>결제방법:</strong> ${p.method}</p>
+        <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
+        <p><strong>입금자명:</strong> ${p.depositor_name}</p>
+        <p><strong>상태:</strong> 승인 대기중</p>
+        <p><strong>신청일:</strong> ${created}</p>
+      </div>
+    `;
+  });
+
+  box.innerHTML = html;
 }
+
 
 /* ============================================================
    만료 3일 전 배너
