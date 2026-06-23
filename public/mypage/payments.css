@@ -171,3 +171,19 @@ input:focus {
   color: #f44336;
   background: #ffebee;
 }
+.bank-info {
+  margin-top: 10px;
+}
+
+.bank-box {
+  background: #f7f9fc;
+  border: 1px solid #d0d7e2;
+  padding: 12px;
+  border-radius: 8px;
+  line-height: 1.6;
+}
+
+.bank-box p {
+  margin: 4px 0;
+  font-size: 14px;
+}
