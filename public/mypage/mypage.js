@@ -79,32 +79,33 @@ async function loadTicket(userId) {
   }
 
   let html = `
-    <h4>📌 현재 이용권</h4>
+  <h4>📌 현재 이용권</h4>
+  <div class="pending-box">
     <p><strong>유형:</strong> ${best.type}</p>
     <p><strong>만료일:</strong> ${expireDate}</p>
     <p><strong>남은 기간:</strong> ${remaining}일</p>
     <p><strong>상태:</strong> 
       <span style="color:${statusColor}; font-weight:700;">${statusText}</span>
     </p>
+  </div>
 
-    <hr>
+  <hr>
 
-    <h4>📜 전체 이용권 내역</h4>
+  <h4>📜 전체 이용권 내역</h4>
+`;
+
+tokens.forEach(t => {
+  const expireDate = new Date(t.expire_at).toLocaleDateString("ko-KR");
+  const remaining = getRemainingDays(t.expire_at);
+
+  html += `
+    <div class="pending-box">
+      <p><strong>유형:</strong> ${t.type}</p>
+      <p><strong>만료일:</strong> ${expireDate}</p>
+      <p><strong>남은 기간:</strong> ${remaining}일</p>
+    </div>
   `;
-
-  /* 전체 이용권 내역 출력 */
-  tokens.forEach(t => {
-    const expireDate = new Date(t.expire_at).toLocaleDateString("ko-KR");
-    const remaining = getRemainingDays(t.expire_at);
-
-    html += `
-      <div class="ticket-item">
-        <p><strong>유형:</strong> ${t.type}</p>
-        <p><strong>만료일:</strong> ${expireDate}</p>
-        <p><strong>남은 기간:</strong> ${remaining}일</p>
-      </div>
-    `;
-  });
+});
 
   ticketBox.innerHTML = html;
 }
@@ -134,22 +135,27 @@ async function loadPendingPayment(userId) {
 
   snap.forEach(docSnap => {
     const p = docSnap.data();
+    const id = docSnap.id;
     const created = new Date(p.created_at).toLocaleString("ko-KR");
 
     html += `
       <div class="pending-box">
         <p><strong>결제방법:</strong> ${p.method}</p>
+        <p><strong>이용권:</strong> ${p.period_months}개월</p>
         <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
         <p><strong>입금자명:</strong> ${p.depositor_name}</p>
         <p><strong>상태:</strong> 승인 대기중</p>
         <p><strong>신청일:</strong> ${created}</p>
+
+        <button class="cancel-btn" onclick="cancelPendingPayment('${id}')">
+          취소하기
+        </button>
       </div>
     `;
   });
 
   box.innerHTML = html;
 }
-
 
 /* ============================================================
    만료 3일 전 배너
@@ -333,6 +339,17 @@ async function handleDeleteAccount() {
       alert("회원탈퇴 중 오류가 발생했습니다.");
     }
   }
+}
+
+async function cancelPendingPayment(paymentId) {
+  if (!confirm("해당 결제 신청을 취소하시겠습니까?")) return;
+
+  await updateDoc(doc(db, "payments", paymentId), {
+    status: "CANCELED"
+  });
+
+  alert("결제 신청이 취소되었습니다.");
+  loadPendingPayment(auth.currentUser.uid); // 목록 새로고침
 }
 
 /* ============================================================
