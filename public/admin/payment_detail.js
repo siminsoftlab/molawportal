@@ -23,15 +23,20 @@ const paymentId = urlParams.get("id");
 /* ============================================================
    이용권 발급 함수
 ============================================================ */
-async function issueToken(userId) {
+async function issueToken(userId, months) {
   const now = Date.now();
-  const expire = now + (30 * 24 * 60 * 60 * 1000);
+
+  // 정확한 월 단위 만료일 계산
+  const expireDate = new Date();
+  expireDate.setMonth(expireDate.getMonth() + months);
+  const expire = expireDate.getTime();
+
   const token = crypto.randomUUID();
 
   await setDoc(doc(collection(db, "access_tokens"), token), {
     user_id: userId,
     token: token,
-    type: "BANK_30D",
+    type: `BANK_${months}M`,   // 예: BANK_36M
     created_at: now,
     expire_at: expire,
     is_active: true
@@ -39,6 +44,7 @@ async function issueToken(userId) {
 
   return token;
 }
+
 
 /* ============================================================
    결제 상세 정보 불러오기
@@ -148,17 +154,18 @@ async function confirmPayment() {
     confirmed_at: Date.now()
   });
 
-  // 2) 이용권 발급
-  await issueToken(p.user_id);
+  // 2) 이용권 발급 (기간 반영)
+  const months = p.period_months || 1;  // 기본값 1개월
+  await issueToken(p.user_id, months);
 
   // 3) 자동 로그 생성
   await addDoc(collection(db, "payments", paymentId, "logs"), {
-    message: "입금 확인 처리됨",
+    message: `${months}개월 이용권 발급됨`,
     admin: "관리자",
     timestamp: Date.now()
   });
 
-  alert("입금 확인 완료! 이용권이 발급되었습니다.");
+  alert(`${months}개월 이용권이 발급되었습니다.`);
   loadPaymentDetail();
 }
 
