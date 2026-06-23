@@ -1,11 +1,12 @@
 /* ============================================================
    Firebase v9 모듈식 API import (CDN)
 ============================================================ */
-import { db } from "/firebase-init.js"; // firebase-init.js에서 export한 db 가져오기
+import { db } from "/firebase-init.js";
 import {
   collection,
   doc,
   setDoc,
+  getDoc,
   getDocs,
   query,
   orderBy,
@@ -13,17 +14,19 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ============================================================
-   이용권 발급 함수
+   이용권 발급 함수 (기간 반영)
 ============================================================ */
-async function issueToken(userId) {
+async function issueToken(userId, months) {
   const now = Date.now();
-  const expire = now + (30 * 24 * 60 * 60 * 1000);
+  const expireDate = new Date();
+  expireDate.setMonth(expireDate.getMonth() + months); // 정확히 월 단위로 계산
+  const expire = expireDate.getTime();
   const token = crypto.randomUUID();
 
   await setDoc(doc(collection(db, "access_tokens"), token), {
     user_id: userId,
     token: token,
-    type: "BANK_30D",
+    type: `BANK_${months}M`,
     created_at: now,
     expire_at: expire,
     is_active: true
@@ -74,6 +77,7 @@ function renderPayments(payments) {
         <p><strong>결제방법:</strong> ${p.method}</p>
         <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
         <p><strong>입금자명:</strong> ${p.depositor_name}</p>
+        <p><strong>기간:</strong> ${p.period_months}개월</p>
         <p><strong>상태:</strong> <span class="status ${p.status}">${p.status}</span></p>
         <p><strong>신청일:</strong> ${created}</p>
         <p><strong>확인일:</strong> ${confirmed}</p>
@@ -95,18 +99,24 @@ function renderPayments(payments) {
 }
 
 /* ============================================================
-   입금 확인 처리
+   입금 확인 처리 (기간 반영)
 ============================================================ */
 async function confirmPayment(paymentId, userId) {
   if (!confirm("입금 확인 처리하시겠습니까?")) return;
+
+  const paymentDoc = await getDoc(doc(collection(db, "payments"), paymentId));
+  const p = paymentDoc.data();
 
   await updateDoc(doc(collection(db, "payments"), paymentId), {
     status: "CONFIRMED",
     confirmed_at: Date.now()
   });
 
-  await issueToken(userId);
-  alert("입금 확인 완료! 이용권이 발급되었습니다.");
+  // 결제 문서에 저장된 기간을 반영
+  const months = p.period_months || 1; // 기본값 1개월
+  await issueToken(userId, months);
+
+  alert(`입금 확인 완료! ${months}개월 이용권이 발급되었습니다.`);
   loadPayments();
 }
 
@@ -153,6 +163,7 @@ async function downloadExcel() {
       결제방법: p.method,
       금액: p.amount,
       입금자명: p.depositor_name,
+      기간: p.period_months + "개월",
       상태: p.status,
       신청일: new Date(p.created_at).toLocaleString("ko-KR"),
       확인일: p.confirmed_at ? new Date(p.confirmed_at).toLocaleString("ko-KR") : "-"
