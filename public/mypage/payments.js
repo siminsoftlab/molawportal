@@ -56,13 +56,23 @@ async function createPayment(user) {
     return;
   }
 
+  // 🔥 ticketSelect가 존재하는 페이지에서만 값 가져오기
+  let periodMonths = null;
+  const ticketSelect = document.getElementById("ticket");
+  if (ticketSelect) {
+    periodMonths = Number(ticketSelect.value);
+  }
+
   try {
     await addDoc(collection(db, "payments"), {
       user_id: user.uid,
       method,
       amount,
       depositor_name: depositor,
-      period_months: Number(ticketSelect.value),   // ⭐ 추가
+
+      // 🔥 ticketSelect가 있을 때만 저장
+      ...(periodMonths !== null ? { period_months: periodMonths } : {}),
+
       status: "pending",
       created_at: Date.now(),
       confirmed_at: null
@@ -71,6 +81,7 @@ async function createPayment(user) {
     msg.textContent = "결제 신청이 완료되었습니다. 관리자 확인 후 이용권이 활성화됩니다.";
 
   } catch (e) {
+    console.error("결제 생성 오류:", e);
     msg.textContent = "오류: " + e.message;
   }
 }
