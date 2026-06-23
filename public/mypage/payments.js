@@ -42,20 +42,29 @@ if (ticketSelect && amountInput) {
   ticketSelect.addEventListener("change", updateAmount);
 }
 /* ============================================================
-   🔥 무통장입금 선택 시 계좌번호 표시
+   무통장입금 선택 시 계좌번호 표시 + 페이지 로드시 자동 표시
 ============================================================ */
 const methodSelect = document.getElementById("method");
 const bankInfo = document.getElementById("bankInfo");
 
-if (methodSelect && bankInfo) {
-  methodSelect.addEventListener("change", () => {
-    if (methodSelect.value === "무통장입금") {
-      bankInfo.style.display = "block";
-    } else {
-      bankInfo.style.display = "none";
-    }
-  });
+function updateBankInfo() {
+  if (!methodSelect || !bankInfo) return;
+
+  if (methodSelect.value === "무통장입금") {
+    bankInfo.style.display = "block";
+  } else {
+    bankInfo.style.display = "none";
+  }
 }
+
+// 페이지 로드시 자동 실행
+updateBankInfo();
+
+// 결제방법 변경 시 실행
+if (methodSelect) {
+  methodSelect.addEventListener("change", updateBankInfo);
+}
+
 /* ============================================================
    결제 신청 생성
 ============================================================ */
