@@ -62,6 +62,7 @@ async function createPayment(user) {
       method,
       amount,
       depositor_name: depositor,
+      period_months: Number(ticketSelect.value),   // ⭐ 추가
       status: "pending",
       created_at: Date.now(),
       confirmed_at: null
@@ -78,8 +79,8 @@ async function createPayment(user) {
    결제내역 불러오기
 ============================================================ */
 async function loadPayments(userId) {
-  const list = document.getElementById("paymentList");
-  if (!list) return; // 결제 신청 페이지에서는 없음
+   const list = document.getElementById("paymentList");
+  if (!list) return;
 
   try {
     const q = query(
@@ -100,7 +101,7 @@ async function loadPayments(userId) {
 
     let html = "";
 
-    snap.forEach(docSnap => {
+    for (const docSnap of snap.docs) {
       const p = docSnap.data();
 
       const created = p.created_at
@@ -111,17 +112,50 @@ async function loadPayments(userId) {
         ? new Date(p.confirmed_at).toLocaleString("ko-KR")
         : "-";
 
+      /* ============================
+         🔍 해당 결제의 토큰 조회
+      ============================ */
+      let tokenInfo = "발급되지 않음";
+
+      if (p.status === "CONFIRMED") {
+        const tokenQ = query(
+          collection(db, "access_tokens"),
+          where("user_id", "==", userId),
+          where("created_at", ">=", p.confirmed_at - 2000), // 2초 오차 허용
+          where("created_at", "<=", p.confirmed_at + 2000)
+        );
+
+        const tokenSnap = await getDocs(tokenQ);
+
+        if (!tokenSnap.empty) {
+          const t = tokenSnap.docs[0].data();
+          tokenInfo = `
+            <div class="token-box">
+              <p><strong>토큰:</strong> ${t.token}</p>
+              <p><strong>유형:</strong> ${t.type}</p>
+              <p><strong>만료일:</strong> ${new Date(t.expire_at).toLocaleDateString("ko-KR")}</p>
+            </div>
+          `;
+        }
+      }
+
       html += `
         <div class="payment-item">
           <p><strong>결제방법:</strong> ${p.method}</p>
+          <p><strong>이용권 종류:</strong> ${p.period_months}개월</p>
           <p><strong>금액:</strong> ${p.amount.toLocaleString()}원</p>
           <p><strong>입금자명:</strong> ${p.depositor_name}</p>
           <p><strong>상태:</strong> <span class="status ${p.status}">${p.status}</span></p>
           <p><strong>신청일:</strong> ${created}</p>
           <p><strong>확인일:</strong> ${confirmed}</p>
+
+          <div class="token-info">
+            <h4>🔑 이용권 토큰 정보</h4>
+            ${tokenInfo}
+          </div>
         </div>
       `;
-    });
+    }
 
     list.innerHTML = html;
 
