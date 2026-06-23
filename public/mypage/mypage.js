@@ -43,19 +43,30 @@ async function loadTicket(userId) {
     return;
   }
 
-  // 만료일이 가장 늦은 토큰 선택
+  /* ============================
+     📌 만료일이 가장 늦은 토큰 선택
+  ============================ */
   let best = null;
+  let tokens = [];
+
   snap.forEach(docSnap => {
     const data = docSnap.data();
+    tokens.push(data);
+
     if (!best || data.expire_at > best.expire_at) {
       best = data;
     }
   });
 
-  const expireAt = best.expire_at instanceof Date
-    ? best.expire_at.getTime()
-    : best.expire_at;
+  /* ============================
+     📌 전체 토큰 최신순 정렬
+  ============================ */
+  tokens.sort((a, b) => b.created_at - a.created_at);
 
+  /* ============================
+     📌 현재 이용권 표시
+  ============================ */
+  const expireAt = best.expire_at;
   const remaining = getRemainingDays(expireAt);
   const expireDate = new Date(expireAt).toLocaleDateString("ko-KR");
 
@@ -74,25 +85,30 @@ async function loadTicket(userId) {
     statusColor = "green";
   }
 
-  // 가장 늦은 토큰 정보
   let html = `
     <h4>📌 현재 이용권</h4>
     <p><strong>유형:</strong> ${best.type}</p>
     <p><strong>만료일:</strong> ${expireDate}</p>
     <p><strong>남은 기간:</strong> ${remaining}일</p>
-    <p><strong>상태:</strong> <span style="color:${statusColor}; font-weight:700;">${statusText}</span></p>
+    <p><strong>상태:</strong> 
+      <span style="color:${statusColor}; font-weight:700;">${statusText}</span>
+    </p>
+
     <hr>
-    <h4>📜 전체 토큰 내역</h4>
+
+    <h4>📜 전체 이용권 내역</h4>
   `;
 
-  // 조회된 모든 토큰 리스트 출력
-  snap.forEach(docSnap => {
-    const data = docSnap.data();
-    const expireDate = new Date(data.expire_at).toLocaleDateString("ko-KR");
-    const remaining = getRemainingDays(data.expire_at);
+  /* ============================
+     📌 전체 이용권 내역 출력 (최신순)
+  ============================ */
+  tokens.forEach(t => {
+    const expireDate = new Date(t.expire_at).toLocaleDateString("ko-KR");
+    const remaining = getRemainingDays(t.expire_at);
+
     html += `
       <div class="ticket-item">
-        <p><strong>유형:</strong> ${data.type}</p>
+        <p><strong>유형:</strong> ${t.type}</p>
         <p><strong>만료일:</strong> ${expireDate}</p>
         <p><strong>남은 기간:</strong> ${remaining}일</p>
       </div>
@@ -101,6 +117,7 @@ async function loadTicket(userId) {
 
   ticketBox.innerHTML = html;
 }
+
 /* ============================================================
    결제 신청 상태 표시
 ============================================================ */
