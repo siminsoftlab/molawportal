@@ -10,7 +10,7 @@ import {
 
 import { 
   collection, query, where, orderBy, limit, getDocs, doc, getDoc, setDoc,
-  deleteDoc, addDoc
+  deleteDoc, addDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ============================================================
