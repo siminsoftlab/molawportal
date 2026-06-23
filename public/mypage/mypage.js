@@ -340,7 +340,9 @@ async function handleDeleteAccount() {
     }
   }
 }
-
+/* ============================================================
+  이용권 신청 취소
+============================================================ */
 async function cancelPendingPayment(paymentId) {
   if (!confirm("해당 결제 신청을 취소하시겠습니까?")) return;
 
@@ -349,8 +351,11 @@ async function cancelPendingPayment(paymentId) {
   });
 
   alert("결제 신청이 취소되었습니다.");
-  loadPendingPayment(auth.currentUser.uid); // 목록 새로고침
+  loadPendingPayment(auth.currentUser.uid);
 }
+
+/* 🔥 HTML onclick에서 호출 가능하도록 전역 등록 */
+window.cancelPendingPayment = cancelPendingPayment;
 
 /* ============================================================
    로그인 후 실행 (버튼 이벤트도 여기서 연결)
