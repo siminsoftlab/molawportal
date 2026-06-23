@@ -78,22 +78,30 @@ async function createPayment(user) {
   }
 
   try {
-    await addDoc(collection(db, "payments"), {
-      user_id: user.uid,
-      method,
-      amount,
-      depositor_name: depositor,
+  await addDoc(collection(db, "payments"), {
+    user_id: user.uid,
+    method,
+    amount,
+    depositor_name: depositor,
+    ...(periodMonths !== null ? { period_months: periodMonths } : {}),
+    status: "pending",
+    created_at: Date.now(),
+    confirmed_at: null
+  });
 
-      // 🔥 ticketSelect가 있을 때만 저장
-      ...(periodMonths !== null ? { period_months: periodMonths } : {}),
+  msg.textContent = "결제 신청이 완료되었습니다. 관리자 확인 후 이용권이 활성화됩니다.";
 
-      status: "pending",
-      created_at: Date.now(),
-      confirmed_at: null
-    });
-
-    msg.textContent = "결제 신청이 완료되었습니다. 관리자 확인 후 이용권이 활성화됩니다.";
-
+    /* 🔥 무통장입금일 경우 계좌번호 안내 */
+    if (method === "무통장입금") {
+      alert(
+        "입금 계좌번호 안내\n\n" +
+        "은행: 국민은행\n" +
+        "계좌번호: 123456-78-987654\n" +
+        "예금주: 송영욱\n\n" +
+        "입금 후 관리자 확인까지 시간이 소요될 수 있습니다."
+      );
+    }
+  
   } catch (e) {
     console.error("결제 생성 오류:", e);
     msg.textContent = "오류: " + e.message;
