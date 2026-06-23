@@ -41,7 +41,21 @@ if (ticketSelect && amountInput) {
   updateAmount();
   ticketSelect.addEventListener("change", updateAmount);
 }
+/* ============================================================
+   🔥 무통장입금 선택 시 계좌번호 표시
+============================================================ */
+const methodSelect = document.getElementById("method");
+const bankInfo = document.getElementById("bankInfo");
 
+if (methodSelect && bankInfo) {
+  methodSelect.addEventListener("change", () => {
+    if (methodSelect.value === "무통장입금") {
+      bankInfo.style.display = "block";
+    } else {
+      bankInfo.style.display = "none";
+    }
+  });
+}
 /* ============================================================
    결제 신청 생성
 ============================================================ */
