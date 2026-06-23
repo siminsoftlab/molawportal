@@ -43,9 +43,6 @@ async function loadTicket(userId) {
     return;
   }
 
-  /* ============================
-     📌 만료일이 가장 늦은 토큰 선택
-  ============================ */
   let best = null;
   let tokens = [];
 
@@ -58,14 +55,10 @@ async function loadTicket(userId) {
     }
   });
 
-  /* ============================
-     📌 전체 토큰 최신순 정렬
-  ============================ */
-  tokens.sort((a, b) => b.created_at - a.created_at);
+  /* 🔥 최신순 정렬 (expire_at 기준) */
+  tokens.sort((a, b) => b.expire_at - a.expire_at);
 
-  /* ============================
-     📌 현재 이용권 표시
-  ============================ */
+  /* 현재 이용권 */
   const expireAt = best.expire_at;
   const remaining = getRemainingDays(expireAt);
   const expireDate = new Date(expireAt).toLocaleDateString("ko-KR");
@@ -99,9 +92,7 @@ async function loadTicket(userId) {
     <h4>📜 전체 이용권 내역</h4>
   `;
 
-  /* ============================
-     📌 전체 이용권 내역 출력 (최신순)
-  ============================ */
+  /* 전체 이용권 내역 출력 */
   tokens.forEach(t => {
     const expireDate = new Date(t.expire_at).toLocaleDateString("ko-KR");
     const remaining = getRemainingDays(t.expire_at);
@@ -117,6 +108,7 @@ async function loadTicket(userId) {
 
   ticketBox.innerHTML = html;
 }
+
 
 /* ============================================================
    결제 신청 상태 표시
