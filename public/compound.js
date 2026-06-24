@@ -85,8 +85,10 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  메인 계산 — 상세(FIFO) + 결과(FIFO 요약)
+ *  메인 계산 — 상세(FIFO, 원금제한) + 결과(입금기준 출금합계 + 상세기간/연이자율)
  ******************************************************/
+let globalDetails = [];
+
 function cfCalculate() {
   const normalRate = Number(document.getElementById("annualRate").value || 0) / 100;
   const lateRate = Number(document.getElementById("lateRate").value || 0) / 100;
@@ -101,6 +103,7 @@ function cfCalculate() {
     }))
     .filter(r => r.no && (r.inAmt > 0 || r.outAmt > 0));
 
+  // 전체 행 날짜 기준 정렬
   rows.sort((a, b) => {
     const da = a.inDate || a.outDate;
     const db = b.inDate || b.outDate;
@@ -111,8 +114,9 @@ function cfCalculate() {
   const depositRecords = [];
   const detailList = [];
 
-  /*************** 상세내역(FIFO) 생성 ***************/
+  /*************** 1) 상세내역(FIFO, 원금제한) 생성 ***************/
   rows.forEach(r => {
+    // 입금
     if (r.inAmt > 0 && r.inDate) {
       const dep = {
         no: r.no,
@@ -127,12 +131,13 @@ function cfCalculate() {
       depositRecords.push(dep);
     }
 
+    // 출금
     if (r.outAmt > 0 && r.outDate) {
       let remainOut = r.outAmt;
 
       while (remainOut > 0 && fifoQueue.length > 0) {
         const dep = fifoQueue[0];
-        const assign = Math.min(remainOut, dep.principal);
+        const assign = Math.min(remainOut, dep.principal); // 원금제한 FIFO
 
         if (assign <= 0) break;
 
@@ -170,13 +175,52 @@ function cfCalculate() {
     }
   });
 
-  /*************** 결과테이블 생성 (FIFO 요약) ***************/
-  const results = depositRecords.map(dep => {
-    const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
-    const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals.at(-1).outDate : "-";
-    const totalDays = dep.withdrawals.reduce((s, w) => s + w.days, 0);
-    const annualYield = calcYieldAnnual(dep.inAmt, totalOut, totalDays);
+  /*************** 2) 입금기준 출금합계 계산용 원본 출금 목록 ***************/
+  const allWithdrawals = rows
+    .filter(r => r.outAmt > 0 && r.outDate)
+    .map(r => ({
+      outDate: r.outDate,
+      outAmt: r.outAmt
+    }))
+    .sort((a, b) => new Date(a.outDate) - new Date(b.outDate));
 
+  // 입금 목록(결과테이블 기준) 정렬
+  const depositsForResult = [...depositRecords].sort(
+    (a, b) => new Date(a.inDate) - new Date(b.inDate)
+  );
+
+  /*************** 3) 결과테이블 생성 ***************/
+  const results = depositsForResult.map((dep, idx) => {
+    // 3-1) 상세(FIFO)에서 이용기간 합계
+    const totalDays = dep.withdrawals.reduce((s, w) => s + w.days, 0);
+
+    // 3-2) 입금기준 출금합계: [현재 입금일자 ~ 다음 입금일자 전까지] 출금 합계
+    const startDate = new Date(dep.inDate);
+    const nextDep = depositsForResult[idx + 1];
+    const endDate = nextDep ? new Date(nextDep.inDate) : null;
+
+    const totalOutByDeposit = allWithdrawals.reduce((sum, w) => {
+      const dw = new Date(w.outDate);
+      if (dw >= startDate && (!endDate || dw < endDate)) {
+        return sum + w.outAmt;
+      }
+      return sum;
+    }, 0);
+
+    // 3-3) 연이자율: 입금금액, "입금기준 출금합계", 상세(FIFO) 이용기간으로 계산
+    const annualYield = calcYieldAnnual(dep.inAmt, totalOutByDeposit, totalDays);
+
+    // 3-4) 결과테이블용 마지막 출금일자: 해당 구간의 마지막 출금일
+    let lastOutDate = "-";
+    for (let i = allWithdrawals.length - 1; i >= 0; i--) {
+      const dw = new Date(allWithdrawals[i].outDate);
+      if (dw >= startDate && (!endDate || dw < endDate)) {
+        lastOutDate = allWithdrawals[i].outDate;
+        break;
+      }
+    }
+
+    // 상세 리스트(상세 화면용) 저장
     detailList.push({
       no: dep.no,
       inDate: dep.inDate,
@@ -186,18 +230,19 @@ function cfCalculate() {
       withdrawals: dep.withdrawals
     });
 
+    // 결과테이블 행 반환
     return {
       no: dep.no,
       inDate: dep.inDate,
       inAmt: dep.inAmt,
       outDate: lastOutDate,
-      totalOut,
+      totalOut: totalOutByDeposit,
       totalDays,
       annualYield
     };
   });
 
-  /*************** 결과테이블 정렬 ***************/
+  /*************** 4) 결과테이블 정렬 ***************/
   results.sort((a, b) => {
     if (a.no !== b.no) return Number(a.no) - Number(b.no);
     if (a.inDate !== b.inDate) return new Date(a.inDate) - new Date(b.inDate);
@@ -240,8 +285,6 @@ function renderResults(results) {
 /******************************************************
  *  상세내역 렌더링 (FIFO)
  ******************************************************/
-let globalDetails = [];
-
 function renderDetails(list) {
   globalDetails = list;
 }
