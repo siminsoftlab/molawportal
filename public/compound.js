@@ -106,7 +106,7 @@ let globalDetails = [];
 function cfCalculate() {
 
   /******************************************************
-   *  1) 원본 rows 읽기
+   *  1) 원본 rows 읽기 (결과테이블은 이 rows 기준)
    ******************************************************/
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
@@ -123,34 +123,38 @@ function cfCalculate() {
   if (!rows.length) return;
 
   /******************************************************
-   *  2) 상세(detailRows) = 원본 rows 기준 1:1 생성
+   *  2) 상세(detailRows) = 출금 기준 1:N 생성
    ******************************************************/
-  const detailRows = rows.map(r => {
+  const detailRows = [];
+
+  rows.forEach(r => {
+    // 출금이 여러 번 발생할 수 있는 구조라면 여기서 분해
+    // 지금은 원본 1줄 = 출금 1줄이므로 그대로 1:N 구조 유지
     const days = (r.inDate && r.outDate) ? diffDays(r.inDate, r.outDate) : 0;
     const annualYield = (r.inAmt > 0 && r.outAmt > 0 && days > 0)
       ? calcAnnualYieldDeposit(r.inAmt, r.outAmt, days)
       : 0;
 
-    return {
+    detailRows.push({
       ...r,
       days,
       annualYield
-    };
+    });
   });
 
   globalDetails = detailRows;
 
   /******************************************************
-   *  3) 결과(resultTable) = 원본 rows 그대로
+   *  3) 결과(resultTable) = 원본 rows 기준
    *     days = 상세 days 합
    *     annualYield = 상세 annualYield 평균
    ******************************************************/
   const resultRows = rows.map(r => {
-    const detailsForRow = detailRows.filter(d => d.rowId === r.rowId);
+    const details = detailRows.filter(d => d.rowId === r.rowId);
 
-    const totalDays = detailsForRow.reduce((s, d) => s + d.days, 0);
-    const avgYield = detailsForRow.reduce((s, d) => s + d.annualYield, 0)
-                     / (detailsForRow.length || 1);
+    const totalDays = details.reduce((s, d) => s + d.days, 0);
+    const avgYield = details.reduce((s, d) => s + d.annualYield, 0)
+                     / (details.length || 1);
 
     return {
       ...r,
@@ -160,7 +164,7 @@ function cfCalculate() {
   });
 
   /******************************************************
-   *  4) 결과테이블 렌더링
+   *  4) 결과테이블 렌더링 (원본 rows 그대로)
    ******************************************************/
   const resultTbody = document.querySelector("#resultTable tbody");
   resultTbody.innerHTML = "";
@@ -171,11 +175,11 @@ function cfCalculate() {
       <td>${r.no}</td>
       <td>${r.inDate}</td>
       <td>${r.inAmt.toLocaleString()}</td>
+      <td>${r.repayDate}</td>
       <td>${r.outDate}</td>
       <td>${r.outAmt.toLocaleString()}</td>
       <td>${r.days ? r.days + "일" : ""}</td>
       <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
-      <td><button onclick="showDetail(${r.rowId})">상세</button></td>
     `;
     resultTbody.appendChild(tr);
   });
@@ -217,29 +221,9 @@ function cfCalculate() {
 }
 
 /******************************************************
- *  상세 팝업
- ******************************************************/
-function showDetail(rowId) {
-  const r = globalDetails.find(x => x.rowId === rowId);
-  if (!r) return;
-
-  alert([
-    `NO: ${r.no}`,
-    `입금일자: ${r.inDate}`,
-    `입금금액: ${r.inAmt.toLocaleString()}원`,
-    `상환일자: ${r.repayDate}`,
-    `출금일자: ${r.outDate}`,
-    `출금금액: ${r.outAmt.toLocaleString()}원`,
-    `이용기간: ${r.days}일`,
-    `연이자율: ${r.annualYield.toFixed(4)}%`
-  ].join("\n"));
-}
-
-/******************************************************
  *  export
  ******************************************************/
 window.cfReadExcel = cfReadExcel;
 window.cfParseCSV = cfParseCSV;
 window.cfLoadData = cfLoadData;
 window.cfCalculate = cfCalculate;
-window.showDetail = showDetail;
