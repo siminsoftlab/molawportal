@@ -85,7 +85,7 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  메인 계산 — FIFO + 정상/지연이자 + 결과/상세 일치
+ *  메인 계산 — 상세(FIFO) + 결과(입금 기준 전체 출금)
  ******************************************************/
 function cfCalculate() {
   const normalRate = Number(document.getElementById("annualRate").value || 0) / 100;
@@ -111,7 +111,7 @@ function cfCalculate() {
   const depositRecords = [];
   const detailList = [];
 
-  /*************** FIFO 매칭 + 상세내역 생성 ***************/
+  /*************** 상세내역(FIFO) 생성 ***************/
   rows.forEach(r => {
     if (r.inAmt > 0 && r.inDate) {
       const dep = {
@@ -170,11 +170,17 @@ function cfCalculate() {
     }
   });
 
-  /*************** 결과테이블 생성 (FIFO 기반) ***************/
+  /*************** 결과테이블 생성 (입금 기준 전체 출금 방식) ***************/
+  const allWithdrawals = rows.filter(r => r.outAmt > 0 && r.outDate);
+
   const results = depositRecords.map(dep => {
-    const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
-    const totalDays = dep.withdrawals.reduce((s, w) => s + w.days, 0);
-    const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals.at(-1).outDate : "-";
+    const relatedOuts = allWithdrawals.filter(w =>
+      new Date(w.outDate) >= new Date(dep.inDate)
+    );
+
+    const totalOut = relatedOuts.reduce((s, w) => s + w.outAmt, 0);
+    const lastOutDate = relatedOuts.length > 0 ? relatedOuts.at(-1).outDate : "-";
+    const totalDays = lastOutDate !== "-" ? diffDays(dep.inDate, lastOutDate) : 0;
     const annualYield = calcYieldAnnual(dep.inAmt, totalOut, totalDays);
 
     detailList.push({
@@ -197,7 +203,7 @@ function cfCalculate() {
     };
   });
 
-  /*************** 결과테이블 정렬 (NO → 입금일자 → 출금일자) ***************/
+  /*************** 결과테이블 정렬 ***************/
   results.sort((a, b) => {
     if (a.no !== b.no) return Number(a.no) - Number(b.no);
     if (a.inDate !== b.inDate) return new Date(a.inDate) - new Date(b.inDate);
@@ -238,7 +244,7 @@ function renderResults(results) {
 }
 
 /******************************************************
- *  상세내역 렌더링
+ *  상세내역 렌더링 (FIFO)
  ******************************************************/
 let globalDetails = [];
 
