@@ -88,10 +88,8 @@ function cfLoadData(rows) {
  *  메인 계산 — FIFO + 정상/지연이자 + 결과/상세 일치
  ******************************************************/
 function cfCalculate() {
-  const normalRateEl = document.getElementById("annualRate");
-  const lateRateEl = document.getElementById("lateRate");
-  const normalRate = normalRateEl ? Number(normalRateEl.value || 0) / 100 : 0;
-  const lateRate = lateRateEl ? Number(lateRateEl.value || 0) / 100 : 0;
+  const normalRate = Number(document.getElementById("annualRate").value || 0) / 100;
+  const lateRate = Number(document.getElementById("lateRate").value || 0) / 100;
 
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map(tr => ({
@@ -103,7 +101,6 @@ function cfCalculate() {
     }))
     .filter(r => r.no && (r.inAmt > 0 || r.outAmt > 0));
 
-  // 날짜 기준 정렬
   rows.sort((a, b) => {
     const da = a.inDate || a.outDate;
     const db = b.inDate || b.outDate;
@@ -114,9 +111,8 @@ function cfCalculate() {
   const depositRecords = [];
   const detailList = [];
 
-  // 1) 입금/출금 FIFO 매칭 + 기간별 이자/잔액 계산
+  /*************** FIFO 매칭 + 상세내역 생성 ***************/
   rows.forEach(r => {
-    // 입금
     if (r.inAmt > 0 && r.inDate) {
       const dep = {
         no: r.no,
@@ -131,20 +127,16 @@ function cfCalculate() {
       depositRecords.push(dep);
     }
 
-    // 출금
     if (r.outAmt > 0 && r.outDate) {
       let remainOut = r.outAmt;
 
       while (remainOut > 0 && fifoQueue.length > 0) {
         const dep = fifoQueue[0];
-
-        // 이 입금에서 실제로 사용할 출금액 (원금 한도 내)
         const assign = Math.min(remainOut, dep.principal);
 
         if (assign <= 0) break;
 
         const days = diffDays(dep.lastDate, r.outDate);
-
         const normalInterest = calcNormalInterest(dep.principal, normalRate, days);
         const lateInterest = calcLateInterest(dep.unpaid, lateRate, days);
 
@@ -173,24 +165,16 @@ function cfCalculate() {
 
         if (dep.principal <= 0 && dep.unpaid === 0) {
           fifoQueue.shift();
-        } else {
-          if (remainOut <= 0) break;
         }
       }
     }
   });
 
-  // 2) 결과테이블/상세내역 공통 데이터 생성
+  /*************** 결과테이블 생성 (FIFO 기반) ***************/
   const results = depositRecords.map(dep => {
     const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
-    let totalDays = 0;
-    let lastOutDate = "";
-
-    if (dep.withdrawals.length > 0) {
-      lastOutDate = dep.withdrawals[dep.withdrawals.length - 1].outDate;
-      totalDays = diffDays(dep.inDate, lastOutDate);
-    }
-
+    const totalDays = dep.withdrawals.reduce((s, w) => s + w.days, 0);
+    const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals.at(-1).outDate : "-";
     const annualYield = calcYieldAnnual(dep.inAmt, totalOut, totalDays);
 
     detailList.push({
@@ -206,11 +190,24 @@ function cfCalculate() {
       no: dep.no,
       inDate: dep.inDate,
       inAmt: dep.inAmt,
-      outDate: lastOutDate || "-",
+      outDate: lastOutDate,
       totalOut,
       totalDays,
       annualYield
     };
+  });
+
+  /*************** 결과테이블 정렬 (NO → 입금일자 → 출금일자) ***************/
+  results.sort((a, b) => {
+    if (a.no !== b.no) return Number(a.no) - Number(b.no);
+    if (a.inDate !== b.inDate) return new Date(a.inDate) - new Date(b.inDate);
+
+    if (a.outDate === "-" && b.outDate !== "-") return 1;
+    if (a.outDate !== "-" && b.outDate === "-") return -1;
+    if (a.outDate !== "-" && b.outDate !== "-")
+      return new Date(a.outDate) - new Date(b.outDate);
+
+    return 0;
   });
 
   renderResults(results);
@@ -265,7 +262,7 @@ function showDetail(no, inDate) {
       <tr><th>입금대비 출금 연이자율</th><td>${(data.annualYield * 100).toFixed(2)}%</td></tr>
     </table>
 
-    <h4>출금·이자·잔액 내역</h4>
+    <h4>출금·이자·잔액 내역 (FIFO)</h4>
     <table class="detail-table">
       <thead>
         <tr>
