@@ -21,14 +21,39 @@ function diffDays(a, b) {
 }
 
 /******************************************************
- *  복리 연이자율 계산
- *  inAmt: 입금원금, outAmt: 상환총액, days: 이용기간(일)
+ *  IRR 계산 (금융위 방식)
+ *  cashflows: [{tYears, amount}]  tYears=경과연수, amount=현금흐름
  ******************************************************/
-function calcRate(inAmt, outAmt, days) {
-  if (!inAmt || !outAmt || !days || days <= 0) return null;
-  const ratio = outAmt / inAmt;
-  if (ratio <= 0) return null;
-  return Math.pow(ratio, 365 / days) - 1;
+function calcIRR(cashflows) {
+  // 모든 현금흐름이 같은 부호면 IRR 없음
+  const hasPos = cashflows.some(cf => cf.amount > 0);
+  const hasNeg = cashflows.some(cf => cf.amount < 0);
+  if (!hasPos || !hasNeg) return null;
+
+  function npv(r) {
+    return cashflows.reduce(
+      (sum, cf) => sum + cf.amount / Math.pow(1 + r, cf.tYears),
+      0
+    );
+  }
+
+  let low = -0.9999; // -99.99%
+  let high = 10;     // 1000%
+  let mid;
+
+  for (let i = 0; i < 100; i++) {
+    mid = (low + high) / 2;
+    const v = npv(mid);
+    if (Math.abs(v) < 1e-6) break;
+    const vLow = npv(low);
+    // 부호에 따라 구간 좁히기
+    if (vLow * v <= 0) {
+      high = mid;
+    } else {
+      low = mid;
+    }
+  }
+  return mid;
 }
 
 /******************************************************
@@ -85,7 +110,6 @@ function cfLoadData(rows) {
     tbody.appendChild(tr);
   });
 
-  // 업로드 시 결과/상세/소계 초기화
   const resultBody = document.querySelector("#resultTable tbody");
   if (resultBody) resultBody.innerHTML = "";
   const subtotalArea = document.getElementById("subtotalArea");
@@ -130,12 +154,11 @@ function cfParseCSV() {
 }
 
 /******************************************************
- *  메인 계산
- *  - 입금 단위
- *  - 이용기간: 입금일자 ~ 다음 입금일자까지
- *  - 하나의 입금은 하나 또는 여러 출금으로 상환
- *  - 출금은 여러 입금에 나눠 배정하지 않음 (레이아웃 기준)
- *  - 결과는 resultTable에만 표시
+ *  메인 계산 (금융위 IRR 방식)
+ *  - 입금 단위로 상환 흐름 구성
+ *  - IRR은 입금 → 모든 출금 흐름으로 계산
+ *  - 결과테이블: 입금 단위 1행
+ *  - 상세내역: 출금별 이용기간·IRR(같은 r 표시)
  ******************************************************/
 function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"));
@@ -153,7 +176,7 @@ function cfCalculate() {
   let grandIn = 0;
   let grandOut = 0;
 
-  // 1) NO별로 행을 모으고, 입력 순서대로 처리 (엑셀처럼)
+  // 1) NO별로 행 모으기
   rows.forEach(tr => {
     const no = tr.querySelector(".no")?.value || "";
     const inDate = tr.querySelector(".inDate")?.value || "";
@@ -166,14 +189,13 @@ function cfCalculate() {
     if (!groups[no]) {
       groups[no] = {
         rows: [],
-        deposits: [], // { inDate, inAmt, withdrawals: [{outDate,outAmt}], nextInDate }
+        deposits: [],
         subtotalIn: 0,
         subtotalOut: 0
       };
     }
 
     groups[no].rows.push({
-      tr,
       inDate,
       inAmt,
       outDate,
@@ -183,40 +205,29 @@ function cfCalculate() {
 
   const allDetails = [];
 
-  // 2) NO별로 "입금 단위"로 묶기 (레이아웃 기준)
+  // 2) 입금 단위로 상환 흐름 구성 (레이아웃 기준)
   Object.keys(groups).forEach(no => {
     const g = groups[no];
-
-    // 같은 NO 안에서, 입력 순서대로 처리
     let currentDeposit = null;
 
-    g.rows.forEach((r, idx) => {
+    g.rows.forEach(r => {
       const { inDate, inAmt, outDate, outAmt } = r;
 
-      // 새 입금이 있으면 새로운 deposit 시작
+      // 새 입금 시작
       if (inAmt > 0 && inDate) {
-        // 이전 deposit의 nextInDate 설정
-        if (currentDeposit) {
-          currentDeposit.nextInDate = inDate;
-        }
-
         currentDeposit = {
           inDate,
           inAmt,
-          withdrawals: [],
-          nextInDate: null
+          withdrawals: []
         };
         g.deposits.push(currentDeposit);
         g.subtotalIn += inAmt;
         grandIn += inAmt;
       }
 
-      // 출금이 있으면 현재 deposit에 붙임
+      // 출금은 현재 입금에만 붙임
       if (outAmt > 0 && outDate) {
-        if (!currentDeposit) {
-          // 입금 없이 출금만 있는 경우는 스킵(또는 별도 처리 가능)
-          return;
-        }
+        if (!currentDeposit) return;
         currentDeposit.withdrawals.push({
           outDate,
           outAmt
@@ -225,11 +236,9 @@ function cfCalculate() {
         grandOut += outAmt;
       }
     });
-
-    // 마지막 deposit의 nextInDate는 없음 → 나중에 마지막 출금일로 처리
   });
 
-  // 3) 입금 단위로 이용기간/연이자율 계산 + 결과테이블 행 생성
+  // 3) 입금 단위로 IRR 계산 + 결과테이블/상세내역 데이터 생성
   Object.keys(groups).forEach(no => {
     const g = groups[no];
 
@@ -238,28 +247,35 @@ function cfCalculate() {
       const inAmt = dep.inAmt;
       const withdrawals = dep.withdrawals || [];
 
-      if (!inDate || !inAmt || withdrawals.length === 0) {
-        return; // 상환이 없는 입금은 결과에서 제외
-      }
+      if (!inDate || !inAmt || withdrawals.length === 0) return;
 
-      // 이 입금에 대한 상환총액, 마지막 출금일자
+      // 출금별 이용기간(입금→출금), cashflows 구성
+      const cashflows = [{ tYears: 0, amount: -inAmt }];
       let totalOut = 0;
       let lastOutDate = withdrawals[0].outDate;
-      withdrawals.forEach(w => {
+
+      const detailRows = withdrawals.map(w => {
+        const days = diffDays(inDate, w.outDate);
+        const tYears = days / 365;
+        cashflows.push({ tYears, amount: w.outAmt });
         totalOut += w.outAmt;
         if (new Date(w.outDate) > new Date(lastOutDate)) {
           lastOutDate = w.outDate;
         }
+        return {
+          outDate: w.outDate,
+          outAmt: w.outAmt,
+          days
+        };
       });
 
-      // 이용기간: 입금일자 ~ 다음 입금일자까지
-      // nextInDate가 있으면 그 날짜까지, 없으면 마지막 출금일자까지
-      let endDate = dep.nextInDate || lastOutDate;
-      const days = diffDays(inDate, endDate);
+      // IRR 계산 (금융위 방식)
+      const irr = calcIRR(cashflows) || 0;
 
-      const rate = calcRate(inAmt, totalOut, days) || 0;
+      // 전체 이용기간: 입금일자 → 마지막 출금일자
+      const totalDays = diffDays(inDate, lastOutDate);
 
-      // 결과 테이블에 한 줄 추가 (입금 단위 1행)
+      // 결과테이블 행 추가
       const trRes = document.createElement("tr");
       trRes.dataset.no = no;
       trRes.innerHTML = `
@@ -268,28 +284,26 @@ function cfCalculate() {
         <td>${inAmt.toLocaleString()}원</td>
         <td>${lastOutDate}</td>
         <td>${totalOut.toLocaleString()}원</td>
-        <td>${days != null ? days + "일" : ""}</td>
-        <td>${(rate * 100).toFixed(2)}%</td>
+        <td>${totalDays != null ? totalDays + "일" : ""}</td>
+        <td>${(irr * 100).toFixed(2)}%</td>
         <td><button type="button" onclick="toggleDetailBlock('detail-${no}-${idx}')">상세</button></td>
       `;
       resultBody.appendChild(trRes);
 
-      // 상세내역용 데이터 저장
+      // 상세내역용 데이터 저장 (출금별 이용기간 + 동일 IRR 표시)
       allDetails.push({
         id: `detail-${no}-${idx}`,
         no,
         inDate,
         inAmt,
-        endDate,
-        totalOut,
-        days,
-        rate,
-        withdrawals
+        totalDays,
+        irr,
+        withdrawals: detailRows
       });
     });
   });
 
-  // 4) NO별 소계 (결과 기준) + 아코디언 클릭 시 필터링
+  // 4) NO별 소계 + 필터링
   const subtotalArea = document.getElementById("subtotalArea");
   if (subtotalArea) {
     let html = "";
@@ -307,7 +321,7 @@ function cfCalculate() {
     subtotalArea.innerHTML = html;
   }
 
-  // 5) 총합 (기존 footer에 표시)
+  // 5) 총합
   const totalIn = document.getElementById("totalIn");
   const totalOut = document.getElementById("totalOut");
   if (totalIn) totalIn.textContent = grandIn.toLocaleString();
@@ -320,8 +334,7 @@ function cfCalculate() {
 }
 
 /******************************************************
- *  NO별 필터링 (소계 아코디언 클릭)
- *  - 같은 NO만 보이기 / 다시 클릭 시 전체 보이기
+ *  NO별 필터링 (소계 클릭)
  ******************************************************/
 let currentFilterNo = null;
 
@@ -330,7 +343,6 @@ function toggleGroup(no, event) {
   const rows = document.querySelectorAll("#resultTable tbody tr");
 
   if (currentFilterNo === no) {
-    // 이미 이 NO로 필터링 중이면 → 전체 표시로 복귀
     rows.forEach(tr => {
       tr.style.display = "";
     });
@@ -346,21 +358,18 @@ function toggleGroup(no, event) {
 }
 
 /******************************************************
- *  상세내역 아코디언 블록 토글 (입금 단위)
+ *  상세내역 표시 (출금 기준, IRR 동일)
  ******************************************************/
 function toggleDetailBlock(detailId) {
   const detailArea = document.getElementById("detailArea");
   if (!detailArea) return;
 
+  // 항상 현재 상세만 표시
+  detailArea.innerHTML = "";
+
   const details = JSON.parse(detailArea.dataset.details || "[]");
   const data = details.find(d => d.id === detailId);
   if (!data) return;
-
-  const existing = document.getElementById(detailId);
-  if (existing) {
-    existing.remove();
-    return;
-  }
 
   const wrapper = document.createElement("div");
   wrapper.id = detailId;
@@ -374,18 +383,16 @@ function toggleDetailBlock(detailId) {
         <tr>
           <th>입금일자</th>
           <th>입금금액</th>
-          <th>이용기간(일)</th>
-          <th>상환총액</th>
-          <th>연이자율(복리)</th>
+          <th>전체 이용기간(일)</th>
+          <th>연이자율(복리, IRR)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>${data.inDate}</td>
           <td>${data.inAmt.toLocaleString()}원</td>
-          <td>${data.days != null ? data.days + "일" : ""}</td>
-          <td>${data.totalOut.toLocaleString()}원</td>
-          <td>${(data.rate * 100).toFixed(2)}%</td>
+          <td>${data.totalDays}일</td>
+          <td>${(data.irr * 100).toFixed(2)}%</td>
         </tr>
       </tbody>
     </table>
@@ -395,6 +402,8 @@ function toggleDetailBlock(detailId) {
         <tr>
           <th>출금일자</th>
           <th>출금금액</th>
+          <th>이용기간(입금→출금)</th>
+          <th>연이자율(복리, IRR)</th>
         </tr>
       </thead>
       <tbody>
@@ -405,6 +414,8 @@ function toggleDetailBlock(detailId) {
           <tr>
             <td>${w.outDate}</td>
             <td>${w.outAmt.toLocaleString()}원</td>
+            <td>${w.days}일</td>
+            <td>${(data.irr * 100).toFixed(2)}%</td>
           </tr>
         `
             )
@@ -418,7 +429,7 @@ function toggleDetailBlock(detailId) {
 }
 
 /******************************************************
- *  엑셀 다운로드 (결과 테이블 기준)
+ *  엑셀 다운로드 (결과테이블 기준)
  ******************************************************/
 function cfExportExcel() {
   const table = document.getElementById("resultTable");
@@ -430,7 +441,7 @@ function cfExportExcel() {
 }
 
 /******************************************************
- *  PDF 다운로드 (결과 테이블 기준)
+ *  PDF 다운로드 (결과테이블 기준)
  ******************************************************/
 function cfExportPDF() {
   const table = document.getElementById("resultTable");
