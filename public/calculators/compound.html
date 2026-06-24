@@ -1,0 +1,51 @@
+<!-- 📌 복리 연이자율 계산기 시작 -->
+<div class="page-wrap">
+  <div class="container">
+    <h2>📈 복리 연이자율 계산기 (현금흐름 기반)</h2>
+
+    <div class="btn-area">
+      <button onclick="cfAddRow()">행 추가</button>
+      <button onclick="checkAccess(() => cfCalculate())">연이자율 계산</button>
+    </div>
+
+    <!-- 엑셀 업로드 -->
+    <div class="upload-area">
+      <p><b>엑셀(.xlsx) 업로드</b></p>
+      <input type="file" id="excelFile" accept=".xlsx" onchange="cfReadExcel(event)">
+    </div>
+
+    <!-- CSV 붙여넣기 -->
+    <div class="upload-area">
+      <p><b>CSV 붙여넣기</b></p>
+      <textarea id="csvInput" placeholder="NO,입금일자,입금금액,출금일자,출금금액 형식으로 붙여넣기"></textarea>
+      <button onclick="cfParseCSV()">CSV 불러오기</button>
+    </div>
+
+    <table id="cfTable" class="cf-table">
+      <thead>
+        <tr>
+          <th>NO</th>
+          <th>입금일자</th>
+          <th>입금금액</th>
+          <th>출금일자</th>
+          <th>출금금액</th>
+          <th>이용기간(일)</th>
+          <th>연이자율(복리)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+
+      <tfoot>
+        <tr>
+          <th colspan="2">총 합계</th>
+          <th id="totalIn">0</th>
+          <th></th>
+          <th id="totalOut">0</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+<!-- 📌 복리 연이자율 계산기 끝 -->
