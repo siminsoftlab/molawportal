@@ -21,39 +21,14 @@ function diffDays(a, b) {
 }
 
 /******************************************************
- *  IRR 계산 (금융위 방식)
- *  cashflows: [{tYears, amount}]  tYears=경과연수, amount=현금흐름
+ *  법적 연 단리 이율 계산
+ *  periodRate = (outAmt - inAmt) / inAmt
+ *  annualRate = periodRate * (365 / days)
  ******************************************************/
-function calcIRR(cashflows) {
-  // 모든 현금흐름이 같은 부호면 IRR 없음
-  const hasPos = cashflows.some(cf => cf.amount > 0);
-  const hasNeg = cashflows.some(cf => cf.amount < 0);
-  if (!hasPos || !hasNeg) return null;
-
-  function npv(r) {
-    return cashflows.reduce(
-      (sum, cf) => sum + cf.amount / Math.pow(1 + r, cf.tYears),
-      0
-    );
-  }
-
-  let low = -0.9999; // -99.99%
-  let high = 10;     // 1000%
-  let mid;
-
-  for (let i = 0; i < 100; i++) {
-    mid = (low + high) / 2;
-    const v = npv(mid);
-    if (Math.abs(v) < 1e-6) break;
-    const vLow = npv(low);
-    // 부호에 따라 구간 좁히기
-    if (vLow * v <= 0) {
-      high = mid;
-    } else {
-      low = mid;
-    }
-  }
-  return mid;
+function calcAnnualSimpleRate(inAmt, outAmt, days) {
+  if (!inAmt || !outAmt || !days || days <= 0) return 0;
+  const periodRate = (outAmt - inAmt) / inAmt;
+  return periodRate * (365 / days);
 }
 
 /******************************************************
@@ -83,7 +58,7 @@ function cfLoadData(rows) {
   tbody.innerHTML = "";
 
   rows.forEach((r, idx) => {
-    if (idx === 0) return; // 헤더 스킵
+    if (idx === 0) return;
 
     const no = r[0] || "";
     const rawInDate = r[1];
@@ -126,39 +101,7 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  엑셀 업로드
- ******************************************************/
-function cfReadExcel(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    cfLoadData(json);
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-/******************************************************
- *  CSV 붙여넣기
- ******************************************************/
-function cfParseCSV() {
-  const text = document.getElementById("csvInput")?.value.trim();
-  if (!text) return;
-  const rows = text.split("\n").map(r => r.split(","));
-  cfLoadData(rows);
-}
-
-/******************************************************
- *  메인 계산 (금융위 IRR 방식)
- *  - 입금 단위로 상환 흐름 구성
- *  - IRR은 입금 → 모든 출금 흐름으로 계산
- *  - 결과테이블: 입금 단위 1행
- *  - 상세내역: 출금별 이용기간·IRR(같은 r 표시)
+ *  메인 계산 (법적 연 단리 이율 방식)
  ******************************************************/
 function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"));
@@ -172,11 +115,10 @@ function cfCalculate() {
     detailArea.dataset.details = "[]";
   }
 
-  const groups = {}; // NO별 그룹
+  const groups = {};
   let grandIn = 0;
   let grandOut = 0;
 
-  // 1) NO별로 행 모으기
   rows.forEach(tr => {
     const no = tr.querySelector(".no")?.value || "";
     const inDate = tr.querySelector(".inDate")?.value || "";
@@ -195,17 +137,11 @@ function cfCalculate() {
       };
     }
 
-    groups[no].rows.push({
-      inDate,
-      inAmt,
-      outDate,
-      outAmt
-    });
+    groups[no].rows.push({ inDate, inAmt, outDate, outAmt });
   });
 
   const allDetails = [];
 
-  // 2) 입금 단위로 상환 흐름 구성 (레이아웃 기준)
   Object.keys(groups).forEach(no => {
     const g = groups[no];
     let currentDeposit = null;
@@ -213,7 +149,6 @@ function cfCalculate() {
     g.rows.forEach(r => {
       const { inDate, inAmt, outDate, outAmt } = r;
 
-      // 새 입금 시작
       if (inAmt > 0 && inDate) {
         currentDeposit = {
           inDate,
@@ -225,20 +160,15 @@ function cfCalculate() {
         grandIn += inAmt;
       }
 
-      // 출금은 현재 입금에만 붙임
       if (outAmt > 0 && outDate) {
         if (!currentDeposit) return;
-        currentDeposit.withdrawals.push({
-          outDate,
-          outAmt
-        });
+        currentDeposit.withdrawals.push({ outDate, outAmt });
         g.subtotalOut += outAmt;
         grandOut += outAmt;
       }
     });
   });
 
-  // 3) 입금 단위로 IRR 계산 + 결과테이블/상세내역 데이터 생성
   Object.keys(groups).forEach(no => {
     const g = groups[no];
 
@@ -249,33 +179,32 @@ function cfCalculate() {
 
       if (!inDate || !inAmt || withdrawals.length === 0) return;
 
-      // 출금별 이용기간(입금→출금), cashflows 구성
-      const cashflows = [{ tYears: 0, amount: -inAmt }];
       let totalOut = 0;
       let lastOutDate = withdrawals[0].outDate;
 
       const detailRows = withdrawals.map(w => {
         const days = diffDays(inDate, w.outDate);
-        const tYears = days / 365;
-        cashflows.push({ tYears, amount: w.outAmt });
+        const periodRate = (w.outAmt - inAmt) / inAmt;
+        const annualRate = calcAnnualSimpleRate(inAmt, w.outAmt, days);
+
         totalOut += w.outAmt;
         if (new Date(w.outDate) > new Date(lastOutDate)) {
           lastOutDate = w.outDate;
         }
+
         return {
           outDate: w.outDate,
           outAmt: w.outAmt,
-          days
+          days,
+          periodRate,
+          annualRate
         };
       });
 
-      // IRR 계산 (금융위 방식)
-      const irr = calcIRR(cashflows) || 0;
+      const last = detailRows[detailRows.length - 1];
+      const finalDays = last.days;
+      const finalAnnualRate = last.annualRate;
 
-      // 전체 이용기간: 입금일자 → 마지막 출금일자
-      const totalDays = diffDays(inDate, lastOutDate);
-
-      // 결과테이블 행 추가
       const trRes = document.createElement("tr");
       trRes.dataset.no = no;
       trRes.innerHTML = `
@@ -284,26 +213,24 @@ function cfCalculate() {
         <td>${inAmt.toLocaleString()}원</td>
         <td>${lastOutDate}</td>
         <td>${totalOut.toLocaleString()}원</td>
-        <td>${totalDays != null ? totalDays + "일" : ""}</td>
-        <td>${(irr * 100).toFixed(2)}%</td>
+        <td>${finalDays}일</td>
+        <td>${(finalAnnualRate * 100).toFixed(2)}%</td>
         <td><button type="button" onclick="toggleDetailBlock('detail-${no}-${idx}')">상세</button></td>
       `;
       resultBody.appendChild(trRes);
 
-      // 상세내역용 데이터 저장 (출금별 이용기간 + 동일 IRR 표시)
       allDetails.push({
         id: `detail-${no}-${idx}`,
         no,
         inDate,
         inAmt,
-        totalDays,
-        irr,
+        finalDays,
+        finalAnnualRate,
         withdrawals: detailRows
       });
     });
   });
 
-  // 4) NO별 소계 + 필터링
   const subtotalArea = document.getElementById("subtotalArea");
   if (subtotalArea) {
     let html = "";
@@ -321,50 +248,23 @@ function cfCalculate() {
     subtotalArea.innerHTML = html;
   }
 
-  // 5) 총합
   const totalIn = document.getElementById("totalIn");
   const totalOut = document.getElementById("totalOut");
   if (totalIn) totalIn.textContent = grandIn.toLocaleString();
   if (totalOut) totalOut.textContent = grandOut.toLocaleString();
 
-  // 6) 상세내역 데이터 저장
   if (detailArea) {
     detailArea.dataset.details = JSON.stringify(allDetails);
   }
 }
 
 /******************************************************
- *  NO별 필터링 (소계 클릭)
- ******************************************************/
-let currentFilterNo = null;
-
-function toggleGroup(no, event) {
-  event.stopPropagation();
-  const rows = document.querySelectorAll("#resultTable tbody tr");
-
-  if (currentFilterNo === no) {
-    rows.forEach(tr => {
-      tr.style.display = "";
-    });
-    currentFilterNo = null;
-    return;
-  }
-
-  currentFilterNo = no;
-  rows.forEach(tr => {
-    const rowNo = tr.dataset.no || tr.querySelector("td")?.textContent.trim() || "";
-    tr.style.display = rowNo === no ? "" : "none";
-  });
-}
-
-/******************************************************
- *  상세내역 표시 (출금 기준, IRR 동일)
+ *  상세내역 표시
  ******************************************************/
 function toggleDetailBlock(detailId) {
   const detailArea = document.getElementById("detailArea");
   if (!detailArea) return;
 
-  // 항상 현재 상세만 표시
   detailArea.innerHTML = "";
 
   const details = JSON.parse(detailArea.dataset.details || "[]");
@@ -384,15 +284,15 @@ function toggleDetailBlock(detailId) {
           <th>입금일자</th>
           <th>입금금액</th>
           <th>전체 이용기간(일)</th>
-          <th>연이자율(복리, IRR)</th>
+          <th>연 단리 이율(법 기준)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>${data.inDate}</td>
           <td>${data.inAmt.toLocaleString()}원</td>
-          <td>${data.totalDays}일</td>
-          <td>${(data.irr * 100).toFixed(2)}%</td>
+          <td>${data.finalDays}일</td>
+          <td>${(data.finalAnnualRate * 100).toFixed(2)}%</td>
         </tr>
       </tbody>
     </table>
@@ -402,8 +302,9 @@ function toggleDetailBlock(detailId) {
         <tr>
           <th>출금일자</th>
           <th>출금금액</th>
-          <th>이용기간(입금→출금)</th>
-          <th>연이자율(복리, IRR)</th>
+          <th>이용기간(일)</th>
+          <th>기간 수익률</th>
+          <th>연 단리 이율</th>
         </tr>
       </thead>
       <tbody>
@@ -415,7 +316,8 @@ function toggleDetailBlock(detailId) {
             <td>${w.outDate}</td>
             <td>${w.outAmt.toLocaleString()}원</td>
             <td>${w.days}일</td>
-            <td>${(data.irr * 100).toFixed(2)}%</td>
+            <td>${(w.periodRate * 100).toFixed(2)}%</td>
+            <td>${(w.annualRate * 100).toFixed(2)}%</td>
           </tr>
         `
             )
@@ -426,50 +328,4 @@ function toggleDetailBlock(detailId) {
   `;
 
   detailArea.appendChild(wrapper);
-}
-
-/******************************************************
- *  엑셀 다운로드 (결과테이블 기준)
- ******************************************************/
-function cfExportExcel() {
-  const table = document.getElementById("resultTable");
-  if (!table) return;
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.table_to_sheet(table);
-  XLSX.utils.book_append_sheet(wb, ws, "연이자율_결과");
-  XLSX.writeFile(wb, "compound_interest_result.xlsx");
-}
-
-/******************************************************
- *  PDF 다운로드 (결과테이블 기준)
- ******************************************************/
-function cfExportPDF() {
-  const table = document.getElementById("resultTable");
-  if (!table) return;
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  const head = [];
-  table.querySelectorAll("thead th").forEach(th => {
-    head.push(th.textContent.trim());
-  });
-
-  const body = [];
-  table.querySelectorAll("tbody tr").forEach(tr => {
-    const row = [];
-    tr.querySelectorAll("td").forEach(td => {
-      row.push(td.textContent.trim());
-    });
-    body.push(row);
-  });
-
-  doc.autoTable({
-    head: [head],
-    body,
-    styles: { fontSize: 8 },
-    headStyles: { fillColor: [40, 40, 40] }
-  });
-
-  doc.save("compound_interest_result.pdf");
 }
