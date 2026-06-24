@@ -94,11 +94,14 @@
 <!-- 📌 복리 연이자율 계산기 시작 -->
 <div class="page-wrap">
   <div class="container">
-    <h2>📈 복리 연이자율 계산기 (현금흐름 기반)</h2>
+    <h2>📈 복리 연이자율 계산기</h2>
 
     <div class="btn-area">
       <button onclick="cfAddRow()">행 추가</button>
       <button onclick="checkAccess(() => cfCalculate())">연이자율 계산</button>
+      <!-- 추가되는 버튼 -->
+      <button onclick="cfExportExcel()" class="app-btn-secondary">엑셀 다운로드</button>
+      <button onclick="cfExportPDF()" class="app-btn-secondary">PDF 다운로드</button>
     </div>
 
     <!-- 엑셀 업로드 -->
