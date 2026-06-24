@@ -85,7 +85,7 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  메인 계산 — 상세(FIFO) + 결과(입금 기준 전체 출금)
+ *  메인 계산 — 상세(FIFO) + 결과(FIFO 요약)
  ******************************************************/
 function cfCalculate() {
   const normalRate = Number(document.getElementById("annualRate").value || 0) / 100;
@@ -170,17 +170,11 @@ function cfCalculate() {
     }
   });
 
-  /*************** 결과테이블 생성 (입금 기준 전체 출금 방식) ***************/
-  const allWithdrawals = rows.filter(r => r.outAmt > 0 && r.outDate);
-
+  /*************** 결과테이블 생성 (FIFO 요약) ***************/
   const results = depositRecords.map(dep => {
-    const relatedOuts = allWithdrawals.filter(w =>
-      new Date(w.outDate) >= new Date(dep.inDate)
-    );
-
-    const totalOut = relatedOuts.reduce((s, w) => s + w.outAmt, 0);
-    const lastOutDate = relatedOuts.length > 0 ? relatedOuts.at(-1).outDate : "-";
-    const totalDays = lastOutDate !== "-" ? diffDays(dep.inDate, lastOutDate) : 0;
+    const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
+    const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals.at(-1).outDate : "-";
+    const totalDays = dep.withdrawals.reduce((s, w) => s + w.days, 0);
     const annualYield = calcYieldAnnual(dep.inAmt, totalOut, totalDays);
 
     detailList.push({
