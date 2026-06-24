@@ -9,58 +9,28 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ⭐ SEO Title: 붙여쓰기/띄어쓰기 키워드 모두 포함 -->
   <title>복리 연이자율 계산기 — 입출금 기반 자동 계산</title>
 
-  <!-- ⭐ SEO Description -->
   <meta name="description" content="입출금 내역으로 실제 복리 연이자율을 자동 계산하는 금융 분석 도구입니다.">
-  
-  <!-- ⭐ Keywords -->
   <meta name="keywords" content="복리 연이자율 계산기, 연이자율 역산, 이자율 분석, 현금흐름 계산기, 금융 계산기">
-  
-  <!-- Canonical -->
+
   <link rel="canonical" href="https://molawcalculator.com/calculators/compound.html">
-  
-  <!-- Open Graph -->
+
   <meta property="og:title" content="복리 연이자율 계산기 — 실제 이자율 자동 분석">
   <meta property="og:description" content="입출금 흐름을 기반으로 실제 복리 연이자율을 자동 계산하는 금융 분석 도구입니다.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/calculators/compound.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
-  
-  <!-- Twitter -->
+
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="복리 연이자율 계산기 — 자동 분석">
   <meta name="twitter:description" content="입출금 기반 복리 연이자율 자동 계산 도구. 실제 이자율을 빠르게 확인.">
   <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
-  
-  <!-- ⭐ 구조화 데이터 (FinancialService + Calculator) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FinancialService",
-    "name": "복리 연이자율 계산기",
-    "url": "https://molawcalculator.com/calculators/compound.html",
-    "description": "입출금 내역으로 실제 복리 연이자율을 자동 계산하는 금융 분석 도구입니다.",
-    "serviceType": "Compound Interest Calculation",
-    "provider": {
-      "@type": "LegalService",
-      "name": "법무법인 영민",
-      "url": "https://molawcalculator.com"
-    },
-    "hasCalculator": {
-      "@type": "Calculator",
-      "name": "복리 연이자율 계산기",
-      "keywords": "복리 연이자율 계산기, 연이자율 역산, 현금흐름 계산기"
-    }
-  }
-  </script>
 
-  <!-- Robots -->
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <meta name="robots" content="index, follow">
 
-  <!-- 기존 리소스 -->
+  <!-- CSS -->
   <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/style.css?v=1006">
   <link rel="stylesheet" href="/faq.css?v=1006">
@@ -69,6 +39,31 @@
   <link rel="stylesheet" href="/typing.css">
   <link rel="stylesheet" href="/template/calculator.css">
   <link rel="stylesheet" href="/compound.css">
+
+  <!-- ⭐ NO별 소계 + 접기/펼치기 스타일 -->
+  <style>
+    .subtotal-wrap {
+      margin: 20px 0;
+      padding: 10px;
+      background: #f7f7f7;
+      border-radius: 8px;
+    }
+    .subtotal-box {
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      background: #fff;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .subtotal-box:hover {
+      background: #f0f0f0;
+    }
+    .no-group-hidden {
+      display: none;
+    }
+  </style>
 </head>
 
 <body class="subpage">
@@ -81,7 +76,7 @@
     </svg>
   </a>
 </header>
-<!-- ⭐ 무료 이용권 배너 (공통) -->
+
 <div class="welcome-banner">
   <div class="welcome-center">
     <div class="welcome-text">
@@ -91,15 +86,14 @@
     </div>
   </div>
 </div>
-<!-- 📌 복리 연이자율 계산기 시작 -->
+
 <div class="page-wrap">
   <div class="container">
     <h2>📈 복리 연이자율 계산기</h2>
 
     <div class="btn-area">
-      <button onclick="cfAddRow()">행 추가</button>
-      <button onclick="checkAccess(() => cfCalculate())">연이자율 계산</button>
-      <!-- 추가되는 버튼 -->
+      <button onclick="cfAddRow()" class="app-btn-primary">행 추가</button>
+      <button onclick="checkAccess(() => cfCalculate())" class="app-btn-primary">연이자율 계산</button>
       <button onclick="cfExportExcel()" class="app-btn-secondary">엑셀 다운로드</button>
       <button onclick="cfExportPDF()" class="app-btn-secondary">PDF 다운로드</button>
     </div>
@@ -117,7 +111,9 @@
       <button onclick="cfParseCSV()">CSV 불러오기</button>
     </div>
 
+    <!-- ⭐ NO별 소계 영역 -->
     <div id="subtotalArea" class="subtotal-wrap"></div>
+
     <table id="cfTable" class="cf-table">
       <thead>
         <tr>
@@ -172,15 +168,16 @@
   </div>
 </div>
 
-<!-- footer -->
 <div id="footer"></div>
 
 <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
+
 <!-- Firebase -->
 <script type="module" src="/firebase-init.js"></script>
 <script type="module" src="/firebase-counter.js"></script>
 <script type="module" src="/auth/auth-state.js"></script>
 <script type="module" src="/check-access.js"></script>
+
 <script>
   fetch("/footer.html")
     .then(res => res.text())
@@ -188,17 +185,22 @@
       document.getElementById("footer").innerHTML = html;
     });
 </script>
+
 <script src="/paywall.js?v=1006"></script>
 <script src="/faq.js?v=1006" defer></script>
 <script src="/block-right-click.js?v=1006"></script>
 <script type="module" src="/common-apply.js"></script>
 <script src="/typing.js"></script>
-<!-- 📌 복리 연이자율 계산기 끝 -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script src="/compound.js"></script>
 
-<!-- PDF 생성용 -->
+<!-- XLSX -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- PDF -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.1/dist/jspdf.plugin.autotable.min.js"></script>
+
+<!-- ⭐ FIFO B2 방식 계산기 -->
+<script src="/compound.js"></script>
+
 </body>
 </html>
