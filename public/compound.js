@@ -71,7 +71,7 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  메인 계산 — FIFO + 총출금 기준 연이자율
+ *  메인 계산 — FIFO + 총출금 기준 연이자율 + 입금 1행 출력
  ******************************************************/
 function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
@@ -91,26 +91,28 @@ function cfCalculate() {
     return new Date(da) - new Date(db);
   });
 
-  const deposits = []; // FIFO 큐
-  const results = [];
+  const fifoQueue = [];          // FIFO 매칭용 큐
+  const depositRecords = [];     // 결과테이블용 전체 입금 목록
   const detailList = [];
 
   rows.forEach(r => {
     if (r.inAmt > 0 && r.inDate) {
-      deposits.push({
+      const dep = {
         no: r.no,
         inDate: r.inDate,
         inAmt: r.inAmt,
         remaining: r.inAmt,
         withdrawals: []
-      });
+      };
+      fifoQueue.push(dep);
+      depositRecords.push(dep); // ← 결과테이블용으로 반드시 저장
     }
 
     if (r.outAmt > 0 && r.outDate) {
       let amt = r.outAmt;
 
-      while (amt > 0 && deposits.length > 0) {
-        const dep = deposits[0];
+      while (amt > 0 && fifoQueue.length > 0) {
+        const dep = fifoQueue[0];
         const assign = Math.min(dep.remaining, amt);
 
         dep.withdrawals.push({
@@ -122,29 +124,18 @@ function cfCalculate() {
         amt -= assign;
 
         if (dep.remaining <= 0) {
-          deposits.shift();
+          fifoQueue.shift();
         }
       }
     }
   });
 
-  // 결과 생성 (모든 입금 표시)
-  deposits.forEach(dep => {
+  // 결과 생성 (모든 입금 1행씩 출력)
+  const results = depositRecords.map(dep => {
     const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
     const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals.at(-1).outDate : dep.inDate;
     const days = diffDays(dep.inDate, lastOutDate);
-
     const annual = annualRateSimple(dep.inAmt, totalOut, days);
-
-    results.push({
-      no: dep.no,
-      inDate: dep.inDate,
-      inAmt: dep.inAmt,
-      outDate: lastOutDate,
-      totalOut,
-      days,
-      annual
-    });
 
     detailList.push({
       id: `detail-${dep.no}-${dep.inDate}`,
@@ -155,6 +146,16 @@ function cfCalculate() {
       annual,
       withdrawals: dep.withdrawals
     });
+
+    return {
+      no: dep.no,
+      inDate: dep.inDate,
+      inAmt: dep.inAmt,
+      outDate: lastOutDate,
+      totalOut,
+      days,
+      annual
+    };
   });
 
   renderResults(results);
