@@ -9,23 +9,23 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>복리 연이자율 계산기 — 입출금 기반 자동 계산</title>
+  <title>입출금 기반 실제 연이자율 자동 계산기</title>
 
-  <meta name="description" content="입출금 내역으로 실제 복리 연이자율을 자동 계산하는 금융 분석 도구입니다.">
-  <meta name="keywords" content="복리 연이자율 계산기, 연이자율 역산, 이자율 분석, 현금흐름 계산기, 금융 계산기">
+  <meta name="description" content="입출금·상환일을 기반으로 실제 연이자율을 자동 계산하는 금융 분석 도구입니다.">
+  <meta name="keywords" content="입출금 이자율 계산기, 연이자율 계산, 실제 이자율 분석, 상환일 이자 계산, 금융 계산기, 복리 계산기, 초과분 계산, 정상 이자, 연체 이자, 현금흐름 분석">
 
   <link rel="canonical" href="https://molawcalculator.com/calculators/compound.html">
 
-  <meta property="og:title" content="복리 연이자율 계산기 — 실제 이자율 자동 분석">
-  <meta property="og:description" content="입출금 흐름을 기반으로 실제 복리 연이자율을 자동 계산하는 금융 분석 도구입니다.">
+  <meta property="og:title" content="입출금 기반 실제 연이자율 자동 계산기">
+  <meta property="og:description" content="입출금·상환일을 기반으로 실제 연이자율을 자동 계산하는 금융 분석 도구입니다.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="딱요만큼변제">
   <meta property="og:url" content="https://molawcalculator.com/calculators/compound.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="복리 연이자율 계산기 — 자동 분석">
-  <meta name="twitter:description" content="입출금 기반 복리 연이자율 자동 계산 도구. 실제 이자율을 빠르게 확인.">
+  <meta name="twitter:title" content="입출금 기반 실제 연이자율 자동 계산기">
+  <meta name="twitter:description" content="입출금·상환일을 기반으로 실제 연이자율을 자동 계산하는 금융 분석 도구입니다.">
   <meta name="twitter:image" content="https://molawcalculator.com/images/og_main.png">
 
   <meta name="robots" content="index, follow">
@@ -44,7 +44,7 @@
 <body class="subpage">
 
 <header class="fixed-header fixed-top">
-  <h1>복리 연이자율 계산기</h1>
+  <h1>입출금 기반 실제 연이자율 자동 계산기</h1>
   <a href="/index.html" class="home-btn">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -75,9 +75,10 @@
     <!-- CSV 붙여넣기 -->
     <div class="upload-area">
       <p><b>CSV 붙여넣기</b></p>
-      <textarea id="csvInput" placeholder="NO,입금일자,입금금액,출금일자,출금금액 형식으로 붙여넣기"></textarea>
+      <textarea id="csvInput" placeholder="NO,입금일자,입금금액,상환일자,출금일자,출금금액 형식으로 붙여넣기"></textarea>
       <button onclick="cfParseCSV()">CSV 불러오기</button>
     </div>
+
     <div class="btn-area">
       <label>
         정상 연이자율(%):
@@ -88,12 +89,14 @@
         <input type="number" id="lateRate" value="0" step="0.01">
       </label>
     </div>
+
     <div class="btn-area">
       <button onclick="cfAddRow()" class="app-btn-primary">행 추가</button>
       <button onclick="checkAccess(() => cfCalculate())" class="app-btn-primary">연이자율 계산</button>
       <button onclick="cfExportExcel()" class="app-btn-secondary">엑셀 다운로드</button>
       <button onclick="cfExportPDF()" class="app-btn-secondary">PDF 다운로드</button>
     </div>
+
     <!-- ⭐ NO별 소계 영역 -->
     <div id="subtotalArea" class="subtotal-wrap"></div>
 
@@ -103,50 +106,47 @@
           <th>NO</th>
           <th>입금일자</th>
           <th>입금금액</th>
+          <th>상환일자</th>
           <th>출금일자</th>
           <th>출금금액</th>
-          <th>이용기간(일)</th>
-          <th>연이자율(복리)</th>
         </tr>
       </thead>
       <tbody></tbody>
 
       <tfoot>
         <tr>
-          <th colspan="2">총 합계</th>
+          <th colspan="3">총 합계</th>
           <th id="totalIn">0</th>
-          <th></th>
           <th id="totalOut">0</th>
-          <th></th>
           <th></th>
         </tr>
       </tfoot>
     </table>
-    <!-- 기존 cfTable 바로 아래에 추가 -->
+
     <h2>📊 결과 테이블</h2>
-    
     <div id="resultSubtotalArea" class="subtotal-wrap"></div>
-    
+
     <table id="resultTable" class="cf-table">
-    <thead>
-      <tr>
-        <th>NO</th>
-        <th>입금일자</th>
-        <th>입금금액</th>
-        <th>출금일자</th>
-        <th>출금금액</th>
-        <th>이용기간(일)</th>
-        <th>연이자율(복리)</th>
-        <th>상세</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+      <thead>
+        <tr>
+          <th>NO</th>
+          <th>입금일자</th>
+          <th>입금금액</th>
+          <th>출금일자</th>
+          <th>출금금액</th>
+          <th>이용기간(일)</th>
+          <th>연이자율(복리)</th>
+          <th>상세</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
     <h2>📂 상세내역</h2>
     <div id="detailArea"></div>
   </div>
 </div>
+
 <!-- 🔒 로그인 필요 모달 (앱 UI 스타일) -->
 <div id="loginRequiredModal" class="app-modal-overlay" style="display:none;">
   <div class="app-modal">
@@ -173,6 +173,7 @@
     </button>
   </div>
 </div>
+
 <!-- 🔒 이용권 필요 모달 -->
 <div id="paywallOverlay" class="app-modal-overlay" style="display:none;">
   <div class="app-modal">
