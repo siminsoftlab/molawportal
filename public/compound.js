@@ -13,7 +13,7 @@ function excelDateToYMD(serial) {
 }
 
 /******************************************************
- *  날짜 차이 계산
+ *  날짜 차이 계산 (일 단위)
  ******************************************************/
 function diffDays(a, b) {
   if (!a || !b) return null;
@@ -22,6 +22,7 @@ function diffDays(a, b) {
 
 /******************************************************
  *  복리 연이자율 계산
+ *  inAmt: 입금원금, outAmt: 상환총액, days: 이용기간(일)
  ******************************************************/
 function calcRate(inAmt, outAmt, days) {
   if (!inAmt || !outAmt || !days || days <= 0) return null;
@@ -31,7 +32,7 @@ function calcRate(inAmt, outAmt, days) {
 }
 
 /******************************************************
- *  행 추가 (업로드 테이블용)
+ *  행 추가 (입력용)
  ******************************************************/
 function cfAddRow() {
   const tbody = document.querySelector("#cfTable tbody");
@@ -49,7 +50,7 @@ function cfAddRow() {
 }
 
 /******************************************************
- *  업로드 데이터 → cfTable에 로드 (원본만)
+ *  업로드/CSV 데이터 → cfTable에 로드 (원본만)
  ******************************************************/
 function cfLoadData(rows) {
   const tbody = document.querySelector("#cfTable tbody");
@@ -57,7 +58,7 @@ function cfLoadData(rows) {
   tbody.innerHTML = "";
 
   rows.forEach((r, idx) => {
-    if (idx === 0) return;
+    if (idx === 0) return; // 헤더 스킵
 
     const no = r[0] || "";
     const rawInDate = r[1];
@@ -84,13 +85,16 @@ function cfLoadData(rows) {
     tbody.appendChild(tr);
   });
 
-  // 업로드 시에는 결과/상세/소계 모두 초기화
+  // 업로드 시 결과/상세/소계 초기화
   const resultBody = document.querySelector("#resultTable tbody");
   if (resultBody) resultBody.innerHTML = "";
-  const resultSubtotalArea = document.getElementById("resultSubtotalArea");
-  if (resultSubtotalArea) resultSubtotalArea.innerHTML = "";
+  const subtotalArea = document.getElementById("subtotalArea");
+  if (subtotalArea) subtotalArea.innerHTML = "";
   const detailArea = document.getElementById("detailArea");
-  if (detailArea) detailArea.innerHTML = "";
+  if (detailArea) {
+    detailArea.innerHTML = "";
+    detailArea.dataset.details = "[]";
+  }
   const totalIn = document.getElementById("totalIn");
   const totalOut = document.getElementById("totalOut");
   if (totalIn) totalIn.textContent = "0";
@@ -126,7 +130,12 @@ function cfParseCSV() {
 }
 
 /******************************************************
- *  메인 계산 (FIFO B2: 결과는 resultTable에만)
+ *  메인 계산
+ *  - 입금 단위
+ *  - 이용기간: 입금일자 ~ 다음 입금일자까지
+ *  - 하나의 입금은 하나 또는 여러 출금으로 상환
+ *  - 출금은 여러 입금에 나눠 배정하지 않음 (레이아웃 기준)
+ *  - 결과는 resultTable에만 표시
  ******************************************************/
 function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"));
@@ -140,12 +149,11 @@ function cfCalculate() {
     detailArea.dataset.details = "[]";
   }
 
-  const groups = {};
+  const groups = {}; // NO별 그룹
   let grandIn = 0;
   let grandOut = 0;
-  const allDetails = [];
 
-  // 1) NO별 그룹 구성
+  // 1) NO별로 행을 모으고, 입력 순서대로 처리 (엑셀처럼)
   rows.forEach(tr => {
     const no = tr.querySelector(".no")?.value || "";
     const inDate = tr.querySelector(".inDate")?.value || "";
@@ -157,145 +165,188 @@ function cfCalculate() {
 
     if (!groups[no]) {
       groups[no] = {
-        deposits: [],
-        withdrawals: [],
+        rows: [],
+        deposits: [], // { inDate, inAmt, withdrawals: [{outDate,outAmt}], nextInDate }
         subtotalIn: 0,
         subtotalOut: 0
       };
     }
 
-    if (inAmt > 0 && inDate) {
-      groups[no].deposits.push({
-        inDate,
-        remaining: inAmt
-      });
-      groups[no].subtotalIn += inAmt;
-      grandIn += inAmt;
-    }
-
-    if (outAmt > 0 && outDate) {
-      groups[no].withdrawals.push({
-        outDate,
-        outAmt
-      });
-      groups[no].subtotalOut += outAmt;
-      grandOut += outAmt;
-    }
-  });
-
-  // 2) FIFO 매칭 + 출금 단위 연이자율 + 상세내역 계산 → resultTable에 행 생성
-  Object.keys(groups).forEach(no => {
-    const g = groups[no];
-
-    g.deposits.sort((a, b) => new Date(a.inDate) - new Date(b.inDate));
-    g.withdrawals.sort((a, b) => new Date(a.outDate) - new Date(b.outDate));
-
-    g.withdrawals.forEach(w => {
-      let remainOut = w.outAmt;
-      const allocations = [];
-
-      for (let dep of g.deposits) {
-        if (remainOut <= 0) break;
-        if (dep.remaining <= 0) continue;
-
-        const use = Math.min(dep.remaining, remainOut);
-        dep.remaining -= use;
-        remainOut -= use;
-
-        allocations.push({
-          inDate: dep.inDate,
-          principal: use
-        });
-      }
-
-      const totalPrincipal = allocations.reduce((s, a) => s + a.principal, 0);
-      if (totalPrincipal <= 0) return;
-
-      const interestTotal = Math.max(0, w.outAmt - totalPrincipal);
-      let weightedRateSum = 0;
-      let weightedOutSum = 0;
-
-      const detailRows = allocations.map(a => {
-        const share = a.principal / totalPrincipal;
-        const interest = interestTotal * share;
-        const outAmt = a.principal + interest;
-        const days = diffDays(a.inDate, w.outDate);
-        const rate = calcRate(a.principal, outAmt, days) || 0;
-
-        weightedRateSum += rate * outAmt;
-        weightedOutSum += outAmt;
-
-        return {
-          inDate: a.inDate,
-          principal: a.principal,
-          interest,
-          outAmt,
-          days,
-          rate
-        };
-      });
-
-      const finalRate = weightedOutSum > 0 ? weightedRateSum / weightedOutSum : 0;
-      const earliestIn = allocations[0]?.inDate;
-      const displayDays = diffDays(earliestIn, w.outDate);
-
-      const detailId = `detail-${no}-${w.outDate}-${w.outAmt}`;
-
-      allDetails.push({
-        id: detailId,
-        no,
-        outDate: w.outDate,
-        outAmt: w.outAmt,
-        finalRate,
-        rows: detailRows
-      });
-
-      const trRes = document.createElement("tr");
-      trRes.innerHTML = `
-        <td>${no}</td>
-        <td></td>
-        <td></td>
-        <td>${w.outDate}</td>
-        <td>${w.outAmt.toLocaleString()}원</td>
-        <td>${displayDays != null ? displayDays + "일" : ""}</td>
-        <td>${(finalRate * 100).toFixed(2)}%</td>
-        <td><button type="button" onclick="toggleDetailBlock('${detailId}')">상세보기</button></td>
-      `;
-      resultBody.appendChild(trRes);
+    groups[no].rows.push({
+      tr,
+      inDate,
+      inAmt,
+      outDate,
+      outAmt
     });
   });
 
-  // 3) NO별 소계 (결과 기준)
-  const resultSubtotalArea = document.getElementById("resultSubtotalArea");
-  if (resultSubtotalArea) {
+  const allDetails = [];
+
+  // 2) NO별로 "입금 단위"로 묶기 (레이아웃 기준)
+  Object.keys(groups).forEach(no => {
+    const g = groups[no];
+
+    // 같은 NO 안에서, 입력 순서대로 처리
+    let currentDeposit = null;
+
+    g.rows.forEach((r, idx) => {
+      const { inDate, inAmt, outDate, outAmt } = r;
+
+      // 새 입금이 있으면 새로운 deposit 시작
+      if (inAmt > 0 && inDate) {
+        // 이전 deposit의 nextInDate 설정
+        if (currentDeposit) {
+          currentDeposit.nextInDate = inDate;
+        }
+
+        currentDeposit = {
+          inDate,
+          inAmt,
+          withdrawals: [],
+          nextInDate: null
+        };
+        g.deposits.push(currentDeposit);
+        g.subtotalIn += inAmt;
+        grandIn += inAmt;
+      }
+
+      // 출금이 있으면 현재 deposit에 붙임
+      if (outAmt > 0 && outDate) {
+        if (!currentDeposit) {
+          // 입금 없이 출금만 있는 경우는 스킵(또는 별도 처리 가능)
+          return;
+        }
+        currentDeposit.withdrawals.push({
+          outDate,
+          outAmt
+        });
+        g.subtotalOut += outAmt;
+        grandOut += outAmt;
+      }
+    });
+
+    // 마지막 deposit의 nextInDate는 없음 → 나중에 마지막 출금일로 처리
+  });
+
+  // 3) 입금 단위로 이용기간/연이자율 계산 + 결과테이블 행 생성
+  Object.keys(groups).forEach(no => {
+    const g = groups[no];
+
+    g.deposits.forEach((dep, idx) => {
+      const inDate = dep.inDate;
+      const inAmt = dep.inAmt;
+      const withdrawals = dep.withdrawals || [];
+
+      if (!inDate || !inAmt || withdrawals.length === 0) {
+        return; // 상환이 없는 입금은 결과에서 제외
+      }
+
+      // 이 입금에 대한 상환총액, 마지막 출금일자
+      let totalOut = 0;
+      let lastOutDate = withdrawals[0].outDate;
+      withdrawals.forEach(w => {
+        totalOut += w.outAmt;
+        if (new Date(w.outDate) > new Date(lastOutDate)) {
+          lastOutDate = w.outDate;
+        }
+      });
+
+      // 이용기간: 입금일자 ~ 다음 입금일자까지
+      // nextInDate가 있으면 그 날짜까지, 없으면 마지막 출금일자까지
+      let endDate = dep.nextInDate || lastOutDate;
+      const days = diffDays(inDate, endDate);
+
+      const rate = calcRate(inAmt, totalOut, days) || 0;
+
+      // 결과 테이블에 한 줄 추가 (입금 단위 1행)
+      const trRes = document.createElement("tr");
+      trRes.dataset.no = no;
+      trRes.innerHTML = `
+        <td>${no}</td>
+        <td>${inDate}</td>
+        <td>${inAmt.toLocaleString()}원</td>
+        <td>${lastOutDate}</td>
+        <td>${totalOut.toLocaleString()}원</td>
+        <td>${days != null ? days + "일" : ""}</td>
+        <td>${(rate * 100).toFixed(2)}%</td>
+        <td><button type="button" onclick="toggleDetailBlock('detail-${no}-${idx}')">상세</button></td>
+      `;
+      resultBody.appendChild(trRes);
+
+      // 상세내역용 데이터 저장
+      allDetails.push({
+        id: `detail-${no}-${idx}`,
+        no,
+        inDate,
+        inAmt,
+        endDate,
+        totalOut,
+        days,
+        rate,
+        withdrawals
+      });
+    });
+  });
+
+  // 4) NO별 소계 (결과 기준) + 아코디언 클릭 시 필터링
+  const subtotalArea = document.getElementById("subtotalArea");
+  if (subtotalArea) {
     let html = "";
     Object.keys(groups).forEach(no => {
       const g = groups[no];
       html += `
-        <div class="subtotal-box">
+        <div class="subtotal-box" onclick="toggleGroup('${no}', event)">
           <b>NO ${no}</b>
           <span style="margin-left:8px;">입금: ${g.subtotalIn.toLocaleString()}원</span>
           <span style="margin-left:8px;">출금: ${g.subtotalOut.toLocaleString()}원</span>
+          <span style="float:right;">▼</span>
         </div>
       `;
     });
-    resultSubtotalArea.innerHTML = html;
+    subtotalArea.innerHTML = html;
   }
 
-  // 4) 총합 (기존 footer에 표시)
+  // 5) 총합 (기존 footer에 표시)
   const totalIn = document.getElementById("totalIn");
   const totalOut = document.getElementById("totalOut");
   if (totalIn) totalIn.textContent = grandIn.toLocaleString();
   if (totalOut) totalOut.textContent = grandOut.toLocaleString();
 
-  // 5) 상세내역 데이터 저장
+  // 6) 상세내역 데이터 저장
   if (detailArea) {
     detailArea.dataset.details = JSON.stringify(allDetails);
   }
 }
 
 /******************************************************
- *  상세내역 아코디언 블록 토글
+ *  NO별 필터링 (소계 아코디언 클릭)
+ *  - 같은 NO만 보이기 / 다시 클릭 시 전체 보이기
+ ******************************************************/
+let currentFilterNo = null;
+
+function toggleGroup(no, event) {
+  event.stopPropagation();
+  const rows = document.querySelectorAll("#resultTable tbody tr");
+
+  if (currentFilterNo === no) {
+    // 이미 이 NO로 필터링 중이면 → 전체 표시로 복귀
+    rows.forEach(tr => {
+      tr.style.display = "";
+    });
+    currentFilterNo = null;
+    return;
+  }
+
+  currentFilterNo = no;
+  rows.forEach(tr => {
+    const rowNo = tr.dataset.no || tr.querySelector("td")?.textContent.trim() || "";
+    tr.style.display = rowNo === no ? "" : "none";
+  });
+}
+
+/******************************************************
+ *  상세내역 아코디언 블록 토글 (입금 단위)
  ******************************************************/
 function toggleDetailBlock(detailId) {
   const detailArea = document.getElementById("detailArea");
@@ -314,22 +365,27 @@ function toggleDetailBlock(detailId) {
   const wrapper = document.createElement("div");
   wrapper.id = detailId;
   wrapper.className = "detail-block";
+
   wrapper.innerHTML = `
-    <h4>상세내역 (NO ${data.no}, 출금 ${data.outAmt.toLocaleString()}원)</h4>
+    <h4>상세내역 (NO ${data.no}, 입금 ${data.inAmt.toLocaleString()}원)</h4>
 
     <table class="detail-table">
       <thead>
         <tr>
-          <th>출금일</th>
-          <th>출금금액</th>
-          <th>가중평균 연이자율</th>
+          <th>입금일자</th>
+          <th>입금금액</th>
+          <th>이용기간(일)</th>
+          <th>상환총액</th>
+          <th>연이자율(복리)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>${data.outDate}</td>
-          <td>${data.outAmt.toLocaleString()}원</td>
-          <td>${(data.finalRate * 100).toFixed(2)}%</td>
+          <td>${data.inDate}</td>
+          <td>${data.inAmt.toLocaleString()}원</td>
+          <td>${data.days != null ? data.days + "일" : ""}</td>
+          <td>${data.totalOut.toLocaleString()}원</td>
+          <td>${(data.rate * 100).toFixed(2)}%</td>
         </tr>
       </tbody>
     </table>
@@ -337,27 +393,23 @@ function toggleDetailBlock(detailId) {
     <table class="detail-table">
       <thead>
         <tr>
-          <th>입금일</th>
-          <th>배정원금</th>
-          <th>배정이자</th>
-          <th>배정출금합계</th>
-          <th>이용기간(일)</th>
-          <th>개별 연이자율</th>
+          <th>출금일자</th>
+          <th>출금금액</th>
         </tr>
       </thead>
       <tbody>
-        ${data.rows
-          .map(r => `
+        ${
+          data.withdrawals
+            .map(
+              w => `
           <tr>
-            <td>${r.inDate}</td>
-            <td>${r.principal.toLocaleString()}원</td>
-            <td>${r.interest.toLocaleString()}원</td>
-            <td>${r.outAmt.toLocaleString()}원</td>
-            <td>${r.days != null ? r.days + "일" : ""}</td>
-            <td>${(r.rate * 100).toFixed(2)}%</td>
+            <td>${w.outDate}</td>
+            <td>${w.outAmt.toLocaleString()}원</td>
           </tr>
-        `)
-          .join("")}
+        `
+            )
+            .join("")
+        }
       </tbody>
     </table>
   `;
