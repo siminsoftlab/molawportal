@@ -189,34 +189,64 @@ function cfCalculate() {
   /*************** 3) 입금 기준 상세 재조립 ***************/
   const detailByDeposit = buildDetailByDeposit(deposits, withdrawals, fifoAssignments);
 
-  /*************** 4) 결과테이블 계산 (첫 출금일자 + 금액 표시) ***************/
+  /*************** 4) 결과테이블 계산 ***************/
   const results = deposits.map(dep => {
-  const detail = detailByDeposit.find(d => d.depId === dep.depId);
-  const burdened = detail.detailRows.filter(r => r.burdenAmt > 0);
+    const detail = detailByDeposit.find(d => d.depId === dep.depId);
+    const burdened = detail.detailRows.filter(r => r.burdenAmt > 0);
 
-  let firstOutDate = "-";
-  let firstOutAmt = 0;
-  if (burdened.length > 0) {
-    firstOutDate = burdened[0].outDate;
-    firstOutAmt = burdened[0].burdenAmt;
-  }
+    let firstOutDate = "-";
+    let firstOutAmt = 0;
+    if (burdened.length > 0) {
+      firstOutDate = burdened[0].outDate;
+      firstOutAmt = burdened[0].burdenAmt;
+    }
 
-  const burdenDays = burdened.reduce((s, r) => s + r.days, 0);
-  const annualYield = calcYieldAnnual(dep.inAmt, firstOutAmt, burdenDays);
+    const burdenDays = burdened.reduce((s, r) => s + r.days, 0);
+    const annualYield = calcYieldAnnual(dep.inAmt, firstOutAmt, burdenDays);
 
-  return {
-    depId: dep.depId,
-    no: dep.no,
-    inDate: dep.inDate,
-    inAmt: dep.inAmt,
-    outDate: firstOutDate,
-    totalOut: firstOutAmt,
-    totalDays: burdenDays,
-    annualYield,
-    detailRows: detail.detailRows
-  };
-});
-} // ← 여기서 cfCalculate 함수 닫기
+    return {
+      depId: dep.depId,
+      no: dep.no,
+      inDate: dep.inDate,
+      inAmt: dep.inAmt,
+      outDate: firstOutDate,
+      totalOut: firstOutAmt,
+      totalDays: burdenDays,
+      annualYield,
+      detailRows: detail.detailRows
+    };
+  });
+
+  /*************** 5) 결과 DOM 반영 ***************/
+  const resultTbody = document.querySelector("#resultTable tbody");
+  resultTbody.innerHTML = "";
+
+  results.forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.no}</td>
+      <td>${r.inDate}</td>
+      <td>${r.inAmt}</td>
+      <td>${r.outDate}</td>
+      <td>${r.totalOut}</td>
+      <td>${r.totalDays}</td>
+      <td>${r.annualYield.toFixed(4)}</td>
+    `;
+    resultTbody.appendChild(tr);
+  });
+
+  const detailArea = document.querySelector("#detailArea");
+  detailArea.innerHTML = results.map(r => {
+    return `
+      <h4>입금번호 ${r.no}</h4>
+      <ul>
+        ${r.detailRows.map(dr => `
+          <li>출금일: ${dr.outDate}, 부담금액: ${dr.burdenAmt}, 기간: ${dr.days}일</li>
+        `).join("")}
+      </ul>
+    `;
+  }).join("");
+}
 
 function cfAddRow() {
   const tbody = document.querySelector("#cfTable tbody");
