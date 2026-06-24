@@ -85,10 +85,13 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  메인 계산 — 입금 기준 FIFO + 결과테이블
+ *  전역 상세 저장
  ******************************************************/
 let globalDetails = [];
 
+/******************************************************
+ *  메인 계산 — 전체 FIFO + 입금 기준 상세 + 결과테이블
+ ******************************************************/
 function cfCalculate() {
   const normalRate = Number(document.getElementById("annualRate").value || 0) / 100;
   const lateRate = Number(document.getElementById("lateRate").value || 0) / 100;
@@ -104,105 +107,193 @@ function cfCalculate() {
     }))
     .filter(r => r.no && (r.inAmt > 0 || r.outAmt > 0));
 
-  // 입금/출금 분리
+  if (rows.length === 0) return;
+
+  /*************** 1) 입금/출금 분리 및 정렬 ***************/
+  let depSeq = 0;
   const deposits = rows
     .filter(r => r.inAmt > 0 && r.inDate)
-    .sort((a, b) => new Date(a.inDate) - new Date(b.inDate));
+    .sort((a, b) => new Date(a.inDate) - new Date(b.inDate))
+    .map(d => ({
+      depId: depSeq++,
+      no: d.no,
+      inDate: d.inDate,
+      inAmt: d.inAmt,
+      principal: d.inAmt,
+      unpaid: 0,
+      lastDate: d.inDate
+    }));
 
   const withdrawals = rows
     .filter(r => r.outAmt > 0 && r.outDate)
-    .sort((a, b) => new Date(a.outDate) - new Date(b.outDate));
+    .sort((a, b) => new Date(a.outDate) - new Date(b.outDate))
+    .map(w => ({
+      rowId: w.rowId,
+      outDate: w.outDate,
+      outAmt: w.outAmt
+    }));
 
-  const results = [];
+  if (deposits.length === 0) return;
 
-  deposits.forEach((dep, idx) => {
-    const startDate = new Date(dep.inDate);
-    const nextDep = deposits[idx + 1];
-    const endDate = nextDep ? new Date(nextDep.inDate) : null;
+  // 입금별 nextInDate 설정 (결과테이블 구간용)
+  deposits.sort((a, b) => new Date(a.inDate) - new Date(b.inDate));
+  for (let i = 0; i < deposits.length; i++) {
+    deposits[i].nextInDate = i < deposits.length - 1 ? deposits[i + 1].inDate : null;
+  }
 
-    // 이 입금이 담당하는 "날짜 구간"의 출금들
-    const intervalWithdrawals = withdrawals.filter(w => {
-      const dw = new Date(w.outDate);
-      return dw >= startDate && (!endDate || dw < endDate);
-    });
+  /*************** 2) 전체 FIFO 계산 (출금 기준, 원금제한) ***************/
+  const fifoAssignments = []; // {depId,rowId,outDate,outAmtOriginal,days,assign}
 
-    let principal = dep.inAmt;
-    let unpaid = 0;
-    let lastDate = dep.inDate;
+  withdrawals.forEach(w => {
+    let remainOut = w.outAmt;
 
-    const detailRows = [];
-    let totalDays = 0;
+    while (remainOut > 0) {
+      const dep = deposits.find(d => d.principal > 0 || d.unpaid > 0);
+      if (!dep) break;
 
-    intervalWithdrawals.forEach(w => {
-      const days = diffDays(lastDate, w.outDate);
-      const normalInterest = calcNormalInterest(principal, normalRate, days);
-      const lateInterest = calcLateInterest(unpaid, lateRate, days);
+      const days = diffDays(dep.lastDate, w.outDate);
+      const normalInterest = calcNormalInterest(dep.principal, normalRate, days);
+      const lateInterest = calcLateInterest(dep.unpaid, lateRate, days);
 
-      // 이 입금이 이 출금에서 실제로 부담하는 금액 (원금제한 FIFO)
-      const burdenAmt = Math.min(principal, w.outAmt);
+      const possible = dep.principal; // 원금제한
+      const assign = Math.min(remainOut, possible);
 
-      let afterOut = burdenAmt;
+      if (assign <= 0) {
+        dep.lastDate = w.outDate;
+        break;
+      }
+
+      let afterOut = assign;
       afterOut -= normalInterest;
       afterOut -= lateInterest;
 
-      principal -= Math.max(0, afterOut);
-      if (principal < 0) {
-        unpaid += Math.abs(principal);
-        principal = 0;
+      dep.principal -= Math.max(0, afterOut);
+      if (dep.principal < 0) {
+        dep.unpaid += Math.abs(dep.principal);
+        dep.principal = 0;
       }
 
-      detailRows.push({
+      fifoAssignments.push({
+        depId: dep.depId,
+        rowId: w.rowId,
         outDate: w.outDate,
-        outAmtOriginal: w.outAmt, // 출금 원본 금액
-        burdenAmt,                // 이 입금이 실제 부담한 금액
-        days
+        outAmtOriginal: w.outAmt,
+        days,
+        assign
       });
 
-      lastDate = w.outDate;
-      totalDays += days;
+      dep.lastDate = w.outDate;
+      remainOut -= assign;
+    }
+  });
+
+  /*************** 3) 입금 기준 상세 재조립 ***************/
+  const detailByDeposit = buildDetailByDeposit(deposits, withdrawals, fifoAssignments);
+
+  /*************** 4) 결과테이블 계산 ***************/
+  const results = deposits.map(dep => {
+    const detail = detailByDeposit.find(d => d.depId === dep.depId);
+    const intervalWithdrawals = withdrawals.filter(w => {
+      const dw = new Date(w.outDate);
+      return dw >= new Date(dep.inDate) &&
+             (!dep.nextInDate || dw < new Date(dep.nextInDate));
     });
 
-    // 결과테이블용 출금합계: 구간 내 출금 "원본" 합계
     const totalOut = intervalWithdrawals.reduce((s, w) => s + w.outAmt, 0);
 
-    // 전체 이용기간: 입금일 ~ 마지막 출금일 차이 (출금 없으면 0)
-    let totalPeriodDays = 0;
+    // 이용기간: 이 입금이 실제 부담한 출금들(days) 합
+    const burdenDays = detail.detailRows.reduce((s, r) => {
+      return r.burdenAmt > 0 ? s + r.days : s;
+    }, 0);
+
+    const annualYield = calcYieldAnnual(dep.inAmt, totalOut, burdenDays);
+
     let lastOutDate = "-";
     if (intervalWithdrawals.length > 0) {
       lastOutDate = intervalWithdrawals[intervalWithdrawals.length - 1].outDate;
-      totalPeriodDays = diffDays(dep.inDate, lastOutDate);
     }
 
-    // 연이자율: 입금금액, 출금합계, 전체 이용기간 기준
-    const annualYield = calcYieldAnnual(dep.inAmt, totalOut, totalPeriodDays);
-
-    results.push({
+    return {
+      depId: dep.depId,
       no: dep.no,
       inDate: dep.inDate,
       inAmt: dep.inAmt,
       outDate: lastOutDate,
       totalOut,
-      totalDays: totalPeriodDays,
+      totalDays: burdenDays,
       annualYield,
-      detailRows
-    });
+      detailRows: detail.detailRows
+    };
   });
 
-  // 정렬
   results.sort((a, b) => {
     if (a.no !== b.no) return Number(a.no) - Number(b.no);
     if (a.inDate !== b.inDate) return new Date(a.inDate) - new Date(b.inDate);
-
     if (a.outDate === "-" && b.outDate !== "-") return 1;
     if (a.outDate !== "-" && b.outDate === "-") return -1;
     if (a.outDate !== "-" && b.outDate !== "-")
       return new Date(a.outDate) - new Date(b.outDate);
-
     return 0;
   });
 
   globalDetails = results;
   renderResults(results);
+}
+
+/******************************************************
+ *  상세 재조립 (전체 FIFO 결과를 입금 기준으로 묶기)
+ ******************************************************/
+function buildDetailByDeposit(deposits, withdrawals, fifoAssignments) {
+  const detailByDeposit = [];
+
+  deposits.forEach(dep => {
+    const assignedPieces = fifoAssignments.filter(a => a.depId === dep.depId);
+
+    const mapByRow = new Map();
+    assignedPieces.forEach(a => {
+      if (!mapByRow.has(a.rowId)) {
+        mapByRow.set(a.rowId, {
+          outDate: a.outDate,
+          outAmtOriginal: a.outAmtOriginal,
+          burdenAmt: 0,
+          days: a.days
+        });
+      }
+      const item = mapByRow.get(a.rowId);
+      item.burdenAmt += a.assign;
+      // days는 같은 출금에 대해 동일하다고 보고 하나만 사용
+    });
+
+    const intervalWithdrawals = withdrawals.filter(w => {
+      const dw = new Date(w.outDate);
+      return dw >= new Date(dep.inDate) &&
+             (!dep.nextInDate || dw < new Date(dep.nextInDate));
+    });
+
+    const detailRows = intervalWithdrawals.map(w => {
+      const item = mapByRow.get(w.rowId);
+      const burdenAmt = item ? item.burdenAmt : 0;
+      const days = item ? item.days : 0;
+
+      return {
+        outDate: w.outDate,
+        outAmtOriginal: w.outAmt,
+        burdenAmt,
+        remainAfterBurden: w.outAmt - burdenAmt,
+        days
+      };
+    });
+
+    detailByDeposit.push({
+      depId: dep.depId,
+      no: dep.no,
+      inDate: dep.inDate,
+      inAmt: dep.inAmt,
+      detailRows
+    });
+  });
+
+  return detailByDeposit;
 }
 
 /******************************************************
@@ -222,17 +313,17 @@ function renderResults(results) {
       <td>${r.totalOut.toLocaleString()}원</td>
       <td>${r.totalDays ? r.totalDays + "일" : "-"}</td>
       <td>${r.totalDays ? (r.annualYield * 100).toFixed(2) + "%" : "-"}</td>
-      <td><button onclick="showDetail('${r.no}','${r.inDate}')">상세</button></td>
+      <td><button onclick="showDetail(${r.depId})">상세</button></td>
     `;
     tbody.appendChild(tr);
   });
 }
 
 /******************************************************
- *  상세내역 렌더링 (입금 기준, 출금 원본 + 이 입금이 부담한 금액)
+ *  상세내역 렌더링
  ******************************************************/
-function showDetail(no, inDate) {
-  const data = globalDetails.find(d => d.no == no && d.inDate == inDate);
+function showDetail(depId) {
+  const data = globalDetails.find(d => d.depId === depId);
   const area = document.querySelector("#detailArea");
   area.innerHTML = "";
 
@@ -243,8 +334,8 @@ function showDetail(no, inDate) {
     <table class="detail-table">
       <tr><th>입금일자</th><td>${data.inDate}</td></tr>
       <tr><th>입금금액</th><td>${data.inAmt.toLocaleString()}원</td></tr>
-      <tr><th>전체 이용기간</th><td>${data.totalDays}일</td></tr>
-      <tr><th>입금대비 출금 연이자율</th><td>${(data.annualYield * 100).toFixed(2)}%</td></tr>
+      <tr><th>전체 이용기간(부담 발생 기준)</th><td>${data.totalDays}일</td></tr>
+      <tr><th>입금대비 출금 연이자율</th><td>${data.totalDays ? (data.annualYield * 100).toFixed(2) + "%" : "0.00%"}</td></tr>
     </table>
 
     <h4>출금 내역 (출금 원본 + 이 입금이 부담한 금액)</h4>
@@ -254,6 +345,7 @@ function showDetail(no, inDate) {
           <th>출금일자</th>
           <th>출금금액(원본)</th>
           <th>이 입금이 부담한 금액</th>
+          <th>원금부담후 출금잔액</th>
           <th>이용기간(일)</th>
         </tr>
       </thead>
@@ -266,6 +358,7 @@ function showDetail(no, inDate) {
         <td>${w.outDate}</td>
         <td>${w.outAmtOriginal.toLocaleString()}원</td>
         <td>${w.burdenAmt.toLocaleString()}원</td>
+        <td>${w.remainAfterBurden.toLocaleString()}원</td>
         <td>${w.days}</td>
       </tr>
     `;
