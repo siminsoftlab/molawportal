@@ -77,29 +77,22 @@ function cfCalculate() {
     if (inAmt > 0) grandIn += inAmt;
     if (outAmt > 0) grandOut += outAmt;
 
-    // 기본적으로 초기화
-    if (daysCell) daysCell.textContent = "";
-    if (rateCell) rateCell.textContent = "";
+    // 초기화
+    daysCell.textContent = "";
+    rateCell.textContent = "";
 
     // 입금 + 출금이 모두 있는 행만 계산
     if (inAmt > 0 && outAmt > 0 && inDate && outDate) {
       const days = diffDays(inDate, outDate);
-      const rate = calcRate(inAmt, outAmt, days); // 출금 / 입금 기준
+      const rate = calcRate(inAmt, outAmt, days);
 
-      if (daysCell && days != null) {
-        daysCell.textContent = days + "일";
-      }
-      if (rateCell && rate != null) {
-        rateCell.textContent = (rate * 100).toFixed(2) + "%";
-      }
+      daysCell.textContent = days + "일";
+      rateCell.textContent = (rate * 100).toFixed(2) + "%";
     }
   });
 
-  // 총합 표시
-  const totalInEl = document.getElementById("totalIn");
-  const totalOutEl = document.getElementById("totalOut");
-  if (totalInEl) totalInEl.textContent = grandIn.toLocaleString();
-  if (totalOutEl) totalOutEl.textContent = grandOut.toLocaleString();
+  document.getElementById("totalIn").textContent = grandIn.toLocaleString();
+  document.getElementById("totalOut").textContent = grandOut.toLocaleString();
 }
 
   /********** 2) 그룹별 FIFO 매칭 **********/
