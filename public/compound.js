@@ -13,11 +13,10 @@ function excelDateToYMD(serial) {
 }
 
 function diffDays(a, b) {
-  return Math.floor((new Date(b) - new Date(a)) / (1000 * 60 * 60 * 24));
+  return Math.max(1, Math.floor((new Date(b) - new Date(a)) / (1000 * 60 * 60 * 24)));
 }
 
 function annualRateSimple(inAmt, outAmt, days) {
-  if (days <= 0) return 0;
   const periodRate = (outAmt - inAmt) / inAmt;
   return periodRate * (365 / days);
 }
@@ -129,12 +128,10 @@ function cfCalculate() {
     }
   });
 
-  // 결과 계산
+  // 결과 생성 (모든 입금 표시)
   deposits.forEach(dep => {
-    if (dep.withdrawals.length === 0) return;
-
     const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
-    const lastOutDate = dep.withdrawals[dep.withdrawals.length - 1].outDate;
+    const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals.at(-1).outDate : dep.inDate;
     const days = diffDays(dep.inDate, lastOutDate);
 
     const annual = annualRateSimple(dep.inAmt, totalOut, days);
