@@ -19,20 +19,10 @@ function diffDays(a, b) {
   return Math.max(1, Math.floor((db - da) / (1000 * 60 * 60 * 24)));
 }
 
-function calcNormalInterest(principal, rate, days) {
-  if (principal <= 0 || rate <= 0 || days <= 0) return 0;
-  return principal * rate * (days / 365);
-}
-
-function calcLateInterest(principal, rate, days) {
-  if (principal <= 0 || rate <= 0 || days <= 0) return 0;
-  return principal * rate * (days / 365);
-}
-
-// 입금이 있을 때 연이자율: (입금반영금액 - 입금금액) / 입금금액 * (365 / 이용일수)
-function calcAnnualYieldDeposit(inAmt, appliedAmt, days) {
-  if (inAmt <= 0 || appliedAmt <= 0 || days <= 0) return 0;
-  const periodRate = (appliedAmt - inAmt) / inAmt;
+// 입금이 있을 때 연이자율: (출금금액 - 입금금액) / 입금금액 * (365 / 이용일수)
+function calcAnnualYieldDeposit(inAmt, outAmt, days) {
+  if (inAmt <= 0 || outAmt <= 0 || days <= 0) return 0;
+  const periodRate = (outAmt - inAmt) / inAmt;
   return periodRate * (365 / days) * 100;
 }
 
@@ -121,12 +111,9 @@ function cfLoadData(rows) {
 let globalDetails = [];
 
 /******************************************************
- *  메인 계산 — 입금 기준 결과 + 출금 기준 상세
+ *  메인 계산 — 업로드 행 기준 결과/상세
  ******************************************************/
 function cfCalculate() {
-  const normalRate = Number(document.getElementById("annualRate")?.value || 0) / 100;
-  const lateRate = Number(document.getElementById("lateRate")?.value || 0) / 100;
-
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
       rowId: idx,
@@ -141,198 +128,52 @@ function cfCalculate() {
 
   if (!rows.length) return;
 
-  // 입금 기준 그룹
-  const depositMap = new Map();
-  rows.forEach(r => {
-    if (!depositMap.has(r.no)) {
-      depositMap.set(r.no, {
-        no: r.no,
-        inDate: r.inDate || "",
-        inAmt: r.inAmt || 0,
-        repayDate: r.repayDate || "",
-        withdrawals: []
-      });
-    }
-    const dep = depositMap.get(r.no);
-    if (r.inDate && r.inAmt && !dep.inDate) {
-      dep.inDate = r.inDate;
-      dep.inAmt = r.inAmt;
-      dep.repayDate = r.repayDate;
-    }
-    if (r.outDate && r.outAmt) {
-      dep.withdrawals.push({
-        outDate: r.outDate,
-        outAmt: r.outAmt
-      });
-    }
-  });
-
-  // 출금 기준 상세 생성
-  const detailRows = [];
-  depositMap.forEach(dep => {
-    const hasDeposit = dep.inAmt > 0 && dep.inDate;
-    dep.withdrawals
-      .sort((a, b) => new Date(a.outDate) - new Date(b.outDate))
-      .forEach(w => {
-        let normalDays = 0;
-        let lateDays = 0;
-        let totalDays = 0;
-        let normalInterest = 0;
-        let lateInterest = 0;
-        let appliedAmt = w.outAmt;
-        let appliedAfterAmt = w.outAmt;
-        let excess = 0;
-        let annualYield = 0;
-
-        if (hasDeposit) {
-          if (dep.repayDate) {
-            normalDays = Math.max(0, diffDays(dep.inDate, dep.repayDate));
-            lateDays = Math.max(0, diffDays(dep.repayDate, w.outDate));
-          } else {
-            normalDays = Math.max(0, diffDays(dep.inDate, w.outDate));
-            lateDays = 0;
-          }
-          totalDays = normalDays + lateDays;
-
-          normalInterest = calcNormalInterest(dep.inAmt, normalRate, normalDays);
-          lateInterest = calcLateInterest(dep.inAmt, lateRate, lateDays);
-
-          const interestTotal = normalInterest + lateInterest;
-          appliedAmt = w.outAmt - interestTotal;
-          if (appliedAmt < 0) appliedAmt = 0;
-
-          appliedAfterAmt = appliedAmt - dep.inAmt;
-          excess = appliedAfterAmt > 0 ? appliedAfterAmt : 0;
-
-          annualYield = calcAnnualYieldDeposit(dep.inAmt, appliedAmt, totalDays);
-        } else {
-          totalDays = 0;
-          normalInterest = 0;
-          lateInterest = 0;
-          appliedAmt = w.outAmt;
-          appliedAfterAmt = w.outAmt;
-          excess = 0;
-          annualYield = 0;
-        }
-
-        detailRows.push({
-          depNo: dep.no,
-          inDate: hasDeposit ? dep.inDate : "",
-          inAmt: hasDeposit ? dep.inAmt : 0,
-          outDate: w.outDate,
-          outAmt: w.outAmt,
-          normalInterest,
-          lateInterest,
-          appliedAmt,
-          appliedAfterAmt,
-          excess,
-          closed: hasDeposit ? (excess > 0 ? "종결" : "미결") : "종결",
-          days: totalDays,
-          annualYield
-        });
-      });
-  });
-
-  // 입금 없음인데 출금만 있는 경우(어떤 NO에도 속하지 않는 출금)는 별도 처리
-  rows
-    .filter(r => r.outAmt > 0 && !depositMap.has(r.no) && (!r.inAmt || !r.inDate))
-    .forEach(w => {
-      detailRows.push({
-        depNo: w.no,
-        inDate: "",
-        inAmt: 0,
-        outDate: w.outDate,
-        outAmt: w.outAmt,
-        normalInterest: 0,
-        lateInterest: 0,
-        appliedAmt: w.outAmt,
-        appliedAfterAmt: w.outAmt,
-        excess: 0,
-        closed: "종결",
-        days: 0,
-        annualYield: 0
-      });
-    });
-
-  // 출금 기준 상세 정렬: NO → 입금일자 → 출금일자
-  detailRows.sort((a, b) => {
-    if (a.depNo !== b.depNo) return a.depNo - b.depNo;
-    if (a.inDate !== b.inDate) {
-      const ad = a.inDate || "1900-01-01";
-      const bd = b.inDate || "1900-01-01";
-      return new Date(ad) - new Date(bd);
-    }
+  // NO → 입금일자 → 출금일자 순 정렬
+  rows.sort((a, b) => {
+    if (a.no !== b.no) return a.no - b.no;
+    if (a.inDate !== b.inDate) return new Date(a.inDate) - new Date(b.inDate);
     return new Date(a.outDate) - new Date(b.outDate);
   });
 
-  globalDetails = detailRows;
+  const resultRows = rows.map(r => {
+    const days = (r.inDate && r.outDate) ? diffDays(r.inDate, r.outDate) : 0;
+    const annualYield = (r.inAmt > 0 && r.outAmt > 0 && days > 0)
+      ? calcAnnualYieldDeposit(r.inAmt, r.outAmt, days)
+      : 0;
+
+    return {
+      ...r,
+      days,
+      annualYield
+    };
+  });
+
+  globalDetails = resultRows;
 
   /******************************************************
-   *  결과 테이블 (입금 기준 1줄씩)
+   *  결과 테이블 (두 번째 이미지와 동일 구조)
    ******************************************************/
-  const results = [];
-  depositMap.forEach(dep => {
-    const hasDeposit = dep.inAmt > 0 && dep.inDate;
-    if (!hasDeposit) return;
-
-    const rowsForDep = detailRows.filter(r => r.depNo === dep.no && r.inAmt > 0);
-    if (!rowsForDep.length) {
-      results.push({
-        no: dep.no,
-        inDate: dep.inDate,
-        inAmt: dep.inAmt,
-        outDate: "",
-        outAmt: 0,
-        days: 0,
-        annualYield: 0
-      });
-      return;
-    }
-
-    const totalOut = rowsForDep.reduce((s, r) => s + r.outAmt, 0);
-    const lastOutDate = rowsForDep[rowsForDep.length - 1].outDate;
-    const totalDays = rowsForDep.reduce((s, r) => s + r.days, 0);
-    const avgYield =
-      rowsForDep.reduce((s, r) => s + r.annualYield, 0) / rowsForDep.length;
-
-    results.push({
-      no: dep.no,
-      inDate: dep.inDate,
-      inAmt: dep.inAmt,
-      outDate: lastOutDate,
-      outAmt: totalOut,
-      days: totalDays,
-      annualYield: avgYield
-    });
-  });
-
-  results.sort((a, b) => {
-    if (a.no !== b.no) return a.no - b.no;
-    if (a.inDate !== b.inDate) return new Date(a.inDate) - new Date(b.inDate);
-    return new Date(a.outDate || "1900-01-01") - new Date(b.outDate || "1900-01-01");
-  });
-
   const resultTbody = document.querySelector("#resultTable tbody");
   if (resultTbody) {
     resultTbody.innerHTML = "";
-    results.forEach(r => {
+    resultRows.forEach(r => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${r.no}</td>
         <td>${r.inDate}</td>
-        <td>${r.inAmt.toLocaleString()}</td>
-        <td>${r.outDate || ""}</td>
+        <td>${r.inAmt ? r.inAmt.toLocaleString() : ""}</td>
+        <td>${r.outDate}</td>
         <td>${r.outAmt ? r.outAmt.toLocaleString() : ""}</td>
         <td>${r.days ? r.days + "일" : ""}</td>
         <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
-        <td><button type="button" onclick="showDetail(${r.no})">상세</button></td>
+        <td><button type="button" onclick="showDetail(${r.rowId})">상세</button></td>
       `;
       resultTbody.appendChild(tr);
     });
   }
 
   /******************************************************
-   *  상세화면 테이블 (출금 기준 한 줄씩)
+   *  상세내역 (행별 그대로 + 계산값)
    ******************************************************/
   const detailArea = document.querySelector("#detailArea");
   if (detailArea) {
@@ -343,33 +184,23 @@ function cfCalculate() {
             <th>NO</th>
             <th>입금일자</th>
             <th>입금금액</th>
+            <th>상환일자</th>
             <th>출금일자</th>
             <th>출금금액</th>
-            <th>정상이자금액</th>
-            <th>연체이자금액</th>
-            <th>입금반영금액</th>
-            <th>입금반영후금액</th>
-            <th>초과분</th>
-            <th>종결여부</th>
             <th>이용기간</th>
             <th>연이자율</th>
           </tr>
         </thead>
         <tbody>
-          ${detailRows
+          ${resultRows
             .map(r => `
               <tr>
-                <td>${r.depNo}</td>
-                <td>${r.inDate || ""}</td>
+                <td>${r.no}</td>
+                <td>${r.inDate}</td>
                 <td>${r.inAmt ? r.inAmt.toLocaleString() : ""}</td>
+                <td>${r.repayDate || ""}</td>
                 <td>${r.outDate}</td>
-                <td>${r.outAmt.toLocaleString()}</td>
-                <td>${r.normalInterest ? Math.round(r.normalInterest).toLocaleString() : ""}</td>
-                <td>${r.lateInterest ? Math.round(r.lateInterest).toLocaleString() : ""}</td>
-                <td>${Math.round(r.appliedAmt).toLocaleString()}</td>
-                <td>${Math.round(r.appliedAfterAmt).toLocaleString()}</td>
-                <td>${r.excess ? Math.round(r.excess).toLocaleString() : ""}</td>
-                <td>${r.closed}</td>
+                <td>${r.outAmt ? r.outAmt.toLocaleString() : ""}</td>
                 <td>${r.days ? r.days + "일" : ""}</td>
                 <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
               </tr>
@@ -401,34 +232,28 @@ function cfAddRow() {
 }
 
 /******************************************************
- *  상세 버튼 (NO 기준)
+ *  상세 버튼 (업로드 행 기준)
  ******************************************************/
-function showDetail(no) {
-  const rowsForNo = globalDetails.filter(r => r.depNo === no);
-  if (!rowsForNo.length) return;
+function showDetail(rowId) {
+  const r = globalDetails.find(x => x.rowId === rowId);
+  if (!r) return;
 
-  const msgParts = rowsForNo.map(r => {
-    return [
-      `입금일자: ${r.inDate || "입금 없음"}`,
-      `입금금액: ${r.inAmt ? r.inAmt.toLocaleString() + "원" : "-"}`,
-      `출금일자: ${r.outDate}`,
-      `출금금액: ${r.outAmt.toLocaleString()}원`,
-      `정상이자금액: ${r.normalInterest ? Math.round(r.normalInterest).toLocaleString() + "원" : "-"}`,
-      `연체이자금액: ${r.lateInterest ? Math.round(r.lateInterest).toLocaleString() + "원" : "-"}`,
-      `입금반영금액: ${Math.round(r.appliedAmt).toLocaleString()}원`,
-      `입금반영후금액: ${Math.round(r.appliedAfterAmt).toLocaleString()}원`,
-      `초과분: ${r.excess ? Math.round(r.excess).toLocaleString() + "원" : "0원"}`,
-      `종결여부: ${r.closed}`,
-      `이용기간: ${r.days ? r.days + "일" : "-"}`,
-      `연이자율: ${r.annualYield ? r.annualYield.toFixed(4) + "%" : "-"}`
-    ].join("\n");
-  });
+  const msg = [
+    `NO: ${r.no}`,
+    `입금일자: ${r.inDate || "-"}`,
+    `입금금액: ${r.inAmt ? r.inAmt.toLocaleString() + "원" : "-"}`,
+    `상환일자: ${r.repayDate || "-"}`,
+    `출금일자: ${r.outDate || "-"}`,
+    `출금금액: ${r.outAmt ? r.outAmt.toLocaleString() + "원" : "-"}`,
+    `이용기간: ${r.days ? r.days + "일" : "-"}`,
+    `연이자율: ${r.annualYield ? r.annualYield.toFixed(4) + "%" : "-"}`
+  ].join("\n");
 
-  alert(msgParts.join("\n\n----------------------\n\n"));
+  alert(msg);
 }
 
 /******************************************************
- *  엑셀/PDF 다운로드 (간단한 더미 구현)
+ *  엑셀/PDF 다운로드 (더미)
  ******************************************************/
 function cfExportExcel() {
   alert("엑셀 다운로드 기능은 추후 제공 예정입니다.");
