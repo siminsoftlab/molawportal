@@ -49,7 +49,7 @@ function cfAddRow() {
 }
 
 /******************************************************
- *  메인 계산 (B2 방식: 출금 단위 연이자율)
+ *  메인 계산 (FIFO B2: 출금 단위 연이자율 + 상세내역)
  ******************************************************/
 function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"));
@@ -57,6 +57,7 @@ function cfCalculate() {
   const groups = {};
   let grandIn = 0;
   let grandOut = 0;
+  const allDetails = []; // 출금별 상세내역 저장
 
   // 1) NO별 그룹 구성 + 이벤트 분리
   rows.forEach(tr => {
@@ -92,7 +93,8 @@ function cfCalculate() {
       groups[no].withdrawals.push({
         row: tr,
         outDate,
-        outAmt
+        outAmt,
+        no
       });
       groups[no].subtotalOut += outAmt;
       grandOut += outAmt;
@@ -102,7 +104,7 @@ function cfCalculate() {
     tr.querySelector(".rate").textContent = "";
   });
 
-  // 2) FIFO 매칭 + 출금 단위 연이자율 계산
+  // 2) FIFO 매칭 + 출금 단위 연이자율 + 상세내역 계산
   Object.keys(groups).forEach(no => {
     const g = groups[no];
 
@@ -111,36 +113,83 @@ function cfCalculate() {
 
     g.withdrawals.forEach(w => {
       let remainOut = w.outAmt;
-      let weightedRateSum = 0;
-      let weightedAmtSum = 0;
+      const allocations = [];
+      let totalPrincipal = 0;
 
       for (let dep of g.deposits) {
         if (remainOut <= 0) break;
         if (dep.remaining <= 0) continue;
 
         const use = Math.min(dep.remaining, remainOut);
-
-        const days = diffDays(dep.inDate, w.outDate);
-        const rate = calcRate(use, use, days) || 0;
-
-        weightedRateSum += rate * use;
-        weightedAmtSum += use;
-
         dep.remaining -= use;
         remainOut -= use;
+
+        allocations.push({
+          inDate: dep.inDate,
+          principal: use
+        });
+        totalPrincipal += use;
       }
 
-      if (weightedAmtSum > 0) {
-        const finalRate = weightedRateSum / weightedAmtSum;
-        w.row.querySelector(".days").textContent =
-          diffDays(g.deposits[0].inDate, w.outDate) + "일";
-        w.row.querySelector(".rate").textContent =
-          (finalRate * 100).toFixed(2) + "%";
-      }
+      if (totalPrincipal <= 0) return;
+
+      const interestTotal = Math.max(0, w.outAmt - totalPrincipal);
+      let weightedRateSum = 0;
+      let weightedOutSum = 0;
+      let earliestInDate = allocations[0].inDate;
+
+      const detailRows = allocations.map(a => {
+        const share = a.principal / totalPrincipal;
+        const interest = interestTotal * share;
+        const outAmt = a.principal + interest;
+        const days = diffDays(a.inDate, w.outDate);
+        const rate = calcRate(a.principal, outAmt, days) || 0;
+
+        weightedRateSum += rate * outAmt;
+        weightedOutSum += outAmt;
+
+        if (new Date(a.inDate) < new Date(earliestInDate)) {
+          earliestInDate = a.inDate;
+        }
+
+        return {
+          inDate: a.inDate,
+          principal: a.principal,
+          interest,
+          outAmt,
+          days,
+          rate
+        };
+      });
+
+      const finalRate = weightedOutSum > 0 ? weightedRateSum / weightedOutSum : 0;
+      const displayDays = diffDays(earliestInDate, w.outDate);
+
+      w.row.querySelector(".days").textContent =
+        (displayDays != null ? displayDays : "") + (displayDays != null ? "일" : "");
+      w.row.querySelector(".rate").textContent =
+        (finalRate * 100).toFixed(2) + "%";
+
+      const detailId = `detail-${no}-${w.outDate}-${w.outAmt}`;
+      w.row.dataset.detailId = detailId;
+
+      allDetails.push({
+        id: detailId,
+        no,
+        outDate: w.outDate,
+        outAmt: w.outAmt,
+        finalRate,
+        rows: detailRows
+      });
+
+      w.row.style.cursor = "pointer";
+      w.row.onclick = function () {
+        toggleDetailBlock(detailId);
+      };
     });
   });
 
-  // 3) NO별 소계 표시
+  // 3) NO별 소계 표시 (결과 기준)
   let html = "";
   Object.keys(groups).forEach(no => {
     const g = groups[no];
@@ -159,6 +208,13 @@ function cfCalculate() {
   // 4) 총합 표시
   document.getElementById("totalIn").textContent = grandIn.toLocaleString();
   document.getElementById("totalOut").textContent = grandOut.toLocaleString();
+
+  // 5) 상세내역 영역 초기화
+  const detailArea = document.getElementById("detailArea");
+  if (detailArea) {
+    detailArea.innerHTML = "";
+    detailArea.dataset.details = JSON.stringify(allDetails);
+  }
 }
 
 /******************************************************
@@ -173,6 +229,76 @@ function toggleGroup(no, event) {
       tr.classList.toggle("no-group-hidden");
     }
   });
+}
+
+/******************************************************
+ *  상세내역 아코디언 블록 토글
+ ******************************************************/
+function toggleDetailBlock(detailId) {
+  const detailArea = document.getElementById("detailArea");
+  if (!detailArea) return;
+
+  const details = JSON.parse(detailArea.dataset.details || "[]");
+  const data = details.find(d => d.id === detailId);
+  if (!data) return;
+
+  const existing = document.getElementById(detailId);
+  if (existing) {
+    existing.remove();
+    return;
+  }
+
+  const wrapper = document.createElement("div");
+  wrapper.id = detailId;
+  wrapper.className = "detail-block";
+  wrapper.innerHTML = `
+    <h4>상세내역 (NO ${data.no}, 출금 ${data.outAmt.toLocaleString()}원)</h4>
+    <table class="detail-table">
+      <thead>
+        <tr>
+          <th>출금일</th>
+          <th>출금금액</th>
+          <th>가중평균 연이자율</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>${data.outDate}</td>
+          <td>${data.outAmt.toLocaleString()}원</td>
+          <td>${(data.finalRate * 100).toFixed(2)}%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="detail-table">
+      <thead>
+        <tr>
+          <th>입금일</th>
+          <th>배정원금</th>
+          <th>배정이자</th>
+          <th>배정출금합계</th>
+          <th>이용기간(일)</th>
+          <th>개별 연이자율</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.rows
+          .map(r => `
+          <tr>
+            <td>${r.inDate}</td>
+            <td>${r.principal.toLocaleString()}원</td>
+            <td>${r.interest.toLocaleString()}원</td>
+            <td>${r.outAmt.toLocaleString()}원</td>
+            <td>${r.days != null ? r.days + "일" : ""}</td>
+            <td>${(r.rate * 100).toFixed(2)}%</td>
+          </tr>
+        `)
+          .join("")}
+      </tbody>
+    </table>
+  `;
+
+  detailArea.appendChild(wrapper);
 }
 
 /******************************************************
@@ -241,7 +367,7 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  엑셀 다운로드
+ *  엑셀 다운로드 (결과 테이블 기준)
  ******************************************************/
 function cfExportExcel() {
   const table = document.getElementById("cfTable");
@@ -249,11 +375,11 @@ function cfExportExcel() {
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.table_to_sheet(table);
   XLSX.utils.book_append_sheet(wb, ws, "연이자율");
-  XLSX.writeFile(wb, "compound_interest.xlsx");
+  XLSX.writeFile(wb, "compound_interest_result.xlsx");
 }
 
 /******************************************************
- *  PDF 다운로드
+ *  PDF 다운로드 (결과 테이블 기준)
  ******************************************************/
 function cfExportPDF() {
   const table = document.getElementById("cfTable");
@@ -284,5 +410,5 @@ function cfExportPDF() {
     headStyles: { fillColor: [40, 40, 40] }
   });
 
-  doc.save("compound_interest.pdf");
+  doc.save("compound_interest_result.pdf");
 }
