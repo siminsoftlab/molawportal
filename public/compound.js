@@ -31,6 +31,24 @@ function calcRate(inAmt, outAmt, days) {
 }
 
 /******************************************************
+ *  행 추가
+ ******************************************************/
+function cfAddRow() {
+  const tbody = document.querySelector("#cfTable tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><input type="number" class="no"></td>
+    <td><input type="date" class="inDate"></td>
+    <td><input type="number" class="inAmt"></td>
+    <td><input type="date" class="outDate"></td>
+    <td><input type="number" class="outAmt"></td>
+    <td class="days"></td>
+    <td class="rate"></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+/******************************************************
  *  메인 계산 (B2 방식: 출금 단위 연이자율)
  ******************************************************/
 function cfCalculate() {
@@ -155,4 +173,116 @@ function toggleGroup(no, event) {
       tr.classList.toggle("no-group-hidden");
     }
   });
+}
+
+/******************************************************
+ *  엑셀 업로드
+ ******************************************************/
+function cfReadExcel(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    cfLoadData(json);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/******************************************************
+ *  CSV 붙여넣기
+ ******************************************************/
+function cfParseCSV() {
+  const text = document.getElementById("csvInput")?.value.trim();
+  if (!text) return;
+  const rows = text.split("\n").map(r => r.split(","));
+  cfLoadData(rows);
+}
+
+/******************************************************
+ *  표에 데이터 로드
+ ******************************************************/
+function cfLoadData(rows) {
+  const tbody = document.querySelector("#cfTable tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  rows.forEach((r, idx) => {
+    if (idx === 0) return;
+
+    const no = r[0] || "";
+    const rawInDate = r[1];
+    const rawOutDate = r[3];
+
+    const inDate =
+      typeof rawInDate === "number" ? excelDateToYMD(rawInDate) : (rawInDate || "");
+    const outDate =
+      typeof rawOutDate === "number" ? excelDateToYMD(rawOutDate) : (rawOutDate || "");
+
+    const inAmt = r[2] || "";
+    const outAmt = r[4] || "";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="number" class="no" value="${no}"></td>
+      <td><input type="date" class="inDate" value="${inDate}"></td>
+      <td><input type="number" class="inAmt" value="${inAmt}"></td>
+      <td><input type="date" class="outDate" value="${outDate}"></td>
+      <td><input type="number" class="outAmt" value="${outAmt}"></td>
+      <td class="days"></td>
+      <td class="rate"></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/******************************************************
+ *  엑셀 다운로드
+ ******************************************************/
+function cfExportExcel() {
+  const table = document.getElementById("cfTable");
+  if (!table) return;
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.table_to_sheet(table);
+  XLSX.utils.book_append_sheet(wb, ws, "연이자율");
+  XLSX.writeFile(wb, "compound_interest.xlsx");
+}
+
+/******************************************************
+ *  PDF 다운로드
+ ******************************************************/
+function cfExportPDF() {
+  const table = document.getElementById("cfTable");
+  if (!table) return;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const head = [];
+  table.querySelectorAll("thead th").forEach(th => {
+    head.push(th.textContent.trim());
+  });
+
+  const body = [];
+  table.querySelectorAll("tbody tr").forEach(tr => {
+    const row = [];
+    tr.querySelectorAll("td").forEach(td => {
+      const input = td.querySelector("input");
+      row.push(input ? (input.value || "") : (td.textContent.trim() || ""));
+    });
+    body.push(row);
+  });
+
+  doc.autoTable({
+    head: [head],
+    body,
+    styles: { fontSize: 8 },
+    headStyles: { fillColor: [40, 40, 40] }
+  });
+
+  doc.save("compound_interest.pdf");
 }
