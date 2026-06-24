@@ -233,6 +233,26 @@ function cfAddRow() {
   tbody.appendChild(tr);
 }
 
+function buildDetailByDeposit(deposits, withdrawals, fifoAssignments) {
+  // 입금별로 detailRows를 만들어 반환
+  return deposits.map(dep => {
+    const relatedAssignments = fifoAssignments.filter(f => f.depId === dep.depId);
+
+    const detailRows = relatedAssignments.map(assign => {
+      return {
+        outDate: assign.outDate,
+        burdenAmt: assign.assign,   // 실제 출금에 부담된 금액
+        days: assign.days           // 해당 기간 일수
+      };
+    });
+
+    return {
+      depId: dep.depId,
+      detailRows
+    };
+  });
+}
+
 // compound.js 맨 아래에 추가
 window.cfReadExcel = cfReadExcel;
 //window.cfParseCSV = cfParseCSV;
