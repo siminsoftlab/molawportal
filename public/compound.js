@@ -19,7 +19,7 @@ function cfAddRow() {
 }
 
 // -------------------------------
-// 날짜 차이 계산
+// 날짜 차이 계산 (입금일 → 출금일)
 // -------------------------------
 function diffDays(a, b) {
   if (!a || !b) return null;
@@ -34,52 +34,35 @@ function diffDays(a, b) {
 function calcRate(totalIn, totalOut, days) {
   if (!totalIn || !totalOut || !days || days <= 0) return null;
   const ratio = totalOut / totalIn;
+  if (ratio <= 0) return null;
   return Math.pow(ratio, 365 / days) - 1;
 }
 
 // -------------------------------
-// 메인 계산
+// 메인 계산 (금융위 기준 FIFO, 입금일 기준 이용기간)
 // -------------------------------
 function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"));
 
+  // NO별 그룹
   const groups = {};
 
-  rows.forEach(tr => {
-    const no = tr.querySelector(".no").value.trim();
-    const inDate = tr.querySelector(".inDate").value;
-    const inAmt = Number(tr.querySelector(".inAmt").value || 0);
-    const outDate = tr.querySelector(".outDate").value;
-    const outAmt = Number(tr.querySelector(".outAmt").value || 0);
-
-    if (!no) return;
+  rows.forEach((tr, idx) => {
+    const no = (tr.querySelector(".no")?.value || "").toString().trim() || "1";
+    const inDate = tr.querySelector(".inDate")?.value || "";
+    const inAmt = Number(tr.querySelector(".inAmt")?.value || 0);
+    const outDate = tr.querySelector(".outDate")?.value || "";
+    const outAmt = Number(tr.querySelector(".outAmt")?.value || 0);
 
     if (!groups[no]) {
       groups[no] = {
         rows: [],
-        totalIn: 0,
-        totalOut: 0,
-        firstInDate: null,
-        lastOutDate: null
+        deposits: [], // FIFO 큐
+        withdrawals: []
       };
     }
 
-    const g = groups[no];
-    g.rows.push(tr);
-
-    if (inAmt > 0) {
-      g.totalIn += inAmt;
-      if (inDate && (!g.firstInDate || new Date(inDate) < new Date(g.firstInDate))) {
-        g.firstInDate = inDate;
-      }
-    }
-
-    if (outAmt > 0) {
-      g.totalOut += outAmt;
-      if (outDate && (!g.lastOutDate || new Date(outDate) > new Date(g.lastOutDate))) {
-        g.lastOutDate = outDate;
-      }
-    }
+    groups[no].rows.push({ tr, idx, inDate, inAmt, outDate, outAmt });
   });
 
   let grandIn = 0;
@@ -88,46 +71,169 @@ function cfCalculate() {
   Object.keys(groups).forEach(no => {
     const g = groups[no];
 
-    grandIn += g.totalIn;
-    grandOut += g.totalOut;
+    // 1) 입금·출금 데이터 수집
+    g.rows.forEach(item => {
+      const { tr, inDate, inAmt, outDate, outAmt } = item;
 
-    const days = diffDays(g.firstInDate, g.lastOutDate);
-    const rate = calcRate(g.totalIn, g.totalOut, days);
+      if (inAmt > 0 && inDate) {
+        g.deposits.push({
+          inDate,
+          inAmt,
+          remaining: inAmt,
+          totalOut: 0,
+          lastOutDate: null,
+          row: tr
+        });
+        grandIn += inAmt;
+      }
 
-    g.rows.forEach((tr, idx) => {
+      if (outAmt > 0 && outDate) {
+        g.withdrawals.push({
+          outDate,
+          outAmt
+        });
+        grandOut += outAmt;
+      }
+    });
+
+    // 입금·출금은 이미 시간 순으로 입력된다고 가정 (필요시 정렬 가능)
+    // g.deposits.sort((a, b) => new Date(a.inDate) - new Date(b.inDate));
+    // g.withdrawals.sort((a, b) => new Date(a.outDate) - new Date(b.outDate));
+
+    // 2) FIFO로 입금 → 출금 매칭
+    g.withdrawals.forEach(w => {
+      let remainOut = w.outAmt;
+
+      while (remainOut > 0 && g.deposits.length > 0) {
+        const dep = g.deposits[0];
+        const use = Math.min(dep.remaining, remainOut);
+
+        dep.remaining -= use;
+        dep.totalOut += use;
+        dep.lastOutDate = w.outDate;
+        remainOut -= use;
+
+        if (dep.remaining <= 0.0000001) {
+          dep.remaining = 0;
+          // 완전히 상환된 입금은 큐에서 제거
+          g.deposits.shift();
+        }
+      }
+    });
+
+    // 3) 각 입금 건별로 이용기간·연이자율 계산 (금융위 기준: 입금일 → 마지막 출금일)
+    g.rows.forEach(item => {
+      const { tr } = item;
       const daysCell = tr.querySelector(".days");
       const rateCell = tr.querySelector(".rate");
+      if (daysCell) daysCell.textContent = "";
+      if (rateCell) rateCell.textContent = "";
+    });
 
-      if (idx === 0 && days != null && rate != null) {
+    // 입금 큐는 일부만 상환된 것들이 남아 있을 수 있으므로,
+    // 원래 입금 리스트를 다시 만들어서 처리
+    const allDeposits = [];
+
+    g.rows.forEach(item => {
+      const { tr, inDate, inAmt } = item;
+      if (inAmt > 0 && inDate) {
+        allDeposits.push({
+          tr,
+          inDate,
+          inAmt
+        });
+      }
+    });
+
+    // 매칭 과정에서 사용된 입금 정보는 g.deposits가 아니라
+    // 매칭 전 상태를 기준으로 다시 계산해야 하므로,
+    // 매칭 시점에 별도 맵을 만들어두는 것이 안전하다.
+    // 여기서는 간단히 다시 매칭용 맵을 구성한다.
+    const depMap = new Map();
+
+    g.rows.forEach(item => {
+      const { tr, inDate, inAmt } = item;
+      if (inAmt > 0 && inDate) {
+        const key = tr; // DOM 요소를 키로 사용
+        depMap.set(key, {
+          inDate,
+          inAmt,
+          remaining: inAmt,
+          totalOut: 0,
+          lastOutDate: null
+        });
+      }
+    });
+
+    // 다시 FIFO 매칭 (이번에는 각 행별 입금 기준으로 기록)
+    const depQueue = [];
+    depMap.forEach((v, k) => {
+      depQueue.push({ key: k, data: v });
+    });
+    // 입력 순서대로 들어가 있으므로 별도 정렬은 생략
+
+    g.withdrawals.forEach(w => {
+      let remainOut = w.outAmt;
+
+      while (remainOut > 0 && depQueue.length > 0) {
+        const dep = depQueue[0].data;
+        const use = Math.min(dep.remaining, remainOut);
+
+        dep.remaining -= use;
+        dep.totalOut += use;
+        dep.lastOutDate = w.outDate;
+        remainOut -= use;
+
+        if (dep.remaining <= 0.0000001) {
+          dep.remaining = 0;
+          depQueue.shift();
+        }
+      }
+    });
+
+    // 각 입금 행에 결과 반영
+    depMap.forEach((dep, keyTr) => {
+      const { inDate, inAmt, totalOut, lastOutDate } = dep;
+      if (!lastOutDate || totalOut <= 0) return;
+
+      const days = diffDays(inDate, lastOutDate);
+      const rate = calcRate(inAmt, totalOut, days);
+
+      const daysCell = keyTr.querySelector(".days");
+      const rateCell = keyTr.querySelector(".rate");
+
+      if (daysCell && days != null) {
         daysCell.textContent = days + "일";
+      }
+      if (rateCell && rate != null) {
         rateCell.textContent = (rate * 100).toFixed(2) + "%";
-      } else {
-        daysCell.textContent = "";
-        rateCell.textContent = "";
       }
     });
   });
 
-  document.getElementById("totalIn").textContent = grandIn.toLocaleString();
-  document.getElementById("totalOut").textContent = grandOut.toLocaleString();
+  // 총합 표시
+  const totalInEl = document.getElementById("totalIn");
+  const totalOutEl = document.getElementById("totalOut");
+  if (totalInEl) totalInEl.textContent = grandIn.toLocaleString();
+  if (totalOutEl) totalOutEl.textContent = grandOut.toLocaleString();
 }
 
 // -------------------------------
 // 엑셀(.xlsx) 업로드
 // -------------------------------
-function readExcel(event) {
+function cfReadExcel(event) {
   const file = event.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     const data = new Uint8Array(e.target.result);
     const workbook = XLSX.read(data, { type: "array" });
 
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-    loadData(json);
+    cfLoadData(json);
   };
   reader.readAsArrayBuffer(file);
 }
@@ -135,19 +241,20 @@ function readExcel(event) {
 // -------------------------------
 // CSV 붙여넣기
 // -------------------------------
-function parseCSV() {
-  const text = document.getElementById("csvInput").value.trim();
+function cfParseCSV() {
+  const text = document.getElementById("csvInput")?.value.trim();
   if (!text) return;
 
   const rows = text.split("\n").map(r => r.split(","));
-  loadData(rows);
+  cfLoadData(rows);
 }
 
 // -------------------------------
 // 표에 데이터 로드
 // -------------------------------
-function loadData(rows) {
+function cfLoadData(rows) {
   const tbody = document.querySelector("#cfTable tbody");
+  if (!tbody) return;
   tbody.innerHTML = "";
 
   rows.forEach((r, idx) => {
@@ -167,6 +274,9 @@ function loadData(rows) {
   });
 }
 
+// -------------------------------
+// 엑셀 다운로드
+// -------------------------------
 function cfExportExcel() {
   const table = document.getElementById("cfTable");
   if (!table) return;
@@ -177,6 +287,10 @@ function cfExportExcel() {
   XLSX.utils.book_append_sheet(wb, ws, "연이자율");
   XLSX.writeFile(wb, "compound_interest.xlsx");
 }
+
+// -------------------------------
+// PDF 다운로드
+// -------------------------------
 function cfExportPDF() {
   const table = document.getElementById("cfTable");
   if (!table) return;
