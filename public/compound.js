@@ -105,9 +105,7 @@ let globalDetails = [];
  ******************************************************/
 function cfCalculate() {
 
-  /******************************************************
-   *  1) 원본 rows 읽기 (결과테이블은 이 rows 기준)
-   ******************************************************/
+  // 1) 원본 rows 읽기
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
       rowId: idx,
@@ -118,54 +116,100 @@ function cfCalculate() {
       outDate: tr.querySelector(".outDate")?.value || "",
       outAmt: Number(tr.querySelector(".outAmt")?.value || 0)
     }))
-    .filter(r => r.no && (r.inAmt > 0 || r.outAmt > 0));
+    .filter(r => r.no);
 
   if (!rows.length) return;
 
-  /******************************************************
-   *  2) 상세(detailRows) = 출금 기준 1:N 생성
-   ******************************************************/
+  // 2) NO별 그룹화
+  const grouped = new Map();
+  rows.forEach(r => {
+    if (!grouped.has(r.no)) grouped.set(r.no, []);
+    grouped.get(r.no).push(r);
+  });
+
+  const resultRows = [];
   const detailRows = [];
 
-  rows.forEach(r => {
-    // 출금이 여러 번 발생할 수 있는 구조라면 여기서 분해
-    // 지금은 원본 1줄 = 출금 1줄이므로 그대로 1:N 구조 유지
-    const days = (r.inDate && r.outDate) ? diffDays(r.inDate, r.outDate) : 0;
-    const annualYield = (r.inAmt > 0 && r.outAmt > 0 && days > 0)
-      ? calcAnnualYieldDeposit(r.inAmt, r.outAmt, days)
-      : 0;
+  grouped.forEach(list => {
 
-    detailRows.push({
-      ...r,
-      days,
-      annualYield
+    // 날짜 순 정렬
+    list.sort((a, b) =>
+      new Date(a.inDate || a.outDate) - new Date(b.inDate || b.outDate)
+    );
+
+    // 입금 있는 행만 구간 시작점
+    const deposits = list.filter(r => r.inAmt > 0);
+
+    deposits.forEach((dep, idx) => {
+      const nextDep = deposits[idx + 1];
+      const startDate = dep.inDate;
+      const endBoundary = nextDep ? nextDep.inDate : null;
+
+      // 이 입금 이후 ~ 다음 입금 전까지 출금들
+      const outs = list.filter(r => {
+        if (!r.outDate || r.outAmt <= 0) return false;
+        if (new Date(r.outDate) < new Date(startDate)) return false;
+        if (endBoundary && new Date(r.outDate) >= new Date(endBoundary)) return false;
+        return true;
+      });
+
+      // 상세(detailRows) 생성
+      outs.forEach(o => {
+        const days = (dep.inDate && o.outDate) ? diffDays(dep.inDate, o.outDate) : 0;
+        const annualYield = (dep.inAmt > 0 && o.outAmt > 0 && days > 0)
+          ? calcAnnualYieldDeposit(dep.inAmt, o.outAmt, days)
+          : 0;
+
+        detailRows.push({
+          depNo: dep.no,
+          inDate: dep.inDate,
+          inAmt: dep.inAmt,
+          outDate: o.outDate,
+          outAmt: o.outAmt,
+          days,
+          annualYield
+        });
+      });
+
+      // 출금 합산
+      const totalOut = outs.reduce((s, r) => s + r.outAmt, 0);
+
+      // 마지막 출금일
+      const lastOutDate = outs.length
+        ? outs.reduce((max, r) =>
+            new Date(r.outDate) > new Date(max) ? r.outDate : max,
+            outs[0].outDate
+          )
+        : "";
+
+      // 상세 합산/평균
+      const detailsForDep = detailRows.filter(d =>
+        d.depNo === dep.no &&
+        new Date(d.outDate) >= new Date(startDate) &&
+        (!endBoundary || new Date(d.outDate) < new Date(endBoundary))
+      );
+
+      const totalDays = detailsForDep.reduce((s, d) => s + d.days, 0);
+      const avgYield =
+        detailsForDep.length
+          ? detailsForDep.reduce((s, d) => s + d.annualYield, 0) / detailsForDep.length
+          : 0;
+
+      // 결과테이블 1줄 생성
+      resultRows.push({
+        no: dep.no,
+        inDate: dep.inDate,
+        inAmt: dep.inAmt,
+        repayDate: dep.repayDate,
+        outDate: lastOutDate,
+        outAmt: totalOut,
+        days: totalDays,
+        annualYield: avgYield
+      });
     });
   });
 
-  globalDetails = detailRows;
-
-  /******************************************************
-   *  3) 결과(resultTable) = 원본 rows 기준
-   *     days = 상세 days 합
-   *     annualYield = 상세 annualYield 평균
-   ******************************************************/
-  const resultRows = rows.map(r => {
-    const details = detailRows.filter(d => d.rowId === r.rowId);
-
-    const totalDays = details.reduce((s, d) => s + d.days, 0);
-    const avgYield = details.reduce((s, d) => s + d.annualYield, 0)
-                     / (details.length || 1);
-
-    return {
-      ...r,
-      days: totalDays,
-      annualYield: avgYield
-    };
-  });
-
-  /******************************************************
-   *  4) 결과테이블 렌더링 (원본 rows 그대로)
-   ******************************************************/
+  // 3) 결과테이블 렌더링
   const resultTbody = document.querySelector("#resultTable tbody");
   resultTbody.innerHTML = "";
 
@@ -184,9 +228,7 @@ function cfCalculate() {
     resultTbody.appendChild(tr);
   });
 
-  /******************************************************
-   *  5) 상세 테이블 렌더링
-   ******************************************************/
+  // 4) 상세 테이블 렌더링
   const detailArea = document.querySelector("#detailArea");
   detailArea.innerHTML = `
     <table class="cf-table">
@@ -195,7 +237,6 @@ function cfCalculate() {
           <th>NO</th>
           <th>입금일자</th>
           <th>입금금액</th>
-          <th>상환일자</th>
           <th>출금일자</th>
           <th>출금금액</th>
           <th>이용기간</th>
@@ -205,20 +246,20 @@ function cfCalculate() {
       <tbody>
         ${detailRows.map(r => `
           <tr>
-            <td>${r.no}</td>
+            <td>${r.depNo}</td>
             <td>${r.inDate}</td>
             <td>${r.inAmt.toLocaleString()}</td>
-            <td>${r.repayDate}</td>
             <td>${r.outDate}</td>
             <td>${r.outAmt.toLocaleString()}</td>
-            <td>${r.days ? r.days + "일" : ""}</td>
-            <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
+            <td>${r.days}일</td>
+            <td>${r.annualYield.toFixed(4)}</td>
           </tr>
         `).join("")}
       </tbody>
     </table>
   `;
 }
+
 
 /******************************************************
  *  export
