@@ -149,7 +149,10 @@ function cfCalculate() {
       const outs = list.filter(r => {
         if (!r.outDate || r.outAmt <= 0) return false;
         if (new Date(r.outDate) < new Date(startDate)) return false;
-        if (endBoundary && new Date(r.outDate) >= new Date(endBoundary)) return false;
+
+        // ⭐ 핵심 수정: 다음 입금일자와 같은 날짜의 출금은 포함해야 함
+        if (endBoundary && new Date(r.outDate) > new Date(endBoundary)) return false;
+
         return true;
       });
 
@@ -186,7 +189,7 @@ function cfCalculate() {
       const detailsForDep = detailRows.filter(d =>
         d.depNo === dep.no &&
         new Date(d.outDate) >= new Date(startDate) &&
-        (!endBoundary || new Date(d.outDate) < new Date(endBoundary))
+        (!endBoundary || new Date(d.outDate) <= new Date(endBoundary))
       );
 
       const totalDays = detailsForDep.reduce((s, d) => s + d.days, 0);
@@ -209,7 +212,7 @@ function cfCalculate() {
     });
   });
 
-  // 3) 결과테이블 렌더링
+  // 3) 결과테이블 렌더링 (⭐ 상환일자 포함)
   const resultTbody = document.querySelector("#resultTable tbody");
   resultTbody.innerHTML = "";
 
@@ -219,7 +222,7 @@ function cfCalculate() {
       <td>${r.no}</td>
       <td>${r.inDate}</td>
       <td>${r.inAmt.toLocaleString()}</td>
-      <td>${r.repayDate}</td>
+      <td>${r.repayDate}</td>   <!-- ⭐ 상환일자 표시 -->
       <td>${r.outDate}</td>
       <td>${r.outAmt.toLocaleString()}</td>
       <td>${r.days ? r.days + "일" : ""}</td>
@@ -229,7 +232,7 @@ function cfCalculate() {
     resultTbody.appendChild(tr);
   });
 
-  // 4) 상세 테이블 렌더링
+  // 4) 상세 테이블 렌더링 (⭐ 2025-11-27 상세 포함됨)
   const detailArea = document.querySelector("#detailArea");
   detailArea.innerHTML = `
     <table class="cf-table">
@@ -260,6 +263,7 @@ function cfCalculate() {
     </table>
   `;
 }
+
 
 /******************************************************
  *  export
