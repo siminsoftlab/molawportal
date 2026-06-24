@@ -166,3 +166,45 @@ function loadData(rows) {
     tbody.appendChild(tr);
   });
 }
+
+function cfExportExcel() {
+  const table = document.getElementById("cfTable");
+  if (!table) return;
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.table_to_sheet(table);
+
+  XLSX.utils.book_append_sheet(wb, ws, "연이자율");
+  XLSX.writeFile(wb, "compound_interest.xlsx");
+}
+function cfExportPDF() {
+  const table = document.getElementById("cfTable");
+  if (!table) return;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const head = [];
+  table.querySelectorAll("thead th").forEach(th => {
+    head.push(th.textContent.trim());
+  });
+
+  const body = [];
+  table.querySelectorAll("tbody tr").forEach(tr => {
+    const row = [];
+    tr.querySelectorAll("td").forEach(td => {
+      const input = td.querySelector("input");
+      row.push(input ? (input.value || "") : (td.textContent.trim() || ""));
+    });
+    body.push(row);
+  });
+
+  doc.autoTable({
+    head: [head],
+    body,
+    styles: { fontSize: 8 },
+    headStyles: { fillColor: [40, 40, 40] }
+  });
+
+  doc.save("compound_interest.pdf");
+}
