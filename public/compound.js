@@ -40,7 +40,7 @@ function calcRate(totalIn, totalOut, days) {
 // -------------------------------
 // 메인 계산
 // -------------------------------
-function calculateCF() {
+function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"));
 
   const groups = {};
