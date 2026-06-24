@@ -217,3 +217,10 @@ function cfCalculate() {
     };
   });
 
+// compound.js 맨 아래에 추가
+window.cfReadExcel = cfReadExcel;
+window.cfParseCSV = cfParseCSV;
+window.cfAddRow = cfAddRow;
+window.cfCalculate = cfCalculate;
+window.cfExportExcel = cfExportExcel;
+window.cfExportPDF = cfExportPDF;
