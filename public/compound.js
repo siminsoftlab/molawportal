@@ -1,5 +1,5 @@
 /******************************************************
- *  날짜 변환 및 계산 유틸
+ *  날짜 계산 유틸
  ******************************************************/
 function excelDateToYMD(serial) {
   if (!serial || isNaN(serial)) return "";
@@ -16,8 +16,19 @@ function diffDays(a, b) {
   return Math.max(1, Math.floor((new Date(b) - new Date(a)) / (1000 * 60 * 60 * 24)));
 }
 
-function annualRateSimple(inAmt, outAmt, days) {
-  const periodRate = (outAmt - inAmt) / inAmt;
+/******************************************************
+ *  이자 계산
+ ******************************************************/
+function calcNormalInterest(principal, rate, days) {
+  return principal * rate * (days / 365);
+}
+
+function calcLateInterest(unpaid, rate, days) {
+  return unpaid * rate * (days / 365);
+}
+
+function calcYieldAnnual(inAmt, totalOut, days) {
+  const periodRate = (totalOut - inAmt) / inAmt;
   return periodRate * (365 / days);
 }
 
@@ -40,7 +51,7 @@ function cfReadExcel(event) {
 }
 
 /******************************************************
- *  CSV/엑셀 데이터 테이블 로드
+ *  테이블 로드
  ******************************************************/
 function cfLoadData(rows) {
   const tbody = document.querySelector("#cfTable tbody");
@@ -71,9 +82,12 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  메인 계산 — FIFO + 총출금 기준 연이자율 + 입금 1행 출력
+ *  메인 계산 — 정상 + 지연 이자 + FIFO
  ******************************************************/
 function cfCalculate() {
+  const normalRate = Number(document.getElementById("annualRate").value || 0) / 100;
+  const lateRate = Number(document.getElementById("lateRate").value || 0) / 100;
+
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map(tr => ({
       no: tr.querySelector(".no").value,
@@ -84,15 +98,14 @@ function cfCalculate() {
     }))
     .filter(r => r.no);
 
-  // 날짜순 정렬
   rows.sort((a, b) => {
     const da = a.inDate || a.outDate;
     const db = b.inDate || b.outDate;
     return new Date(da) - new Date(db);
   });
 
-  const fifoQueue = [];          // FIFO 매칭용 큐
-  const depositRecords = [];     // 결과테이블용 전체 입금 목록
+  const fifoQueue = [];
+  const depositRecords = [];
   const detailList = [];
 
   rows.forEach(r => {
@@ -101,11 +114,13 @@ function cfCalculate() {
         no: r.no,
         inDate: r.inDate,
         inAmt: r.inAmt,
-        remaining: r.inAmt,
+        principal: r.inAmt,
+        unpaid: 0,
+        lastDate: r.inDate,
         withdrawals: []
       };
       fifoQueue.push(dep);
-      depositRecords.push(dep); // ← 결과테이블용으로 반드시 저장
+      depositRecords.push(dep);
     }
 
     if (r.outAmt > 0 && r.outDate) {
@@ -113,37 +128,59 @@ function cfCalculate() {
 
       while (amt > 0 && fifoQueue.length > 0) {
         const dep = fifoQueue[0];
-        const assign = Math.min(dep.remaining, amt);
+
+        const days = diffDays(dep.lastDate, r.outDate);
+
+        const normalInterest = calcNormalInterest(dep.principal, normalRate, days);
+        const lateInterest = dep.unpaid > 0 ? calcLateInterest(dep.unpaid, lateRate, days) : 0;
+
+        let remainingOut = amt;
+
+        remainingOut -= normalInterest;
+        remainingOut -= lateInterest;
+
+        dep.principal -= Math.max(0, remainingOut);
+
+        if (dep.principal < 0) {
+          dep.unpaid = Math.abs(dep.principal);
+          dep.principal = 0;
+        } else {
+          dep.unpaid = 0;
+        }
 
         dep.withdrawals.push({
           outDate: r.outDate,
-          outAmt: assign
+          outAmt: amt,
+          days,
+          normalInterest,
+          lateInterest,
+          principalAfter: dep.principal,
+          unpaidAfter: dep.unpaid
         });
 
-        dep.remaining -= assign;
-        amt -= assign;
+        dep.lastDate = r.outDate;
 
-        if (dep.remaining <= 0) {
+        amt = 0;
+
+        if (dep.principal <= 0 && dep.unpaid === 0) {
           fifoQueue.shift();
         }
       }
     }
   });
 
-  // 결과 생성 (모든 입금 1행씩 출력)
   const results = depositRecords.map(dep => {
     const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
     const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals.at(-1).outDate : dep.inDate;
     const days = diffDays(dep.inDate, lastOutDate);
-    const annual = annualRateSimple(dep.inAmt, totalOut, days);
+    const annualYield = calcYieldAnnual(dep.inAmt, totalOut, days);
 
     detailList.push({
-      id: `detail-${dep.no}-${dep.inDate}`,
       no: dep.no,
       inDate: dep.inDate,
       inAmt: dep.inAmt,
       days,
-      annual,
+      annualYield,
       withdrawals: dep.withdrawals
     });
 
@@ -154,7 +191,7 @@ function cfCalculate() {
       outDate: lastOutDate,
       totalOut,
       days,
-      annual
+      annualYield
     };
   });
 
@@ -178,7 +215,7 @@ function renderResults(results) {
       <td>${r.outDate}</td>
       <td>${r.totalOut.toLocaleString()}원</td>
       <td>${r.days}일</td>
-      <td>${(r.annual * 100).toFixed(2)}%</td>
+      <td>${(r.annualYield * 100).toFixed(2)}%</td>
       <td><button onclick="showDetail('${r.no}','${r.inDate}')">상세</button></td>
     `;
     tbody.appendChild(tr);
@@ -205,32 +242,35 @@ function showDetail(no, inDate) {
       <tr><th>입금일자</th><td>${data.inDate}</td></tr>
       <tr><th>입금금액</th><td>${data.inAmt.toLocaleString()}원</td></tr>
       <tr><th>전체 이용기간</th><td>${data.days}일</td></tr>
-      <tr><th>연이자율</th><td>${(data.annual * 100).toFixed(2)}%</td></tr>
+      <tr><th>입금대비 출금 연이자율</th><td>${(data.annualYield * 100).toFixed(2)}%</td></tr>
     </table>
 
-    <h4>출금내역</h4>
+    <h4>출금·이자·잔액 내역</h4>
     <table class="detail-table">
       <thead>
         <tr>
           <th>출금일자</th>
           <th>출금금액</th>
           <th>이용기간</th>
-          <th>연이자율</th>
+          <th>정상이자</th>
+          <th>지연이자</th>
+          <th>출금 후 잔액</th>
+          <th>미납원금</th>
         </tr>
       </thead>
       <tbody>
   `;
 
   data.withdrawals.forEach(w => {
-    const days = diffDays(data.inDate, w.outDate);
-    const annual = annualRateSimple(data.inAmt, w.outAmt, days);
-
     html += `
       <tr>
         <td>${w.outDate}</td>
         <td>${w.outAmt.toLocaleString()}원</td>
-        <td>${days}일</td>
-        <td>${(annual * 100).toFixed(2)}%</td>
+        <td>${w.days}일</td>
+        <td>${Math.round(w.normalInterest).toLocaleString()}원</td>
+        <td>${Math.round(w.lateInterest).toLocaleString()}원</td>
+        <td>${Math.round(w.principalAfter).toLocaleString()}원</td>
+        <td>${Math.round(w.unpaidAfter).toLocaleString()}원</td>
       </tr>
     `;
   });
