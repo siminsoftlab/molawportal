@@ -1,7 +1,7 @@
 // -------------------------------
 // 행 추가
 // -------------------------------
-function cfaddRow() {
+function cfAddRow() {
   const tbody = document.querySelector("#cfTable tbody");
   const tr = document.createElement("tr");
 
