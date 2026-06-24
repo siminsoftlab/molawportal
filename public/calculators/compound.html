@@ -89,14 +89,7 @@
 
 <div class="page-wrap">
   <div class="container">
-    <h2>📈 복리 연이자율 계산기</h2>
-
-    <div class="btn-area">
-      <button onclick="cfAddRow()" class="app-btn-primary">행 추가</button>
-      <button onclick="checkAccess(() => cfCalculate())" class="app-btn-primary">연이자율 계산</button>
-      <button onclick="cfExportExcel()" class="app-btn-secondary">엑셀 다운로드</button>
-      <button onclick="cfExportPDF()" class="app-btn-secondary">PDF 다운로드</button>
-    </div>
+    <h2>📈 복리 연이자율 계산기</h2>  
 
     <!-- 엑셀 업로드 -->
     <div class="upload-area">
@@ -110,7 +103,12 @@
       <textarea id="csvInput" placeholder="NO,입금일자,입금금액,출금일자,출금금액 형식으로 붙여넣기"></textarea>
       <button onclick="cfParseCSV()">CSV 불러오기</button>
     </div>
-
+    <div class="btn-area">
+      <button onclick="cfAddRow()" class="app-btn-primary">행 추가</button>
+      <button onclick="checkAccess(() => cfCalculate())" class="app-btn-primary">연이자율 계산</button>
+      <button onclick="cfExportExcel()" class="app-btn-secondary">엑셀 다운로드</button>
+      <button onclick="cfExportPDF()" class="app-btn-secondary">PDF 다운로드</button>
+    </div>
     <!-- ⭐ NO별 소계 영역 -->
     <div id="subtotalArea" class="subtotal-wrap"></div>
 
