@@ -61,31 +61,46 @@ function calcRate(totalIn, totalOut, days) {
 function cfCalculate() {
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"));
 
-  const groups = {};
   let grandIn = 0;
   let grandOut = 0;
 
-  /********** 1) NO 그룹별로 데이터 수집 **********/
   rows.forEach(tr => {
-    const no = (tr.querySelector(".no")?.value || "").trim() || "1";
     const inDate = tr.querySelector(".inDate")?.value || "";
-    const inAmt = Number(tr.querySelector(".inAmt")?.value || 0);
+    const inAmt  = Number(tr.querySelector(".inAmt")?.value || 0);
     const outDate = tr.querySelector(".outDate")?.value || "";
-    const outAmt = Number(tr.querySelector(".outAmt")?.value || 0);
+    const outAmt  = Number(tr.querySelector(".outAmt")?.value || 0);
 
-    if (!groups[no]) {
-      groups[no] = {
-        rows: [],
-        deposits: [],
-        withdrawals: []
-      };
-    }
+    const daysCell = tr.querySelector(".days");
+    const rateCell = tr.querySelector(".rate");
 
-    groups[no].rows.push({ tr, inDate, inAmt, outDate, outAmt });
-
+    // 총합 집계
     if (inAmt > 0) grandIn += inAmt;
     if (outAmt > 0) grandOut += outAmt;
+
+    // 기본적으로 초기화
+    if (daysCell) daysCell.textContent = "";
+    if (rateCell) rateCell.textContent = "";
+
+    // 입금 + 출금이 모두 있는 행만 계산
+    if (inAmt > 0 && outAmt > 0 && inDate && outDate) {
+      const days = diffDays(inDate, outDate);
+      const rate = calcRate(inAmt, outAmt, days); // 출금 / 입금 기준
+
+      if (daysCell && days != null) {
+        daysCell.textContent = days + "일";
+      }
+      if (rateCell && rate != null) {
+        rateCell.textContent = (rate * 100).toFixed(2) + "%";
+      }
+    }
   });
+
+  // 총합 표시
+  const totalInEl = document.getElementById("totalIn");
+  const totalOutEl = document.getElementById("totalOut");
+  if (totalInEl) totalInEl.textContent = grandIn.toLocaleString();
+  if (totalOutEl) totalOutEl.textContent = grandOut.toLocaleString();
+}
 
   /********** 2) 그룹별 FIFO 매칭 **********/
   Object.keys(groups).forEach(no => {
