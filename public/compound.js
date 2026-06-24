@@ -191,36 +191,52 @@ function cfCalculate() {
 
   /*************** 4) 결과테이블 계산 (첫 출금일자 + 금액 표시) ***************/
   const results = deposits.map(dep => {
-    const detail = detailByDeposit.find(d => d.depId === dep.depId);
-    const burdened = detail.detailRows.filter(r => r.burdenAmt > 0);
+  const detail = detailByDeposit.find(d => d.depId === dep.depId);
+  const burdened = detail.detailRows.filter(r => r.burdenAmt > 0);
 
-    let firstOutDate = "-";
-    let firstOutAmt = 0;
-    if (burdened.length > 0) {
-      firstOutDate = burdened[0].outDate;
-      firstOutAmt = burdened[0].burdenAmt;
-    }
+  let firstOutDate = "-";
+  let firstOutAmt = 0;
+  if (burdened.length > 0) {
+    firstOutDate = burdened[0].outDate;
+    firstOutAmt = burdened[0].burdenAmt;
+  }
 
-    const burdenDays = burdened.reduce((s, r) => s + r.days, 0);
-    const annualYield = calcYieldAnnual(dep.inAmt, firstOutAmt, burdenDays);
+  const burdenDays = burdened.reduce((s, r) => s + r.days, 0);
+  const annualYield = calcYieldAnnual(dep.inAmt, firstOutAmt, burdenDays);
 
-    return {
-      depId: dep.depId,
-      no: dep.no,
-      inDate: dep.inDate,
-      inAmt: dep.inAmt,
-      outDate: firstOutDate,
-      totalOut: firstOutAmt,
-      totalDays: burdenDays,
-      annualYield,
-      detailRows: detail.detailRows
-    };
-  });
-} // ← cfCalculate 함수 닫기
+  return {
+    depId: dep.depId,
+    no: dep.no,
+    inDate: dep.inDate,
+    inAmt: dep.inAmt,
+    outDate: firstOutDate,
+    totalOut: firstOutAmt,
+    totalDays: burdenDays,
+    annualYield,
+    detailRows: detail.detailRows
+  };
+});
+} // ← 여기서 cfCalculate 함수 닫기
+
+function cfAddRow() {
+  const tbody = document.querySelector("#cfTable tbody");
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td><input type="number" class="no" value=""></td>
+    <td><input type="date" class="inDate" value=""></td>
+    <td><input type="number" class="inAmt" value=""></td>
+    <td><input type="date" class="outDate" value=""></td>
+    <td><input type="number" class="outAmt" value=""></td>
+  `;
+
+  tbody.appendChild(tr);
+}
+
 // compound.js 맨 아래에 추가
 window.cfReadExcel = cfReadExcel;
-window.cfParseCSV = cfParseCSV;
+//window.cfParseCSV = cfParseCSV;
 window.cfAddRow = cfAddRow;
 window.cfCalculate = cfCalculate;
-window.cfExportExcel = cfExportExcel;
-window.cfExportPDF = cfExportPDF;
+//window.cfExportExcel = cfExportExcel;
+//window.cfExportPDF = cfExportPDF;
