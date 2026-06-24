@@ -216,7 +216,7 @@ function cfCalculate() {
       detailRows: detail.detailRows
     };
   });
-
+} // ← cfCalculate 함수 닫기
 // compound.js 맨 아래에 추가
 window.cfReadExcel = cfReadExcel;
 window.cfParseCSV = cfParseCSV;
