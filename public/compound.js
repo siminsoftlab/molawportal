@@ -19,7 +19,6 @@ function diffDays(a, b) {
   return Math.max(1, Math.floor((db - da) / (1000 * 60 * 60 * 24)));
 }
 
-// 입금이 있을 때 연이자율: (출금금액 - 입금금액) / 입금금액 * (365 / 이용일수)
 function calcAnnualYieldDeposit(inAmt, outAmt, days) {
   if (inAmt <= 0 || outAmt <= 0 || days <= 0) return 0;
   const periodRate = (outAmt - inAmt) / inAmt;
@@ -27,7 +26,7 @@ function calcAnnualYieldDeposit(inAmt, outAmt, days) {
 }
 
 /******************************************************
- *  엑셀 업로드
+ *  CSV / 엑셀 로드
  ******************************************************/
 function cfReadExcel(event) {
   const file = event.target.files[0];
@@ -44,10 +43,6 @@ function cfReadExcel(event) {
   reader.readAsArrayBuffer(file);
 }
 
-/******************************************************
- *  CSV 붙여넣기
- *  형식: NO,입금일자,입금금액,상환일자,출금일자,출금금액
- ******************************************************/
 function cfParseCSV() {
   const text = document.getElementById("csvInput").value.trim();
   if (!text) return;
@@ -57,15 +52,10 @@ function cfParseCSV() {
   lines.forEach((line, idx) => {
     const cols = line.split(",").map(c => c.trim());
     if (cols.length < 6) return;
-    if (idx === 0 && cols[0] === "NO") return; // 헤더 스킵
+    if (idx === 0 && cols[0] === "NO") return;
 
     rows.push([
-      cols[0], // NO
-      cols[1], // 입금일자
-      cols[2], // 입금금액
-      cols[3], // 상환일자
-      cols[4], // 출금일자
-      cols[5]  // 출금금액
+      cols[0], cols[1], cols[2], cols[3], cols[4], cols[5]
     ]);
   });
 
@@ -111,9 +101,13 @@ function cfLoadData(rows) {
 let globalDetails = [];
 
 /******************************************************
- *  메인 계산 — 업로드 행 기준 결과/상세
+ *  메인 계산
  ******************************************************/
 function cfCalculate() {
+
+  /******************************************************
+   *  1) 원본 rows 읽기
+   ******************************************************/
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
       rowId: idx,
@@ -128,14 +122,10 @@ function cfCalculate() {
 
   if (!rows.length) return;
 
-  // NO → 입금일자 → 출금일자 순 정렬
-  rows.sort((a, b) => {
-    if (a.no !== b.no) return a.no - b.no;
-    if (a.inDate !== b.inDate) return new Date(a.inDate) - new Date(b.inDate);
-    return new Date(a.outDate) - new Date(b.outDate);
-  });
-
-  const resultRows = rows.map(r => {
+  /******************************************************
+   *  2) 상세(detailRows) = 원본 rows 기준 1:1 생성
+   ******************************************************/
+  const detailRows = rows.map(r => {
     const days = (r.inDate && r.outDate) ? diffDays(r.inDate, r.outDate) : 0;
     const annualYield = (r.inAmt > 0 && r.outAmt > 0 && days > 0)
       ? calcAnnualYieldDeposit(r.inAmt, r.outAmt, days)
@@ -148,128 +138,108 @@ function cfCalculate() {
     };
   });
 
-  globalDetails = resultRows;
+  globalDetails = detailRows;
 
   /******************************************************
-   *  결과 테이블 (두 번째 이미지와 동일 구조)
+   *  3) 결과(resultTable) = 원본 rows 그대로
+   *     days = 상세 days 합
+   *     annualYield = 상세 annualYield 평균
+   ******************************************************/
+  const resultRows = rows.map(r => {
+    const detailsForRow = detailRows.filter(d => d.rowId === r.rowId);
+
+    const totalDays = detailsForRow.reduce((s, d) => s + d.days, 0);
+    const avgYield = detailsForRow.reduce((s, d) => s + d.annualYield, 0)
+                     / (detailsForRow.length || 1);
+
+    return {
+      ...r,
+      days: totalDays,
+      annualYield: avgYield
+    };
+  });
+
+  /******************************************************
+   *  4) 결과테이블 렌더링
    ******************************************************/
   const resultTbody = document.querySelector("#resultTable tbody");
-  if (resultTbody) {
-    resultTbody.innerHTML = "";
-    resultRows.forEach(r => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${r.no}</td>
-        <td>${r.inDate}</td>
-        <td>${r.inAmt ? r.inAmt.toLocaleString() : ""}</td>
-        <td>${r.outDate}</td>
-        <td>${r.outAmt ? r.outAmt.toLocaleString() : ""}</td>
-        <td>${r.days ? r.days + "일" : ""}</td>
-        <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
-        <td><button type="button" onclick="showDetail(${r.rowId})">상세</button></td>
-      `;
-      resultTbody.appendChild(tr);
-    });
-  }
+  resultTbody.innerHTML = "";
+
+  resultRows.forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.no}</td>
+      <td>${r.inDate}</td>
+      <td>${r.inAmt.toLocaleString()}</td>
+      <td>${r.outDate}</td>
+      <td>${r.outAmt.toLocaleString()}</td>
+      <td>${r.days ? r.days + "일" : ""}</td>
+      <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
+      <td><button onclick="showDetail(${r.rowId})">상세</button></td>
+    `;
+    resultTbody.appendChild(tr);
+  });
 
   /******************************************************
-   *  상세내역 (행별 그대로 + 계산값)
+   *  5) 상세 테이블 렌더링
    ******************************************************/
   const detailArea = document.querySelector("#detailArea");
-  if (detailArea) {
-    detailArea.innerHTML = `
-      <table class="cf-table">
-        <thead>
+  detailArea.innerHTML = `
+    <table class="cf-table">
+      <thead>
+        <tr>
+          <th>NO</th>
+          <th>입금일자</th>
+          <th>입금금액</th>
+          <th>상환일자</th>
+          <th>출금일자</th>
+          <th>출금금액</th>
+          <th>이용기간</th>
+          <th>연이자율</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${detailRows.map(r => `
           <tr>
-            <th>NO</th>
-            <th>입금일자</th>
-            <th>입금금액</th>
-            <th>상환일자</th>
-            <th>출금일자</th>
-            <th>출금금액</th>
-            <th>이용기간</th>
-            <th>연이자율</th>
+            <td>${r.no}</td>
+            <td>${r.inDate}</td>
+            <td>${r.inAmt.toLocaleString()}</td>
+            <td>${r.repayDate}</td>
+            <td>${r.outDate}</td>
+            <td>${r.outAmt.toLocaleString()}</td>
+            <td>${r.days ? r.days + "일" : ""}</td>
+            <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
           </tr>
-        </thead>
-        <tbody>
-          ${resultRows
-            .map(r => `
-              <tr>
-                <td>${r.no}</td>
-                <td>${r.inDate}</td>
-                <td>${r.inAmt ? r.inAmt.toLocaleString() : ""}</td>
-                <td>${r.repayDate || ""}</td>
-                <td>${r.outDate}</td>
-                <td>${r.outAmt ? r.outAmt.toLocaleString() : ""}</td>
-                <td>${r.days ? r.days + "일" : ""}</td>
-                <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
-              </tr>
-            `)
-            .join("")}
-        </tbody>
-      </table>
-    `;
-  }
-}
-
-/******************************************************
- *  행 추가
- ******************************************************/
-function cfAddRow() {
-  const tbody = document.querySelector("#cfTable tbody");
-  const tr = document.createElement("tr");
-
-  tr.innerHTML = `
-    <td><input type="number" class="no" value=""></td>
-    <td><input type="date" class="inDate" value=""></td>
-    <td><input type="number" class="inAmt" value=""></td>
-    <td><input type="date" class="repayDate" value=""></td>
-    <td><input type="date" class="outDate" value=""></td>
-    <td><input type="number" class="outAmt" value=""></td>
+        `).join("")}
+      </tbody>
+    </table>
   `;
-
-  tbody.appendChild(tr);
 }
 
 /******************************************************
- *  상세 버튼 (업로드 행 기준)
+ *  상세 팝업
  ******************************************************/
 function showDetail(rowId) {
   const r = globalDetails.find(x => x.rowId === rowId);
   if (!r) return;
 
-  const msg = [
+  alert([
     `NO: ${r.no}`,
-    `입금일자: ${r.inDate || "-"}`,
-    `입금금액: ${r.inAmt ? r.inAmt.toLocaleString() + "원" : "-"}`,
-    `상환일자: ${r.repayDate || "-"}`,
-    `출금일자: ${r.outDate || "-"}`,
-    `출금금액: ${r.outAmt ? r.outAmt.toLocaleString() + "원" : "-"}`,
-    `이용기간: ${r.days ? r.days + "일" : "-"}`,
-    `연이자율: ${r.annualYield ? r.annualYield.toFixed(4) + "%" : "-"}`
-  ].join("\n");
-
-  alert(msg);
+    `입금일자: ${r.inDate}`,
+    `입금금액: ${r.inAmt.toLocaleString()}원`,
+    `상환일자: ${r.repayDate}`,
+    `출금일자: ${r.outDate}`,
+    `출금금액: ${r.outAmt.toLocaleString()}원`,
+    `이용기간: ${r.days}일`,
+    `연이자율: ${r.annualYield.toFixed(4)}%`
+  ].join("\n"));
 }
 
 /******************************************************
- *  엑셀/PDF 다운로드 (더미)
- ******************************************************/
-function cfExportExcel() {
-  alert("엑셀 다운로드 기능은 추후 제공 예정입니다.");
-}
-
-function cfExportPDF() {
-  alert("PDF 다운로드 기능은 추후 제공 예정입니다.");
-}
-
-/******************************************************
- *  export to window
+ *  export
  ******************************************************/
 window.cfReadExcel = cfReadExcel;
 window.cfParseCSV = cfParseCSV;
-window.cfAddRow = cfAddRow;
+window.cfLoadData = cfLoadData;
 window.cfCalculate = cfCalculate;
-window.cfExportExcel = cfExportExcel;
-window.cfExportPDF = cfExportPDF;
 window.showDetail = showDetail;
