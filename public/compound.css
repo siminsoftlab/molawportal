@@ -43,3 +43,26 @@ button {
   padding: 4px;
   box-sizing: border-box;
 }
+
+.subtotal-wrap {
+    margin: 20px 0;
+    padding: 10px;
+    background: #f7f7f7;
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .subtotal-box {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+  .subtotal-box:hover {
+    background: #f0f0f0;
+  }
+  .no-group-hidden {
+    display: none;
+  }
