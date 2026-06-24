@@ -13,19 +13,24 @@ function excelDateToYMD(serial) {
 }
 
 function diffDays(a, b) {
-  return Math.max(1, Math.floor((new Date(b) - new Date(a)) / (1000 * 60 * 60 * 24)));
+  const da = new Date(a);
+  const db = new Date(b);
+  if (!a || !b || isNaN(da) || isNaN(db)) return 0;
+  return Math.max(1, Math.floor((db - da) / (1000 * 60 * 60 * 24)));
 }
 
 function calcNormalInterest(principal, rate, days) {
+  if (principal <= 0 || rate <= 0 || days <= 0) return 0;
   return principal * rate * (days / 365);
 }
 
 function calcLateInterest(unpaid, rate, days) {
+  if (unpaid <= 0 || rate <= 0 || days <= 0) return 0;
   return unpaid * rate * (days / 365);
 }
 
 function calcYieldAnnual(inAmt, totalOut, totalDays) {
-  if (totalDays <= 0 || inAmt <= 0) return 0;
+  if (inAmt <= 0 || totalOut <= 0 || totalDays <= 0) return 0;
   const periodRate = (totalOut - inAmt) / inAmt;
   return periodRate * (365 / totalDays);
 }
@@ -80,7 +85,7 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  메인 계산 — FIFO + 정상/지연이자 + 상세/결과 일치
+ *  메인 계산 — FIFO + 정상/지연이자 + 결과/상세 일치
  ******************************************************/
 function cfCalculate() {
   const normalRateEl = document.getElementById("annualRate");
@@ -105,8 +110,8 @@ function cfCalculate() {
     return new Date(da) - new Date(db);
   });
 
-  const fifoQueue = [];      // 매칭용
-  const depositRecords = []; // 결과/상세 공통 기준
+  const fifoQueue = [];
+  const depositRecords = [];
   const detailList = [];
 
   // 1) 입금/출금 FIFO 매칭 + 기간별 이자/잔액 계산
@@ -117,10 +122,10 @@ function cfCalculate() {
         no: r.no,
         inDate: r.inDate,
         inAmt: r.inAmt,
-        principal: r.inAmt,   // 현재 원금
-        unpaid: 0,            // 미납원금
-        lastDate: r.inDate,   // 마지막 이자 계산 기준일
-        withdrawals: []       // 상세내역용
+        principal: r.inAmt,
+        unpaid: 0,
+        lastDate: r.inDate,
+        withdrawals: []
       };
       fifoQueue.push(dep);
       depositRecords.push(dep);
@@ -134,35 +139,28 @@ function cfCalculate() {
         const dep = fifoQueue[0];
 
         // 이 입금에서 실제로 사용할 출금액 (원금 한도 내)
-        const useOut = Math.min(remainOut, dep.principal + dep.unpaid || remainOut);
+        const assign = Math.min(remainOut, dep.principal);
 
-        // 기간 계산 (출금 전 잔액 기준)
+        if (assign <= 0) break;
+
         const days = diffDays(dep.lastDate, r.outDate);
 
-        // 정상이자: 출금 전 원금 기준
         const normalInterest = calcNormalInterest(dep.principal, normalRate, days);
+        const lateInterest = calcLateInterest(dep.unpaid, lateRate, days);
 
-        // 지연이자: 미납원금 기준
-        const lateInterest = dep.unpaid > 0 ? calcLateInterest(dep.unpaid, lateRate, days) : 0;
-
-        // 출금금액에서 이자 먼저 차감
-        let afterOut = useOut;
+        let afterOut = assign;
         afterOut -= normalInterest;
         afterOut -= lateInterest;
 
-        // 남은 금액으로 원금 차감 (0보다 작으면 0으로)
         dep.principal -= Math.max(0, afterOut);
-
-        // 원금이 음수면 미납원금으로 전환
         if (dep.principal < 0) {
-          dep.unpaid = Math.abs(dep.principal);
+          dep.unpaid += Math.abs(dep.principal);
           dep.principal = 0;
         }
 
-        // 상세내역 기록
         dep.withdrawals.push({
           outDate: r.outDate,
-          outAmt: useOut,
+          outAmt: assign,
           days,
           normalInterest,
           lateInterest,
@@ -170,18 +168,13 @@ function cfCalculate() {
           unpaidAfter: dep.unpaid
         });
 
-        // 다음 기간 기준일 갱신
         dep.lastDate = r.outDate;
+        remainOut -= assign;
 
-        // 전체 출금에서 사용한 만큼 차감
-        remainOut -= useOut;
-
-        // 이 입금이 완전히 정리(원금 0, 미납 0)되면 큐에서 제거
         if (dep.principal <= 0 && dep.unpaid === 0) {
           fifoQueue.shift();
         } else {
-          // 아직 남아 있으면 다음 출금에서 다시 사용
-          break;
+          if (remainOut <= 0) break;
         }
       }
     }
@@ -190,8 +183,13 @@ function cfCalculate() {
   // 2) 결과테이블/상세내역 공통 데이터 생성
   const results = depositRecords.map(dep => {
     const totalOut = dep.withdrawals.reduce((s, w) => s + w.outAmt, 0);
-    const totalDays = dep.withdrawals.reduce((s, w) => s + w.days, 0);
-    const lastOutDate = dep.withdrawals.length > 0 ? dep.withdrawals[dep.withdrawals.length - 1].outDate : "";
+    let totalDays = 0;
+    let lastOutDate = "";
+
+    if (dep.withdrawals.length > 0) {
+      lastOutDate = dep.withdrawals[dep.withdrawals.length - 1].outDate;
+      totalDays = diffDays(dep.inDate, lastOutDate);
+    }
 
     const annualYield = calcYieldAnnual(dep.inAmt, totalOut, totalDays);
 
@@ -263,7 +261,7 @@ function showDetail(no, inDate) {
     <table class="detail-table">
       <tr><th>입금일자</th><td>${data.inDate}</td></tr>
       <tr><th>입금금액</th><td>${data.inAmt.toLocaleString()}원</td></tr>
-      <tr><th>전체 이용기간 합</th><td>${data.totalDays}일</td></tr>
+      <tr><th>전체 이용기간</th><td>${data.totalDays}일</td></tr>
       <tr><th>입금대비 출금 연이자율</th><td>${(data.annualYield * 100).toFixed(2)}%</td></tr>
     </table>
 
