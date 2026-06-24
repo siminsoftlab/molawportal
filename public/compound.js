@@ -224,6 +224,7 @@ function cfCalculate() {
       <td>${r.outAmt.toLocaleString()}</td>
       <td>${r.days ? r.days + "일" : ""}</td>
       <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
+      <td><button onclick="showDetail(${r.no})">상세</button></td>
     `;
     resultTbody.appendChild(tr);
   });
@@ -259,7 +260,6 @@ function cfCalculate() {
     </table>
   `;
 }
-
 
 /******************************************************
  *  export
