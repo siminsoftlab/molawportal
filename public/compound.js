@@ -1,4 +1,24 @@
 /******************************************************
+ *  엑셀 업로드 기능 (엑셀 → JSON → 테이블 로드)
+ ******************************************************/
+function cfReadExcel(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    // 기존 테이블 로딩 함수 호출
+    cfLoadData(json);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+/******************************************************
  *  엑셀 날짜 변환 (Excel Serial → yyyy-MM-dd)
  ******************************************************/
 function excelDateToYMD(serial) {
