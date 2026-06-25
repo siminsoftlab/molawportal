@@ -115,8 +115,8 @@ window._fifoDetailRows = [];
  *  메인 계산 (출금 ≤ 다음 입금일 + 출금 우선 정렬)
  ******************************************************/
 function cfCalculate() {
-  const annualRate = Number(document.getElementById("annualRate").value || 0);
-  const lateRate   = Number(document.getElementById("lateRate").value || 0);
+  const annualRate = Number(document.getElementById("annualRate")?.value || 0);
+  const lateRate   = Number(document.getElementById("lateRate")?.value || 0);
 
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
@@ -142,9 +142,8 @@ function cfCalculate() {
   const detailRows = [];
 
   grouped.forEach(list => {
-
     /******************************************************
-     *  🔥 정렬: 날짜가 같으면 출금이 먼저
+     *  1) 정렬 (날짜 오름차순, 같은 날짜면 출금 → 입금)
      ******************************************************/
     list.sort((a, b) => {
       const da = parseDate(a.inDate || a.outDate);
@@ -158,69 +157,65 @@ function cfCalculate() {
       return 0;
     });
 
+    /******************************************************
+     *  2) 입금 리스트만 추출
+     ******************************************************/
     const deposits = list.filter(r => r.inAmt > 0);
 
+    /******************************************************
+     *  3) 각 입금 구간별 출금 매칭 (출금일 ≤ 다음 입금일)
+     ******************************************************/
     deposits.forEach((dep, idx) => {
       const nextDep = deposits[idx + 1];
-      const startDate = dep.inDate;
-      const endBoundary = nextDep ? nextDep.inDate : null;
+      const start = parseDate(dep.inDate);
+      const end = nextDep ? parseDate(nextDep.inDate) : null;
 
-      /******************************************************
-       *  🔥 출금 구간: 출금일 ≤ 다음 입금일
-       ******************************************************/
       const outs = list.filter(r => {
         if (!r.outDate || r.outAmt <= 0) return false;
         const od = parseDate(r.outDate);
 
-        if (od < parseDate(startDate)) return false;
-        if (endBoundary && od > parseDate(endBoundary)) return false;
+        if (od < start) return false;
+        if (end && od > end) return false;   // 출금 ≤ 다음 입금일
 
         return true;
       });
 
-      let remainingPrincipal = dep.inAmt;
+      /******************************************************
+       *  4) FIFO 원금 소진 + 이자/연이자율 계산
+       ******************************************************/
+      let remain = dep.inAmt;
       let lastDate = dep.inDate;
 
       outs.forEach(o => {
-        if (remainingPrincipal <= 0) return;
-
         const days = diffDays(lastDate, o.outDate);
-        const principalPaid = Math.min(remainingPrincipal, o.outAmt);
-        const afterPrincipal = remainingPrincipal - principalPaid;
+        const paidPrincipal = Math.min(remain, o.outAmt);
+        const after = remain - paidPrincipal;
 
-        const normalInterest = calcInterest(remainingPrincipal, annualRate, days);
-        const lateInterest   = calcInterest(remainingPrincipal, lateRate, days);
-        const annualYield    = calcAnnualYield(remainingPrincipal, o.outAmt, days);
+        const normalInterest = calcInterest(remain, annualRate, days);
+        const lateInterest   = calcInterest(remain, lateRate, days);
+        const annualYield    = calcAnnualYield(remain, o.outAmt, days);
 
         detailRows.push({
           no: dep.no,
           inDate: dep.inDate,
-          inAmtStart: remainingPrincipal,
-          repayDate: dep.repayDate,
           outDate: o.outDate,
+          inAmtStart: remain,
           outAmt: o.outAmt,
-          principalPaid,
-          principalAfter: afterPrincipal,
-          days,
+          principalPaid: paidPrincipal,
+          principalAfter: after,
           normalInterest,
           lateInterest,
+          days,
           annualYield
         });
 
-        remainingPrincipal = afterPrincipal;
+        remain = after;
         lastDate = o.outDate;
       });
 
       const totalOut = outs.reduce((s, r) => s + r.outAmt, 0);
-      const lastOutDate = outs.length
-        ? outs.reduce((max, r) =>
-            parseDate(r.outDate) > parseDate(max) ? r.outDate : max,
-            outs[0].outDate
-          )
-        : "";
-
+      const lastOutDate = outs.length ? outs[outs.length - 1].outDate : "";
       const totalDays = outs.length ? diffDays(dep.inDate, lastOutDate) : 0;
-
       const avgYield =
         outs.length
           ? outs.reduce((s, o) => {
@@ -230,7 +225,6 @@ function cfCalculate() {
           : 0;
 
       resultRows.push({
-        rowId: dep.rowId,
         no: dep.no,
         inDate: dep.inDate,
         inAmt: dep.inAmt,
