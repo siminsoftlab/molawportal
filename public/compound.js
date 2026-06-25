@@ -1,8 +1,6 @@
 /******************************************************
- *  날짜/이자 유틸 (최종본)
+ *  날짜/이자 유틸
  ******************************************************/
-
-// 엑셀 날짜 → YYYY-MM-DD
 function excelDateToYMD(serial) {
   if (!serial || isNaN(serial)) return "";
   const utcDays = Math.floor(serial - 25569);
@@ -14,14 +12,12 @@ function excelDateToYMD(serial) {
   return `${y}-${m}-${d}`;
 }
 
-// 문자열 날짜 → Date 객체
 function parseDate(str) {
   if (!str) return new Date("1900-01-01");
   const [y, m, d] = str.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
-// 날짜 차이(일수)
 function diffDays(start, end) {
   const s = parseDate(start);
   const e = parseDate(end);
@@ -29,14 +25,12 @@ function diffDays(start, end) {
   return Math.max(1, Math.round((e - s) / (1000 * 60 * 60 * 24)));
 }
 
-// 실질 연이자율
 function calcAnnualYield(principal, paid, days) {
   if (principal <= 0 || days <= 0) return 0;
   const periodRate = (paid - principal) / principal;
   return periodRate * (365 / days) * 100;
 }
 
-// 정상/연체 이자 계산
 function calcInterest(principal, ratePercent, days) {
   if (principal <= 0 || days <= 0 || ratePercent === 0) return 0;
   return principal * (ratePercent / 100) * (days / 365);
@@ -113,17 +107,16 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  전역 상세 저장
+ *  FIFO 상세 저장
  ******************************************************/
-let globalDetails = [];
 window._fifoDetailRows = [];
 
 /******************************************************
- *  메인 계산 (FIFO + 출금일 < 다음 입금일 + 출금 우선 정렬)
+ *  메인 계산 (출금 ≤ 다음 입금일 + 출금 우선 정렬)
  ******************************************************/
 function cfCalculate() {
-  const annualRate = Number(document.getElementById("annualRate").value || 0); // 정상
-  const lateRate   = Number(document.getElementById("lateRate").value || 0);   // 연체
+  const annualRate = Number(document.getElementById("annualRate").value || 0);
+  const lateRate   = Number(document.getElementById("lateRate").value || 0);
 
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
@@ -149,14 +142,16 @@ function cfCalculate() {
   const detailRows = [];
 
   grouped.forEach(list => {
-    // 날짜 기준 + 같은 날짜면 출금 먼저
+
+    /******************************************************
+     *  🔥 정렬: 날짜가 같으면 출금이 먼저
+     ******************************************************/
     list.sort((a, b) => {
       const da = parseDate(a.inDate || a.outDate);
       const db = parseDate(b.inDate || b.outDate);
 
       if (da.getTime() !== db.getTime()) return da - db;
 
-      // 같은 날짜면 출금(outDate)이 있는 쪽을 먼저
       if (a.outDate && !b.outDate) return -1;
       if (!a.outDate && b.outDate) return 1;
 
@@ -170,13 +165,16 @@ function cfCalculate() {
       const startDate = dep.inDate;
       const endBoundary = nextDep ? nextDep.inDate : null;
 
-      // 이 입금 구간 안의 출금들만 추출
+      /******************************************************
+       *  🔥 출금 구간: 출금일 ≤ 다음 입금일
+       ******************************************************/
       const outs = list.filter(r => {
         if (!r.outDate || r.outAmt <= 0) return false;
         const od = parseDate(r.outDate);
+
         if (od < parseDate(startDate)) return false;
-        // 출금일 <= 다음 입금일만 포함 (출금일 == 다음 입금일은 이전 입금건에 포함)
         if (endBoundary && od > parseDate(endBoundary)) return false;
+
         return true;
       });
 
@@ -221,9 +219,7 @@ function cfCalculate() {
           )
         : "";
 
-      const totalDays = outs.length
-        ? diffDays(dep.inDate, lastOutDate)
-        : 0;
+      const totalDays = outs.length ? diffDays(dep.inDate, lastOutDate) : 0;
 
       const avgYield =
         outs.length
@@ -247,6 +243,9 @@ function cfCalculate() {
     });
   });
 
+  /******************************************************
+   *  결과 테이블 렌더링
+   ******************************************************/
   const resultTbody = document.querySelector("#resultTable tbody");
   resultTbody.innerHTML = "";
 
@@ -266,6 +265,9 @@ function cfCalculate() {
     resultTbody.appendChild(tr);
   });
 
+  /******************************************************
+   *  상세내역 전체 테이블
+   ******************************************************/
   const detailArea = document.querySelector("#detailArea");
   detailArea.innerHTML = `
     <table class="cf-table">
@@ -308,7 +310,7 @@ function cfCalculate() {
 }
 
 /******************************************************
- *  상세 모달 표시
+ *  상세 모달
  ******************************************************/
 function showDetail(no, inDate) {
   const rows = (window._fifoDetailRows || []).filter(
