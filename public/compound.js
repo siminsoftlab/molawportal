@@ -119,7 +119,7 @@ let globalDetails = [];
 window._fifoDetailRows = [];
 
 /******************************************************
- *  메인 계산 (법원 제출용 FIFO 완전 적용)
+ *  메인 계산 (법원 제출용 FIFO 완전 적용 + 출금일 ≤ 다음 입금일)
  ******************************************************/
 function cfCalculate() {
   const annualRate = Number(document.getElementById("annualRate").value || 0); // 정상
@@ -167,9 +167,17 @@ function cfCalculate() {
       // 이 입금 구간 안의 출금들만 추출
       const outs = list.filter(r => {
         if (!r.outDate || r.outAmt <= 0) return false;
+
         const od = parseDate(r.outDate);
+
+        // 출금일 < 입금일 → 제외
         if (od < parseDate(startDate)) return false;
-        if (endBoundary && od >= parseDate(endBoundary)) return false; // 다음 입금 이후는 제외
+
+        // 🔥 수정된 핵심 규칙: 출금일 ≤ 다음 입금일
+        // 기존: od >= endBoundary → 제외
+        // 수정: od > endBoundary → 제외
+        if (endBoundary && od > parseDate(endBoundary)) return false;
+
         return true;
       });
 
@@ -308,6 +316,7 @@ function cfCalculate() {
   // 상세 모달에서 사용
   window._fifoDetailRows = detailRows;
 }
+
 
 /******************************************************
  *  상세 모달 표시 (법원 제출용 FIFO 흐름)
