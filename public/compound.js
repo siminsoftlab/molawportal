@@ -175,8 +175,8 @@ function cfCalculate() {
         if (!r.outDate || r.outAmt <= 0) return false;
         const od = parseDate(r.outDate);
         if (od < parseDate(startDate)) return false;
-        // 출금일 < 다음 입금일만 포함 (출금일 == 다음 입금일은 이전 입금건에 포함)
-        if (endBoundary && od >= parseDate(endBoundary)) return false;
+        // 출금일 <= 다음 입금일만 포함 (출금일 == 다음 입금일은 이전 입금건에 포함)
+        if (endBoundary && od > parseDate(endBoundary)) return false;
         return true;
       });
 
