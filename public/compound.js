@@ -164,13 +164,17 @@ function cfCalculate() {
           : 0;
 
         detailRows.push({
-          depNo: dep.no,
+          rowId: dep.rowId,   // ⭐ 반드시 추가
+          no: dep.no,
           inDate: dep.inDate,
           inAmt: dep.inAmt,
+          repayDate: dep.repayDate,
           outDate: o.outDate,
           outAmt: o.outAmt,
           days,
-          annualYield
+          annualYield,
+          normalInterest: 0,
+          lateInterest: 0
         });
       });
 
@@ -227,7 +231,7 @@ function cfCalculate() {
       <td>${r.outAmt.toLocaleString()}</td>
       <td>${r.days ? r.days + "일" : ""}</td>
       <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
-      <td><button onclick="showDetail(${r.no})">상세</button></td>
+      <td><button onclick="showDetail(${r.rowId})">상세</button></td>
     `;
     resultTbody.appendChild(tr);
   });
@@ -272,3 +276,55 @@ window.cfReadExcel = cfReadExcel;
 window.cfParseCSV = cfParseCSV;
 window.cfLoadData = cfLoadData;
 window.cfCalculate = cfCalculate;
+window.showDetail = function(rowId) {
+  // 해당 입금건의 상세만 필터링
+  const details = globalDetails.filter(d => d.rowId === rowId);
+
+  if (!details.length) {
+    alert("상세내역이 없습니다.");
+    return;
+  }
+
+  // 상세 테이블 HTML 생성
+  const html = `
+    <table class="cf-table">
+      <thead>
+        <tr>
+          <th>NO</th>
+          <th>입금일자</th>
+          <th>입금금액</th>
+          <th>상환일자</th>
+          <th>출금일자</th>
+          <th>출금금액</th>
+          <th>정상이자</th>
+          <th>연체이자</th>
+          <th>이용기간</th>
+          <th>연이자율</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${details.map(r => `
+          <tr>
+            <td>${r.no}</td>
+            <td>${r.inDate}</td>
+            <td>${r.inAmt.toLocaleString()}</td>
+            <td>${r.repayDate || ""}</td>
+            <td>${r.outDate}</td>
+            <td>${r.outAmt.toLocaleString()}</td>
+            <td>${(r.normalInterest || 0).toLocaleString()}</td>
+            <td>${(r.lateInterest || 0).toLocaleString()}</td>
+            <td>${r.days}일</td>
+            <td>${r.annualYield.toFixed(4)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+
+  // 모달에 삽입
+  document.getElementById("detailModalContent").innerHTML = html;
+
+  // 모달 표시
+  document.getElementById("detailModal").style.display = "block";
+};
+
