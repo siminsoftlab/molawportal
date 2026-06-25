@@ -101,11 +101,40 @@ function cfLoadData(rows) {
 let globalDetails = [];
 
 /******************************************************
+ *  핵심 보조 함수들 (날짜·이자 계산)
+ ******************************************************/
+function parseDate(str) {
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function diffDays(start, end) {
+  const s = parseDate(start);
+  const e = parseDate(end);
+  return Math.round((e - s) / (1000 * 60 * 60 * 24));
+}
+
+// 실질 연이자율 (출금 - 원금 기준)
+function calcAnnualYield(principal, paid, days) {
+  if (principal <= 0 || days <= 0) return 0;
+  const periodRate = (paid - principal) / principal;
+  return periodRate * (365 / days) * 100;
+}
+
+// 정상/연체 이자 계산
+function calcInterest(principal, ratePercent, days) {
+  if (principal <= 0 || days <= 0 || ratePercent === 0) return 0;
+  return principal * (ratePercent / 100) * (days / 365);
+}
+
+/******************************************************
  *  메인 계산
  ******************************************************/
 function cfCalculate() {
+  const annualRate = Number(document.getElementById("annualRate").value || 0); // 정상
+  const lateRate   = Number(document.getElementById("lateRate").value || 0);   // 연체
 
-  // 1) 원본 rows 읽기
+  // 1) 입력 테이블에서 행 읽기
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
       rowId: idx,
@@ -127,17 +156,16 @@ function cfCalculate() {
     grouped.get(r.no).push(r);
   });
 
-  const resultRows = [];
-  const detailRows = [];
+  const resultRows = [];   // 결과 테이블용
+  const detailRows = [];   // 상세내역 (원금 소진 흐름)
 
   grouped.forEach(list => {
-
-    // 날짜 순 정렬
+    // 날짜 기준 정렬
     list.sort((a, b) =>
-      new Date(a.inDate || a.outDate) - new Date(b.inDate || b.outDate)
+      parseDate(a.inDate || a.outDate) - parseDate(b.inDate || b.outDate)
     );
 
-    // 입금 있는 행만 구간 시작점
+    // 입금 행만 추출
     const deposits = list.filter(r => r.inAmt > 0);
 
     deposits.forEach((dep, idx) => {
@@ -145,65 +173,72 @@ function cfCalculate() {
       const startDate = dep.inDate;
       const endBoundary = nextDep ? nextDep.inDate : null;
 
-      // 이 입금 이후 ~ 다음 입금 전까지 출금들
+      // 이 입금 구간 안의 출금들만 추출
       const outs = list.filter(r => {
         if (!r.outDate || r.outAmt <= 0) return false;
-        if (new Date(r.outDate) < new Date(startDate)) return false;
-
-        // ⭐ 핵심 수정: 다음 입금일자와 같은 날짜의 출금은 포함해야 함
-        if (endBoundary && new Date(r.outDate) > new Date(endBoundary)) return false;
-
+        const od = parseDate(r.outDate);
+        if (od < parseDate(startDate)) return false;
+        if (endBoundary && od >= parseDate(endBoundary)) return false; // 다음 입금 이후는 제외
         return true;
       });
 
-      // 상세(detailRows) 생성
+      // FIFO 원금 소진 흐름
+      let remainingPrincipal = dep.inAmt;
+      let lastDate = dep.inDate;
+
       outs.forEach(o => {
-        const days = (dep.inDate && o.outDate) ? diffDays(dep.inDate, o.outDate) : 0;
-        const annualYield = (dep.inAmt > 0 && o.outAmt > 0 && days > 0)
-          ? calcAnnualYieldDeposit(dep.inAmt, o.outAmt, days)
-          : 0;
+        if (remainingPrincipal <= 0) return; // 이미 원금 소진
+
+        const days = diffDays(lastDate, o.outDate); // 직전 이벤트 기준 기간
+        const principalPaid = Math.min(remainingPrincipal, o.outAmt); // 이번 출금으로 상환된 원금
+        const afterPrincipal = remainingPrincipal - principalPaid;
+
+        const normalInterest = calcInterest(remainingPrincipal, annualRate, days);
+        const lateInterest   = calcInterest(remainingPrincipal, lateRate, days);
+        const annualYield    = calcAnnualYield(remainingPrincipal, o.outAmt, days);
 
         detailRows.push({
-          rowId: dep.rowId,   // ⭐ 반드시 추가
           no: dep.no,
           inDate: dep.inDate,
-          inAmt: dep.inAmt,
+          inAmtStart: remainingPrincipal,   // 출금 직전 남은 원금
           repayDate: dep.repayDate,
           outDate: o.outDate,
           outAmt: o.outAmt,
+          principalPaid,
+          principalAfter: afterPrincipal,
           days,
-          annualYield,
-          normalInterest: 0,
-          lateInterest: 0
+          normalInterest,
+          lateInterest,
+          annualYield
         });
+
+        remainingPrincipal = afterPrincipal;
+        lastDate = o.outDate;
       });
 
-      // 출금 합산
+      // 결과 테이블용 집계 (이 입금 구간 전체)
       const totalOut = outs.reduce((s, r) => s + r.outAmt, 0);
-
-      // 마지막 출금일
       const lastOutDate = outs.length
         ? outs.reduce((max, r) =>
-            new Date(r.outDate) > new Date(max) ? r.outDate : max,
+            parseDate(r.outDate) > parseDate(max) ? r.outDate : max,
             outs[0].outDate
           )
         : "";
 
-      // 상세 합산/평균
-      const detailsForDep = detailRows.filter(d =>
-        d.depNo === dep.no &&
-        new Date(d.outDate) >= new Date(startDate) &&
-        (!endBoundary || new Date(d.outDate) <= new Date(endBoundary))
-      );
+      const totalDays = outs.length
+        ? diffDays(dep.inDate, lastOutDate)
+        : 0;
 
-      const totalDays = detailsForDep.reduce((s, d) => s + d.days, 0);
       const avgYield =
-        detailsForDep.length
-          ? detailsForDep.reduce((s, d) => s + d.annualYield, 0) / detailsForDep.length
+        outs.length
+          ? outs.reduce((s, o) => {
+              const d = diffDays(dep.inDate, o.outDate);
+              return s + calcAnnualYield(dep.inAmt, o.outAmt, d);
+            }, 0) / outs.length
           : 0;
 
-      // 결과테이블 1줄 생성
       resultRows.push({
+        rowId: dep.rowId,
         no: dep.no,
         inDate: dep.inDate,
         inAmt: dep.inAmt,
@@ -216,7 +251,7 @@ function cfCalculate() {
     });
   });
 
-  // 3) 결과테이블 렌더링 (⭐ 상환일자 포함)
+  // 3) 결과 테이블 렌더링
   const resultTbody = document.querySelector("#resultTable tbody");
   resultTbody.innerHTML = "";
 
@@ -226,17 +261,17 @@ function cfCalculate() {
       <td>${r.no}</td>
       <td>${r.inDate}</td>
       <td>${r.inAmt.toLocaleString()}</td>
-      <td>${r.repayDate}</td>   <!-- ⭐ 상환일자 표시 -->
+      <td>${r.repayDate}</td>
       <td>${r.outDate}</td>
       <td>${r.outAmt.toLocaleString()}</td>
       <td>${r.days ? r.days + "일" : ""}</td>
       <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
-      <td><button onclick="showDetail(${r.rowId})">상세</button></td>
+      <td><button onclick="showDetail(${r.no}, '${r.inDate}')">상세</button></td>
     `;
     resultTbody.appendChild(tr);
   });
 
-  // 4) 상세 테이블 렌더링 (⭐ 2025-11-27 상세 포함됨)
+  // 4) 상세내역 전체 테이블 (페이지 하단용)
   const detailArea = document.querySelector("#detailArea");
   detailArea.innerHTML = `
     <table class="cf-table">
@@ -244,21 +279,29 @@ function cfCalculate() {
         <tr>
           <th>NO</th>
           <th>입금일자</th>
-          <th>입금금액</th>
           <th>출금일자</th>
+          <th>입금금액(당시 남은 원금)</th>
           <th>출금금액</th>
-          <th>이용기간</th>
-          <th>연이자율</th>
+          <th>이번 출금으로 상환된 원금</th>
+          <th>상환 후 남은 원금</th>
+          <th>정상이자</th>
+          <th>연체이자</th>
+          <th>이용기간(일)</th>
+          <th>연이자율(%)</th>
         </tr>
       </thead>
       <tbody>
         ${detailRows.map(r => `
           <tr>
-            <td>${r.depNo}</td>
+            <td>${r.no}</td>
             <td>${r.inDate}</td>
-            <td>${r.inAmt.toLocaleString()}</td>
             <td>${r.outDate}</td>
+            <td>${r.inAmtStart.toLocaleString()}</td>
             <td>${r.outAmt.toLocaleString()}</td>
+            <td>${r.principalPaid.toLocaleString()}</td>
+            <td>${r.principalAfter.toLocaleString()}</td>
+            <td>${r.normalInterest.toLocaleString()}</td>
+            <td>${r.lateInterest.toLocaleString()}</td>
             <td>${r.days}일</td>
             <td>${r.annualYield.toFixed(4)}</td>
           </tr>
@@ -266,8 +309,10 @@ function cfCalculate() {
       </tbody>
     </table>
   `;
-}
 
+  // 상세 모달에서 쓸 수 있도록 전역 저장
+  window._fifoDetailRows = detailRows;
+}
 
 /******************************************************
  *  export
@@ -276,43 +321,46 @@ window.cfReadExcel = cfReadExcel;
 window.cfParseCSV = cfParseCSV;
 window.cfLoadData = cfLoadData;
 window.cfCalculate = cfCalculate;
-window.showDetail = function(rowId) {
-  // 해당 입금건의 상세만 필터링
-  const details = globalDetails.filter(d => d.rowId === rowId);
 
-  if (!details.length) {
-    alert("상세내역이 없습니다.");
+function showDetail(no, inDate) {
+  const rows = (window._fifoDetailRows || []).filter(
+    r => r.no === no && r.inDate === inDate
+  );
+
+  if (!rows.length) {
+    alert("해당 입금건의 상세내역이 없습니다.");
     return;
   }
 
-  // 상세 테이블 HTML 생성
   const html = `
     <table class="cf-table">
       <thead>
         <tr>
           <th>NO</th>
           <th>입금일자</th>
-          <th>입금금액</th>
-          <th>상환일자</th>
           <th>출금일자</th>
+          <th>입금금액(당시 남은 원금)</th>
           <th>출금금액</th>
+          <th>이번 출금으로 상환된 원금</th>
+          <th>상환 후 남은 원금</th>
           <th>정상이자</th>
           <th>연체이자</th>
-          <th>이용기간</th>
-          <th>연이자율</th>
+          <th>이용기간(일)</th>
+          <th>연이자율(%)</th>
         </tr>
       </thead>
       <tbody>
-        ${details.map(r => `
+        ${rows.map(r => `
           <tr>
             <td>${r.no}</td>
             <td>${r.inDate}</td>
-            <td>${r.inAmt.toLocaleString()}</td>
-            <td>${r.repayDate || ""}</td>
             <td>${r.outDate}</td>
+            <td>${r.inAmtStart.toLocaleString()}</td>
             <td>${r.outAmt.toLocaleString()}</td>
-            <td>${(r.normalInterest || 0).toLocaleString()}</td>
-            <td>${(r.lateInterest || 0).toLocaleString()}</td>
+            <td>${r.principalPaid.toLocaleString()}</td>
+            <td>${r.principalAfter.toLocaleString()}</td>
+            <td>${r.normalInterest.toLocaleString()}</td>
+            <td>${r.lateInterest.toLocaleString()}</td>
             <td>${r.days}일</td>
             <td>${r.annualYield.toFixed(4)}</td>
           </tr>
@@ -321,10 +369,7 @@ window.showDetail = function(rowId) {
     </table>
   `;
 
-  // 모달에 삽입
   document.getElementById("detailModalContent").innerHTML = html;
-
-  // 모달 표시
   document.getElementById("detailModal").style.display = "block";
-};
+}
 
