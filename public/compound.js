@@ -1,6 +1,8 @@
 /******************************************************
- *  날짜/이자 유틸
+ *  날짜/이자 유틸 (중복 제거된 최종본)
  ******************************************************/
+
+// 엑셀 날짜 → YYYY-MM-DD
 function excelDateToYMD(serial) {
   if (!serial || isNaN(serial)) return "";
   const utcDays = Math.floor(serial - 25569);
@@ -12,17 +14,32 @@ function excelDateToYMD(serial) {
   return `${y}-${m}-${d}`;
 }
 
-function diffDays(a, b) {
-  const da = new Date(a);
-  const db = new Date(b);
-  if (!a || !b || isNaN(da) || isNaN(db)) return 0;
-  return Math.max(1, Math.floor((db - da) / (1000 * 60 * 60 * 24)));
+// 문자열 날짜 → Date 객체
+function parseDate(str) {
+  if (!str) return new Date("1900-01-01");
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
 
-function calcAnnualYieldDeposit(inAmt, outAmt, days) {
-  if (inAmt <= 0 || outAmt <= 0 || days <= 0) return 0;
-  const periodRate = (outAmt - inAmt) / inAmt;
+// 날짜 차이(일수)
+function diffDays(start, end) {
+  const s = parseDate(start);
+  const e = parseDate(end);
+  if (isNaN(s) || isNaN(e)) return 0;
+  return Math.max(1, Math.round((e - s) / (1000 * 60 * 60 * 24)));
+}
+
+// 실질 연이자율
+function calcAnnualYield(principal, paid, days) {
+  if (principal <= 0 || days <= 0) return 0;
+  const periodRate = (paid - principal) / principal;
   return periodRate * (365 / days) * 100;
+}
+
+// 정상/연체 이자 계산
+function calcInterest(principal, ratePercent, days) {
+  if (principal <= 0 || days <= 0 || ratePercent === 0) return 0;
+  return principal * (ratePercent / 100) * (days / 365);
 }
 
 /******************************************************
@@ -96,39 +113,13 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  전역 상세 저장
+ *  전역 상세 저장 (FIFO 상세내역)
  ******************************************************/
 let globalDetails = [];
+window._fifoDetailRows = [];
 
 /******************************************************
- *  핵심 보조 함수들 (날짜·이자 계산)
- ******************************************************/
-function parseDate(str) {
-  const [y, m, d] = str.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
-
-function diffDays(start, end) {
-  const s = parseDate(start);
-  const e = parseDate(end);
-  return Math.round((e - s) / (1000 * 60 * 60 * 24));
-}
-
-// 실질 연이자율 (출금 - 원금 기준)
-function calcAnnualYield(principal, paid, days) {
-  if (principal <= 0 || days <= 0) return 0;
-  const periodRate = (paid - principal) / principal;
-  return periodRate * (365 / days) * 100;
-}
-
-// 정상/연체 이자 계산
-function calcInterest(principal, ratePercent, days) {
-  if (principal <= 0 || days <= 0 || ratePercent === 0) return 0;
-  return principal * (ratePercent / 100) * (days / 365);
-}
-
-/******************************************************
- *  메인 계산
+ *  메인 계산 (법원 제출용 FIFO 완전 적용)
  ******************************************************/
 function cfCalculate() {
   const annualRate = Number(document.getElementById("annualRate").value || 0); // 정상
@@ -251,7 +242,9 @@ function cfCalculate() {
     });
   });
 
-  // 3) 결과 테이블 렌더링
+  /******************************************************
+   *  결과 테이블 렌더링
+   ******************************************************/
   const resultTbody = document.querySelector("#resultTable tbody");
   resultTbody.innerHTML = "";
 
@@ -271,7 +264,9 @@ function cfCalculate() {
     resultTbody.appendChild(tr);
   });
 
-  // 4) 상세내역 전체 테이블 (페이지 하단용)
+  /******************************************************
+   *  상세내역 전체 테이블 (페이지 하단)
+   ******************************************************/
   const detailArea = document.querySelector("#detailArea");
   detailArea.innerHTML = `
     <table class="cf-table">
@@ -310,18 +305,13 @@ function cfCalculate() {
     </table>
   `;
 
-  // 상세 모달에서 쓸 수 있도록 전역 저장
+  // 상세 모달에서 사용
   window._fifoDetailRows = detailRows;
 }
 
 /******************************************************
- *  export
+ *  상세 모달 표시 (법원 제출용 FIFO 흐름)
  ******************************************************/
-window.cfReadExcel = cfReadExcel;
-window.cfParseCSV = cfParseCSV;
-window.cfLoadData = cfLoadData;
-window.cfCalculate = cfCalculate;
-
 function showDetail(no, inDate) {
   const rows = (window._fifoDetailRows || []).filter(
     r => r.no === no && r.inDate === inDate
@@ -373,3 +363,11 @@ function showDetail(no, inDate) {
   document.getElementById("detailModal").style.display = "block";
 }
 
+/******************************************************
+ *  export (전역 연결)
+ ******************************************************/
+window.cfReadExcel = cfReadExcel;
+window.cfParseCSV = cfParseCSV;
+window.cfLoadData = cfLoadData;
+window.cfCalculate = cfCalculate;
+window.showDetail = showDetail;
