@@ -1,5 +1,5 @@
 /******************************************************
- *  날짜/이자 유틸 (중복 제거된 최종본)
+ *  날짜/이자 유틸 (최종본)
  ******************************************************/
 
 // 엑셀 날짜 → YYYY-MM-DD
@@ -113,19 +113,18 @@ function cfLoadData(rows) {
 }
 
 /******************************************************
- *  전역 상세 저장 (FIFO 상세내역)
+ *  전역 상세 저장
  ******************************************************/
 let globalDetails = [];
 window._fifoDetailRows = [];
 
 /******************************************************
- *  메인 계산 (법원 제출용 FIFO 완전 적용 + 출금일 ≤ 다음 입금일)
+ *  메인 계산 (FIFO + 출금일 < 다음 입금일 + 출금 우선 정렬)
  ******************************************************/
 function cfCalculate() {
   const annualRate = Number(document.getElementById("annualRate").value || 0); // 정상
   const lateRate   = Number(document.getElementById("lateRate").value || 0);   // 연체
 
-  // 1) 입력 테이블에서 행 읽기
   const rows = Array.from(document.querySelectorAll("#cfTable tbody tr"))
     .map((tr, idx) => ({
       rowId: idx,
@@ -140,7 +139,6 @@ function cfCalculate() {
 
   if (!rows.length) return;
 
-  // 2) NO별 그룹화
   const grouped = new Map();
   rows.forEach(r => {
     if (!grouped.has(r.no)) grouped.set(r.no, []);
@@ -151,9 +149,19 @@ function cfCalculate() {
   const detailRows = [];
 
   grouped.forEach(list => {
-    list.sort((a, b) =>
-      parseDate(a.inDate || a.outDate) - parseDate(b.inDate || b.outDate)
-    );
+    // 날짜 기준 + 같은 날짜면 출금 먼저
+    list.sort((a, b) => {
+      const da = parseDate(a.inDate || a.outDate);
+      const db = parseDate(b.inDate || b.outDate);
+
+      if (da.getTime() !== db.getTime()) return da - db;
+
+      // 같은 날짜면 출금(outDate)이 있는 쪽을 먼저
+      if (a.outDate && !b.outDate) return -1;
+      if (!a.outDate && b.outDate) return 1;
+
+      return 0;
+    });
 
     const deposits = list.filter(r => r.inAmt > 0);
 
@@ -162,12 +170,13 @@ function cfCalculate() {
       const startDate = dep.inDate;
       const endBoundary = nextDep ? nextDep.inDate : null;
 
+      // 이 입금 구간 안의 출금들만 추출
       const outs = list.filter(r => {
         if (!r.outDate || r.outAmt <= 0) return false;
         const od = parseDate(r.outDate);
         if (od < parseDate(startDate)) return false;
-        // 🔥 여기만 바뀐 것: >= → >
-        if (endBoundary && od > parseDate(endBoundary)) return false;
+        // 출금일 < 다음 입금일만 포함 (출금일 == 다음 입금일은 이전 입금건에 포함)
+        if (endBoundary && od >= parseDate(endBoundary)) return false;
         return true;
       });
 
