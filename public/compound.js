@@ -147,16 +147,14 @@ function cfCalculate() {
     grouped.get(r.no).push(r);
   });
 
-  const resultRows = [];   // 결과 테이블용
-  const detailRows = [];   // 상세내역 (원금 소진 흐름)
+  const resultRows = [];
+  const detailRows = [];
 
   grouped.forEach(list => {
-    // 날짜 기준 정렬
     list.sort((a, b) =>
       parseDate(a.inDate || a.outDate) - parseDate(b.inDate || b.outDate)
     );
 
-    // 입금 행만 추출
     const deposits = list.filter(r => r.inAmt > 0);
 
     deposits.forEach((dep, idx) => {
@@ -164,32 +162,23 @@ function cfCalculate() {
       const startDate = dep.inDate;
       const endBoundary = nextDep ? nextDep.inDate : null;
 
-      // 이 입금 구간 안의 출금들만 추출
       const outs = list.filter(r => {
         if (!r.outDate || r.outAmt <= 0) return false;
-
         const od = parseDate(r.outDate);
-
-        // 출금일 < 입금일 → 제외
         if (od < parseDate(startDate)) return false;
-
-        // 🔥 수정된 핵심 규칙: 출금일 ≤ 다음 입금일
-        // 기존: od >= endBoundary → 제외
-        // 수정: od > endBoundary → 제외
+        // 🔥 여기만 바뀐 것: >= → >
         if (endBoundary && od > parseDate(endBoundary)) return false;
-
         return true;
       });
 
-      // FIFO 원금 소진 흐름
       let remainingPrincipal = dep.inAmt;
       let lastDate = dep.inDate;
 
       outs.forEach(o => {
-        if (remainingPrincipal <= 0) return; // 이미 원금 소진
+        if (remainingPrincipal <= 0) return;
 
-        const days = diffDays(lastDate, o.outDate); // 직전 이벤트 기준 기간
-        const principalPaid = Math.min(remainingPrincipal, o.outAmt); // 이번 출금으로 상환된 원금
+        const days = diffDays(lastDate, o.outDate);
+        const principalPaid = Math.min(remainingPrincipal, o.outAmt);
         const afterPrincipal = remainingPrincipal - principalPaid;
 
         const normalInterest = calcInterest(remainingPrincipal, annualRate, days);
@@ -199,7 +188,7 @@ function cfCalculate() {
         detailRows.push({
           no: dep.no,
           inDate: dep.inDate,
-          inAmtStart: remainingPrincipal,   // 출금 직전 남은 원금
+          inAmtStart: remainingPrincipal,
           repayDate: dep.repayDate,
           outDate: o.outDate,
           outAmt: o.outAmt,
@@ -215,7 +204,6 @@ function cfCalculate() {
         lastDate = o.outDate;
       });
 
-      // 결과 테이블용 집계 (이 입금 구간 전체)
       const totalOut = outs.reduce((s, r) => s + r.outAmt, 0);
       const lastOutDate = outs.length
         ? outs.reduce((max, r) =>
@@ -250,9 +238,6 @@ function cfCalculate() {
     });
   });
 
-  /******************************************************
-   *  결과 테이블 렌더링
-   ******************************************************/
   const resultTbody = document.querySelector("#resultTable tbody");
   resultTbody.innerHTML = "";
 
@@ -272,9 +257,6 @@ function cfCalculate() {
     resultTbody.appendChild(tr);
   });
 
-  /******************************************************
-   *  상세내역 전체 테이블 (페이지 하단)
-   ******************************************************/
   const detailArea = document.querySelector("#detailArea");
   detailArea.innerHTML = `
     <table class="cf-table">
@@ -313,13 +295,11 @@ function cfCalculate() {
     </table>
   `;
 
-  // 상세 모달에서 사용
   window._fifoDetailRows = detailRows;
 }
 
-
 /******************************************************
- *  상세 모달 표시 (법원 제출용 FIFO 흐름)
+ *  상세 모달 표시
  ******************************************************/
 function showDetail(no, inDate) {
   const rows = (window._fifoDetailRows || []).filter(
@@ -373,7 +353,7 @@ function showDetail(no, inDate) {
 }
 
 /******************************************************
- *  export (전역 연결)
+ *  export
  ******************************************************/
 window.cfReadExcel = cfReadExcel;
 window.cfParseCSV = cfParseCSV;
