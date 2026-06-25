@@ -175,7 +175,7 @@ function cfCalculate() {
         const od = parseDate(r.outDate);
 
         if (od < start) return false;
-        if (end && od > end) return false;   // 출금 ≤ 다음 입금일
+        if (end && od > end) return false;
 
         return true;
       });
@@ -253,7 +253,7 @@ function cfCalculate() {
       <td>${r.outDate}</td>
       <td>${r.outAmt.toLocaleString()}</td>
       <td>${r.days ? r.days + "일" : ""}</td>
-      <td>${r.annualYield ? r.annualYield.toFixed(4) : ""}</td>
+      <td>${r.annualYield ? r.annualYield.toFixed(2) : ""}</td>
       <td><button onclick="showDetail(${r.no}, '${r.inDate}')">상세</button></td>
     `;
     resultTbody.appendChild(tr);
@@ -293,7 +293,7 @@ function cfCalculate() {
             <td>${r.normalInterest.toLocaleString()}</td>
             <td>${r.lateInterest.toLocaleString()}</td>
             <td>${r.days}일</td>
-            <td>${r.annualYield.toFixed(4)}</td>
+            <td>${r.annualYield.toFixed(2)}</td>
           </tr>
         `).join("")}
       </tbody>
@@ -346,7 +346,7 @@ function showDetail(no, inDate) {
             <td>${r.normalInterest.toLocaleString()}</td>
             <td>${r.lateInterest.toLocaleString()}</td>
             <td>${r.days}일</td>
-            <td>${r.annualYield.toFixed(4)}</td>
+            <td>${r.annualYield.toFixed(2)}</td>
           </tr>
         `).join("")}
       </tbody>
