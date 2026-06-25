@@ -136,7 +136,7 @@
           <th>출금일자</th>
           <th>출금금액</th>
           <th>이용기간(일)</th>
-          <th>연이자율(복리)</th>
+          <th>연이자율</th>
           <th>상세</th>
         </tr>
       </thead>
@@ -196,6 +196,22 @@
     </button>
 
     <button class="app-btn-close" onclick="document.getElementById('paywallOverlay').style.display='none'">
+      닫기
+    </button>
+  </div>
+</div>
+
+<!-- 상세 모달 -->
+<div id="detailModal" class="app-modal-overlay" style="display:none;">
+  <div class="app-modal" style="max-width:900px;">
+    <div class="app-modal-header">
+      <div class="app-modal-bar"></div>
+    </div>
+
+    <h3>상세내역</h3>
+    <div id="detailModalContent"></div>
+
+    <button class="app-btn-close" onclick="document.getElementById('detailModal').style.display='none'">
       닫기
     </button>
   </div>
