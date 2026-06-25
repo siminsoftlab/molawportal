@@ -25,9 +25,12 @@ function diffDays(start, end) {
   return Math.max(1, Math.round((e - s) / (1000 * 60 * 60 * 24)));
 }
 
-function calcAnnualYield(principal, paid, days) {
-  if (principal <= 0 || days <= 0) return 0;
-  const periodRate = (paid - principal) / principal;
+/******************************************************
+ *  이자/연이자율
+ ******************************************************/
+function calcAnnualYield(basePrincipal, paid, days) {
+  if (basePrincipal <= 0 || days <= 0) return 0;
+  const periodRate = (paid - basePrincipal) / basePrincipal;
   return periodRate * (365 / days) * 100;
 }
 
@@ -112,7 +115,7 @@ function cfLoadData(rows) {
 window._fifoDetailRows = [];
 
 /******************************************************
- *  메인 계산 (출금 ≤ 다음 입금일 + 출금 우선 정렬)
+ *  메인 계산 (출금일 > 입금일 && 출금일 ≤ 다음 입금일)
  ******************************************************/
 function cfCalculate() {
   const annualRate = Number(document.getElementById("annualRate")?.value || 0);
@@ -163,7 +166,8 @@ function cfCalculate() {
     const deposits = list.filter(r => r.inAmt > 0);
 
     /******************************************************
-     *  3) 각 입금 구간별 출금 매칭 (출금일 ≤ 다음 입금일)
+     *  3) 각 입금 구간별 출금 매칭
+     *     규칙: 입금일 < 출금일 ≤ 다음 입금일
      ******************************************************/
     deposits.forEach((dep, idx) => {
       const nextDep = deposits[idx + 1];
@@ -174,7 +178,9 @@ function cfCalculate() {
         if (!r.outDate || r.outAmt <= 0) return false;
         const od = parseDate(r.outDate);
 
-        if (od < start) return false;
+        // 입금일과 같은 날 출금은 이전 입금건에 속하게 함
+        if (od <= start) return false;
+        // 다음 입금일 초과는 제외
         if (end && od > end) return false;
 
         return true;
@@ -193,7 +199,9 @@ function cfCalculate() {
 
         const normalInterest = calcInterest(remain, annualRate, days);
         const lateInterest   = calcInterest(remain, lateRate, days);
-        const annualYield    = calcAnnualYield(remain, o.outAmt, days);
+
+        // 연이자율은 "해당 입금건의 원금" 기준으로 계산 (remain이 0이어도 dep.inAmt 사용)
+        const annualYield    = calcAnnualYield(dep.inAmt, o.outAmt, days);
 
         detailRows.push({
           no: dep.no,
