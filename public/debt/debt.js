@@ -1,3 +1,8 @@
+// 페이지 로드시 스캔파일 상태 초기화
+document.getElementById("scanFile").value = "";
+document.getElementById("scanStatus").innerText = "";
+
+
 import { db } from "/firebase-init.js";
 import { setDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 import { creditors } from "/debt/creditors.js";
