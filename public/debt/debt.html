@@ -2,36 +2,18 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-
-  <!-- 기존 메타/SEO 그대로 유지 -->
-  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c" />
-  <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>부채발급대상조회</title>
-
   <meta name="description" content="부채증명서 발급 대상 전체 채권자 조회">
-  <meta name="keywords" content="부채증명서, 채권자조회, 개인회생, 신용조회">
+  <meta name="robots" content="index, follow">
 
-  <link rel="canonical" href="https://molawcalculator.com/debt.html">
-
-  <meta property="og:title" content="부채발급대상조회">
-  <meta property="og:description" content="부채증명서 발급을 위한 전체 채권자 조회 페이지">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="딱요만큼변제">
-  <meta property="og:url" content="https://molawcalculator.com/debt.html">
-  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- CSS -->
+  <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/style.css?v=1006">
-  <link rel="stylesheet" href="/debt.css?v=1"> <!-- ⭐ 추가 -->
+  <link rel="stylesheet" href="/debt.css?v=1">
 </head>
 
 <body class="subpage">
-
 <header class="fixed-header fixed-top">
   <h1>부채발급대상조회</h1>
   <a href="/index.html" class="home-btn">
@@ -43,17 +25,25 @@
 
 <div class="page-wrap">
   <div class="container">
-    <h2>📄 부채증명서 발급 대상 전체 채권자 목록</h2>
 
-    <div class="upload-box">
-      <h3>📤 스캔파일 업로드</h3>
+    <div class="card upload-card">
+      <h3>📤 스캔파일 업로드 + OCR</h3>
       <input type="file" id="scanFile" accept="image/*,application/pdf">
-      <button id="uploadBtn" class="app-btn-primary">업로드</button>
-      <p id="uploadStatus"></p>
+      <button id="ocrBtn" class="app-btn-primary">OCR로 채권자 추출</button>
+      <p id="scanStatus"></p>
     </div>
-    
-    <!-- ⭐⭐ 여기부터가 실제 테이블 들어가는 자리 ⭐⭐ -->
-    <div id="debtTableWrap">
+
+    <div class="card search-box">
+      <input type="text" id="searchInput" placeholder="채권자 검색…">
+    </div>
+
+    <div class="card">
+      <div class="actions-row">
+        <button id="syncBtn" class="app-btn-primary">Firebase + creditors.js 동기화</button>
+        <button id="pdfBtn" class="app-btn-secondary">PDF 다운로드</button>
+        <button id="excelBtn" class="app-btn-secondary">엑셀 다운로드</button>
+      </div>
+
       <table id="creditorTable">
         <thead>
           <tr>
@@ -64,25 +54,19 @@
             <th>해제사유</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- debt.js에서 자동 렌더링 -->
-        </tbody>
+        <tbody></tbody>
       </table>
-
-      <button id="saveBtn" class="app-btn-primary" style="margin-top:20px;">
-        Firebase에 저장하기
-      </button>
     </div>
-    <!-- ⭐⭐ 테이블 끝 ⭐⭐ -->
 
   </div>
 </div>
 
-<div id="footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.1/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
-<!-- Firebase -->
 <script type="module" src="/firebase-init.js"></script>
-<script type="module" src="/debt.js?v=1"></script> <!-- ⭐ 추가 -->
-
+<script type="module" src="/debt.js?v=1"></script>
 </body>
 </html>
