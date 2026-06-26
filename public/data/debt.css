@@ -1,0 +1,23 @@
+#creditorTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-top: 20px;
+}
+
+#creditorTable th,
+#creditorTable td {
+  border: 1px solid #e5e7eb;
+  padding: 10px;
+  font-size: 14px;
+}
+
+#creditorTable th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+#saveBtn {
+  padding: 10px 16px;
+  border-radius: 6px;
+}
