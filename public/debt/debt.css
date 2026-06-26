@@ -1,23 +1,44 @@
+.card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.upload-card input[type="file"] {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
 #creditorTable {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  margin-top: 20px;
 }
 
 #creditorTable th,
 #creditorTable td {
   border: 1px solid #e5e7eb;
-  padding: 10px;
+  padding: 8px 10px;
   font-size: 14px;
 }
 
 #creditorTable th {
   background: #f3f4f6;
   font-weight: 600;
-}
-
-#saveBtn {
-  padding: 10px 16px;
-  border-radius: 6px;
 }
