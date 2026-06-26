@@ -1,5 +1,6 @@
 import { db } from "/firebase-init.js";
 import { setDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { creditors } from "/debt/creditors.js";
 
 const tbody = document.querySelector("#creditorTable tbody");
 const searchInput = document.getElementById("searchInput");
