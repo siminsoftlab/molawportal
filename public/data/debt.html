@@ -45,6 +45,13 @@
   <div class="container">
     <h2>📄 부채증명서 발급 대상 전체 채권자 목록</h2>
 
+    <div class="upload-box">
+      <h3>📤 스캔파일 업로드</h3>
+      <input type="file" id="scanFile" accept="image/*,application/pdf">
+      <button id="uploadBtn" class="app-btn-primary">업로드</button>
+      <p id="uploadStatus"></p>
+    </div>
+    
     <!-- ⭐⭐ 여기부터가 실제 테이블 들어가는 자리 ⭐⭐ -->
     <div id="debtTableWrap">
       <table id="creditorTable">
