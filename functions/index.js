@@ -430,20 +430,35 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
       return { success: false, message: "사용자 토큰 없음" };
     }
 
-    // ⭐ undefined, null, 빈 문자열 제거
-    const tokens = tokensSnap.docs
-      .map((doc) => doc.data().token)
-      .filter((t) => typeof t === "string" && t.length > 0);
+    // ⭐ 유효한 토큰만 필터링
+    const validTokens = [];
+    const invalidDocs = [];
 
-    console.log("📌 유효한 tokens:", tokens);
+    tokensSnap.docs.forEach((doc) => {
+      const t = doc.data().token;
 
-    if (tokens.length === 0) {
+      if (typeof t === "string" && t.length > 20) {
+        validTokens.push(t);
+      } else {
+        invalidDocs.push(doc.ref);
+      }
+    });
+
+    console.log("📌 유효한 토큰:", validTokens);
+    console.log("📌 잘못된 토큰 문서:", invalidDocs.length);
+
+    // ⭐ 잘못된 토큰 문서 자동 삭제
+    for (const ref of invalidDocs) {
+      await ref.delete();
+    }
+
+    if (validTokens.length === 0) {
       return { success: false, message: "유효한 토큰 없음" };
     }
 
     const message = {
       notification: { title, body },
-      tokens
+      tokens: validTokens
     };
 
     const res = await admin.messaging().sendMulticast(message);
@@ -461,3 +476,4 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
+
