@@ -1,15 +1,100 @@
 // /fcm.js
-import { getMessaging, getToken, onMessage, isSupported } 
-  from "https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging.js";
-import { app } from "/firebase-init.js";  // ⭐ 이미 초기화된 Firebase 앱 사용
+import { app, db, auth } from "/firebase-init.js";
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging.js";
 
+import {
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+// ⭐ Firebase 콘솔에서 발급한 VAPID KEY 입력
 const vapidKey = "⭐여기에_본인_WEB_PUSH_키_입력⭐";
 
+// HTML 요소
 const statusEl = document.getElementById("fcm-status");
 const permissionBtn = document.getElementById("fcm-permission-btn");
 const tokenTextarea = document.getElementById("fcm-token");
 const messageLogEl = document.getElementById("fcm-message-log");
 
+
+// -------------------------------------------------------------
+// 🔥 Firestore에 FCM 토큰 저장
+// -------------------------------------------------------------
+async function saveTokenToFirestore(token) {
+  const user = auth.currentUser;
+  if (!user) {
+    console.warn("로그인된 사용자가 없어 토큰 저장을 건너뜀");
+    return;
+  }
+
+  const tokenRef = doc(db, `users/${user.uid}/fcmTokens/${token}`);
+
+  await setDoc(tokenRef, {
+    token,
+    createdAt: serverTimestamp()
+  });
+
+  console.log("토큰 Firestore 저장 완료:", token);
+}
+
+
+// -------------------------------------------------------------
+// 🔥 알림 권한 상태 업데이트
+// -------------------------------------------------------------
+function updatePermissionStatus() {
+  const perm = Notification.permission;
+
+  if (perm === "granted") {
+    statusEl.textContent = "알림 권한: 허용됨 ✅";
+  } else if (perm === "denied") {
+    statusEl.textContent = "알림 권한: 거부됨 ❌ (브라우저 설정에서 변경 필요)";
+  } else {
+    statusEl.textContent = "알림 권한: 미요청 ⚠️";
+  }
+}
+
+
+// -------------------------------------------------------------
+// 🔥 알림 권한 요청 + FCM 토큰 발급
+// -------------------------------------------------------------
+async function requestPermissionAndGetToken(messaging) {
+  try {
+    const permission = await Notification.requestPermission();
+    updatePermissionStatus();
+
+    if (permission !== "granted") return;
+
+    const currentToken = await getToken(messaging, {
+      vapidKey,
+      serviceWorkerRegistration: await navigator.serviceWorker.ready
+    });
+
+    if (currentToken) {
+      tokenTextarea.value = currentToken;
+      console.log("FCM token:", currentToken);
+
+      // Firestore 저장
+      await saveTokenToFirestore(currentToken);
+    } else {
+      tokenTextarea.value = "토큰을 가져오지 못했습니다.";
+    }
+
+  } catch (err) {
+    console.error("토큰 요청 오류:", err);
+    tokenTextarea.value = "토큰 요청 중 오류 발생";
+  }
+}
+
+
+// -------------------------------------------------------------
+// 🔥 FCM 초기화
+// -------------------------------------------------------------
 async function initFCM() {
   try {
     const supported = await isSupported();
@@ -27,21 +112,26 @@ async function initFCM() {
 
     updatePermissionStatus();
 
+    // 버튼 클릭 → 권한 요청 + 토큰 발급
     permissionBtn.addEventListener("click", async () => {
       await requestPermissionAndGetToken(messaging);
     });
 
-    // 포그라운드 메시지 수신
+    // ---------------------------------------------------------
+    // 🔥 포그라운드 메시지 수신
+    // ---------------------------------------------------------
     onMessage(messaging, (payload) => {
       console.log("FCM foreground message:", payload);
 
       const { notification } = payload;
+
       const text = `[${new Date().toLocaleString()}]
 title: ${notification?.title || ""}
 body: ${notification?.body || ""}
 data: ${JSON.stringify(payload.data || {}, null, 2)}
 
 `;
+
       messageLogEl.textContent = text + messageLogEl.textContent;
     });
 
@@ -51,40 +141,8 @@ data: ${JSON.stringify(payload.data || {}, null, 2)}
   }
 }
 
-function updatePermissionStatus() {
-  const perm = Notification.permission;
-  if (perm === "granted") {
-    statusEl.textContent = "알림 권한: 허용됨 ✅";
-  } else if (perm === "denied") {
-    statusEl.textContent = "알림 권한: 거부됨 ❌ (브라우저 설정에서 변경 필요)";
-  } else {
-    statusEl.textContent = "알림 권한: 미요청 ⚠️";
-  }
-}
 
-async function requestPermissionAndGetToken(messaging) {
-  try {
-    const permission = await Notification.requestPermission();
-    updatePermissionStatus();
-
-    if (permission !== "granted") return;
-
-    const currentToken = await getToken(messaging, {
-      vapidKey,
-      serviceWorkerRegistration: await navigator.serviceWorker.ready
-    });
-
-    if (currentToken) {
-      tokenTextarea.value = currentToken;
-      console.log("FCM token:", currentToken);
-    } else {
-      tokenTextarea.value = "토큰을 가져오지 못했습니다.";
-    }
-
-  } catch (err) {
-    console.error("토큰 요청 오류:", err);
-    tokenTextarea.value = "토큰 요청 중 오류 발생";
-  }
-}
-
+// -------------------------------------------------------------
+// 실행
+// -------------------------------------------------------------
 initFCM();
