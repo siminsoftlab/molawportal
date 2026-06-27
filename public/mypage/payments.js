@@ -135,8 +135,7 @@ async function loadPayments(userId) {
 
     if (snap.empty) {
       list.innerHTML = `
-        <p>결제내역이 없습니다.</p>
-        <p><a href="/mypage/payments.html">이용권 결제 신청</a></p>
+        <p>결제내역이 없습니다.</p>        
       `;
       return;
     }
