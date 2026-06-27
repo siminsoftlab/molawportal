@@ -47,6 +47,7 @@ async function requestPermissionAndGetToken(messaging) {
 
     if (permission !== "granted") return;
 
+    // 서비스워커 준비될 때까지 대기
     const registration = await navigator.serviceWorker.ready;
 
     const token = await getToken(messaging, {
@@ -81,10 +82,10 @@ async function initFCM() {
   const supported = await isSupported();
   if (!supported) return;
 
-  const messaging = getMessaging(app);
-
   // 서비스워커 등록
   await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+
+  const messaging = getMessaging(app);
 
   // 상태 표시
   updateStatusText();
