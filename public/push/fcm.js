@@ -14,7 +14,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 // ⭐ Firebase 콘솔에서 발급한 VAPID KEY 입력
-const vapidKey = "⭐여기에_본인_WEB_PUSH_키_입력⭐";
+const vapidKey = "BFr4O61FjxX4rvg9O6OV7_SZ0gHyEyHn8UwF0SvYD1OEcMTQ4IbQ5q1ytU4OEOzB_sKdY0tHX0-Qi1C0gMTBD7M";
 
 // HTML 요소
 const statusEl = document.getElementById("fcm-status");
