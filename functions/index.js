@@ -415,37 +415,48 @@ exports.setManagerRole = functions.https.onCall(async (data, context) => {
    9) 관리자 → 특정 사용자에게 FCM 푸시 발송
 ============================================================ */
 exports.sendPushToUser = functions.https.onCall(async (data, context) => {
-  const { uid, title, body } = data;
+  try {
+    const { uid, title, body } = data;
 
-  if (!uid || !title || !body) {
-    throw new functions.https.HttpsError(
-      "invalid-argument",
-      "uid, title, body는 필수입니다."
-    );
+    console.log("📌 sendPushToUser 호출됨:", data);
+
+    if (!uid || !title || !body) {
+      throw new Error("uid, title, body는 필수입니다.");
+    }
+
+    // Firestore에서 토큰 가져오기
+    const tokensSnap = await db
+      .collection(`users/${uid}/fcmTokens`)
+      .get();
+
+    console.log("📌 토큰 문서 개수:", tokensSnap.size);
+
+    if (tokensSnap.empty) {
+      return { success: false, message: "사용자 토큰 없음" };
+    }
+
+    const tokens = tokensSnap.docs.map((doc) => doc.data().token);
+
+    console.log("📌 tokens:", tokens);
+
+    const message = {
+      notification: { title, body },
+      tokens
+    };
+
+    const res = await admin.messaging().sendMulticast(message);
+
+    console.log("📌 FCM 결과:", res);
+
+    return {
+      success: true,
+      sent: res.successCount,
+      failed: res.failureCount
+    };
+
+  } catch (err) {
+    console.error("❌ sendPushToUser 오류:", err);
+    throw new functions.https.HttpsError("internal", err.message);
   }
-
-  // Firestore에서 해당 사용자의 FCM 토큰 가져오기
-  const tokensSnap = await db
-    .collection(`users/${uid}/fcmTokens`)
-    .get();
-
-  if (tokensSnap.empty) {
-    return { success: false, message: "사용자 토큰 없음" };
-  }
-
-  const tokens = tokensSnap.docs.map((doc) => doc.data().token);
-
-  const message = {
-    notification: { title, body },
-    tokens
-  };
-
-  const res = await admin.messaging().sendMulticast(message);
-
-  return {
-    success: true,
-    sent: res.successCount,
-    failed: res.failureCount
-  };
 });
 
