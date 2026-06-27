@@ -55,6 +55,10 @@
     <a href="/index.html">홈으로</a>
   </div>
 
+  <!-- ⭐ 푸터 -->
+  <div id="footer"></div>
+  <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
+  
   <!-- Firebase 초기화 -->
   <script type="module" src="/firebase-init.js"></script>
 
@@ -63,6 +67,12 @@
   <!-- FCM 알림 설정 -->
   <script type="module" src="/mypage/fcm-mypage.js"></script>
   <script src="/block-right-click.js"></script>
-
+  <script>
+  fetch("/footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
 </body>
 </html>
