@@ -55,10 +55,8 @@ async function loadTicket(userId) {
     }
   });
 
-  /* 🔥 최신순 정렬 (expire_at 기준) */
   tokens.sort((a, b) => b.expire_at - a.expire_at);
 
-  /* 현재 이용권 */
   const expireAt = best.expire_at;
   const remaining = getRemainingDays(expireAt);
   const expireDate = new Date(expireAt).toLocaleDateString("ko-KR");
@@ -109,7 +107,6 @@ tokens.forEach(t => {
 
   ticketBox.innerHTML = html;
 }
-
 
 /* ============================================================
    결제 신청 상태 표시
@@ -192,40 +189,6 @@ async function checkExpireAlert(userId) {
 }
 
 /* ============================================================
-   Push 알림 배너 (하루 1번만 표시)
-============================================================ */
-function showPushPermissionBanner() {
-  if (Notification.permission !== "default") return;
-
-  const lastShown = localStorage.getItem("pushBannerLastShown");
-  const today = new Date().toISOString().slice(0, 10);
-
-  if (lastShown === today) return;
-
-  const banner = document.getElementById("pushBanner");
-  banner.style.display = "flex";
-
-  document.getElementById("pushAllow").onclick = async () => {
-    await requestPushPermission();
-    banner.style.display = "none";
-    localStorage.setItem("pushBannerLastShown", today);
-  };
-
-  document.getElementById("pushLater").onclick = () => {
-    banner.style.display = "none";
-    localStorage.setItem("pushBannerLastShown", today);
-  };
-}
-
-/* ============================================================
-   Push 권한 요청 + SW 등록
-============================================================ */
-async function registerServiceWorker() {
-  if ("serviceWorker" in navigator) {
-    await navigator.serviceWorker.register("/sw.js");
-  }
-}
-/* ============================================================
    🔥 회원탈퇴 기능
 ============================================================ */
 async function handleDeleteAccount() {
@@ -244,9 +207,6 @@ async function handleDeleteAccount() {
   try {
     const uid = user.uid;
 
-    /* -----------------------------
-       1) Firestore 데이터 조회
-    ----------------------------- */
     const userDoc = await getDoc(doc(db, "users", uid));
     const userData = userDoc.exists() ? userDoc.data() : {};
 
@@ -270,9 +230,6 @@ async function handleDeleteAccount() {
       console.log("쿠폰 컬렉션 없음 또는 오류:", e);
     }
 
-    /* -----------------------------
-       2) deleted_users 기록 저장
-    ----------------------------- */
     await addDoc(collection(db, "deleted_users"), {
       uid: uid,
       email: userData.email || null,
@@ -283,11 +240,7 @@ async function handleDeleteAccount() {
       coupons: coupons
     });
 
-    /* -----------------------------
-       3) 원본 데이터 삭제
-    ----------------------------- */
     await deleteDoc(doc(db, "users", uid));
-    await deleteDoc(doc(db, "push_subscriptions", uid));
 
     for (const d of tokenSnap.docs) {
       await deleteDoc(doc(db, "access_tokens", d.id));
@@ -301,9 +254,6 @@ async function handleDeleteAccount() {
       await deleteDoc(doc(db, "coupons", d.id));
     }
 
-    /* -----------------------------
-       4) Firebase Auth 계정 삭제
-    ----------------------------- */
     await deleteUser(user);
 
     alert("회원탈퇴가 완료되었습니다.");
@@ -320,6 +270,7 @@ async function handleDeleteAccount() {
     }
   }
 }
+
 /* ============================================================
   이용권 신청 취소
 ============================================================ */
@@ -334,11 +285,10 @@ async function cancelPendingPayment(paymentId) {
   loadPendingPayment(auth.currentUser.uid);
 }
 
-/* 🔥 HTML onclick에서 호출 가능하도록 전역 등록 */
 window.cancelPendingPayment = cancelPendingPayment;
 
 /* ============================================================
-   로그인 후 실행 (버튼 이벤트도 여기서 연결)
+   로그인 후 실행
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, async (user) => {
@@ -347,9 +297,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    await registerServiceWorker();
-
-    /* 🔥 userDoc가 없을 때도 절대 오류 안 나도록 보호 */
     const userDoc = await getDoc(doc(db, "users", user.uid));
     const data = userDoc.exists() ? userDoc.data() : {};
 
@@ -363,11 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPendingPayment(user.uid);
     checkExpireAlert(user.uid);
 
-    showPushPermissionBanner();
-
-    /* ============================================================
-       🔥 버튼 이벤트 연결
-    ============================================================ */
     document.getElementById("editInfoBtn")?.addEventListener("click", () => {
       window.location.href = "/auth/password-change.html";
     });
