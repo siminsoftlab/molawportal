@@ -60,11 +60,18 @@ async function sendFcmV1(tokens, title, body) {
 
   for (const token of tokens) {
     const message = {
-      message: {
-        token,
-        notification: { title, body }
-      }
-    };
+     message: {
+       token,
+       notification: {
+         title,
+         body
+       },
+       data: {
+         title,
+         body
+       }
+     }
+   };
 
     await fetch(url, {
       method: "POST",
