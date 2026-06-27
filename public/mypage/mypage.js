@@ -225,26 +225,6 @@ async function registerServiceWorker() {
     await navigator.serviceWorker.register("/sw.js");
   }
 }
-
-async function requestPushPermission() {
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") return;
-
-  const registration = await navigator.serviceWorker.ready;
-
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: "<VAPID_PUBLIC_KEY>"
-  });
-
-  const user = auth.currentUser;
-
-  await setDoc(doc(db, "push_subscriptions", user.uid), {
-    subscription: JSON.parse(JSON.stringify(subscription)),
-    updated_at: Date.now()
-  });
-}
-
 /* ============================================================
    🔥 회원탈퇴 기능
 ============================================================ */
