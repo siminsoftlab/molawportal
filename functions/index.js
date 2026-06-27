@@ -1,13 +1,14 @@
+// functions/index.js (FCM v1 전용 최종본)
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
-const axios = require("axios");
 const fetch = require("node-fetch");
-const cors = require("cors");
+const { GoogleAuth } = require("google-auth-library");
 
 admin.initializeApp();
 const db = admin.firestore();
 
+// 이메일 설정
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -16,6 +17,10 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// 관리자 UID (실제 값으로 교체)
+const ADMIN_UID = "ADMIN_UID_여기에";
+
+// 공통: 유효한 FCM 토큰만 가져오기
 async function getValidFcmTokens(uid) {
   const snap = await db.collection(`users/${uid}/fcmTokens`).get();
 
@@ -28,12 +33,76 @@ async function getValidFcmTokens(uid) {
     else invalid.push(doc.ref);
   });
 
-  // 잘못된 토큰 자동 삭제
   for (const ref of invalid) await ref.delete();
 
   return valid;
 }
 
+// FCM v1 액세스 토큰
+async function getAccessToken() {
+  const auth = new GoogleAuth({
+    scopes: ["https://www.googleapis.com/auth/firebase.messaging"]
+  });
+  const client = await auth.getClient();
+  const token = await client.getAccessToken();
+  return token.token;
+}
+
+// FCM v1으로 푸시 발송
+async function sendFcmV1(tokens, title, body) {
+  if (!tokens || tokens.length === 0) return;
+
+  const accessToken = await getAccessToken();
+  const projectId = process.env.GCLOUD_PROJECT;
+  const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
+
+  for (const token of tokens) {
+    const message = {
+      message: {
+        token,
+        notification: { title, body }
+      }
+    };
+
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(message)
+    });
+  }
+}
+
+// 1) 관리자 페이지에서 호출하는 단일 사용자 푸시
+exports.sendPushToUser = functions.https.onCall(async (data, context) => {
+  try {
+    const { uid, title, body } = data;
+
+    if (!uid || !title || !body) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "uid, title, body는 필수입니다."
+      );
+    }
+
+    const tokens = await getValidFcmTokens(uid);
+
+    if (tokens.length === 0) {
+      return { success: false, message: "유효한 토큰 없음" };
+    }
+
+    await sendFcmV1(tokens, title, body);
+
+    return { success: true, sent: tokens.length };
+  } catch (err) {
+    console.error("sendPushToUser 오류:", err);
+    throw new functions.https.HttpsError("internal", err.message);
+  }
+});
+
+// 2) 이용권 만료 3일 전 알림 (이메일 + FCM)
 exports.sendExpireAlerts = functions.pubsub
   .schedule("every 24 hours")
   .onRun(async () => {
@@ -49,7 +118,6 @@ exports.sendExpireAlerts = functions.pubsub
       const token = docSnap.data();
       const userId = token.user_id;
 
-      // 중복 발송 체크
       const alertDoc = await db.collection("notifications")
         .doc(userId)
         .collection("alerts")
@@ -58,11 +126,9 @@ exports.sendExpireAlerts = functions.pubsub
 
       if (alertDoc.exists) continue;
 
-      // 사용자 정보
       const userDoc = await db.collection("users").doc(userId).get();
       const user = userDoc.data();
 
-      // 이메일 발송
       await transporter.sendMail({
         from: "YOUR_EMAIL@gmail.com",
         to: user.email,
@@ -71,24 +137,13 @@ exports.sendExpireAlerts = functions.pubsub
           <h2>📢 이용권 만료 3일 전 안내</h2>
           <p>${user.name}님, 안녕하세요.</p>
           <p>이용 중인 이용권이 <strong>3일 후 만료</strong>됩니다.</p>
-          <p><a href="https://molawcounter.com/payment.html">👉 이용권 연장하기</a></p>
+          <p><a href="https://molawcalculator.com/mypage/mypage.html">👉 이용권 연장하기</a></p>
         `
       });
 
-      // ⭐ FCM 푸시 발송
       const tokens = await getValidFcmTokens(userId);
+      await sendFcmV1(tokens, "이용권 만료 안내", "이용권 만료까지 3일 남았습니다.");
 
-      if (tokens.length > 0) {
-        await admin.messaging().sendMulticast({
-          notification: {
-            title: "이용권 만료 안내",
-            body: "이용권 만료까지 3일 남았습니다."
-          },
-          tokens
-        });
-      }
-
-      // 발송 기록
       await db.collection("notifications")
         .doc(userId)
         .collection("alerts")
@@ -102,8 +157,7 @@ exports.sendExpireAlerts = functions.pubsub
     return null;
   });
 
-const ADMIN_UID = "eu6wUAEE4DeaHCqjA8KKNkw7Ung1";
-
+// 3) 자동 매칭 실패 시 관리자에게 FCM 푸시
 exports.autoMatchDeposits = functions.firestore
   .document("bank_deposits/{depositId}")
   .onCreate(async (snap, context) => {
@@ -115,7 +169,6 @@ exports.autoMatchDeposits = functions.firestore
       .where("depositor_name", "==", depositor)
       .get();
 
-    // 자동 매칭 실패
     if (pendingSnap.empty) {
       await db.collection("match_failures").add({
         depositor_name: depositor,
@@ -124,7 +177,6 @@ exports.autoMatchDeposits = functions.firestore
         created_at: Date.now()
       });
 
-      // 이메일 알림
       await transporter.sendMail({
         from: "YOUR_EMAIL@gmail.com",
         to: "ADMIN_EMAIL@gmail.com",
@@ -136,23 +188,16 @@ exports.autoMatchDeposits = functions.firestore
         `
       });
 
-      // ⭐ 관리자 FCM 푸시
       const tokens = await getValidFcmTokens(ADMIN_UID);
-
-      if (tokens.length > 0) {
-        await admin.messaging().sendMulticast({
-          notification: {
-            title: "⚠️ 자동 매칭 실패",
-            body: `${depositor} / ${deposit.amount.toLocaleString()}원`
-          },
-          tokens
-        });
-      }
+      await sendFcmV1(
+        tokens,
+        "⚠️ 자동 매칭 실패",
+        `${depositor} / ${deposit.amount.toLocaleString()}원`
+      );
 
       return null;
     }
 
-    // 자동 매칭 성공 (기존 로직 유지)
     for (const doc of pendingSnap.docs) {
       const paymentId = doc.id;
       const payment = doc.data();
@@ -192,30 +237,3 @@ exports.autoMatchDeposits = functions.firestore
 
     return null;
   });
-
-exports.sendPushToUser = functions.https.onCall(async (data, context) => {
-  try {
-    const { uid, title, body } = data;
-
-    const tokens = await getValidFcmTokens(uid);
-
-    if (tokens.length === 0) {
-      return { success: false, message: "유효한 토큰 없음" };
-    }
-
-    const res = await admin.messaging().sendMulticast({
-      notification: { title, body },
-      tokens
-    });
-
-    return {
-      success: true,
-      sent: res.successCount,
-      failed: res.failureCount
-    };
-
-  } catch (err) {
-    console.error("sendPushToUser 오류:", err);
-    throw new functions.https.HttpsError("internal", err.message);
-  }
-});
