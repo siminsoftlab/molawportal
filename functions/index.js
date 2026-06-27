@@ -1,14 +1,21 @@
-// functions/index.js (FCM v1 전용 최종본)
+/* ============================================================
+   Firebase Cloud Functions — FCM v1 기반 최종 통합본
+============================================================ */
+
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
+const axios = require("axios");
 const fetch = require("node-fetch");
+const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
 
 admin.initializeApp();
 const db = admin.firestore();
 
-// 이메일 설정
+/* ============================================================
+   이메일 설정
+============================================================ */
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -17,28 +24,21 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// 관리자 UID (실제 값으로 교체)
-const ADMIN_UID = "ADMIN_UID_여기에";
-
-// 공통: 유효한 FCM 토큰만 가져오기
-async function getValidFcmTokens(uid) {
-  const snap = await db.collection(`users/${uid}/fcmTokens`).get();
-
-  const valid = [];
-  const invalid = [];
-
-  snap.docs.forEach(doc => {
-    const t = doc.data().token;
-    if (typeof t === "string" && t.length > 20) valid.push(t);
-    else invalid.push(doc.ref);
-  });
-
-  for (const ref of invalid) await ref.delete();
-
-  return valid;
+/* ============================================================
+   이메일 템플릿
+============================================================ */
+function emailTemplate(name) {
+  return `
+    <h2>📢 이용권 만료 3일 전 안내</h2>
+    <p>${name}님, 안녕하세요.</p>
+    <p>이용 중인 개인회생 계산기 이용권이 <strong>3일 후 만료</strong>됩니다.</p>
+    <p><a href="https://molawcounter.com/payment.html">👉 이용권 연장하기</a></p>
+  `;
 }
 
-// FCM v1 액세스 토큰
+/* ============================================================
+   FCM v1 Access Token
+============================================================ */
 async function getAccessToken() {
   const auth = new GoogleAuth({
     scopes: ["https://www.googleapis.com/auth/firebase.messaging"]
@@ -48,7 +48,9 @@ async function getAccessToken() {
   return token.token;
 }
 
-// FCM v1으로 푸시 발송
+/* ============================================================
+   FCM v1 발송 함수
+============================================================ */
 async function sendFcmV1(tokens, title, body) {
   if (!tokens || tokens.length === 0) return;
 
@@ -75,92 +77,83 @@ async function sendFcmV1(tokens, title, body) {
   }
 }
 
-// 1) 관리자 페이지에서 호출하는 단일 사용자 푸시
-exports.sendPushToUser = functions.https.onCall(async (data, context) => {
-  try {
-    const { uid, title, body } = data;
+/* ============================================================
+   유효한 FCM 토큰만 가져오기
+============================================================ */
+async function getValidFcmTokens(uid) {
+  const snap = await db.collection(`users/${uid}/fcmTokens`).get();
 
-    if (!uid || !title || !body) {
-      throw new functions.https.HttpsError(
-        "invalid-argument",
-        "uid, title, body는 필수입니다."
-      );
-    }
+  const valid = [];
+  const invalid = [];
 
-    const tokens = await getValidFcmTokens(uid);
-
-    if (tokens.length === 0) {
-      return { success: false, message: "유효한 토큰 없음" };
-    }
-
-    await sendFcmV1(tokens, title, body);
-
-    return { success: true, sent: tokens.length };
-  } catch (err) {
-    console.error("sendPushToUser 오류:", err);
-    throw new functions.https.HttpsError("internal", err.message);
-  }
-});
-
-// 2) 이용권 만료 3일 전 알림 (이메일 + FCM)
-exports.sendExpireAlerts = functions.pubsub
-  .schedule("every 24 hours")
-  .onRun(async () => {
-    const now = Date.now();
-    const target = now + 3 * 24 * 60 * 60 * 1000;
-
-    const snap = await db.collection("access_tokens")
-      .where("expire_at", ">=", target - 3600000)
-      .where("expire_at", "<=", target + 3600000)
-      .get();
-
-    for (const docSnap of snap.docs) {
-      const token = docSnap.data();
-      const userId = token.user_id;
-
-      const alertDoc = await db.collection("notifications")
-        .doc(userId)
-        .collection("alerts")
-        .doc("expire_3days")
-        .get();
-
-      if (alertDoc.exists) continue;
-
-      const userDoc = await db.collection("users").doc(userId).get();
-      const user = userDoc.data();
-
-      await transporter.sendMail({
-        from: "YOUR_EMAIL@gmail.com",
-        to: user.email,
-        subject: "📢 이용권 만료 3일 전 안내",
-        html: `
-          <h2>📢 이용권 만료 3일 전 안내</h2>
-          <p>${user.name}님, 안녕하세요.</p>
-          <p>이용 중인 이용권이 <strong>3일 후 만료</strong>됩니다.</p>
-          <p><a href="https://molawcalculator.com/mypage/mypage.html">👉 이용권 연장하기</a></p>
-        `
-      });
-
-      const tokens = await getValidFcmTokens(userId);
-      await sendFcmV1(tokens, "이용권 만료 안내", "이용권 만료까지 3일 남았습니다.");
-
-      await db.collection("notifications")
-        .doc(userId)
-        .collection("alerts")
-        .doc("expire_3days")
-        .set({
-          sent: true,
-          timestamp: Date.now()
-        });
-    }
-
-    return null;
+  snap.docs.forEach(doc => {
+    const t = doc.data().token;
+    if (typeof t === "string" && t.length > 20) valid.push(t);
+    else invalid.push(doc.ref);
   });
 
-// 3) 자동 매칭 실패 시 관리자에게 FCM 푸시
+  for (const ref of invalid) await ref.delete();
+
+  return valid;
+}
+
+/* ============================================================
+   1) 이용권 만료 3일 전 알림 (이메일 + FCM v1)
+============================================================ */
+exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(async () => {
+  const now = Date.now();
+  const target = now + (3 * 24 * 60 * 60 * 1000);
+
+  const snap = await db.collection("access_tokens")
+    .where("expire_at", ">=", target - 3600000)
+    .where("expire_at", "<=", target + 3600000)
+    .get();
+
+  for (const doc of snap.docs) {
+    const token = doc.data();
+    const userId = token.user_id;
+
+    const alertDoc = await db.collection("notifications")
+      .doc(userId)
+      .collection("alerts")
+      .doc("expire_3days")
+      .get();
+
+    if (alertDoc.exists) continue;
+
+    const userDoc = await db.collection("users").doc(userId).get();
+    const user = userDoc.data();
+
+    await transporter.sendMail({
+      from: "YOUR_EMAIL@gmail.com",
+      to: user.email,
+      subject: "📢 이용권 만료 3일 전 안내",
+      html: emailTemplate(user.name)
+    });
+
+    const tokens = await getValidFcmTokens(userId);
+    await sendFcmV1(tokens, "이용권 만료 안내", "이용권 만료까지 3일 남았습니다.");
+
+    await db.collection("notifications")
+      .doc(userId)
+      .collection("alerts")
+      .doc("expire_3days")
+      .set({
+        sent: true,
+        timestamp: Date.now()
+      });
+  }
+
+  return null;
+});
+
+/* ============================================================
+   2) 자동 매칭 시스템 (FCM v1 적용)
+============================================================ */
 exports.autoMatchDeposits = functions.firestore
   .document("bank_deposits/{depositId}")
   .onCreate(async (snap, context) => {
+
     const deposit = snap.data();
     const depositor = deposit.depositor_name.trim();
 
@@ -169,7 +162,9 @@ exports.autoMatchDeposits = functions.firestore
       .where("depositor_name", "==", depositor)
       .get();
 
+    /* 자동 매칭 실패 */
     if (pendingSnap.empty) {
+
       await db.collection("match_failures").add({
         depositor_name: depositor,
         amount: deposit.amount,
@@ -188,9 +183,9 @@ exports.autoMatchDeposits = functions.firestore
         `
       });
 
-      const tokens = await getValidFcmTokens(ADMIN_UID);
+      const adminTokens = await getValidFcmTokens("ADMIN_UID");
       await sendFcmV1(
-        tokens,
+        adminTokens,
         "⚠️ 자동 매칭 실패",
         `${depositor} / ${deposit.amount.toLocaleString()}원`
       );
@@ -198,6 +193,7 @@ exports.autoMatchDeposits = functions.firestore
       return null;
     }
 
+    /* 자동 매칭 성공 */
     for (const doc of pendingSnap.docs) {
       const paymentId = doc.id;
       const payment = doc.data();
@@ -209,7 +205,7 @@ exports.autoMatchDeposits = functions.firestore
 
       const tokenId = db.collection("access_tokens").doc().id;
       const now = Date.now();
-      const expire = now + 30 * 24 * 60 * 60 * 1000;
+      const expire = now + (30 * 24 * 60 * 60 * 1000);
 
       await db.collection("access_tokens").doc(tokenId).set({
         user_id: payment.user_id,
@@ -237,3 +233,184 @@ exports.autoMatchDeposits = functions.firestore
 
     return null;
   });
+
+/* ============================================================
+   3) 오픈뱅킹 자동 입금 수집
+============================================================ */
+exports.fetchBankDeposits = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
+
+    const accessToken = "OPENBANKING_ACCESS_TOKEN";
+    const fintechUseNum = "YOUR_FINTECH_USE_NUM";
+
+    try {
+      const response = await axios.post(
+        "https://openapi.openbanking.or.kr/v2.0/account/transaction_list",
+        {
+          bank_tran_id: "MOLAW" + Date.now(),
+          fintech_use_num: fintechUseNum,
+          inquiry_type: "A",
+          inquiry_base: "D",
+          from_date: "20240101",
+          to_date: "20241231",
+          sort_order: "D"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      const list = response.data.res_list;
+
+      for (const item of list) {
+        if (item.inout_type !== "입금") continue;
+
+        const depositor = item.print_content.trim();
+        const amount = Number(item.tran_amt);
+        const timestamp = new Date(
+          item.tran_date + " " + item.tran_time
+        ).getTime();
+
+        const exists = await db.collection("bank_deposits")
+          .where("timestamp", "==", timestamp)
+          .where("amount", "==", amount)
+          .get();
+
+        if (!exists.empty) continue;
+
+        await db.collection("bank_deposits").add({
+          depositor_name: depositor,
+          amount: amount,
+          timestamp: timestamp,
+          matched: false
+        });
+      }
+
+    } catch (err) {
+      console.error("은행 API 오류:", err);
+    }
+
+    return null;
+  });
+
+/* ============================================================
+   4) GeoIP API
+============================================================ */
+const corsHandler = cors({ origin: true });
+
+exports.geoip = functions.https.onRequest((req, res) => {
+  const allowedOrigins = [
+    "https://molawcalculator.com",
+    "https://molawcounter.web.app"
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.set("Access-Control-Allow-Origin", origin);
+  }
+
+  corsHandler(req, res, async () => {
+    if (req.method === "OPTIONS") {
+      res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      res.set("Access-Control-Allow-Headers", "Content-Type");
+      return res.status(204).send("");
+    }
+
+    try {
+      const ip =
+        req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+        req.connection.remoteAddress;
+
+      const geoRes = await fetch(`https://ipwho.is/${ip}`);
+      const geoData = await geoRes.json();
+
+      res.status(200).json({
+        success: true,
+        ip: ip,
+        country: geoData.country,
+        city: geoData.city
+      });
+    } catch (err) {
+      console.error("GeoIP Error:", err);
+      res.status(500).json({ success: false, error: err.toString() });
+    }
+  });
+});
+
+/* ============================================================
+   5) 관리자 권한 설정
+============================================================ */
+exports.setAdminRole = functions.https.onCall(async (data, context) => {
+  if (!context.auth || context.auth.token.role !== "admin") {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "관리자만 권한을 변경할 수 있습니다."
+    );
+  }
+
+  const uid = data.uid;
+
+  await admin.auth().setCustomUserClaims(uid, { role: "admin" });
+
+  await db.collection("users").doc(uid).set(
+    {
+      role: "admin",
+      role_updated_at: Date.now()
+    },
+    { merge: true }
+  );
+
+  return { message: `관리자 권한이 부여되었습니다: ${uid}` };
+});
+
+/* ============================================================
+   6) 담당자 권한 설정
+============================================================ */
+exports.setManagerRole = functions.https.onCall(async (data, context) => {
+  if (!context.auth || context.auth.token.role !== "admin") {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "관리자만 권한을 변경할 수 있습니다."
+    );
+  }
+
+  const uid = data.uid;
+
+  await admin.auth().setCustomUserClaims(uid, { role: "manager" });
+
+  await db.collection("users").doc(uid).set(
+    {
+      role: "manager",
+      role_updated_at: Date.now()
+    },
+    { merge: true }
+  );
+
+  return { message: `담당자 권한이 부여되었습니다: ${uid}` };
+});
+
+/* ============================================================
+   7) 관리자 → 특정 사용자에게 FCM v1 푸시 발송
+============================================================ */
+exports.sendPushToUser = functions.https.onCall(async (data, context) => {
+  try {
+    const { uid, title, body } = data;
+
+    const tokens = await getValidFcmTokens(uid);
+
+    if (tokens.length === 0) {
+      return { success: false, message: "유효한 토큰 없음" };
+    }
+
+    await sendFcmV1(tokens, title, body);
+
+    return { success: true, sent: tokens.length };
+  } catch (err) {
+    console.error("sendPushToUser 오류:", err);
+    throw new functions.https.HttpsError("internal", err.message);
+  }
+});
