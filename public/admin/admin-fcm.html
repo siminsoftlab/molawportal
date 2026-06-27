@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>관리자 푸시 발송</title>
+
+  <link rel="stylesheet" href="/admin/admin-fcm.css">
+</head>
+
+<body class="subpage">
+
+<header class="fixed-header fixed-top">
+  <h1>관리자 푸시 발송</h1>
+  <a href="/index.html" class="home-btn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</header>
+
+<div class="page-wrap">
+  <div class="container">
+
+    <h2>🔔 FCM 푸시 메시지 발송</h2>
+
+    <label>사용자 UID</label>
+    <input id="uid" placeholder="예: abc123xyz">
+
+    <label>알림 제목</label>
+    <input id="title" placeholder="예: 더 이상 혼자 고민하지 마세요">
+
+    <label>알림 내용</label>
+    <textarea id="body" placeholder="예: 딱요만큼변제가 변제금과 이자율을 1분 만에 계산해드립니다."></textarea>
+
+    <button id="sendBtn">푸시 발송</button>
+
+    <pre id="result"></pre>
+
+  </div>
+</div>
+
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/admin/admin-fcm.js"></script>
+
+</body>
+</html>
