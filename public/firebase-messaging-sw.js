@@ -19,23 +19,32 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log("[SW] 백그라운드 메시지:", payload);
 
-  // FCM v1에서는 data 안에 title/body가 들어옴
+  // FCM v1은 data.*가 정식 전달됨
   const title =
     payload.data?.title ||
     payload.notification?.title ||
-    "딱요만큼변제 알림";
+    "알림";
 
   const body =
     payload.data?.body ||
     payload.notification?.body ||
     "새로운 알림이 있습니다.";
 
+  const url = payload.data?.url || "/";
+
   const notificationOptions = {
     body,
-    icon: "/images/icon-192.png",   // 모바일에서 필수
+    icon: "/images/icon-192.png",
     badge: "/images/icon-192.png",
-    data: payload.data || {}
+    data: { url }
   };
 
   self.registration.showNotification(title, notificationOptions);
+});
+
+// 알림 클릭 시 URL로 이동
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data.url || "/";
+  event.waitUntil(clients.openWindow(url));
 });
