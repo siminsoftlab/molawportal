@@ -430,13 +430,14 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
       return { success: false, message: "사용자 토큰 없음" };
     }
 
-    // ⭐ 유효한 토큰만 필터링
+    // ⭐ 유효한 토큰만 필터링 + 잘못된 문서 자동 삭제
     const validTokens = [];
     const invalidDocs = [];
 
     tokensSnap.docs.forEach((doc) => {
       const t = doc.data().token;
 
+      // 유효한 토큰: 문자열 + 길이 20 이상
       if (typeof t === "string" && t.length > 20) {
         validTokens.push(t);
       } else {
@@ -445,9 +446,9 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     });
 
     console.log("📌 유효한 토큰:", validTokens);
-    console.log("📌 잘못된 토큰 문서:", invalidDocs.length);
+    console.log("📌 삭제할 잘못된 문서:", invalidDocs.length);
 
-    // ⭐ 잘못된 토큰 문서 자동 삭제
+    // ⭐ 잘못된 토큰 문서 삭제
     for (const ref of invalidDocs) {
       await ref.delete();
     }
@@ -476,4 +477,3 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
-
