@@ -1,4 +1,4 @@
-// /firebase-messaging-sw.js
+// firebase-messaging-sw.js
 
 importScripts("https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js");
@@ -19,12 +19,23 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log("[SW] 백그라운드 메시지:", payload);
 
-  const notificationTitle = payload.notification?.title || "딱요만큼변제 알림";
+  // FCM v1에서는 data 안에 title/body가 들어옴
+  const title =
+    payload.data?.title ||
+    payload.notification?.title ||
+    "딱요만큼변제 알림";
+
+  const body =
+    payload.data?.body ||
+    payload.notification?.body ||
+    "새로운 알림이 있습니다.";
+
   const notificationOptions = {
-    body: payload.notification?.body || "더 이상 혼자 고민하지 마세요.",
-    icon: "/images/favicon.ico",
+    body,
+    icon: "/images/icon-192.png",   // 모바일에서 필수
+    badge: "/images/icon-192.png",
     data: payload.data || {}
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(title, notificationOptions);
 });
