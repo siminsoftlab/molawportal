@@ -420,11 +420,6 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 
     console.log("📌 sendPushToUser 호출됨:", data);
 
-    if (!uid || !title || !body) {
-      throw new Error("uid, title, body는 필수입니다.");
-    }
-
-    // Firestore에서 토큰 가져오기
     const tokensSnap = await db
       .collection(`users/${uid}/fcmTokens`)
       .get();
@@ -435,9 +430,16 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
       return { success: false, message: "사용자 토큰 없음" };
     }
 
-    const tokens = tokensSnap.docs.map((doc) => doc.data().token);
+    // ⭐ undefined, null, 빈 문자열 제거
+    const tokens = tokensSnap.docs
+      .map((doc) => doc.data().token)
+      .filter((t) => typeof t === "string" && t.length > 0);
 
-    console.log("📌 tokens:", tokens);
+    console.log("📌 유효한 tokens:", tokens);
+
+    if (tokens.length === 0) {
+      return { success: false, message: "유효한 토큰 없음" };
+    }
 
     const message = {
       notification: { title, body },
@@ -459,4 +461,3 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
-
