@@ -106,6 +106,26 @@ input:focus {
 .back:active {
   background: #ddd;
 }
+/* ============================
+   이용권 신청 버튼
+============================ */
+.mypage-btn {
+  width: 100%;
+  padding: 15px;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.2s;
+}
+
+.mypage-btn:active {
+  background: #3b7ac4;
+}
 
 /* ============================
    메시지 영역
