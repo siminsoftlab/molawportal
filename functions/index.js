@@ -1,5 +1,5 @@
 /* ============================================================
-   Firebase Cloud Functions — FCM v1 기반 최종 통합본
+   Firebase Cloud Functions — FCM v1 기반 최종 통합본 (알림 저장 분리)
 ============================================================ */
 
 const functions = require("firebase-functions");
@@ -49,31 +49,32 @@ async function getAccessToken() {
 }
 
 /* ============================================================
-   FCM v1 발송 함수
+   FCM v1 발송 함수 (URL 포함)
 ============================================================ */
-async function sendFcmV1(tokens, title, body) {
+async function sendFcmV1(tokens, title, body, url) {
   if (!tokens || tokens.length === 0) return;
 
   const accessToken = await getAccessToken();
   const projectId = process.env.GCLOUD_PROJECT;
-  const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
+  const endpoint = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
 
   for (const token of tokens) {
     const message = {
-     message: {
-       token,
-       notification: {
-         title,
-         body
-       },
-       data: {
-         title,
-         body
-       }
-     }
-   };
+      message: {
+        token,
+        notification: {
+          title,
+          body
+        },
+        data: {
+          title,
+          body,
+          url
+        }
+      }
+    };
 
-    await fetch(url, {
+    await fetch(endpoint, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${accessToken}`,
@@ -105,7 +106,31 @@ async function getValidFcmTokens(uid) {
 }
 
 /* ============================================================
-   1) 이용권 만료 3일 전 알림 (이메일 + FCM v1)
+   알림 저장 로직 분리
+   - 일반 사용자: users/{uid}/notifications
+   - 관리자/담당자: managers/{uid}/notifications
+   - 전체 관리자: admin_notifications
+============================================================ */
+async function saveNotification(uid, role, title, body, url) {
+  const data = {
+    title,
+    body,
+    url,
+    createdAt: Date.now(),
+    read: false
+  };
+
+  if (role === "user") {
+    await db.collection(`users/${uid}/notifications`).add(data);
+  } else if (role === "manager") {
+    await db.collection(`managers/${uid}/notifications`).add(data);
+  } else if (role === "admin") {
+    await db.collection("admin_notifications").add(data);
+  }
+}
+
+/* ============================================================
+   1) 이용권 만료 3일 전 알림 (이메일 + FCM v1 + 알림 저장)
 ============================================================ */
 exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(async () => {
   const now = Date.now();
@@ -138,8 +163,14 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
       html: emailTemplate(user.name)
     });
 
+    const title = "이용권 만료 안내";
+    const body = "이용권 만료까지 3일 남았습니다.";
+    const url = "/notifications.html";
+
     const tokens = await getValidFcmTokens(userId);
-    await sendFcmV1(tokens, "이용권 만료 안내", "이용권 만료까지 3일 남았습니다.");
+    await sendFcmV1(tokens, title, body, url);
+
+    await saveNotification(userId, "user", title, body, url);
 
     await db.collection("notifications")
       .doc(userId)
@@ -155,7 +186,7 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
 });
 
 /* ============================================================
-   2) 자동 매칭 시스템 (FCM v1 적용)
+   2) 자동 매칭 시스템 (FCM v1 적용 + 관리자 알림 저장)
 ============================================================ */
 exports.autoMatchDeposits = functions.firestore
   .document("bank_deposits/{depositId}")
@@ -190,12 +221,14 @@ exports.autoMatchDeposits = functions.firestore
         `
       });
 
+      const title = "⚠️ 자동 매칭 실패";
+      const body = `${depositor} / ${deposit.amount.toLocaleString()}원`;
+      const url = "/notifications-managers.html";
+
+      await saveNotification("ADMIN_UID", "manager", title, body, url);
+
       const adminTokens = await getValidFcmTokens("ADMIN_UID");
-      await sendFcmV1(
-        adminTokens,
-        "⚠️ 자동 매칭 실패",
-        `${depositor} / ${deposit.amount.toLocaleString()}원`
-      );
+      await sendFcmV1(adminTokens, title, body, url);
 
       return null;
     }
@@ -401,7 +434,7 @@ exports.setManagerRole = functions.https.onCall(async (data, context) => {
 });
 
 /* ============================================================
-   7) 관리자 → 특정 사용자에게 FCM v1 푸시 발송
+   7) 관리자 → 특정 사용자에게 FCM v1 푸시 발송 + 알림 저장
 ============================================================ */
 exports.sendPushToUser = functions.https.onCall(async (data, context) => {
   try {
@@ -413,7 +446,10 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
       return { success: false, message: "유효한 토큰 없음" };
     }
 
-    await sendFcmV1(tokens, title, body);
+    const url = "/notifications.html";
+
+    await sendFcmV1(tokens, title, body, url);
+    await saveNotification(uid, "user", title, body, url);
 
     return { success: true, sent: tokens.length };
   } catch (err) {
