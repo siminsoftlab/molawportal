@@ -234,3 +234,12 @@ if (backBtn) {
     window.location.href = "/mypage/mypage.html";
   });
 }
+/* ============================================================
+   이용권 신청 버튼
+============================================================ */
+const buyTicketBtn = document.getElementById("buyTicketBtn");
+if (buyTicketBtn) {
+  buyTicketBtn.addEventListener("click", () => {
+    window.location.href = "/mypage/payments.html";
+  });
+}
