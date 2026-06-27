@@ -1,0 +1,55 @@
+body {
+  font-family: "Pretendard", sans-serif;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 15px;
+  display: block;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #3a57d0;
+}
+
+pre {
+  background: #f7f7f7;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+  white-space: pre-wrap;
+}
