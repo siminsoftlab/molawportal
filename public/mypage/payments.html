@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>이용권 결제 신청</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/mypage/payments.css">
   <link rel="icon" href="/images/favicon.ico">
 </head>
@@ -59,11 +60,21 @@
 
     <button id="backBtn" class="back">← 마이페이지로 돌아가기</button>
   </div>
+  <!-- ⭐ 푸터 -->
+  <div id="footer"></div>
+  <a href="http://pf.kakao.com/_wAqxen/chat" class="quick-kakao" target="_blank">💬 카톡 상담</a>
   <!-- Firebase 초기화 -->
   <script type="module" src="/firebase-init.js"></script>
   <!-- 결제 생성 + 이용권 금액 자동 계산 스크립트 -->
  
-<script type="module" src="/mypage/payments.js"></script>
-<script src="/block-right-click.js"></script>
+  <script type="module" src="/mypage/payments.js"></script>
+  <script src="/block-right-click.js"></script>
+  <script>
+  fetch("/footer.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
 </body>
 </html>
