@@ -2,10 +2,8 @@
    Firebase v9 기반 공통 인증 + 이용권 체크 (access_tokens 버전)
 ============================================================ */
 
-// firebase-init.js에서 auth, db 가져오기
 import { auth, db } from "/firebase-init.js";
 
-// Firestore v9 모듈
 import {
   collection,
   query,
@@ -20,9 +18,6 @@ import {
 ============================================================ */
 export async function checkAccess(onSuccess) {
   try {
-    /* -----------------------------
-       1) 로그인 체크
-    ----------------------------- */
     const user = auth.currentUser;
 
     if (!user) {
@@ -32,9 +27,6 @@ export async function checkAccess(onSuccess) {
 
     const uid = user.uid;
 
-    /* -----------------------------
-       2) access_tokens 조회
-    ----------------------------- */
     const q = query(
       collection(db, "access_tokens"),
       where("user_id", "==", uid),
@@ -53,7 +45,7 @@ export async function checkAccess(onSuccess) {
     const data = snap.docs[0].data();
 
     /* -----------------------------
-       3) expire_at 안전 변환
+       expire_at 안전 변환
     ----------------------------- */
     let expireDate;
 
@@ -75,24 +67,17 @@ export async function checkAccess(onSuccess) {
 
     const now = new Date();
 
-    // expire_at이 잘못된 경우 → 구매 필요로 처리
     if (!expireDate || isNaN(expireDate.getTime())) {
       console.error("⚠ expire_at 값 오류:", data.expire_at);
       openModal("purchase");
       return;
     }
 
-    /* -----------------------------
-       4) 만료 체크
-    ----------------------------- */
     if (expireDate < now) {
       openModal("expired");
       return;
     }
 
-    /* -----------------------------
-       5) 모든 조건 충족 → 계산 실행
-    ----------------------------- */
     onSuccess();
 
   } catch (err) {
@@ -102,30 +87,34 @@ export async function checkAccess(onSuccess) {
 }
 
 /* ============================================================
-   모달 열기
+   모달 열기 (안전 버전)
 ============================================================ */
 function openModal(type) {
+  const overlay = document.getElementById("paywallOverlay");
+  const loginModal = document.getElementById("loginRequiredModal");
+
+  const titleEl = overlay?.querySelector("h3");
+  const textEl = overlay?.querySelector(".app-modal-text");
+
   switch (type) {
     case "login":
-      document.getElementById("loginRequiredModal").style.display = "flex";
+      if (loginModal) loginModal.style.display = "flex";
       break;
 
     case "purchase":
-      document.querySelector("#paywallOverlay h3").textContent = "🔒 이용권이 필요합니다";
-      document.querySelector("#paywallOverlay .app-modal-text").textContent =
+      if (titleEl) titleEl.textContent = "🔒 이용권이 필요합니다";
+      if (textEl) textEl.textContent =
         "전체 계산 결과는 이용권 활성화 후 이용 가능합니다.";
-      document.getElementById("paywallOverlay").style.display = "flex";
+      overlay.style.display = "flex";
       break;
 
     case "expired":
-      document.querySelector("#paywallOverlay h3").textContent =
-        "🔒 이용권 사용기간이 종료되었습니다";
-      document.querySelector("#paywallOverlay .app-modal-text").textContent =
+      if (titleEl) titleEl.textContent = "🔒 이용권 사용기간이 종료되었습니다";
+      if (textEl) textEl.textContent =
         "이용권 사용기간이 종료되었습니다. 이용권을 신청하시겠습니까?";
-      document.getElementById("paywallOverlay").style.display = "flex";
+      overlay.style.display = "flex";
       break;
   }
 }
 
-/* HTML onclick에서도 사용 가능하도록 전역 등록 */
 window.checkAccess = checkAccess;
