@@ -1,6 +1,5 @@
 // /firebase-messaging-sw.js
 
-// v9에서도 서비스 워커는 compat 버전 사용하는 게 가장 안정적
 importScripts("https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js");
 
@@ -16,12 +15,11 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// 백그라운드 푸시 수신
+// 백그라운드 메시지 처리
 messaging.onBackgroundMessage((payload) => {
-  console.log("[firebase-messaging-sw.js] 백그라운드 메시지 수신:", payload);
+  console.log("[SW] 백그라운드 메시지:", payload);
 
-  const notificationTitle =
-    payload.notification?.title || "딱요만큼변제 알림";
+  const notificationTitle = payload.notification?.title || "딱요만큼변제 알림";
   const notificationOptions = {
     body: payload.notification?.body || "더 이상 혼자 고민하지 마세요.",
     icon: "/images/favicon.ico",
