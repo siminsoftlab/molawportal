@@ -740,3 +740,41 @@ details {
   margin-top: 10px;
   font-size: 12px;
 }
+/* =========================================================
+   🔧 공지사항 + 이용후기 2열 배치
+========================================================= */
+.board-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .board-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   🔧 footer 중앙 정렬
+========================================================= */
+.site-footer {
+  text-align: center;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* =========================================================
+   🔧 footer 회사정보 표시 문제 해결
+========================================================= */
+.footer-info {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 800px;
+}
