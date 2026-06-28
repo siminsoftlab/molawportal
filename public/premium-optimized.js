@@ -69,6 +69,25 @@ function initTopSearch() {
     location.href = "/search.html?q=" + encodeURIComponent(q);
   };
 }
+/* =========================================================
+   ⭐ 내부 검색
+========================================================= */
+function initMainSearch() {
+  const input = document.getElementById("mainSearchInput");
+  const btn = document.getElementById("mainSearchBtn");
+
+  if (!input || !btn) return;
+
+  btn.onclick = () => {
+    const q = (input.value || "").trim().toLowerCase();
+    if (!q) return;
+    location.href = "/search.html?q=" + encodeURIComponent(q);
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initMainSearch();
+});
 
 /* =========================================================
    ⭐ 최근 사용한 계산기 (localStorage)
