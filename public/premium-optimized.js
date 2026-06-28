@@ -1,22 +1,6 @@
 /* =========================================================
-   ⭐ 전체메뉴 열기/닫기
+   ⭐ 전체메뉴 열기/닫기 (중복 선언 제거 버전)
 ========================================================= */
-const openGlobalMenuBtn = document.getElementById("openGlobalMenu");
-const closeGlobalMenuBtn = document.getElementById("closeGlobalMenu");
-const globalMenu = document.getElementById("globalMenu");
-
-if (openGlobalMenuBtn && globalMenu) {
-  openGlobalMenuBtn.addEventListener("click", () => {
-    globalMenu.classList.add("active");
-  });
-}
-
-if (closeGlobalMenuBtn && globalMenu) {
-  closeGlobalMenuBtn.addEventListener("click", () => {
-    globalMenu.classList.remove("active");
-  });
-}
-
 function initGlobalMenu() {
   const openBtn = document.getElementById("openGlobalMenu");
   const closeBtn = document.getElementById("closeGlobalMenu");
@@ -31,29 +15,29 @@ function initGlobalMenu() {
 /* =========================================================
    ⭐ 전체메뉴 검색 필터링
 ========================================================= */
-const menuSearchInput = document.getElementById("menuSearchInput");
-const menuSearchBtn = document.getElementById("menuSearchBtn");
-const menuGrid = document.getElementById("menuGrid");
+function initMenuSearch() {
+  const menuSearchInput = document.getElementById("menuSearchInput");
+  const menuSearchBtn = document.getElementById("menuSearchBtn");
+  const menuGrid = document.getElementById("menuGrid");
 
-function filterMenu() {
-  const keyword = (menuSearchInput.value || "").trim().toLowerCase();
-  const items = menuGrid.querySelectorAll(".menu-item");
+  if (!menuSearchInput || !menuSearchBtn || !menuGrid) return;
 
-  items.forEach(item => {
-    const k = (item.dataset.keywords || "").toLowerCase();
-    item.style.display = keyword && !k.includes(keyword) ? "none" : "flex";
-  });
-}
+  function filterMenu() {
+    const keyword = (menuSearchInput.value || "").trim().toLowerCase();
+    const items = menuGrid.querySelectorAll(".menu-item");
 
-if (menuSearchInput) {
+    items.forEach(item => {
+      const k = (item.dataset.keywords || "").toLowerCase();
+      item.style.display = keyword && !k.includes(keyword) ? "none" : "flex";
+    });
+  }
+
   menuSearchInput.addEventListener("input", filterMenu);
-}
-if (menuSearchBtn) {
   menuSearchBtn.addEventListener("click", filterMenu);
 }
 
 /* =========================================================
-   ⭐ 상단 검색
+   ⭐ 상단 검색 (내부 검색)
 ========================================================= */
 function initTopSearch() {
   const input = document.getElementById("topSearchInput");
@@ -61,16 +45,20 @@ function initTopSearch() {
 
   if (!input || !btn) return;
 
-  btn.onclick = () => {
+  function search() {
     const q = (input.value || "").trim().toLowerCase();
     if (!q) return;
-
-    // 검색 결과 페이지로 이동
     location.href = "/search.html?q=" + encodeURIComponent(q);
-  };
+  }
+
+  btn.onclick = search;
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") search();
+  });
 }
+
 /* =========================================================
-   ⭐ 내부 검색
+   ⭐ 메인 대형 검색창 (내부 검색)
 ========================================================= */
 function initMainSearch() {
   const input = document.getElementById("mainSearchInput");
