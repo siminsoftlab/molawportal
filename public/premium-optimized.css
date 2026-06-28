@@ -590,6 +590,42 @@ ul {
   box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
   z-index: 9999;
 }
+.main-search-section {
+  width: 100%;
+  background: #4aa8ff;
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.main-search-box {
+  width: 90%;
+  max-width: 640px;
+  background: #fff;
+  border-radius: 50px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.main-search-box input {
+  flex: 1;
+  border: none;
+  font-size: 20px;
+  padding: 10px;
+  outline: none;
+}
+
+.main-search-box button {
+  background: #4aa8ff;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 18px;
+  cursor: pointer;
+}
 
 /* ================================
    RESPONSIVE
