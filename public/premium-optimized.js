@@ -53,18 +53,21 @@ if (menuSearchBtn) {
 }
 
 /* =========================================================
-   ⭐ 상단 검색 (구글 사이트 검색)
+   ⭐ 상단 검색
 ========================================================= */
-const topSearchInput = document.getElementById("topSearchInput");
-const topSearchBtn = document.getElementById("topSearchBtn");
+function initTopSearch() {
+  const input = document.getElementById("topSearchInput");
+  const btn = document.getElementById("topSearchBtn");
 
-if (topSearchBtn && topSearchInput) {
-  topSearchBtn.addEventListener("click", () => {
-    const q = (topSearchInput.value || "").trim();
+  if (!input || !btn) return;
+
+  btn.onclick = () => {
+    const q = (input.value || "").trim().toLowerCase();
     if (!q) return;
-    const url = "https://www.google.com/search?q=" + encodeURIComponent("site:molawcalculator.com " + q);
-    window.open(url, "_blank");
-  });
+
+    // 검색 결과 페이지로 이동
+    location.href = "/search.html?q=" + encodeURIComponent(q);
+  };
 }
 
 /* =========================================================
