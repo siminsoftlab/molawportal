@@ -1,35 +1,55 @@
-<!-- header.html -->
 <header class="global-header">
   <div class="header-inner">
-    <h1 class="logo">연이자율 자동 계산기</h1>
+    <h1 class="logo">딱요만큼변제</h1>
 
-    <!-- 전체 메뉴 버튼 -->
-    <button class="menu-btn" onclick="toggleMenu()" aria-label="전체 메뉴 열기">
+    <button class="menu-btn" aria-label="전체 메뉴 열기">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- 전체 메뉴 패널 -->
 <nav id="globalMenu" class="global-menu">
   <div class="menu-content">
     <h3>전체 메뉴</h3>
 
     <ul class="menu-list">
+
+      <!-- 기본 메뉴 -->
       <li><a href="/index.html">홈</a></li>
+
+      <!-- 계산기 메뉴 -->
+      <li><strong>📊 계산기</strong></li>
+      <li><a href="/calculators/repay.html">개인회생 변제금 계산기</a></li>
+      <li><a href="/calculators/interest.html">이자 계산기</a></li>
+      <li><a href="/calculators/living-adjust.html">법원 생계비 계산기</a></li>
+      <li><a href="/calculators/household-auto-living.html">가구수 생계비 계산기</a></li>
       <li><a href="/calculators/compound.html">연이자율 계산기</a></li>
-      <li><a href="/calculators/simple.html">단리 계산기</a></li>
+
+      <!-- 블로그 가이드 -->
+      <li><strong>📘 공식 가이드</strong></li>
+      <li><a href="/blog/ssonsalminwon.html">쏜살민원 — 서류 발급 대행</a></li>
+      <li><a href="/blog/modoolawfirm.html">모두의로펌 — 채무조정·피해구제</a></li>
+      <li><a href="/blog/repay-calc.html">개인회생 변제금 안내</a></li>
+      <li><a href="/blog/repay-guide.html">변제금 계산기 가이드</a></li>
+      <li><a href="/blog/living-adjust-guide.html">법원 생계비 계산기 가이드</a></li>
+      <li><a href="/blog/household-living-guide.html">가구수 생계비 가이드</a></li>
+      <li><a href="/blog/interest-guide.html">연이자 계산기 가이드</a></li>
+
+      <!-- 신청 서비스 -->
+      <li><strong>📝 신청 서비스</strong></li>
+      <li><a href="/apply/rehab.html">개인회생 신청</a></li>
+      <li><a href="/apply/bankruptcy.html">개인파산·면책 신청</a></li>
+      <li><a href="/apply/garnish-release.html">채권압류해제 신청</a></li>
+      <li><a href="/apply/credit-delist.html">채무불이행등재말소 신청</a></li>
+
+      <!-- 계정 -->
+      <li><strong>👤 계정</strong></li>
       <li><a href="/mypage/payments.html">이용권 결제</a></li>
       <li><a href="/auth/login.html">로그인</a></li>
       <li><a href="/auth/signup.html">회원가입</a></li>
+
     </ul>
 
-    <button class="menu-close" onclick="toggleMenu()">닫기</button>
+    <button class="menu-close">닫기</button>
   </div>
 </nav>
-
-<script>
-  function toggleMenu() {
-    document.getElementById("globalMenu").classList.toggle("active");
-  }
-</script>
