@@ -1,9 +1,9 @@
 /* =========================================================
    ⭐ 전체메뉴 열기/닫기
 ========================================================= */
-const globalMenu = document.getElementById("globalMenu");
 const openGlobalMenuBtn = document.getElementById("openGlobalMenu");
 const closeGlobalMenuBtn = document.getElementById("closeGlobalMenu");
+const globalMenu = document.getElementById("globalMenu");
 
 if (openGlobalMenuBtn && globalMenu) {
   openGlobalMenuBtn.addEventListener("click", () => {
@@ -15,6 +15,17 @@ if (closeGlobalMenuBtn && globalMenu) {
   closeGlobalMenuBtn.addEventListener("click", () => {
     globalMenu.classList.remove("active");
   });
+}
+
+function initGlobalMenu() {
+  const openBtn = document.getElementById("openGlobalMenu");
+  const closeBtn = document.getElementById("closeGlobalMenu");
+  const menu = document.getElementById("globalMenu");
+
+  if (!openBtn || !closeBtn || !menu) return;
+
+  openBtn.onclick = () => menu.classList.add("active");
+  closeBtn.onclick = () => menu.classList.remove("active");
 }
 
 /* =========================================================
