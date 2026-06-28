@@ -78,16 +78,19 @@ function initMainSearch() {
 
   if (!input || !btn) return;
 
-  btn.onclick = () => {
+  function search() {
     const q = (input.value || "").trim().toLowerCase();
     if (!q) return;
     location.href = "/search.html?q=" + encodeURIComponent(q);
-  };
+  }
+
+  btn.onclick = search;
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") search();
+  });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  initMainSearch();
-});
+document.addEventListener("DOMContentLoaded", initMainSearch);
 
 /* =========================================================
    ⭐ 최근 사용한 계산기 (localStorage)
