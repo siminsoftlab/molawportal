@@ -259,6 +259,9 @@ body.homepage {
 
 .right-sidebar {
   width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 박스 간 간격 */
 }
 
 @media (max-width: 1024px) {
@@ -683,8 +686,9 @@ details {
 .sidebar-box {
   background: #fff !important;
   border-radius: 16px;
-  padding: 16px;
+  padding: 20px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
 }
 
 
