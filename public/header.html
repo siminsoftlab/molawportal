@@ -1,4 +1,6 @@
 <nav id="globalMenu" class="global-menu">
+
+  <!-- 모바일 상단: 프로필 + 닫기 -->
   <div class="mobile-menu-header">
     <div class="mobile-profile">
       <div class="profile-icon">👤</div>
@@ -10,39 +12,39 @@
     <button class="menu-close">✕</button>
   </div>
 
+  <!-- ⭐ 네이버앱 스타일 검색창 추가 -->
+  <div class="mobile-search-box">
+    <input type="text" id="menuSearchInput" placeholder="메뉴 검색 (예: 변제금, 이자, 생계비)">
+    <button class="search-btn">🔍</button>
+  </div>
+
+  <!-- 메뉴 그리드 -->
   <div class="mobile-menu-grid">
 
-    <!-- 홈 -->
     <div class="menu-item" onclick="location.href='/index.html'">
       <img src="/icons/home.svg"><span>홈</span>
     </div>
 
-       <!-- 변제금 계산기 -->
-    <div class="menu-item" onclick="location.href='/calculators/repay.html'">
-      <img src="/icons/payment.svg"><span>개인회생 변제금 계산</span>
-    </div>
-
-    <!-- 생계비 계산기 -->
-    <div class="menu-item" onclick="location.href='/calculators/living-adjust.html'">
-      <img src="/icons/living.svg"><span>생계비 계산</span>
-    </div>
-
-    <!-- 가구수 생계비 -->
-    <div class="menu-item" onclick="location.href='/calculators/household-auto-living.html'">
-      <img src="/icons/family.svg"><span>가구수 생계비</span>
-    </div>
-
-    <!-- ⭐ 연이자율 계산기 (추가됨) -->
-    <div class="menu-item" onclick="location.href='/calculators/compound.html'">
+    <div class="menu-item" onclick="openCalc('/calculators/compound.html')">
       <img src="/icons/interest.svg"><span>연이자율 계산기</span>
     </div>
 
-    <!-- 이자 계산기 -->
-    <div class="menu-item" onclick="location.href='/calculators/simple.html'">
+    <div class="menu-item" onclick="openCalc('/calculators/simple.html')">
       <img src="/icons/simple.svg"><span>이자 계산기</span>
     </div>
-    
-    <!-- 신청 서비스 -->
+
+    <div class="menu-item" onclick="openCalc('/calculators/repay.html')">
+      <img src="/icons/payment.svg"><span>변제금 계산</span>
+    </div>
+
+    <div class="menu-item" onclick="openCalc('/calculators/living-adjust.html')">
+      <img src="/icons/living.svg"><span>생계비 계산</span>
+    </div>
+
+    <div class="menu-item" onclick="openCalc('/calculators/household-auto-living.html')">
+      <img src="/icons/family.svg"><span>가구수 생계비</span>
+    </div>
+
     <div class="menu-item" onclick="location.href='/apply/rehab.html'">
       <img src="/icons/rehab.svg"><span>개인회생 신청</span>
     </div>
@@ -59,7 +61,6 @@
       <img src="/icons/credit.svg"><span>신용회복</span>
     </div>
 
-    <!-- 가이드 -->
     <div class="menu-item" onclick="location.href='/blog/repay-calc.html'">
       <img src="/icons/guide.svg"><span>변제금 가이드</span>
     </div>
@@ -68,10 +69,16 @@
       <img src="/icons/docs.svg"><span>서류 발급</span>
     </div>
 
-    <!-- 상담 -->
     <div class="menu-item" onclick="location.href='/consult/chat.html'">
       <img src="/icons/chat.svg"><span>상담 연결</span>
     </div>
 
   </div>
+
+  <!-- ⭐ 최근 사용한 계산기 -->
+  <div class="recent-section">
+    <h3>최근 사용한 계산기</h3>
+    <ul id="recentCalcList"></ul>
+  </div>
+
 </nav>
