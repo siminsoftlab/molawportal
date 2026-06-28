@@ -12,6 +12,143 @@ body.homepage {
   background: #f7f9fc;
   padding-top: 70px; /* 고정 헤더 공간 확보 */
 }
+/* ================================
+   GLOBAL MENU (전체메뉴)
+================================ */
+.global-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  z-index: 2000;
+}
+
+.global-menu.active {
+  display: block;
+}
+
+.mobile-menu-header {
+  background: #fff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--sky-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.profile-info p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.profile-login {
+  font-size: 12px;
+  color: var(--sky-main);
+}
+
+.menu-close {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* 검색창 */
+.mobile-search-box {
+  background: var(--gray-100);
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.mobile-search-box input {
+  flex: 1;
+  border-radius: 999px;
+  border: none;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.mobile-search-box .search-btn {
+  border-radius: 999px;
+  border: none;
+  background: var(--sky-main);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* 메뉴 그리드 */
+.mobile-menu-grid {
+  background: #fff;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.menu-item {
+  background: var(--gray-100);
+  border-radius: 14px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.menu-item img {
+  width: 30px;
+  height: 30px;
+}
+
+.menu-item span {
+  font-size: 12px;
+}
+
+/* 최근 계산기 */
+.recent-section {
+  background: #fff;
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.recent-section h3 {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.recent-section li {
+  display: inline-block;
+  background: var(--gray-100);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin: 3px;
+  cursor: pointer;
+}
 
 /* =========================================================
    HEADER (고정)
