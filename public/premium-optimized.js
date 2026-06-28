@@ -1,5 +1,16 @@
 /* =========================================================
-   ⭐ 전체메뉴 열기/닫기 (중복 선언 제거 버전)
+   ⭐ 초기화 함수 (header 로드 후 실행)
+========================================================= */
+function initAll() {
+  initGlobalMenu();
+  initMenuSearch();
+  initTopSearch();
+  initMainSearch();
+  renderRecentCalculators();
+}
+
+/* =========================================================
+   ⭐ 전체메뉴 열기/닫기
 ========================================================= */
 function initGlobalMenu() {
   const menuBtn = document.querySelector(".menu-btn");
@@ -8,7 +19,7 @@ function initGlobalMenu() {
 
   if (!menuBtn || !globalMenu) return;
 
-  // 메뉴 열기/닫기 토글
+  // 토글
   menuBtn.addEventListener("click", () => {
     globalMenu.classList.toggle("active");
   });
@@ -20,7 +31,7 @@ function initGlobalMenu() {
     });
   }
 
-  // 메뉴 바깥 클릭 시 닫기
+  // 바깥 클릭 시 닫기
   globalMenu.addEventListener("click", (e) => {
     if (e.target === globalMenu) {
       globalMenu.classList.remove("active");
@@ -28,9 +39,8 @@ function initGlobalMenu() {
   });
 }
 
-
 /* =========================================================
-   ⭐ 전체메뉴 검색 필터링
+   ⭐ 전체메뉴 검색
 ========================================================= */
 function initMenuSearch() {
   const menuSearchInput = document.getElementById("menuSearchInput");
@@ -54,7 +64,7 @@ function initMenuSearch() {
 }
 
 /* =========================================================
-   ⭐ 상단 검색 (내부 검색)
+   ⭐ 헤더 검색창
 ========================================================= */
 function initTopSearch() {
   const input = document.getElementById("topSearchInput");
@@ -63,19 +73,19 @@ function initTopSearch() {
   if (!input || !btn) return;
 
   function search() {
-    const q = (input.value || "").trim().toLowerCase();
+    const q = (input.value || "").trim();
     if (!q) return;
     location.href = "/search.html?q=" + encodeURIComponent(q);
   }
 
-  btn.onclick = search;
+  btn.addEventListener("click", search);
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") search();
   });
 }
 
 /* =========================================================
-   ⭐ 메인 대형 검색창 (내부 검색)
+   ⭐ 메인 대형 검색창
 ========================================================= */
 function initMainSearch() {
   const input = document.getElementById("mainSearchInput");
@@ -83,30 +93,20 @@ function initMainSearch() {
 
   if (!input || !btn) return;
 
-  // 검색 실행 함수
   const runSearch = () => {
     const keyword = input.value.trim();
     if (!keyword) return;
-
-    // 원하는 검색 페이지로 이동
     location.href = `/search.html?keyword=${encodeURIComponent(keyword)}`;
   };
 
-  // 버튼 클릭
   btn.addEventListener("click", runSearch);
-
-  // 엔터 입력
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      runSearch();
-    }
+    if (e.key === "Enter") runSearch();
   });
 }
 
-document.addEventListener("DOMContentLoaded", initMainSearch);
-
 /* =========================================================
-   ⭐ 최근 사용한 계산기 (localStorage)
+   ⭐ 최근 계산기
 ========================================================= */
 const RECENT_KEY = "recentCalculators";
 
@@ -162,9 +162,7 @@ function renderRecentCalculators() {
   }
 }
 
-renderRecentCalculators();
-
-/* 계산기 열기 공통 함수 */
+/* 계산기 열기 */
 function openCalc(path) {
   const labelMap = {
     "/calculators/repay.html": "개인회생 변제금",
@@ -180,7 +178,7 @@ function openCalc(path) {
 }
 
 /* =========================================================
-   ⭐ 자동 슬라이드 배너
+   ⭐ 자동 슬라이드
 ========================================================= */
 const sliderWrapper = document.getElementById("sliderWrapper");
 const sliderDots = document.querySelectorAll("#sliderDots .dot");
@@ -208,7 +206,7 @@ setInterval(() => {
 }, 5000);
 
 /* =========================================================
-   ⭐ 개인회생·파산 탭
+   ⭐ 탭
 ========================================================= */
 const tabButtons = document.querySelectorAll(".law-tab-btn");
 const tabPanels = document.querySelectorAll(".law-panel");
@@ -227,7 +225,7 @@ tabButtons.forEach(btn => {
 });
 
 /* =========================================================
-   ⭐ 상담 신청 (프론트 검증)
+   ⭐ 상담 신청
 ========================================================= */
 const consultName = document.getElementById("consultName");
 const consultPhone = document.getElementById("consultPhone");
@@ -251,7 +249,7 @@ if (consultSubmitBtn) {
 }
 
 /* =========================================================
-   ⭐ 전국 법원 카카오맵 + 마커
+   ⭐ 카카오맵
 ========================================================= */
 const courts = [
   { name: "서울회생법원", lat: 37.4937, lng: 127.0070 },
