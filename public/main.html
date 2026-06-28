@@ -15,100 +15,13 @@
 
 <body class="homepage">
 
-<!-- ⭐ 상단 글로벌 헤더 -->
-<header class="global-header sky-theme">
-  <div class="header-inner">
-    <h1 class="logo" onclick="location.href='/main.html'">딱요만큼변제</h1>
-
-    <div class="header-right">
-      <div class="header-search">
-        <input type="text" id="topSearchInput" placeholder="계산기·가이드 검색">
-        <button id="topSearchBtn">🔍</button>
-      </div>
-
-      <button class="menu-btn" id="openGlobalMenu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- ⭐ 전체메뉴 -->
-<nav id="globalMenu" class="global-menu">
-  <div class="mobile-menu-header">
-    <div class="mobile-profile">
-      <div class="profile-icon">👤</div>
-      <div class="profile-info">
-        <p class="profile-name" id="menuProfileName">로그인이 필요합니다</p>
-        <a href="/auth/login.html" class="profile-login">로그인 / 회원가입</a>
-      </div>
-    </div>
-    <button class="menu-close" id="closeGlobalMenu">✕</button>
-  </div>
-
-  <!-- 검색창 -->
-  <div class="mobile-search-box">
-    <input type="text" id="menuSearchInput" placeholder="메뉴·계산기 검색 (예: 변제금, 생계비)">
-    <button class="search-btn" id="menuSearchBtn">검색</button>
-  </div>
-
-  <!-- 전체메뉴 그리드 -->
-  <div class="mobile-menu-grid" id="menuGrid">
-    <!-- 계산기 -->
-    <div class="menu-item" data-keywords="홈 메인 index main" onclick="location.href='/main.html'">
-      <img src="/icons/home.svg"><span>홈</span>
-    </div>
-    <div class="menu-item" data-keywords="변제금 개인회생 계산기 repay" onclick="openCalc('/calculators/repay.html')">
-      <img src="/icons/payment.svg"><span>개인회생 변제금</span>
-    </div>
-    <div class="menu-item" data-keywords="생계비 living adjust" onclick="openCalc('/calculators/living-adjust.html')">
-      <img src="/icons/living.svg"><span>법원 생계비</span>
-    </div>
-    <div class="menu-item" data-keywords="가구수 household" onclick="openCalc('/calculators/household-auto-living.html')">
-      <img src="/icons/family.svg"><span>가구수 생계비</span>
-    </div>
-    <div class="menu-item" data-keywords="연이자 interest" onclick="openCalc('/calculators/interest.html')">
-      <img src="/icons/interest.svg"><span>연이자 계산기</span>
-    </div>
-    <div class="menu-item" data-keywords="연이자율 복리 compound" onclick="openCalc('/calculators/compound.html')">
-      <img src="/icons/interest.svg"><span>연이자율 계산기</span>
-    </div>
-
-    <!-- 가이드 -->
-    <div class="menu-item" onclick="location.href='/blog/repay-guide.html'">
-      <img src="/icons/guide.svg"><span>변제금 가이드</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/blog/living-adjust-guide.html'">
-      <img src="/icons/guide.svg"><span>생계비 가이드</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/blog/household-living-guide.html'">
-      <img src="/icons/guide.svg"><span>가구수 가이드</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/blog/interest-guide.html'">
-      <img src="/icons/guide.svg"><span>연이자 가이드</span>
-    </div>
-
-    <!-- 신청 -->
-    <div class="menu-item" onclick="location.href='/apply/rehab.html'">
-      <img src="/icons/rehab.svg"><span>개인회생 신청</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/apply/bankruptcy.html'">
-      <img src="/icons/bankruptcy.svg"><span>파산·면책 신청</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/apply/garnish-release.html'">
-      <img src="/icons/unfreeze.svg"><span>압류해제 신청</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/apply/credit-delist.html'">
-      <img src="/icons/credit.svg"><span>채무불이행말소</span>
-    </div>
-  </div>
-
-  <!-- 최근 계산기 -->
-  <div class="recent-section">
-    <h3>최근 사용한 계산기</h3>
-    <ul id="recentCalcList"></ul>
-  </div>
-</nav>
+<!-- ⭐ header.html 로드 -->
+<div id="header"></div>
+<script>
+  fetch("/header.html")
+    .then(res => res.text())
+    .then(html => document.getElementById("header").innerHTML = html);
+</script>
 
 <!-- ⭐ 2단 레이아웃 -->
 <div class="layout-2col">
@@ -245,89 +158,65 @@
       </div>
     </section>
 
-    <!-- ⭐ 전국 법원(회생법원) 통합 안내 -->
-    <section class="court-master-section">
-      <h2>전국 법원(회생법원) 안내</h2>
+    <!-- ⭐ 공지사항 -->
+    <section class="board-section">
+      <h2>📢 공지사항</h2>
+      <ul class="board-list">
+        <li>새로운 계산기 업데이트 안내</li>
+        <li>서류 발급 대행 서비스 오픈</li>
+        <li>개인회생 자격조회 기능 개선</li>
+        <li>변제금 계산기 업데이트</li>
+        <li>사이트 점검 안내</li>
+      </ul>
+    </section>
 
-      <!-- 지도 -->
-      <div id="courtMap" class="court-map"></div>
+    <!-- ⭐ 이용후기 -->
+    <section class="board-section">
+      <h2>⭐ 이용후기</h2>
+      <ul class="board-list">
+        <li>정말 도움 많이 됐습니다!</li>
+        <li>계산기가 너무 정확해요</li>
+        <li>상담사분이 친절했습니다</li>
+        <li>서류 발급이 빨라요</li>
+        <li>추천합니다!</li>
+      </ul>
+    </section>
 
-      <!-- 법원 리스트 -->
-      <div class="court-list">
+  </main>
 
-        <div class="court-item">
-          <h3>서울회생법원</h3>
-          <p>📍 서울특별시 서초구 서초대로 219</p>
-          <p>📞 02-530-1100</p>
-          <div class="court-links">
-            <a href="https://sr.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/seoul_rehab_docs.pdf" target="_blank">제출서류</a>
-            <a href="tel:025301100">전화</a>
-          </div>
-          <details>
-            <summary>담당 부서</summary>
-            <ul>
-              <li>개인회생과</li>
-              <li>파산과</li>
-              <li>사건접수계</li>
-            </ul>
-          </details>
-        </div>
+  <!-- ⭐ 우측 사이드바 -->
+  <aside class="right-sidebar">
+    <div class="sidebar-box">
+      <h3>로그인</h3>
+      <p>전체 계산 결과와 저장 기능을 이용할 수 있습니다.</p>
+      <button class="app-btn-primary" onclick="location.href='/auth/login.html'">로그인하기</button>
+      <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">회원가입</button>
+    </div>
 
-        <div class="court-item">
-          <h3>수원지방법원 회생</h3>
-          <p>📍 경기도 수원시 영통구 법조로 92</p>
-          <p>📞 031-210-1114</p>
-          <div class="court-links">
-            <a href="https://sw.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/suwon_rehab_docs.pdf" target="_blank">제출서류</a>
-            <a href="tel:0312101114">전화</a>
-          </div>
-          <details>
-            <summary>담당 부서</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
-        </div>
+    <div class="sidebar-box">
+      <h3>📊 방문자 통계</h3>
+      <p>오늘 방문자: <b id="todayVisitor">0</b></p>
+      <p>전체 방문자: <b id="totalVisitor">0</b></p>
+    </div>
 
-        <div class="court-item">
-          <h3>대전지방법원 회생</h3>
-          <p>📍 대전광역시 서구 둔산중로 82</p>
-          <p>📞 042-470-1114</p>
-          <div class="court-links">
-            <a href="https://dj.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/daejeon_rehab_docs.pdf" target="_blank">제출서류</a>
-            <a href="tel:0424701114">전화</a>
-          </div>
-          <details>
-            <summary>담당 부서</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
-        </div>
+    <div class="sidebar-box">
+      <h3>최근 사용한 계산기</h3>
+      <ul id="recentCalcListSidebar"></ul>
+    </div>
+  </aside>
 
-        <div class="court-item">
-          <h3>대구지방법원 회생</h3>
-          <p>📍 대구광역시 수성구 동대구로 411</p>
-          <p>📞 053-757-2114</p>
-          <div class="court-links">
-            <a href="https://dg.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/daegu_rehab_docs.pdf" target="_blank">제출서류</a>
-            <a href="tel:0537572114">전화</a>
-          </div>
-          <details>
-            <summary>담당 부서</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
-        </div>
+</div>
 
-        <div class="court-item">
-          <h3>부산지방법원 회생</h3>
-          <p>
+<!-- ⭐ footer.html 로드 -->
+<div id="footer"></div>
+<script>
+  fetch("/footer.html")
+    .then(res => res.text())
+    .then(html => document.getElementById("footer").innerHTML = html);
+</script>
+
+<script src="/premium-optimized.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+</body>
+</html>
