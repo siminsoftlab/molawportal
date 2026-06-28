@@ -12,6 +12,10 @@ body {
   color: #222;
 }
 
+body.homepage {
+  padding-top: 70px; /* 헤더 높이만큼 */
+}
+
 a {
   color: inherit;
   text-decoration: none;
