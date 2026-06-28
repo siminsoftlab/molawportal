@@ -17,6 +17,17 @@
 
 <!-- ⭐ header.html 로드 -->
 <div id="header"></div>
+<script>
+  // header 로드 후 JS 초기화
+  fetch("/header.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("header").innerHTML = html;
+
+      // ⭐ header가 로드된 후에 메뉴 관련 JS 실행
+      initGlobalMenu();
+    });
+</script>
 <!-- ⭐ 메인 대형 검색창 (네이버 스타일) -->
 <section class="main-search-section">
   <div class="main-search-box">
@@ -212,16 +223,6 @@
 <!-- ⭐ footer.html 로드 -->
 <div id="footer"></div>
 <script>
-  // header 로드 후 JS 초기화
-  fetch("/header.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("header").innerHTML = html;
-
-      // ⭐ header가 로드된 후에 메뉴 관련 JS 실행
-      initGlobalMenu();
-    });
-
   // footer 로드
   fetch("/footer-ch.html")
     .then(res => res.text())
