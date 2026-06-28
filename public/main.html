@@ -17,12 +17,6 @@
 
 <!-- ⭐ header.html 로드 -->
 <div id="header"></div>
-<script>
-  fetch("/header.html")
-    .then(res => res.text())
-    .then(html => document.getElementById("header").innerHTML = html);
-</script>
-
 <!-- ⭐ 2단 레이아웃 -->
 <div class="layout-2col">
 
@@ -210,10 +204,24 @@
 <!-- ⭐ footer.html 로드 -->
 <div id="footer"></div>
 <script>
+  // header 로드 후 JS 초기화
+  fetch("/header.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("header").innerHTML = html;
+
+      // ⭐ header가 로드된 후에 메뉴 관련 JS 실행
+      initGlobalMenu();
+    });
+
+  // footer 로드
   fetch("/footer.html")
     .then(res => res.text())
     .then(html => document.getElementById("footer").innerHTML = html);
 </script>
+
+<script src="/premium-optimized.js?v=2"></script>
+
 
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
