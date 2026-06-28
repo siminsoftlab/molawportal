@@ -23,9 +23,9 @@
     .then(res => res.text())
     .then(html => {
       document.getElementById("header").innerHTML = html;
-
-      // ⭐ header가 로드된 후에 메뉴 관련 JS 실행
-      initGlobalMenu();
+  
+      // ⭐ header가 로드된 후 전체 기능 초기화
+      initAll();
     });
 </script>
 <!-- ⭐ 메인 대형 검색창 (네이버 스타일) -->
