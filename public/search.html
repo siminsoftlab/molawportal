@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>검색 결과</title>
+  <link rel="stylesheet" href="/premium-optimized.css">
+  <script src="/search-index.js"></script>
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <main class="search-result-page">
+    <h2>검색 결과</h2>
+    <ul id="searchResults"></ul>
+  </main>
+
+  <div id="footer"></div>
+
+  <script>
+    // header/footer 로드
+    fetch("/header.html").then(r=>r.text()).then(h=>document.getElementById("header").innerHTML=h);
+    fetch("/footer-ch.html").then(r=>r.text()).then(h=>document.getElementById("footer").innerHTML=h);
+
+    // 검색 실행
+    const params = new URLSearchParams(location.search);
+    const q = (params.get("q") || "").toLowerCase();
+
+    const results = window.SITE_INDEX.filter(item =>
+      item.title.toLowerCase().includes(q) ||
+      item.keywords.toLowerCase().includes(q)
+    );
+
+    const list = document.getElementById("searchResults");
+
+    if (results.length === 0) {
+      list.innerHTML = "<li>검색 결과가 없습니다.</li>";
+    } else {
+      results.forEach(r => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${r.path}">${r.title}</a>`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
