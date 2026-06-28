@@ -1,84 +1,98 @@
-<nav id="globalMenu" class="global-menu">
+<!-- header.html -->
+<header class="global-header sky-theme">
+  <div class="header-inner">
+    <h1 class="logo" onclick="location.href='/main.html'">딱요만큼변제</h1>
 
-  <!-- 모바일 상단: 프로필 + 닫기 -->
+    <div class="header-right">
+      <div class="header-search">
+        <input type="text" id="topSearchInput" placeholder="계산기·가이드 검색">
+        <button id="topSearchBtn">🔍</button>
+      </div>
+
+      <button class="menu-btn" id="openGlobalMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ⭐ 전체메뉴 -->
+<nav id="globalMenu" class="global-menu">
   <div class="mobile-menu-header">
     <div class="mobile-profile">
       <div class="profile-icon">👤</div>
       <div class="profile-info">
-        <p class="profile-name">로그인이 필요합니다</p>
+        <p class="profile-name" id="menuProfileName">로그인이 필요합니다</p>
         <a href="/auth/login.html" class="profile-login">로그인 / 회원가입</a>
       </div>
     </div>
-    <button class="menu-close">✕</button>
+    <button class="menu-close" id="closeGlobalMenu">✕</button>
   </div>
 
-  <!-- ⭐ 네이버앱 스타일 검색창 추가 -->
+  <!-- 검색창 -->
   <div class="mobile-search-box">
-    <input type="text" id="menuSearchInput" placeholder="메뉴 검색 (예: 변제금, 이자, 생계비)">
-    <button class="search-btn">🔍</button>
+    <input type="text" id="menuSearchInput" placeholder="메뉴·계산기 검색 (예: 변제금, 생계비)">
+    <button class="search-btn" id="menuSearchBtn">검색</button>
   </div>
 
-  <!-- 메뉴 그리드 -->
-  <div class="mobile-menu-grid">
+  <!-- 전체메뉴 그리드 -->
+  <div class="mobile-menu-grid" id="menuGrid">
 
-    <div class="menu-item" onclick="location.href='/index.html'">
+    <!-- 홈 -->
+    <div class="menu-item" onclick="location.href='/main.html'">
       <img src="/icons/home.svg"><span>홈</span>
     </div>
 
+    <!-- 계산기 -->
+    <div class="menu-item" onclick="openCalc('/calculators/repay.html')">
+      <img src="/icons/payment.svg"><span>개인회생 변제금</span>
+    </div>
+    <div class="menu-item" onclick="openCalc('/calculators/living-adjust.html')">
+      <img src="/icons/living.svg"><span>법원 생계비</span>
+    </div>
+    <div class="menu-item" onclick="openCalc('/calculators/household-auto-living.html')">
+      <img src="/icons/family.svg"><span>가구수 생계비</span>
+    </div>
+    <div class="menu-item" onclick="openCalc('/calculators/interest.html')">
+      <img src="/icons/interest.svg"><span>연이자 계산기</span>
+    </div>
     <div class="menu-item" onclick="openCalc('/calculators/compound.html')">
       <img src="/icons/interest.svg"><span>연이자율 계산기</span>
     </div>
 
-    <div class="menu-item" onclick="openCalc('/calculators/simple.html')">
-      <img src="/icons/simple.svg"><span>이자 계산기</span>
+    <!-- 가이드 -->
+    <div class="menu-item" onclick="location.href='/blog/repay-guide.html'">
+      <img src="/icons/guide.svg"><span>변제금 가이드</span>
+    </div>
+    <div class="menu-item" onclick="location.href='/blog/living-adjust-guide.html'">
+      <img src="/icons/guide.svg"><span>생계비 가이드</span>
+    </div>
+    <div class="menu-item" onclick="location.href='/blog/household-living-guide.html'">
+      <img src="/icons/guide.svg"><span>가구수 가이드</span>
+    </div>
+    <div class="menu-item" onclick="location.href='/blog/interest-guide.html'">
+      <img src="/icons/guide.svg"><span>연이자 가이드</span>
     </div>
 
-    <div class="menu-item" onclick="openCalc('/calculators/repay.html')">
-      <img src="/icons/payment.svg"><span>변제금 계산</span>
-    </div>
-
-    <div class="menu-item" onclick="openCalc('/calculators/living-adjust.html')">
-      <img src="/icons/living.svg"><span>생계비 계산</span>
-    </div>
-
-    <div class="menu-item" onclick="openCalc('/calculators/household-auto-living.html')">
-      <img src="/icons/family.svg"><span>가구수 생계비</span>
-    </div>
-
+    <!-- 신청 -->
     <div class="menu-item" onclick="location.href='/apply/rehab.html'">
       <img src="/icons/rehab.svg"><span>개인회생 신청</span>
     </div>
-
     <div class="menu-item" onclick="location.href='/apply/bankruptcy.html'">
-      <img src="/icons/bankruptcy.svg"><span>파산·면책</span>
+      <img src="/icons/bankruptcy.svg"><span>파산·면책 신청</span>
     </div>
-
     <div class="menu-item" onclick="location.href='/apply/garnish-release.html'">
-      <img src="/icons/unfreeze.svg"><span>압류해제</span>
+      <img src="/icons/unfreeze.svg"><span>압류해제 신청</span>
     </div>
-
     <div class="menu-item" onclick="location.href='/apply/credit-delist.html'">
-      <img src="/icons/credit.svg"><span>신용회복</span>
-    </div>
-
-    <div class="menu-item" onclick="location.href='/blog/repay-calc.html'">
-      <img src="/icons/guide.svg"><span>변제금 가이드</span>
-    </div>
-
-    <div class="menu-item" onclick="location.href='/blog/ssonsalminwon.html'">
-      <img src="/icons/docs.svg"><span>서류 발급</span>
-    </div>
-
-    <div class="menu-item" onclick="location.href='/consult/chat.html'">
-      <img src="/icons/chat.svg"><span>상담 연결</span>
+      <img src="/icons/credit.svg"><span>채무불이행말소</span>
     </div>
 
   </div>
 
-  <!-- ⭐ 최근 사용한 계산기 -->
+  <!-- 최근 계산기 -->
   <div class="recent-section">
     <h3>최근 사용한 계산기</h3>
     <ul id="recentCalcList"></ul>
   </div>
-
 </nav>
