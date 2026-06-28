@@ -37,21 +37,7 @@
 </head>
 
 <body class="subpage">
-
-  <!-- 상단 글로벌 헤더 -->
-  <header class="global-header">
-    <div class="header-inner">
-      <h1 class="logo">연이자율 자동 계산기</h1>
-      <nav class="header-nav">
-        <a href="/index.html" class="home-btn" aria-label="홈으로 이동">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M3 10L12 3L21 10V21H3V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </nav>
-    </div>
-  </header>
-
+  <div id="header"></div>
   <!-- 웰컴 배너 -->
   <section class="welcome-banner">
     <a href="/coupon/welcome-detail.html" class="welcome-text">
@@ -222,7 +208,14 @@
       <button class="app-btn-close" onclick="document.getElementById('detailModal').style.display='none'">닫기</button>
     </div>
   </div>
-
+   <!-- 헤더 -->
+  <script>
+    fetch("/header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header").innerHTML = html;
+      });
+  </script>
   <!-- 푸터 -->
   <footer id="footer"></footer>
 
