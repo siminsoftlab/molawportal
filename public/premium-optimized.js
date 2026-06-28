@@ -83,15 +83,23 @@ function initMainSearch() {
 
   if (!input || !btn) return;
 
-  function search() {
-    const q = (input.value || "").trim().toLowerCase();
-    if (!q) return;
-    location.href = "/search.html?q=" + encodeURIComponent(q);
-  }
+  // 검색 실행 함수
+  const runSearch = () => {
+    const keyword = input.value.trim();
+    if (!keyword) return;
 
-  btn.onclick = search;
+    // 원하는 검색 페이지로 이동
+    location.href = `/search.html?keyword=${encodeURIComponent(keyword)}`;
+  };
+
+  // 버튼 클릭
+  btn.addEventListener("click", runSearch);
+
+  // 엔터 입력
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") search();
+    if (e.key === "Enter") {
+      runSearch();
+    }
   });
 }
 
