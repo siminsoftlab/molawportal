@@ -9,14 +9,14 @@
   <link rel="canonical" href="https://molawcalculator.com/main.html">
 
   <link rel="icon" href="/images/favicon.ico">
-  <link rel="stylesheet" href="/premium-optimized.css?v=1">
+  <link rel="stylesheet" href="/premium-optimized.css?v=2">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 </head>
 
 <body class="homepage">
 
 <!-- ⭐ 상단 글로벌 헤더 -->
-<header class="global-header">
+<header class="global-header sky-theme">
   <div class="header-inner">
     <h1 class="logo" onclick="location.href='/main.html'">딱요만큼변제</h1>
 
@@ -33,7 +33,7 @@
   </div>
 </header>
 
-<!-- ⭐ 모바일/PC 공통 전체메뉴 -->
+<!-- ⭐ 전체메뉴 -->
 <nav id="globalMenu" class="global-menu">
   <div class="mobile-menu-header">
     <div class="mobile-profile">
@@ -46,133 +46,104 @@
     <button class="menu-close" id="closeGlobalMenu">✕</button>
   </div>
 
-  <!-- 네이버앱 스타일 검색창 -->
+  <!-- 검색창 -->
   <div class="mobile-search-box">
     <input type="text" id="menuSearchInput" placeholder="메뉴·계산기 검색 (예: 변제금, 생계비)">
     <button class="search-btn" id="menuSearchBtn">검색</button>
   </div>
 
-  <!-- 전체메뉴: feed.xml 기반 주요 페이지 + 계산기 + 신청 + 블로그 -->
+  <!-- 전체메뉴 그리드 -->
   <div class="mobile-menu-grid" id="menuGrid">
     <!-- 계산기 -->
     <div class="menu-item" data-keywords="홈 메인 index main" onclick="location.href='/main.html'">
-      <img src="/icons/home.svg" alt=""><span>홈</span>
+      <img src="/icons/home.svg"><span>홈</span>
     </div>
     <div class="menu-item" data-keywords="변제금 개인회생 계산기 repay" onclick="openCalc('/calculators/repay.html')">
-      <img src="/icons/payment.svg" alt=""><span>개인회생 변제금 계산기</span>
+      <img src="/icons/payment.svg"><span>개인회생 변제금</span>
     </div>
-    <div class="menu-item" data-keywords="생계비 법원 living adjust" onclick="openCalc('/calculators/living-adjust.html')">
-      <img src="/icons/living.svg" alt=""><span>법원 생계비 계산기</span>
+    <div class="menu-item" data-keywords="생계비 living adjust" onclick="openCalc('/calculators/living-adjust.html')">
+      <img src="/icons/living.svg"><span>법원 생계비</span>
     </div>
-    <div class="menu-item" data-keywords="가구수 생계비 household" onclick="openCalc('/calculators/household-auto-living.html')">
-      <img src="/icons/family.svg" alt=""><span>가구수 생계비 계산기</span>
+    <div class="menu-item" data-keywords="가구수 household" onclick="openCalc('/calculators/household-auto-living.html')">
+      <img src="/icons/family.svg"><span>가구수 생계비</span>
     </div>
-    <div class="menu-item" data-keywords="연이자 이자 interest" onclick="openCalc('/calculators/interest.html')">
-      <img src="/icons/interest.svg" alt=""><span>연이자 계산기</span>
+    <div class="menu-item" data-keywords="연이자 interest" onclick="openCalc('/calculators/interest.html')">
+      <img src="/icons/interest.svg"><span>연이자 계산기</span>
     </div>
-    <div class="menu-item" data-keywords="연이자율 복리 단리 compound" onclick="openCalc('/calculators/compound.html')">
-      <img src="/icons/interest.svg" alt=""><span>연이자율 계산기</span>
-    </div>
-
-    <!-- 가이드/블로그 (feed.xml 기반) -->
-    <div class="menu-item" data-keywords="변제금 가이드 repay guide" onclick="location.href='/blog/repay-guide.html'">
-      <img src="/icons/guide.svg" alt=""><span>개인회생 변제금 계산기 가이드</span>
-    </div>
-    <div class="menu-item" data-keywords="생계비 가이드 living guide" onclick="location.href='/blog/living-adjust-guide.html'">
-      <img src="/icons/guide.svg" alt=""><span>법원 생계비 계산기 가이드</span>
-    </div>
-    <div class="menu-item" data-keywords="가구수 가이드 household guide" onclick="location.href='/blog/household-living-guide.html'">
-      <img src="/icons/guide.svg" alt=""><span>가구수 생계비 계산기 가이드</span>
-    </div>
-    <div class="menu-item" data-keywords="연이자 가이드 interest guide" onclick="location.href='/blog/interest-guide.html'">
-      <img src="/icons/guide.svg" alt=""><span>연이자 계산기 가이드</span>
-    </div>
-    <div class="menu-item" data-keywords="변제금 안내 repay calc" onclick="location.href='/blog/repay-calc.html'">
-      <img src="/icons/guide.svg" alt=""><span>개인회생 변제금 안내</span>
+    <div class="menu-item" data-keywords="연이자율 복리 compound" onclick="openCalc('/calculators/compound.html')">
+      <img src="/icons/interest.svg"><span>연이자율 계산기</span>
     </div>
 
-    <!-- 신청 서비스 -->
-    <div class="menu-item" data-keywords="개인회생 신청 rehab apply" onclick="location.href='/apply/rehab.html'">
-      <img src="/icons/rehab.svg" alt=""><span>개인회생 신청</span>
+    <!-- 가이드 -->
+    <div class="menu-item" onclick="location.href='/blog/repay-guide.html'">
+      <img src="/icons/guide.svg"><span>변제금 가이드</span>
     </div>
-    <div class="menu-item" data-keywords="파산 면책 bankruptcy apply" onclick="location.href='/apply/bankruptcy.html'">
-      <img src="/icons/bankruptcy.svg" alt=""><span>개인파산·면책 신청</span>
+    <div class="menu-item" onclick="location.href='/blog/living-adjust-guide.html'">
+      <img src="/icons/guide.svg"><span>생계비 가이드</span>
     </div>
-    <div class="menu-item" data-keywords="압류해제 garnish release" onclick="location.href='/apply/garnish-release.html'">
-      <img src="/icons/unfreeze.svg" alt=""><span>채권압류해제 신청</span>
+    <div class="menu-item" onclick="location.href='/blog/household-living-guide.html'">
+      <img src="/icons/guide.svg"><span>가구수 가이드</span>
     </div>
-    <div class="menu-item" data-keywords="채무불이행 등재 말소 credit delist" onclick="location.href='/apply/credit-delist.html'">
-      <img src="/icons/credit.svg" alt=""><span>채무불이행등재말소 신청</span>
+    <div class="menu-item" onclick="location.href='/blog/interest-guide.html'">
+      <img src="/icons/guide.svg"><span>연이자 가이드</span>
     </div>
 
-    <!-- 관련 사이트 -->
-    <div class="menu-item" data-keywords="모두의로펌 불법사채 채무조정" onclick="location.href='/blog/modoolawfirm.html'">
-      <img src="/icons/law.svg" alt=""><span>모두의로펌</span>
+    <!-- 신청 -->
+    <div class="menu-item" onclick="location.href='/apply/rehab.html'">
+      <img src="/icons/rehab.svg"><span>개인회생 신청</span>
     </div>
-    <div class="menu-item" data-keywords="쏜살민원 서류 발급 대행" onclick="location.href='/blog/ssonsalminwon.html'">
-      <img src="/icons/doc.svg" alt=""><span>쏜살민원</span>
+    <div class="menu-item" onclick="location.href='/apply/bankruptcy.html'">
+      <img src="/icons/bankruptcy.svg"><span>파산·면책 신청</span>
+    </div>
+    <div class="menu-item" onclick="location.href='/apply/garnish-release.html'">
+      <img src="/icons/unfreeze.svg"><span>압류해제 신청</span>
+    </div>
+    <div class="menu-item" onclick="location.href='/apply/credit-delist.html'">
+      <img src="/icons/credit.svg"><span>채무불이행말소</span>
     </div>
   </div>
 
-  <!-- 최근 사용한 계산기 -->
+  <!-- 최근 계산기 -->
   <div class="recent-section">
     <h3>최근 사용한 계산기</h3>
     <ul id="recentCalcList"></ul>
   </div>
 </nav>
 
-<!-- ⭐ 3단 레이아웃 -->
-<div class="layout-3col">
-
-  <!-- 좌측 메뉴 -->
-  <aside class="left-menu">
-    <nav class="category-nav">
-      <h3>메뉴</h3>
-      <ul>
-        <li><a href="/main.html">홈</a></li>
-        <li><a href="/calculators/repay.html">개인회생 변제금 계산기</a></li>
-        <li><a href="/calculators/living-adjust.html">법원 생계비 계산기</a></li>
-        <li><a href="/calculators/household-auto-living.html">가구수 생계비 계산기</a></li>
-        <li><a href="/calculators/interest.html">연이자 계산기</a></li>
-        <li><a href="/calculators/compound.html">연이자율 계산기</a></li>
-        <li><a href="/apply/rehab.html">개인회생 신청</a></li>
-        <li><a href="/apply/bankruptcy.html">파산·면책 신청</a></li>
-        <li><a href="/apply/garnish-release.html">채권압류해제 신청</a></li>
-        <li><a href="/apply/credit-delist.html">채무불이행등재말소 신청</a></li>
-        <li><a href="/blog/modoolawfirm.html">모두의로펌</a></li>
-        <li><a href="/blog/ssonsalminwon.html">쏜살민원</a></li>
-      </ul>
-    </nav>
-  </aside>
+<!-- ⭐ 2단 레이아웃 -->
+<div class="layout-2col">
 
   <!-- 중앙 콘텐츠 -->
   <main class="center-content">
 
-    <!-- ⭐ 자동 슬라이드 배너 -->
+    <!-- ⭐ 자동 슬라이드 -->
     <section class="auto-slider">
       <div class="slider-wrapper" id="sliderWrapper">
         <div class="slide">
-          <div class="slide-inner">
-            <h2>개인회생 변제금, 자동 계산</h2>
-            <p>소득·부양가족·부채·청산가치를 한 번에 반영한 변제금 계산</p>
+          <div class="slide-inner sky-gradient">
+            <h2>개인회생 변제금 자동 계산</h2>
+            <p>소득·부양가족·부채·청산가치를 반영한 정확한 계산</p>
             <button onclick="openCalc('/calculators/repay.html')">변제금 계산하기</button>
           </div>
         </div>
+
         <div class="slide">
-          <div class="slide-inner">
+          <div class="slide-inner sky-gradient">
             <h2>법원 생계비 최신 기준 반영</h2>
-            <p>가구수·중위소득을 반영한 생계비 자동 계산</p>
+            <p>가구수·중위소득 기반 생계비 자동 계산</p>
             <button onclick="openCalc('/calculators/living-adjust.html')">생계비 계산하기</button>
           </div>
         </div>
+
         <div class="slide">
-          <div class="slide-inner">
+          <div class="slide-inner sky-gradient">
             <h2>연이자·연이자율 계산</h2>
-            <p>단리·복리·연이자율까지 한 번에 확인</p>
+            <p>단리·복리·연이자율까지 한 번에</p>
             <button onclick="openCalc('/calculators/interest.html')">연이자 계산하기</button>
           </div>
         </div>
       </div>
+
       <div class="slider-dots" id="sliderDots">
         <span class="dot active" data-index="0"></span>
         <span class="dot" data-index="1"></span>
@@ -185,19 +156,19 @@
       <h2>계산기 바로가기</h2>
       <div class="quick-grid">
         <div class="quick-item" onclick="openCalc('/calculators/repay.html')">
-          <img src="/icons/payment.svg" alt=""><p>변제금</p>
+          <img src="/icons/payment.svg"><p>변제금</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/living-adjust.html')">
-          <img src="/icons/living.svg" alt=""><p>생계비</p>
+          <img src="/icons/living.svg"><p>생계비</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/household-auto-living.html')">
-          <img src="/icons/family.svg" alt=""><p>가구수</p>
+          <img src="/icons/family.svg"><p>가구수</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/interest.html')">
-          <img src="/icons/interest.svg" alt=""><p>연이자</p>
+          <img src="/icons/interest.svg"><p>연이자</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/compound.html')">
-          <img src="/icons/interest.svg" alt=""><p>연이자율</p>
+          <img src="/icons/interest.svg"><p>연이자율</p>
         </div>
       </div>
     </section>
@@ -205,6 +176,7 @@
     <!-- ⭐ 개인회생·파산 탭 -->
     <section class="law-tab-section">
       <h2>개인회생·파산 핵심 정보</h2>
+
       <div class="law-tabs">
         <button class="law-tab-btn active" data-tab="qualify">자격조회</button>
         <button class="law-tab-btn" data-tab="docs">준비서류</button>
@@ -289,11 +261,11 @@
           <p>📞 02-530-1100</p>
           <div class="court-links">
             <a href="https://sr.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/seoul_rehab_docs.pdf" target="_blank">제출서류 다운로드</a>
-            <a href="tel:025301100">전화걸기</a>
+            <a href="/docs/seoul_rehab_docs.pdf" target="_blank">제출서류</a>
+            <a href="tel:025301100">전화</a>
           </div>
           <details>
-            <summary>회생·파산 담당 부서 안내</summary>
+            <summary>담당 부서</summary>
             <ul>
               <li>개인회생과</li>
               <li>파산과</li>
@@ -308,11 +280,11 @@
           <p>📞 031-210-1114</p>
           <div class="court-links">
             <a href="https://sw.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/suwon_rehab_docs.pdf" target="_blank">제출서류 다운로드</a>
-            <a href="tel:0312101114">전화걸기</a>
+            <a href="/docs/suwon_rehab_docs.pdf" target="_blank">제출서류</a>
+            <a href="tel:0312101114">전화</a>
           </div>
           <details>
-            <summary>회생·파산 담당 부서 안내</summary>
+            <summary>담당 부서</summary>
             <ul>
               <li>회생파산과</li>
               <li>개인회생계</li>
@@ -326,11 +298,11 @@
           <p>📞 042-470-1114</p>
           <div class="court-links">
             <a href="https://dj.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/daejeon_rehab_docs.pdf" target="_blank">제출서류 다운로드</a>
-            <a href="tel:0424701114">전화걸기</a>
+            <a href="/docs/daejeon_rehab_docs.pdf" target="_blank">제출서류</a>
+            <a href="tel:0424701114">전화</a>
           </div>
           <details>
-            <summary>회생·파산 담당 부서 안내</summary>
+            <summary>담당 부서</summary>
             <ul>
               <li>회생파산과</li>
               <li>개인회생계</li>
@@ -344,11 +316,11 @@
           <p>📞 053-757-2114</p>
           <div class="court-links">
             <a href="https://dg.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/daegu_rehab_docs.pdf" target="_blank">제출서류 다운로드</a>
-            <a href="tel:0537572114">전화걸기</a>
+            <a href="/docs/daegu_rehab_docs.pdf" target="_blank">제출서류</a>
+            <a href="tel:0537572114">전화</a>
           </div>
           <details>
-            <summary>회생·파산 담당 부서 안내</summary>
+            <summary>담당 부서</summary>
             <ul>
               <li>회생파산과</li>
               <li>개인회생계</li>
@@ -358,95 +330,4 @@
 
         <div class="court-item">
           <h3>부산지방법원 회생</h3>
-          <p>📍 부산광역시 연제구 법원로 20</p>
-          <p>📞 051-901-1114</p>
-          <div class="court-links">
-            <a href="https://bs.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/busan_rehab_docs.pdf" target="_blank">제출서류 다운로드</a>
-            <a href="tel:0519011114">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
-        </div>
-
-        <div class="court-item">
-          <h3>광주지방법원 회생</h3>
-          <p>📍 광주광역시 서구 상무중앙로 10</p>
-          <p>📞 062-239-1114</p>
-          <div class="court-links">
-            <a href="https://gj.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="/docs/gwangju_rehab_docs.pdf" target="_blank">제출서류 다운로드</a>
-            <a href="tel:0622391114">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ⭐ 공지사항 -->
-    <section class="board-section">
-      <h2>📢 공지사항</h2>
-      <ul class="board-list">
-        <li>새로운 계산기 업데이트 안내</li>
-        <li>서류 발급 대행 서비스 오픈</li>
-        <li>개인회생 자격조회 기능 개선</li>
-        <li>변제금 계산기 업데이트</li>
-        <li>사이트 점검 안내</li>
-      </ul>
-    </section>
-
-    <!-- ⭐ 이용후기 -->
-    <section class="board-section">
-      <h2>⭐ 이용후기</h2>
-      <ul class="board-list">
-        <li>정말 도움 많이 됐습니다!</li>
-        <li>계산기가 너무 정확해요</li>
-        <li>상담사분이 친절했습니다</li>
-        <li>서류 발급이 빨라요</li>
-        <li>추천합니다!</li>
-      </ul>
-    </section>
-
-  </main>
-
-  <!-- 우측 사이드바 -->
-  <aside class="right-sidebar">
-    <div class="login-box">
-      <h3>로그인</h3>
-      <p>전체 계산 결과와 저장 기능을 이용할 수 있습니다.</p>
-      <button class="app-btn-primary" onclick="location.href='/auth/login.html'">로그인하기</button>
-      <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">회원가입</button>
-    </div>
-
-    <div class="visitor-box">
-      <h3>📊 방문자 통계</h3>
-      <p>오늘 방문자: <b id="todayVisitor">0</b></p>
-      <p>전체 방문자: <b id="totalVisitor">0</b></p>
-    </div>
-
-    <div class="recent-box">
-      <h3>최근 사용한 계산기</h3>
-      <ul id="recentCalcListSidebar"></ul>
-    </div>
-  </aside>
-
-</div>
-
-<script src="/premium-optimized.js?v=1"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_KEY"></script>
-
-</body>
-</html>
+          <p>
