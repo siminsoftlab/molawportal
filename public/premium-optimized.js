@@ -1,86 +1,219 @@
-// /premium-optimized.js
+// ⭐ 전체메뉴 열기/닫기
+const globalMenu = document.getElementById("globalMenu");
+const openGlobalMenuBtn = document.getElementById("openGlobalMenu");
+const closeGlobalMenuBtn = document.getElementById("closeGlobalMenu");
 
-document.addEventListener("DOMContentLoaded", () => {
-  const menuBtn = document.querySelector(".menu-btn");
-  const menuClose = document.querySelector(".menu-close");
-  const menuPanel = document.getElementById("globalMenu");
-  const searchInput = document.getElementById("menuSearchInput");
+if (openGlobalMenuBtn && globalMenu) {
+  openGlobalMenuBtn.addEventListener("click", () => {
+    globalMenu.classList.add("active");
+  });
+}
 
-  function toggleMenu() {
-    if (!menuPanel) return;
-    menuPanel.classList.toggle("active");
+if (closeGlobalMenuBtn && globalMenu) {
+  closeGlobalMenuBtn.addEventListener("click", () => {
+    globalMenu.classList.remove("active");
+  });
+}
+
+// ⭐ 메뉴 검색 필터링
+const menuSearchInput = document.getElementById("menuSearchInput");
+const menuSearchBtn = document.getElementById("menuSearchBtn");
+const menuGrid = document.getElementById("menuGrid");
+
+function filterMenu() {
+  const keyword = (menuSearchInput.value || "").trim().toLowerCase();
+  const items = menuGrid.querySelectorAll(".menu-item");
+  items.forEach(item => {
+    const k = (item.dataset.keywords || "").toLowerCase();
+    item.style.display = keyword && !k.includes(keyword) ? "none" : "flex";
+  });
+}
+
+if (menuSearchInput && menuGrid) {
+  menuSearchInput.addEventListener("input", filterMenu);
+}
+
+if (menuSearchBtn) {
+  menuSearchBtn.addEventListener("click", filterMenu);
+}
+
+// ⭐ 상단 검색 (간단히 구글 검색으로 연결)
+const topSearchInput = document.getElementById("topSearchInput");
+const topSearchBtn = document.getElementById("topSearchBtn");
+
+if (topSearchBtn && topSearchInput) {
+  topSearchBtn.addEventListener("click", () => {
+    const q = (topSearchInput.value || "").trim();
+    if (!q) return;
+    const url = "https://www.google.com/search?q=" + encodeURIComponent("site:molawcalculator.com " + q);
+    window.open(url, "_blank");
+  });
+}
+
+// ⭐ 최근 사용한 계산기 (localStorage)
+const RECENT_KEY = "recentCalculators";
+
+function getRecentCalculators() {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
   }
+}
 
-  if (menuBtn) menuBtn.addEventListener("click", toggleMenu);
-  if (menuClose) menuClose.addEventListener("click", toggleMenu);
+function saveRecentCalculator(path, label) {
+  const list = getRecentCalculators();
+  const existingIndex = list.findIndex(item => item.path === path);
+  if (existingIndex !== -1) {
+    list.splice(existingIndex, 1);
+  }
+  list.unshift({ path, label });
+  if (list.length > 5) list.pop();
+  localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+  renderRecentCalculators();
+}
 
-  // 검색: 메뉴 텍스트 필터링
-  if (searchInput) {
-    searchInput.addEventListener("input", () => {
-      const keyword = searchInput.value.trim();
-      const items = document.querySelectorAll(".mobile-menu-grid .menu-item span");
-      items.forEach(span => {
-        const parent = span.parentElement;
-        if (!keyword) {
-          parent.style.display = "";
-        } else {
-          parent.style.display = span.textContent.includes(keyword) ? "" : "none";
-        }
+function renderRecentCalculators() {
+  const list = getRecentCalculators();
+  const ulMenu = document.getElementById("recentCalcList");
+  const ulSidebar = document.getElementById("recentCalcListSidebar");
+  if (ulMenu) {
+    ulMenu.innerHTML = "";
+    list.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item.label;
+      li.style.cursor = "pointer";
+      li.addEventListener("click", () => {
+        location.href = item.path;
       });
+      ulMenu.appendChild(li);
     });
   }
+  if (ulSidebar) {
+    ulSidebar.innerHTML = "";
+    list.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item.label;
+      li.style.fontSize = "12px";
+      li.style.cursor = "pointer";
+      li.addEventListener("click", () => {
+        location.href = item.path;
+      });
+      ulSidebar.appendChild(li);
+    });
+  }
+}
 
-  loadRecentCalcs();
+// 계산기 열기 공통 함수
+function openCalc(path) {
+  const labelMap = {
+    "/calculators/repay.html": "개인회생 변제금",
+    "/calculators/living-adjust.html": "법원 생계비",
+    "/calculators/household-auto-living.html": "가구수 생계비",
+    "/calculators/interest.html": "연이자",
+    "/calculators/compound.html": "연이자율"
+  };
+  const label = labelMap[path] || "계산기";
+  saveRecentCalculator(path, label);
+  location.href = path;
+}
+
+// 초기 렌더
+renderRecentCalculators();
+
+// ⭐ 자동 슬라이드 배너
+const sliderWrapper = document.getElementById("sliderWrapper");
+const sliderDots = document.querySelectorAll("#sliderDots .dot");
+let currentSlide = 0;
+
+function goToSlide(index) {
+  if (!sliderWrapper) return;
+  currentSlide = index;
+  sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
+  sliderDots.forEach(dot => dot.classList.remove("active"));
+  const activeDot = document.querySelector(`#sliderDots .dot[data-index="${index}"]`);
+  if (activeDot) activeDot.classList.add("active");
+}
+
+sliderDots.forEach(dot => {
+  dot.addEventListener("click", () => {
+    const idx = parseInt(dot.dataset.index, 10);
+    goToSlide(idx);
+  });
 });
 
-// 계산기 열기 + 최근 사용한 계산기 저장
-function openCalc(url) {
-  saveRecentCalc(url);
-  location.href = url;
+setInterval(() => {
+  const next = (currentSlide + 1) % sliderDots.length;
+  goToSlide(next);
+}, 5000);
+
+// ⭐ 개인회생·파산 탭
+const tabButtons = document.querySelectorAll(".law-tab-btn");
+const tabPanels = document.querySelectorAll(".law-panel");
+
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.tab;
+    tabButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    tabPanels.forEach(panel => {
+      panel.classList.toggle("active", panel.id === target);
+    });
+  });
+});
+
+// ⭐ 상담 신청 (간단한 프론트 검증만)
+const consultName = document.getElementById("consultName");
+const consultPhone = document.getElementById("consultPhone");
+const consultContent = document.getElementById("consultContent");
+const consultSubmitBtn = document.getElementById("consultSubmitBtn");
+const consultStatus = document.getElementById("consultStatus");
+
+if (consultSubmitBtn) {
+  consultSubmitBtn.addEventListener("click", () => {
+    const name = (consultName.value || "").trim();
+    const phone = (consultPhone.value || "").trim();
+    const content = (consultContent.value || "").trim();
+    if (!name || !phone || !content) {
+      consultStatus.textContent = "이름·연락처·상담 내용을 모두 입력해주세요.";
+      return;
+    }
+    consultStatus.textContent = "상담 신청이 접수되었습니다. 담당자가 확인 후 연락드립니다.";
+  });
 }
 
-function saveRecentCalc(url) {
-  let list = JSON.parse(localStorage.getItem("recentCalcs") || "[]");
-  list = list.filter(item => item !== url);
-  list.unshift(url);
-  if (list.length > 5) list.pop();
-  localStorage.setItem("recentCalcs", JSON.stringify(list));
-}
+// ⭐ 전국 법원 좌표 데이터 (카카오맵)
+const courts = [
+  { name: "서울회생법원", lat: 37.4937, lng: 127.0070 },
+  { name: "수원지방법원", lat: 37.2635, lng: 127.0286 },
+  { name: "대전지방법원", lat: 36.3504, lng: 127.3845 },
+  { name: "대구지방법원", lat: 35.8599, lng: 128.6267 },
+  { name: "부산지방법원", lat: 35.1767, lng: 129.0740 },
+  { name: "광주지방법원", lat: 35.1595, lng: 126.8526 }
+];
 
-function loadRecentCalcs() {
-  const ul = document.getElementById("recentCalcList");
-  if (!ul) return;
+// ⭐ 카카오맵 초기화
+window.addEventListener("load", () => {
+  const container = document.getElementById("courtMap");
+  if (!container || typeof kakao === "undefined") return;
 
-  const list = JSON.parse(localStorage.getItem("recentCalcs") || "[]");
-  if (list.length === 0) {
-    ul.innerHTML = "<li>최근 사용한 계산기가 없습니다</li>";
-    return;
-  }
+  const map = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(36.5, 127.8),
+    level: 13
+  });
 
-  ul.innerHTML = list
-    .map(url => `<li onclick="location.href='${url}'">${convertCalcName(url)}</li>`)
-    .join("");
-}
+  courts.forEach(court => {
+    const marker = new kakao.maps.Marker({
+      map,
+      position: new kakao.maps.LatLng(court.lat, court.lng)
+    });
 
-// URL → 계산기 이름 변환
-function convertCalcName(url) {
-  if (url.includes("compound")) return "연이자율 계산기";
-  if (url.includes("interest")) return "연이자 계산기";
-  if (url.includes("repay")) return "개인회생 변제금 계산기";
-  if (url.includes("living-adjust")) return "법원 생계비 계산기";
-  if (url.includes("household-auto-living")) return "가구수 생계비 계산기";
-  return "계산기";
-}
+    const infowindow = new kakao.maps.InfoWindow({
+      content: `<div style="padding:6px 10px;font-size:13px;">${court.name}</div>`
+    });
 
-// 개인회생·파산 탭 전환
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("law-tab-btn")) {
-    document.querySelectorAll(".law-tab-btn").forEach(btn => btn.classList.remove("active"));
-    e.target.classList.add("active");
-
-    const tab = e.target.dataset.tab;
-    document.querySelectorAll(".law-panel").forEach(panel => panel.classList.remove("active"));
-    const target = document.getElementById(tab);
-    if (target) target.classList.add("active");
-  }
+    kakao.maps.event.addListener(marker, "mouseover", () => infowindow.open(map, marker));
+    kakao.maps.event.addListener(marker, "mouseout", () => infowindow.close());
+  });
 });
