@@ -72,6 +72,7 @@ body.homepage {
   background: rgba(0,0,0,0.45);
   display: none;
   z-index: 2000;
+  top: 70px; /* 헤더 높이만큼 내려줌 */
 }
 
 .global-menu.active {
