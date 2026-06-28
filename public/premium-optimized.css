@@ -632,6 +632,16 @@ ul {
 }
 
 /* ================================
+   footer 모달 4종 숨김 처리
+================================ */
+#termsModal,
+#consultprivacyModal,
+#commonApplyModal,
+#privacyModal {
+  display: none !important;
+}
+
+/* ================================
    RESPONSIVE
 ================================ */
 @media (max-width: 1024px) {
