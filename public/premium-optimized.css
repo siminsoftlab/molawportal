@@ -796,3 +796,39 @@ details {
   line-height: 1.6;
   max-width: 800px;
 }
+/* 로그인/회원가입 버튼 앱 스타일 + 작게 + 가로 배치 */
+.sidebar-box .app-btn-primary,
+.sidebar-box .app-btn-secondary {
+  display: inline-block;
+  width: auto;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 10px;
+  margin-right: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+
+.sidebar-box .app-btn-secondary {
+  background: #f1f1f1;
+  color: #333;
+}
+
+/* 최근 사용한 계산기 / 탭 리스트 좌측 패딩 */
+#recentCalcListSidebar li,
+#recentCalcList li,
+.law-panel ul li {
+  padding-left: 12px;
+}
+
+/* 전체 페이지 좌우 패딩 */
+body.homepage {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* 슬라이더 버튼 높이 줄이기 */
+.slide-inner button {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+}
