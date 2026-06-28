@@ -1,4 +1,6 @@
-// ⭐ 전체메뉴 열기/닫기
+/* =========================================================
+   ⭐ 전체메뉴 열기/닫기
+========================================================= */
 const globalMenu = document.getElementById("globalMenu");
 const openGlobalMenuBtn = document.getElementById("openGlobalMenu");
 const closeGlobalMenuBtn = document.getElementById("closeGlobalMenu");
@@ -15,7 +17,9 @@ if (closeGlobalMenuBtn && globalMenu) {
   });
 }
 
-// ⭐ 메뉴 검색 필터링
+/* =========================================================
+   ⭐ 전체메뉴 검색 필터링
+========================================================= */
 const menuSearchInput = document.getElementById("menuSearchInput");
 const menuSearchBtn = document.getElementById("menuSearchBtn");
 const menuGrid = document.getElementById("menuGrid");
@@ -23,21 +27,23 @@ const menuGrid = document.getElementById("menuGrid");
 function filterMenu() {
   const keyword = (menuSearchInput.value || "").trim().toLowerCase();
   const items = menuGrid.querySelectorAll(".menu-item");
+
   items.forEach(item => {
     const k = (item.dataset.keywords || "").toLowerCase();
     item.style.display = keyword && !k.includes(keyword) ? "none" : "flex";
   });
 }
 
-if (menuSearchInput && menuGrid) {
+if (menuSearchInput) {
   menuSearchInput.addEventListener("input", filterMenu);
 }
-
 if (menuSearchBtn) {
   menuSearchBtn.addEventListener("click", filterMenu);
 }
 
-// ⭐ 상단 검색 (간단히 구글 검색으로 연결)
+/* =========================================================
+   ⭐ 상단 검색 (구글 사이트 검색)
+========================================================= */
 const topSearchInput = document.getElementById("topSearchInput");
 const topSearchBtn = document.getElementById("topSearchBtn");
 
@@ -50,7 +56,9 @@ if (topSearchBtn && topSearchInput) {
   });
 }
 
-// ⭐ 최근 사용한 계산기 (localStorage)
+/* =========================================================
+   ⭐ 최근 사용한 계산기 (localStorage)
+========================================================= */
 const RECENT_KEY = "recentCalculators";
 
 function getRecentCalculators() {
@@ -65,11 +73,13 @@ function getRecentCalculators() {
 function saveRecentCalculator(path, label) {
   const list = getRecentCalculators();
   const existingIndex = list.findIndex(item => item.path === path);
-  if (existingIndex !== -1) {
-    list.splice(existingIndex, 1);
-  }
+
+  if (existingIndex !== -1) list.splice(existingIndex, 1);
+
   list.unshift({ path, label });
+
   if (list.length > 5) list.pop();
+
   localStorage.setItem(RECENT_KEY, JSON.stringify(list));
   renderRecentCalculators();
 }
@@ -78,34 +88,34 @@ function renderRecentCalculators() {
   const list = getRecentCalculators();
   const ulMenu = document.getElementById("recentCalcList");
   const ulSidebar = document.getElementById("recentCalcListSidebar");
+
   if (ulMenu) {
     ulMenu.innerHTML = "";
     list.forEach(item => {
       const li = document.createElement("li");
       li.textContent = item.label;
       li.style.cursor = "pointer";
-      li.addEventListener("click", () => {
-        location.href = item.path;
-      });
+      li.addEventListener("click", () => location.href = item.path);
       ulMenu.appendChild(li);
     });
   }
+
   if (ulSidebar) {
     ulSidebar.innerHTML = "";
     list.forEach(item => {
       const li = document.createElement("li");
       li.textContent = item.label;
-      li.style.fontSize = "12px";
       li.style.cursor = "pointer";
-      li.addEventListener("click", () => {
-        location.href = item.path;
-      });
+      li.style.fontSize = "12px";
+      li.addEventListener("click", () => location.href = item.path);
       ulSidebar.appendChild(li);
     });
   }
 }
 
-// 계산기 열기 공통 함수
+renderRecentCalculators();
+
+/* 계산기 열기 공통 함수 */
 function openCalc(path) {
   const labelMap = {
     "/calculators/repay.html": "개인회생 변제금",
@@ -114,15 +124,15 @@ function openCalc(path) {
     "/calculators/interest.html": "연이자",
     "/calculators/compound.html": "연이자율"
   };
+
   const label = labelMap[path] || "계산기";
   saveRecentCalculator(path, label);
   location.href = path;
 }
 
-// 초기 렌더
-renderRecentCalculators();
-
-// ⭐ 자동 슬라이드 배너
+/* =========================================================
+   ⭐ 자동 슬라이드 배너
+========================================================= */
 const sliderWrapper = document.getElementById("sliderWrapper");
 const sliderDots = document.querySelectorAll("#sliderDots .dot");
 let currentSlide = 0;
@@ -131,6 +141,7 @@ function goToSlide(index) {
   if (!sliderWrapper) return;
   currentSlide = index;
   sliderWrapper.style.transform = `translateX(-${index * 100}%)`;
+
   sliderDots.forEach(dot => dot.classList.remove("active"));
   const activeDot = document.querySelector(`#sliderDots .dot[data-index="${index}"]`);
   if (activeDot) activeDot.classList.add("active");
@@ -138,8 +149,7 @@ function goToSlide(index) {
 
 sliderDots.forEach(dot => {
   dot.addEventListener("click", () => {
-    const idx = parseInt(dot.dataset.index, 10);
-    goToSlide(idx);
+    goToSlide(parseInt(dot.dataset.index, 10));
   });
 });
 
@@ -148,22 +158,28 @@ setInterval(() => {
   goToSlide(next);
 }, 5000);
 
-// ⭐ 개인회생·파산 탭
+/* =========================================================
+   ⭐ 개인회생·파산 탭
+========================================================= */
 const tabButtons = document.querySelectorAll(".law-tab-btn");
 const tabPanels = document.querySelectorAll(".law-panel");
 
 tabButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     const target = btn.dataset.tab;
+
     tabButtons.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
+
     tabPanels.forEach(panel => {
       panel.classList.toggle("active", panel.id === target);
     });
   });
 });
 
-// ⭐ 상담 신청 (간단한 프론트 검증만)
+/* =========================================================
+   ⭐ 상담 신청 (프론트 검증)
+========================================================= */
 const consultName = document.getElementById("consultName");
 const consultPhone = document.getElementById("consultPhone");
 const consultContent = document.getElementById("consultContent");
@@ -175,15 +191,19 @@ if (consultSubmitBtn) {
     const name = (consultName.value || "").trim();
     const phone = (consultPhone.value || "").trim();
     const content = (consultContent.value || "").trim();
+
     if (!name || !phone || !content) {
       consultStatus.textContent = "이름·연락처·상담 내용을 모두 입력해주세요.";
       return;
     }
+
     consultStatus.textContent = "상담 신청이 접수되었습니다. 담당자가 확인 후 연락드립니다.";
   });
 }
 
-// ⭐ 전국 법원 좌표 데이터 (카카오맵)
+/* =========================================================
+   ⭐ 전국 법원 카카오맵 + 마커
+========================================================= */
 const courts = [
   { name: "서울회생법원", lat: 37.4937, lng: 127.0070 },
   { name: "수원지방법원", lat: 37.2635, lng: 127.0286 },
@@ -193,7 +213,6 @@ const courts = [
   { name: "광주지방법원", lat: 35.1595, lng: 126.8526 }
 ];
 
-// ⭐ 카카오맵 초기화
 window.addEventListener("load", () => {
   const container = document.getElementById("courtMap");
   if (!container || typeof kakao === "undefined") return;
