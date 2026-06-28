@@ -2,15 +2,32 @@
    ⭐ 전체메뉴 열기/닫기 (중복 선언 제거 버전)
 ========================================================= */
 function initGlobalMenu() {
-  const openBtn = document.getElementById("openGlobalMenu");
-  const closeBtn = document.getElementById("closeGlobalMenu");
-  const menu = document.getElementById("globalMenu");
+  const menuBtn = document.querySelector(".menu-btn");
+  const globalMenu = document.querySelector(".global-menu");
+  const closeBtn = document.querySelector(".menu-close");
 
-  if (!openBtn || !closeBtn || !menu) return;
+  if (!menuBtn || !globalMenu) return;
 
-  openBtn.onclick = () => menu.classList.add("active");
-  closeBtn.onclick = () => menu.classList.remove("active");
+  // 메뉴 열기/닫기 토글
+  menuBtn.addEventListener("click", () => {
+    globalMenu.classList.toggle("active");
+  });
+
+  // 닫기 버튼
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      globalMenu.classList.remove("active");
+    });
+  }
+
+  // 메뉴 바깥 클릭 시 닫기
+  globalMenu.addEventListener("click", (e) => {
+    if (e.target === globalMenu) {
+      globalMenu.classList.remove("active");
+    }
+  });
 }
+
 
 /* =========================================================
    ⭐ 전체메뉴 검색 필터링
