@@ -68,11 +68,13 @@ body.homepage {
 ========================================================= */
 .global-menu {
   position: fixed;
-  inset: 0;
+  top: 70px; /* 헤더 아래에서 시작 */
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0,0,0,0.45);
   display: none;
   z-index: 2000;
-  top: 70px; /* 헤더 높이만큼 내려줌 */
 }
 
 .global-menu.active {
