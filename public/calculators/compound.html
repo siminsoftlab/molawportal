@@ -208,14 +208,7 @@
       <button class="app-btn-close" onclick="document.getElementById('detailModal').style.display='none'">닫기</button>
     </div>
   </div>
-   <!-- 헤더 -->
-  <script>
-    fetch("/header.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("header").innerHTML = html;
-      });
-  </script>
+  
   <!-- 푸터 -->
   <footer id="footer"></footer>
 
@@ -226,8 +219,14 @@
   <script type="module" src="/firebase-init.js"></script>
   <script type="module" src="/firebase-counter.js"></script>
   <script type="module" src="/auth/auth-state.js"></script>
-  <script type="module" src="/check-access.js"></script>
-
+  <script type="module" src="/check-access.js"></script>  
+  <script>
+    fetch("/header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header").innerHTML = html;
+      });
+  </script>
   <script>
     fetch("/footer.html")
       .then(res => res.text())
