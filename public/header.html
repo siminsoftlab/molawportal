@@ -1,55 +1,77 @@
-<header class="global-header">
-  <div class="header-inner">
-    <h1 class="logo">딱요만큼변제</h1>
-
-    <button class="menu-btn" aria-label="전체 메뉴 열기">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</header>
-
 <nav id="globalMenu" class="global-menu">
-  <div class="menu-content">
-    <h3>전체 메뉴</h3>
+  <div class="mobile-menu-header">
+    <div class="mobile-profile">
+      <div class="profile-icon">👤</div>
+      <div class="profile-info">
+        <p class="profile-name">로그인이 필요합니다</p>
+        <a href="/auth/login.html" class="profile-login">로그인 / 회원가입</a>
+      </div>
+    </div>
+    <button class="menu-close">✕</button>
+  </div>
 
-    <ul class="menu-list">
+  <div class="mobile-menu-grid">
 
-      <!-- 기본 메뉴 -->
-      <li><a href="/index.html">홈</a></li>
+    <!-- 홈 -->
+    <div class="menu-item" onclick="location.href='/index.html'">
+      <img src="/icons/home.svg"><span>홈</span>
+    </div>
 
-      <!-- 계산기 메뉴 -->
-      <li><strong>📊 계산기</strong></li>
-      <li><a href="/calculators/repay.html">개인회생 변제금 계산기</a></li>
-      <li><a href="/calculators/interest.html">이자 계산기</a></li>
-      <li><a href="/calculators/living-adjust.html">법원 생계비 계산기</a></li>
-      <li><a href="/calculators/household-auto-living.html">가구수 생계비 계산기</a></li>
-      <li><a href="/calculators/compound.html">연이자율 계산기</a></li>
+       <!-- 변제금 계산기 -->
+    <div class="menu-item" onclick="location.href='/calculators/repay.html'">
+      <img src="/icons/payment.svg"><span>개인회생 변제금 계산</span>
+    </div>
 
-      <!-- 블로그 가이드 -->
-      <li><strong>📘 공식 가이드</strong></li>
-      <li><a href="/blog/ssonsalminwon.html">쏜살민원 — 서류 발급 대행</a></li>
-      <li><a href="/blog/modoolawfirm.html">모두의로펌 — 채무조정·피해구제</a></li>
-      <li><a href="/blog/repay-calc.html">개인회생 변제금 안내</a></li>
-      <li><a href="/blog/repay-guide.html">변제금 계산기 가이드</a></li>
-      <li><a href="/blog/living-adjust-guide.html">법원 생계비 계산기 가이드</a></li>
-      <li><a href="/blog/household-living-guide.html">가구수 생계비 가이드</a></li>
-      <li><a href="/blog/interest-guide.html">연이자 계산기 가이드</a></li>
+    <!-- 생계비 계산기 -->
+    <div class="menu-item" onclick="location.href='/calculators/living-adjust.html'">
+      <img src="/icons/living.svg"><span>생계비 계산</span>
+    </div>
 
-      <!-- 신청 서비스 -->
-      <li><strong>📝 신청 서비스</strong></li>
-      <li><a href="/apply/rehab.html">개인회생 신청</a></li>
-      <li><a href="/apply/bankruptcy.html">개인파산·면책 신청</a></li>
-      <li><a href="/apply/garnish-release.html">채권압류해제 신청</a></li>
-      <li><a href="/apply/credit-delist.html">채무불이행등재말소 신청</a></li>
+    <!-- 가구수 생계비 -->
+    <div class="menu-item" onclick="location.href='/calculators/household-auto-living.html'">
+      <img src="/icons/family.svg"><span>가구수 생계비</span>
+    </div>
 
-      <!-- 계정 -->
-      <li><strong>👤 계정</strong></li>
-      <li><a href="/mypage/payments.html">이용권 결제</a></li>
-      <li><a href="/auth/login.html">로그인</a></li>
-      <li><a href="/auth/signup.html">회원가입</a></li>
+    <!-- ⭐ 연이자율 계산기 (추가됨) -->
+    <div class="menu-item" onclick="location.href='/calculators/compound.html'">
+      <img src="/icons/interest.svg"><span>연이자율 계산기</span>
+    </div>
 
-    </ul>
+    <!-- 이자 계산기 -->
+    <div class="menu-item" onclick="location.href='/calculators/simple.html'">
+      <img src="/icons/simple.svg"><span>이자 계산기</span>
+    </div>
+    
+    <!-- 신청 서비스 -->
+    <div class="menu-item" onclick="location.href='/apply/rehab.html'">
+      <img src="/icons/rehab.svg"><span>개인회생 신청</span>
+    </div>
 
-    <button class="menu-close">닫기</button>
+    <div class="menu-item" onclick="location.href='/apply/bankruptcy.html'">
+      <img src="/icons/bankruptcy.svg"><span>파산·면책</span>
+    </div>
+
+    <div class="menu-item" onclick="location.href='/apply/garnish-release.html'">
+      <img src="/icons/unfreeze.svg"><span>압류해제</span>
+    </div>
+
+    <div class="menu-item" onclick="location.href='/apply/credit-delist.html'">
+      <img src="/icons/credit.svg"><span>신용회복</span>
+    </div>
+
+    <!-- 가이드 -->
+    <div class="menu-item" onclick="location.href='/blog/repay-calc.html'">
+      <img src="/icons/guide.svg"><span>변제금 가이드</span>
+    </div>
+
+    <div class="menu-item" onclick="location.href='/blog/ssonsalminwon.html'">
+      <img src="/icons/docs.svg"><span>서류 발급</span>
+    </div>
+
+    <!-- 상담 -->
+    <div class="menu-item" onclick="location.href='/consult/chat.html'">
+      <img src="/icons/chat.svg"><span>상담 연결</span>
+    </div>
+
   </div>
 </nav>
