@@ -64,8 +64,8 @@
         <div class="slide">
           <div class="slide-inner sky-gradient">
             <h2>연이자·연이자율 계산</h2>
-            <p>단리·복리·연이자율까지 한 번에</p>
-            <button onclick="openCalc('/calculators/interest.html')">연이자 계산하기</button>
+            <p>불법사금융 연이자율까지 한 번에</p>
+            <button onclick="openCalc('/calculators/compound.html')">연이자율 계산하기</button>
           </div>
         </div>
       </div>
@@ -82,19 +82,19 @@
       <h2>계산기 바로가기</h2>
       <div class="quick-grid">
         <div class="quick-item" onclick="openCalc('/calculators/repay.html')">
-          <img src="/icons/payment.svg"><p>변제금</p>
+          <img src="/images/repay_icon_2.png" class="calc-img" alt="개인회생 변제금"><p>변제금</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/living-adjust.html')">
-          <img src="/icons/living.svg"><p>생계비</p>
+          <img src="/images/living-adjust_icon_2.png" class="calc-img" alt="법원 생계비 계산기"><p>생계비</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/household-auto-living.html')">
-          <img src="/icons/family.svg"><p>가구수</p>
+          <img src="/images/household-auto-living_icon_2.png" class="calc-img" alt="가구수 생계비 계산기"><p>가구수</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/interest.html')">
-          <img src="/icons/interest.svg"><p>연이자</p>
+          <img src="/images/interest_icon_2.png" class="calc-img" alt="연이자 계산기"><p>연이자</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/compound.html')">
-          <img src="/icons/interest.svg"><p>연이자율</p>
+          <img src="/images/compound_icon.png" class="calc-img" alt="연이자율 계산기"><p>연이자율</p>
         </div>
       </div>
     </section>
@@ -105,11 +105,9 @@
 
       <div class="law-tabs">
         <button class="law-tab-btn active" data-tab="qualify">자격조회</button>
-        <button class="law-tab-btn" data-tab="docs">준비서류</button>
-        <button class="law-tab-btn" data-tab="case">사건번호</button>
+        <button class="law-tab-btn" data-tab="docs">준비서류</button>        
         <button class="law-tab-btn" data-tab="approval">인가·면책</button>
-        <button class="law-tab-btn" data-tab="retry">재신청</button>
-        <button class="law-tab-btn" data-tab="unfreeze">압류해제</button>
+        <button class="law-tab-btn" data-tab="retry">폐지·재신청</button>      
       </div>
 
       <div class="law-tab-content">
@@ -127,18 +125,11 @@
             <li>📄 채무증명원·대출내역</li>
             <li>📄 가족관계증명서·등본</li>
           </ul>
-        </div>
-
-        <div class="law-panel" id="case">
-          <ul>
-            <li>🔍 전자소송에서 사건번호 조회 가능</li>
-            <li>🔍 법원 민원실에서도 확인 가능</li>
-          </ul>
-        </div>
+        </div>        
 
         <div class="law-panel" id="approval">
           <ul>
-            <li>✔ 인가까지 평균 2~4개월</li>
+            <li>✔ 인가까지 평균 6~12개월</li>
             <li>✔ 면책은 변제 완료 후 결정</li>
           </ul>
         </div>
@@ -148,19 +139,12 @@
             <li>🔁 기각 사유별 재신청 가능</li>
             <li>🔁 소득·부채 구조 변경 시 유리</li>
           </ul>
-        </div>
-
-        <div class="law-panel" id="unfreeze">
-          <ul>
-            <li>💳 통장·급여 압류 해제 가능</li>
-            <li>💳 생계비 보호계좌 신청 가능</li>
-          </ul>
-        </div>
+        </div>        
       </div>
     </section>  
      <!-- ⭐ 전국 법원(회생법원) 통합 안내 -->
     <section class="court-master-section">
-      <h2>전국 법원(회생법원) 안내</h2>
+      <h2>전국 회생법원 안내</h2>
 
       <!-- 지도 -->
       <div id="courtMap" class="court-map"></div>
@@ -170,105 +154,62 @@
 
         <div class="court-item">
           <h3>서울회생법원</h3>
-          <p>📍 서울특별시 서초구 서초대로 219</p>
-          <p>📞 02-530-1100</p>
+          <p>📍 [06594] 서울특별시 서초구 서초중앙로 157 (서초동)</p>
+          <p>📞 02-530-1114</p>
           <div class="court-links">
-            <a href="https://sr.scourt.go.kr" target="_blank">홈페이지</a>
-            <a href="tel:025301100">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>개인회생과</li>
-              <li>파산과</li>
-              <li>사건접수계</li>
-            </ul>
-          </details>
+            <a href="https://slb.scourt.go.kr/" target="_blank">홈페이지</a>
+            <a href="tel:025301114">전화걸기</a>
+          </div>          
         </div>
 
         <div class="court-item">
-          <h3>수원지방법원 회생</h3>
-          <p>📍 경기도 수원시 영통구 법조로 92</p>
-          <p>📞 031-210-1114</p>
+          <h3>수원회생법원</h3>
+          <p>📍 [16512] 경기도 수원시 영통구 법조로 105(하동)</p>
+          <p>📞  031-210-4255</p>
           <div class="court-links">
-            <a href="https://sw.scourt.go.kr" target="_blank">홈페이지</a>            
-            <a href="tel:0312101114">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
+            <a href="https://swb.scourt.go.kr/" target="_blank">홈페이지</a>            
+            <a href="tel:0312104255">전화걸기</a>
+          </div>          
         </div>
 
         <div class="court-item">
-          <h3>대전지방법원 회생</h3>
-          <p>📍 대전광역시 서구 둔산중로 82</p>
+          <h3>대전회생법원</h3>
+          <p>📍 [35237] 대전광역시 서구 둔산중로78번길 45 (둔산동)</p>
           <p>📞 042-470-1114</p>
           <div class="court-links">
-            <a href="https://dj.scourt.go.kr" target="_blank">홈페이지</a>            
+            <a href="https://djb.scourt.go.kr/" target="_blank">홈페이지</a>            
             <a href="tel:0424701114">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
+          </div>          
         </div>
 
         <div class="court-item">
-          <h3>대구지방법원 회생</h3>
-          <p>📍 대구광역시 수성구 동대구로 411</p>
-          <p>📞 053-757-2114</p>
+          <h3>대구회생법원</h3>
+          <p>📍 [42027] 대구광역시 수성구 동대구로 364 (범어동 176-1)</p>
+          <p>📞 053-757-6600</p>
           <div class="court-links">
-            <a href="https://dg.scourt.go.kr" target="_blank">홈페이지</a>           
-            <a href="tel:0537572114">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
+            <a href="https://dgb.scourt.go.kr/" target="_blank">홈페이지</a>           
+            <a href="tel:0537576600">전화걸기</a>
+          </div>          
         </div>
 
         <div class="court-item">
-          <h3>부산지방법원 회생</h3>
-          <p>📍 부산광역시 연제구 법원로 20</p>
-          <p>📞 051-901-1114</p>
+          <h3>부산회생법원</h3>
+          <p>📍 [47510] 부산광역시 연제구 법원로 31(거제동)</p>
+          <p>📞 051-590-1114</p>
           <div class="court-links">
-            <a href="https://bs.scourt.go.kr" target="_blank">홈페이지</a>            
-            <a href="tel:0519011114">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
+            <a href="https://bsb.scourt.go.kr/" target="_blank">홈페이지</a>            
+            <a href="tel:0515901114">전화걸기</a>
+          </div>          
         </div>
 
         <div class="court-item">
-          <h3>광주지방법원 회생</h3>
-          <p>📍 광주광역시 서구 상무중앙로 10</p>
+          <h3>광주회생법원</h3>
+          <p>📍 [61441] 광주광역시 동구 준법로 7-12 (지산동)</p>
           <p>📞 062-239-1114</p>
           <div class="court-links">
-            <a href="https://gj.scourt.go.kr" target="_blank">홈페이지</a>           
+            <a href="https://gjb.scourt.go.kr/" target="_blank">홈페이지</a>           
             <a href="tel:0622391114">전화걸기</a>
-          </div>
-          <details>
-            <summary>회생·파산 담당 부서 안내</summary>
-            <ul>
-              <li>회생파산과</li>
-              <li>개인회생계</li>
-            </ul>
-          </details>
+          </div>          
         </div>
 
       </div>
