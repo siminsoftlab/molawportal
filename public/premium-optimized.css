@@ -837,3 +837,75 @@ body.homepage {
     max-width: 120px;
     margin-bottom: 5px;
   }
+/* ===========================
+   모바일 검색창 최적화
+=========================== */
+@media (max-width: 480px) {
+  .main-search-box {
+    padding: 10px 14px;
+    border-radius: 40px;
+  }
+  .main-search-box input {
+    font-size: 16px;
+    padding: 8px;
+  }
+  .main-search-box button {
+    padding: 8px 14px;
+    font-size: 15px;
+    border-radius: 20px;
+  }
+}
+
+/* ===========================
+   계산기 바로가기 2열 + 비율 안정화
+=========================== */
+@media (max-width: 480px) {
+  .quick-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .quick-item {
+    width: 100%;
+    padding: 14px;
+  }
+  .quick-item img,
+  .calc-img {
+    width: 60%;
+    max-width: 90px;
+  }
+}
+
+/* ===========================
+   하단 고정바 버튼 앱 스타일
+=========================== */
+.consult-fixed-bar {
+  padding: 12px 0;
+}
+
+.consult-btn-center button {
+  padding: 10px 16px;
+  font-size: 15px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+
+@media (max-width: 480px) {
+  .consult-btn-center {
+    gap: 10px;
+  }
+  .consult-btn-center button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+/* ===========================
+   전체 페이지 좌우 패딩 강화
+=========================== */
+@media (max-width: 480px) {
+  body.homepage {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
