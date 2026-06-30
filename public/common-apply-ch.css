@@ -1,8 +1,8 @@
 /* 공통 모달 기본 스타일 */
 .modal {
-  display: none !important;
+  display: none !important; /* 기본 숨김 */
   position: fixed;
-  z-index: 9999;
+  z-index: 9999 !important; /* 항상 맨 위 */
   left: 0;
   top: 0;
   width: 100%;
