@@ -32,59 +32,156 @@
   </div>
 
   <!-- 전체메뉴 그리드 -->
-  <div class="mobile-menu-grid" id="menuGrid">
+<div class="mobile-menu-grid" id="menuGrid">
 
-    <!-- 홈 -->
-    <div class="menu-item" onclick="location.href='/main.html'">
-      <img src="/icons/home.svg"><span>홈</span>
-    </div>
-
-    <!-- 계산기 -->
-    <div class="menu-item" onclick="openCalc('/calculators/repay.html')">
-      <img src="/icons/payment.svg"><span>개인회생 변제금</span>
-    </div>
-    <div class="menu-item" onclick="openCalc('/calculators/living-adjust.html')">
-      <img src="/icons/living.svg"><span>법원 생계비</span>
-    </div>
-    <div class="menu-item" onclick="openCalc('/calculators/household-auto-living.html')">
-      <img src="/icons/family.svg"><span>가구수 생계비</span>
-    </div>
-    <div class="menu-item" onclick="openCalc('/calculators/interest.html')">
-      <img src="/icons/interest.svg"><span>연이자 계산기</span>
-    </div>
-    <div class="menu-item" onclick="openCalc('/calculators/compound.html')">
-      <img src="/icons/interest.svg"><span>연이자율 계산기</span>
-    </div>
-
-    <!-- 가이드 -->
-    <div class="menu-item" onclick="location.href='/blog/repay-guide.html'">
-      <img src="/icons/guide.svg"><span>변제금 가이드</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/blog/living-adjust-guide.html'">
-      <img src="/icons/guide.svg"><span>생계비 가이드</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/blog/household-living-guide.html'">
-      <img src="/icons/guide.svg"><span>가구수 가이드</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/blog/interest-guide.html'">
-      <img src="/icons/guide.svg"><span>연이자 가이드</span>
-    </div>
-
-    <!-- 신청 -->
-    <div class="menu-item" onclick="location.href='/apply/rehab.html'">
-      <img src="/icons/rehab.svg"><span>개인회생 신청</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/apply/bankruptcy.html'">
-      <img src="/icons/bankruptcy.svg"><span>파산·면책 신청</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/apply/garnish-release.html'">
-      <img src="/icons/unfreeze.svg"><span>압류해제 신청</span>
-    </div>
-    <div class="menu-item" onclick="location.href='/apply/credit-delist.html'">
-      <img src="/icons/credit.svg"><span>채무불이행말소</span>
-    </div>
-
+  <!-- 홈 -->
+  <div class="menu-item" onclick="location.href='/main.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M3 10L12 3L21 10V21H3V10Z" stroke="#333" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M9 21V14H15V21" stroke="#333" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
+    <span>홈</span>
   </div>
+
+  <!-- 개인회생 변제금 -->
+  <div class="menu-item" onclick="openCalc('/calculators/repay.html')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 1L3 5V11C3 16 7 21 12 23C17 21 21 16 21 11V5L12 1Z" stroke="#333" stroke-width="2"/>
+      <path d="M12 8V14" stroke="#333" stroke-width="2"/>
+      <circle cx="12" cy="16" r="1" fill="#333"/>
+    </svg>
+    <span>개인회생 변제금</span>
+  </div>
+
+  <!-- 법원 생계비 -->
+  <div class="menu-item" onclick="openCalc('/calculators/living-adjust.html')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="3" width="18" height="18" rx="3" stroke="#333" stroke-width="2"/>
+      <path d="M7 9H17" stroke="#333" stroke-width="2"/>
+      <path d="M7 13H17" stroke="#333" stroke-width="2"/>
+      <path d="M7 17H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>법원 생계비</span>
+  </div>
+
+  <!-- 가구수 생계비 -->
+  <div class="menu-item" onclick="openCalc('/calculators/household-auto-living.html')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="3" width="18" height="18" rx="3" stroke="#333" stroke-width="2"/>
+      <path d="M7 9H17" stroke="#333" stroke-width="2"/>
+      <path d="M7 13H17" stroke="#333" stroke-width="2"/>
+      <path d="M7 17H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>가구수 생계비</span>
+  </div>
+
+  <!-- 연이자 계산기 -->
+  <div class="menu-item" onclick="openCalc('/calculators/interest.html')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="17" rx="2" stroke="#333" stroke-width="2"/>
+      <path d="M3 10H21" stroke="#333" stroke-width="2"/>
+      <circle cx="8" cy="14" r="2" fill="#333"/>
+      <circle cx="12" cy="14" r="2" fill="#333"/>
+      <circle cx="16" cy="14" r="2" fill="#333"/>
+    </svg>
+    <span>연이자 계산기</span>
+  </div>
+
+  <!-- 연이자율 계산기 -->
+  <div class="menu-item" onclick="openCalc('/calculators/compound.html')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="4" width="18" height="17" rx="2" stroke="#333" stroke-width="2"/>
+      <path d="M3 10H21" stroke="#333" stroke-width="2"/>
+      <circle cx="8" cy="14" r="2" fill="#333"/>
+      <circle cx="12" cy="14" r="2" fill="#333"/>
+      <circle cx="16" cy="14" r="2" fill="#333"/>
+    </svg>
+    <span>연이자율 계산기</span>
+  </div>
+
+  <!-- 가이드 공통 아이콘 -->
+  <div class="menu-item" onclick="location.href='/blog/repay-guide.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M4 3H20V21H4V3Z" stroke="#333" stroke-width="2"/>
+      <path d="M8 7H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 11H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 15H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>변제금 가이드</span>
+  </div>
+
+  <div class="menu-item" onclick="location.href='/blog/living-adjust-guide.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M4 3H20V21H4V3Z" stroke="#333" stroke-width="2"/>
+      <path d="M8 7H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 11H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 15H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>생계비 가이드</span>
+  </div>
+
+  <div class="menu-item" onclick="location.href='/blog/household-living-guide.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M4 3H20V21H4V3Z" stroke="#333" stroke-width="2"/>
+      <path d="M8 7H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 11H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 15H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>가구수 가이드</span>
+  </div>
+
+  <div class="menu-item" onclick="location.href='/blog/interest-guide.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M4 3H20V21H4V3Z" stroke="#333" stroke-width="2"/>
+      <path d="M8 7H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 11H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 15H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>연이자 가이드</span>
+  </div>
+
+  <!-- 신청 -->
+  <div class="menu-item" onclick="location.href='/apply/rehab.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="4" y="3" width="16" height="18" rx="2" stroke="#333" stroke-width="2"/>
+      <path d="M8 7H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 11H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 15H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>개인회생 신청</span>
+  </div>
+
+  <div class="menu-item" onclick="location.href='/apply/bankruptcy.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="4" y="3" width="16" height="18" rx="2" stroke="#333" stroke-width="2"/>
+      <path d="M8 7H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 11H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 15H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>파산·면책 신청</span>
+  </div>
+
+  <div class="menu-item" onclick="location.href='/apply/garnish-release.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <rect x="4" y="3" width="16" height="18" rx="2" stroke="#333" stroke-width="2"/>
+      <path d="M8 7H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 11H16" stroke="#333" stroke-width="2"/>
+      <path d="M8 15H13" stroke="#333" stroke-width="2"/>
+    </svg>
+    <span>압류해제 신청</span>
+  </div>
+
+  <div class="menu-item" onclick="location.href='/apply/credit-delist.html'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="#333" stroke-width="2"/>
+      <path d="M12 7V13" stroke="#333" stroke-width="2"/>
+      <circle cx="12" cy="17" r="1" fill="#333"/>
+    </svg>
+    <span>채무불이행말소</span>
+  </div>
+
+</div>
+
 
   <!-- 최근 계산기 -->
   <div class="recent-section">
