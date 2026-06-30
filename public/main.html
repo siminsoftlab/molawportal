@@ -11,6 +11,7 @@
   <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/premium-optimized.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="/common-apply-ch.css">
 </head>
 
 <body class="homepage">
@@ -229,17 +230,17 @@
 <!-- ⭐ footer.html 로드 -->
 <div id="footer"></div>
 <script>
-   fetch("/footer-ch.html")
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById("footer").innerHTML = html;
+   // footer 로드
+  fetch("/footer-ch.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
 
-    import("/common-apply-ch.js").then(module => {
-      module.initApplyModal();
+      // 상담 신청 모달 초기화
+      import("/common-apply-ch.js").then(module => {
+        module.initApplyModal();
+      });
     });
-  });
-
-
 </script>
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
