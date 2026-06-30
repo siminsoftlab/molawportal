@@ -234,21 +234,20 @@
     .then(res => res.text())
     .then(html => {
       document.getElementById("footer").innerHTML = html;
-
-      import("/common-apply-ch.js").then(module => {
-        module.initApplyModal();
-
-        // 상담 신청 버튼 연결
-        const applyBtn = document.getElementById("applyBtn");
-        if (applyBtn) {
-          applyBtn.addEventListener("click", () => {
-            console.log("📌 applyBtn 클릭 → 모달 열기");
-            document.getElementById("commonApplyModal").style.display = "block";
-          });
-        }
-      });
     });
 </script>
+
+<!-- ⭐ modals.html 로드 -->
+<div id="modals"></div>
+<script type="module">
+  fetch("/modals.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("modals").innerHTML = html;
+      import("/common-apply-ch.js").then(module => module.initApplyModal());
+    });
+</script>
+
 
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
