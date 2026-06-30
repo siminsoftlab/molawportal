@@ -234,41 +234,11 @@
   .then(html => {
     document.getElementById("footer").innerHTML = html;
 
-    /* ⭐ 신청하기 버튼 */
-    const applyBtn = document.getElementById("applyBtn");
-    if (applyBtn) {
-      applyBtn.addEventListener("click", () => openApplyModal("온라인 상담신청"));
-    }
-
-    /* ⭐ 이용약관 / 개인정보처리방침 모달 열기 */
-    document.querySelectorAll("[data-modal]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.getAttribute("data-modal");
-        const modal = document.getElementById(target);
-        if (modal) modal.style.display = "block";
-      });
+    import("/common-apply-ch.js").then(module => {
+      module.initApplyModal();
     });
-
-    /* ⭐ 모달 닫기 */
-    document.querySelectorAll(".close-modal, .close-privacy").forEach(closeBtn => {
-      closeBtn.addEventListener("click", () => {
-        closeBtn.closest(".modal").style.display = "none";
-      });
-    });
-
-    /* ⭐ 모달 바깥 클릭 시 닫기 */
-    window.addEventListener("click", (e) => {
-      if (e.target.classList.contains("modal")) {
-        e.target.style.display = "none";
-      }
-    });
-
-    /* ⭐ footer 로드 후 상담신청 모듈 로드 */
-    const script = document.createElement("script");
-    script.type = "module";
-    script.src = "/common-apply-ch.js";
-    document.body.appendChild(script);
   });
+
 
 </script>
 <script src="/premium-optimized.js?v=2"></script>
