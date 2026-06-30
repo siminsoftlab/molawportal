@@ -230,42 +230,47 @@
 <div id="footer"></div>
 <div id="modals"></div>
 
+<!-- ⭐ 모달 + footer 로드 및 초기화 -->
 <script type="module">
   window.addEventListener("load", () => {
-  Promise.all([
-    fetch("/footer-ch.html").then(res => res.text()),
-    fetch("/modals.html").then(res => res.text())
-  ]).then(([footerHtml, modalsHtml]) => {
 
-    document.getElementById("footer").innerHTML = footerHtml;
-    document.getElementById("modals").innerHTML = modalsHtml;
+    Promise.all([
+      fetch("/footer-ch.html").then(res => res.text()),
+      fetch("/modals.html").then(res => res.text())
+    ]).then(([footerHtml, modalsHtml]) => {
 
-    // ⭐ 모달 이벤트 연결
-    document.querySelectorAll("[data-modal]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const target = btn.getAttribute("data-modal");
-        const modal = document.getElementById(target);
-        if (modal) modal.style.display = "block";
+      // DOM 삽입
+      document.getElementById("footer").innerHTML = footerHtml;
+      document.getElementById("modals").innerHTML = modalsHtml;
+
+      /* ⭐ 공통 모달 열기 */
+      document.querySelectorAll("[data-modal]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const target = btn.getAttribute("data-modal");
+          const modal = document.getElementById(target);
+          if (modal) modal.style.display = "block";
+        });
       });
-    });
 
-    document.querySelectorAll(".close-modal, .close-privacy").forEach(closeBtn => {
-      closeBtn.addEventListener("click", () => {
-        closeBtn.closest(".modal").style.display = "none";
+      /* ⭐ 공통 모달 닫기 */
+      document.querySelectorAll(".close-modal, .close-privacy").forEach(closeBtn => {
+        closeBtn.addEventListener("click", () => {
+          closeBtn.closest(".modal").style.display = "none";
+        });
       });
+
+      /* ⭐ 모달 바깥 클릭 시 닫기 */
+      window.addEventListener("click", (e) => {
+        if (e.target.classList.contains("modal")) {
+          e.target.style.display = "none";
+        }
+      });
+
+      /* ⭐ 상담신청 모달 초기화 */
+      import("/common-apply-ch.js").then(module => module.initApplyModal());
     });
 
-    window.addEventListener("click", (e) => {
-      if (e.target.classList.contains("modal")) {
-        e.target.style.display = "none";
-      }
-    });
-
-    // ⭐ 상담신청 모달 초기화
-    import("/common-apply-ch.js").then(module => module.initApplyModal());
   });
-});
-
 </script>
 
 <script src="/premium-optimized.js?v=2"></script>
