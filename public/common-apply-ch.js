@@ -14,6 +14,11 @@ window.openApplyModal = function(type) {
   const typeEl = document.getElementById("applyType");
   const titleEl = document.getElementById("applyTitle");
 
+  if (!modal) {
+    console.error("❌ commonApplyModal 요소가 아직 DOM에 없습니다.");
+    return;
+  }
+
   if (typeEl) typeEl.value = type;
   if (titleEl) titleEl.textContent = "온라인 상담 신청";
 
@@ -22,42 +27,62 @@ window.openApplyModal = function(type) {
 
 window.closeApplyModal = function() {
   const modal = document.getElementById("commonApplyModal");
-  modal.style.display = "none";
+  if (modal) modal.style.display = "none";
 };
 
 /* =========================================================
-   ⭐ 로드 후 실행되는 기능들
+   ⭐ footer 로드 후 실행되는 초기화 함수
 ========================================================= */
 export function initApplyModal() {
 
-  const modal = document.getElementById("commonApplyModal");
-  if (!modal) {
-    console.error("❌ commonApplyModal 요소를 찾을 수 없습니다.");
-    return;
-  }
+  console.log("🔧 initApplyModal() 실행됨 — footer가 로드된 뒤입니다.");
 
+  const modal = document.getElementById("commonApplyModal");
   const form = document.getElementById("commonApplyForm");
-  const closeBtn = modal.querySelector(".close-modal");
+  const closeBtn = modal?.querySelector(".close-modal");
   const statusEl = document.getElementById("applyStatus");
 
   const privacyModal = document.getElementById("privacyModal");
   const closePrivacy = document.querySelector(".close-privacy");
   const openPrivacy = document.getElementById("openPrivacy");
 
-  function autoHyphenPhone(value) {
-    return value.replace(/[^0-9]/g, "").replace(/^(\d{3})(\d{4})(\d{4})$/, "$1-$2-$3");
+  /* =========================================================
+     ⭐ 필수 요소 체크
+  ========================================================== */
+  if (!modal) {
+    console.error("❌ commonApplyModal 요소를 찾을 수 없습니다.");
+    return;
   }
 
-  document.querySelector("input[name='phone']")?.addEventListener("input", (e) => {
-    e.target.value = autoHyphenPhone(e.target.value);
-  });
+  if (!form) {
+    console.error("❌ commonApplyForm 요소를 찾을 수 없습니다.");
+    return;
+  }
 
+  /* =========================================================
+     ⭐ 연락처 자동 하이픈
+  ========================================================== */
+  const phoneInput = document.querySelector("input[name='phone']");
+  if (phoneInput) {
+    phoneInput.addEventListener("input", (e) => {
+      e.target.value = e.target.value
+        .replace(/[^0-9]/g, "")
+        .replace(/^(\d{3})(\d{4})(\d{4})$/, "$1-$2-$3");
+    });
+  }
+
+  /* =========================================================
+     ⭐ 상담 모달 닫기
+  ========================================================== */
   closeBtn?.addEventListener("click", () => modal.style.display = "none");
 
   window.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
   });
 
+  /* =========================================================
+     ⭐ 개인정보 모달 열기/닫기
+  ========================================================== */
   openPrivacy?.addEventListener("click", () => {
     privacyModal.style.display = "block";
   });
@@ -70,7 +95,10 @@ export function initApplyModal() {
     if (e.target === privacyModal) privacyModal.style.display = "none";
   });
 
-  form?.addEventListener("submit", async (e) => {
+  /* =========================================================
+     ⭐ Firestore 저장
+  ========================================================== */
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const agree = document.getElementById("agreePrivacy");
@@ -92,10 +120,12 @@ export function initApplyModal() {
       email: fd.get("email"),
       applyType: fd.get("applyType"),
       content: fd.get("content"),
+
       manager: "",
       partner: "",
       status: "신청",
       contractCode: "",
+
       createdAt: serverTimestamp()
     };
 
@@ -117,4 +147,6 @@ export function initApplyModal() {
       statusEl.style.color = "red";
     }
   });
+
+  console.log("✅ initApplyModal() 완료 — 모든 모달 이벤트 연결됨");
 }
