@@ -229,13 +229,19 @@
 <!-- ⭐ footer.html 로드 -->
 <div id="footer"></div>
 <script>
-  // footer 로드
-  fetch("/footer-ch.html")
+   fetch("/footer-ch.html")
     .then(res => res.text())
-    .then(html => document.getElementById("footer").innerHTML = html);
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+
+      // ⭐ footer가 로드된 뒤에 모듈 스크립트 로드
+      const script = document.createElement("script");
+      script.type = "module";
+      script.src = "/common-apply-ch.js";
+      document.body.appendChild(script);
+    });
 </script>
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script type="module" src="/common-apply-ch.js"></script>
 </body>
 </html>
