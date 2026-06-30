@@ -239,7 +239,6 @@
       fetch("/modals.html").then(res => res.text())
     ]).then(([footerHtml, modalsHtml]) => {
 
-      // DOM 삽입
       document.getElementById("footer").innerHTML = footerHtml;
       document.getElementById("modals").innerHTML = modalsHtml;
 
@@ -272,6 +271,7 @@
 
   });
 </script>
+
 
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
