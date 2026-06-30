@@ -26,9 +26,9 @@ window.closeApplyModal = function() {
 };
 
 /* =========================================================
-   ⭐ DOM 로드 후 실행되는 기능들
+   ⭐ 로드 후 실행되는 기능들
 ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
+export function initApplyModal() {
 
   const modal = document.getElementById("commonApplyModal");
   const form = document.getElementById("commonApplyForm");
@@ -39,9 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const closePrivacy = document.querySelector(".close-privacy");
   const openPrivacy = document.getElementById("openPrivacy");
 
-  /* =========================================================
-     ⭐ 연락처 자동 하이픈
-  ========================================================= */
+  /* 연락처 자동 하이픈 */
   function autoHyphenPhone(value) {
     return value
       .replace(/[^0-9]/g, "")
@@ -52,33 +50,20 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.value = autoHyphenPhone(e.target.value);
   });
 
-  /* =========================================================
-     ⭐ 상담 모달 닫기
-  ========================================================= */
+  /* 상담 모달 닫기 */
   closeBtn?.addEventListener("click", () => modal.style.display = "none");
-
   window.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
   });
 
-  /* =========================================================
-     ⭐ 개인정보 모달 열기/닫기
-  ========================================================= */
-  openPrivacy?.addEventListener("click", () => {
-    privacyModal.style.display = "block";
-  });
-
-  closePrivacy?.addEventListener("click", () => {
-    privacyModal.style.display = "none";
-  });
-
+  /* 개인정보 모달 */
+  openPrivacy?.addEventListener("click", () => privacyModal.style.display = "block");
+  closePrivacy?.addEventListener("click", () => privacyModal.style.display = "none");
   window.addEventListener("click", (e) => {
     if (e.target === privacyModal) privacyModal.style.display = "none";
   });
 
-  /* =========================================================
-     ⭐ Firestore 저장
-  ========================================================= */
+  /* Firestore 저장 */
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -101,13 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
       email: fd.get("email"),
       applyType: fd.get("applyType"),
       content: fd.get("content"),
-
-      // 관리용 필드
       manager: "",
       partner: "",
       status: "신청",
       contractCode: "",
-
       createdAt: serverTimestamp()
     };
 
@@ -117,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
       statusEl.textContent = "신청이 정상적으로 접수되었습니다.";
       statusEl.style.color = "green";
 
-      // ⭐ 1.5초 후 모달 자동 닫기
       setTimeout(() => {
         modal.style.display = "none";
         form.reset();
@@ -130,5 +111,4 @@ document.addEventListener("DOMContentLoaded", () => {
       statusEl.style.color = "red";
     }
   });
-
-});
+}
