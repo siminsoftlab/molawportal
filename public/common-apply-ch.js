@@ -42,10 +42,14 @@ export function initApplyModal() {
 
   // ⭐ 신청하기 버튼 연결
   const applyBtn = document.getElementById("applyBtn");
-  applyBtn?.addEventListener("click", () => {
-    console.log("📌 applyBtn 클릭 → 모달 열기");
-    modal.style.display = "block";
-  });
+    applyBtn?.addEventListener("click", () => {
+  if (!modal) {
+    console.error("❌ commonApplyModal 요소를 찾을 수 없습니다.");
+    return;
+  }
+  console.log("📌 applyBtn 클릭 → 모달 열기");
+  modal.style.display = "block";
+});
 
   /* 연락처 자동 하이픈 */
   document.querySelector("input[name='phone']")?.addEventListener("input", (e) => {
