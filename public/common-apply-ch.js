@@ -29,43 +29,35 @@ window.closeApplyModal = function() {
    ⭐ 로드 후 실행되는 기능들
 ========================================================= */
 export function initApplyModal() {
-  console.log("✅ initApplyModal 실행 시작");
 
   const modal = document.getElementById("commonApplyModal");
+  if (!modal) {
+    console.error("❌ commonApplyModal 요소를 찾을 수 없습니다.");
+    return;
+  }
+
   const form = document.getElementById("commonApplyForm");
-  const closeBtn = modal?.querySelector(".close-modal");
+  const closeBtn = modal.querySelector(".close-modal");
   const statusEl = document.getElementById("applyStatus");
 
   const privacyModal = document.getElementById("privacyModal");
   const closePrivacy = document.querySelector(".close-privacy");
   const openPrivacy = document.getElementById("openPrivacy");
 
-  // ⭐ 신청하기 버튼 연결
-  const applyBtn = document.getElementById("applyBtn");
-    applyBtn?.addEventListener("click", () => {
-  if (!modal) {
-    console.error("❌ commonApplyModal 요소를 찾을 수 없습니다.");
-    return;
+  function autoHyphenPhone(value) {
+    return value.replace(/[^0-9]/g, "").replace(/^(\d{3})(\d{4})(\d{4})$/, "$1-$2-$3");
   }
-  console.log("📌 applyBtn 클릭 → 모달 열기");
-  modal.style.display = "block";
-});
 
-  /* 연락처 자동 하이픈 */
   document.querySelector("input[name='phone']")?.addEventListener("input", (e) => {
     e.target.value = autoHyphenPhone(e.target.value);
   });
 
-  /* 상담 모달 닫기 */
-  closeBtn?.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
+  closeBtn?.addEventListener("click", () => modal.style.display = "none");
 
   window.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
   });
 
-  /* 개인정보 모달 */
   openPrivacy?.addEventListener("click", () => {
     privacyModal.style.display = "block";
   });
@@ -78,12 +70,51 @@ export function initApplyModal() {
     if (e.target === privacyModal) privacyModal.style.display = "none";
   });
 
-  /* Firestore 저장 */
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // … 기존 Firestore 저장 로직 …
+
+    const agree = document.getElementById("agreePrivacy");
+
+    if (!agree.checked) {
+      statusEl.textContent = "개인정보 수집·이용에 동의해야 신청이 가능합니다.";
+      statusEl.style.color = "red";
+      return;
+    }
+
+    statusEl.textContent = "신청 처리 중...";
+    statusEl.style.color = "#333";
+
+    const fd = new FormData(form);
+
+    const data = {
+      name: fd.get("name"),
+      phone: fd.get("phone"),
+      email: fd.get("email"),
+      applyType: fd.get("applyType"),
+      content: fd.get("content"),
+      manager: "",
+      partner: "",
+      status: "신청",
+      contractCode: "",
+      createdAt: serverTimestamp()
+    };
+
+    try {
+      await addDoc(collection(db, "consult_requests"), data);
+
+      statusEl.textContent = "신청이 정상적으로 접수되었습니다.";
+      statusEl.style.color = "green";
+
+      setTimeout(() => {
+        modal.style.display = "none";
+        form.reset();
+        statusEl.textContent = "";
+      }, 1500);
+
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = "오류가 발생했습니다. 다시 시도해주세요.";
+      statusEl.style.color = "red";
+    }
   });
-
-  console.log("✅ initApplyModal 실행 완료");
 }
-
