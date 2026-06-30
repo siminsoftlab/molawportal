@@ -230,16 +230,22 @@
 <div id="footer"></div>
 <script>
    fetch("/footer-ch.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("footer").innerHTML = html;
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("footer").innerHTML = html;
 
-      // ⭐ footer가 로드된 뒤에 모듈 스크립트 로드
-      const script = document.createElement("script");
-      script.type = "module";
-      script.src = "/common-apply-ch.js";
-      document.body.appendChild(script);
-    });
+    // ⭐ footer가 로드된 뒤에 버튼 이벤트 연결
+    const applyBtn = document.getElementById("applyBtn");
+    if (applyBtn) {
+      applyBtn.addEventListener("click", () => openApplyModal("온라인 상담신청"));
+    }
+
+    // ⭐ footer 로드 후 모듈 스크립트 로드
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = "/common-apply-ch.js";
+    document.body.appendChild(script);
+  });
 </script>
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
