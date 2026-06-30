@@ -1,6 +1,6 @@
 /* 공통 모달 기본 스타일 */
 .modal {
-  display: none; /* 기본은 숨김 */
+  display: none !important;
   position: fixed;
   z-index: 9999;
   left: 0;
