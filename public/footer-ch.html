@@ -89,7 +89,7 @@
   </div>
 </div>
 
-<script type="module" src="/common-apply.js"></script>
+<script type="module" src="/common-apply-ch.js"></script>
 
 <!-- ⭐ 공통 상담신청 모달 -->
 <div id="commonApplyModal" class="modal">
@@ -150,57 +150,3 @@
     <p><strong>4. 동의 거부 권리</strong><br>동의를 거부할 수 있으나 상담 신청이 제한될 수 있습니다.</p>
   </div>
 </div>
-
-<!-- ⭐ 모달 및 상담바 제어 스크립트 -->
-<script>
-  // 모달 열기
-  document.querySelectorAll("[data-modal]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-modal");
-      const modal = document.getElementById(target);
-      if (modal) modal.style.display = "block";
-    });
-  });
-
-  // 모달 닫기
-  document.querySelectorAll(".close-modal, .close-privacy").forEach(closeBtn => {
-    closeBtn.addEventListener("click", () => {
-      closeBtn.closest(".modal").style.display = "none";
-    });
-  });
-
-  // 모달 바깥 클릭 시 닫기
-  window.addEventListener("click", (e) => {
-    if (e.target.classList.contains("modal")) {
-      e.target.style.display = "none";
-    }
-  });
-
-  // 상담신청 모달 열기
-  function openApplyModal(title) {
-    const modal = document.getElementById("commonApplyModal");
-    document.getElementById("applyTitle").textContent = title;
-    modal.style.display = "block";
-  }
-
-  // 개인정보 수집·이용 안내 모달 열기
-  document.getElementById("openPrivacy")?.addEventListener("click", () => {
-    document.getElementById("privacyModal").style.display = "block";
-  });
-
-  // 특정 페이지에서 상담바 숨김
-  const hidePages = [
-    "/policy/terms.html",
-    "/policy/privacy.html",
-    "/apply.html",
-    "/common-apply.html",
-    "/policy/privacy-detail.html"
-  ];
-
-  const currentPath = window.location.pathname;
-  const consultBar = document.querySelector(".consult-fixed-bar");
-
-  if (consultBar && hidePages.includes(currentPath)) {
-    consultBar.style.display = "none";
-  }
-</script>
