@@ -2,20 +2,20 @@
 .modal {
   display: none !important; /* 기본 숨김 */
   position: fixed;
-  z-index: 9999 !important; /* 항상 맨 위 */
+  z-index: 99999 !important; /* 최상위 레이어 */
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
+  background: rgba(0,0,0,0.5); /* 반투명 배경 */
   overflow: auto;
-  background: rgba(0,0,0,0.5);
 }
 
-/* 모달 콘텐츠 */
+/* 모달 콘텐츠 중앙 정렬 */
 .modal-content,
 .app-modal {
   background: #fff;
-  margin: 5% auto;
+  margin: 10% auto; /* 화면 중앙에 위치 */
   padding: 20px;
   border-radius: 8px;
   width: 90%;
