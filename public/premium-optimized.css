@@ -205,6 +205,10 @@ a {
   font-size: 12px;
 }
 
+.menu-item svg {
+  flex-shrink: 0;
+}
+
 /* 최근 계산기 */
 .recent-section {
   background: #fff;
