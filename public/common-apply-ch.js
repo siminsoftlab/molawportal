@@ -7,7 +7,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* =========================================================
-   ⭐ HTML에서 직접 호출하는 함수 (모듈 외부에서도 작동)
+   ⭐ HTML에서 직접 호출하는 함수
 ========================================================= */
 window.openApplyModal = function(type) {
   const modal = document.getElementById("commonApplyModal");
@@ -31,11 +31,11 @@ window.closeApplyModal = function() {
 };
 
 /* =========================================================
-   ⭐ footer 로드 후 실행되는 초기화 함수
+   ⭐ footer + modals 로드 후 실행되는 초기화 함수
 ========================================================= */
 export function initApplyModal() {
 
-  console.log("🔧 initApplyModal() 실행됨 — footer가 로드된 뒤입니다.");
+  console.log("🔧 initApplyModal() 실행됨 — modals.html이 DOM에 존재합니다.");
 
   const modal = document.getElementById("commonApplyModal");
   const form = document.getElementById("commonApplyForm");
@@ -46,22 +46,12 @@ export function initApplyModal() {
   const closePrivacy = document.querySelector(".close-privacy");
   const openPrivacy = document.getElementById("openPrivacy");
 
-  /* =========================================================
-     ⭐ 필수 요소 체크
-  ========================================================== */
   if (!modal) {
     console.error("❌ commonApplyModal 요소를 찾을 수 없습니다.");
     return;
   }
 
-  if (!form) {
-    console.error("❌ commonApplyForm 요소를 찾을 수 없습니다.");
-    return;
-  }
-
-  /* =========================================================
-     ⭐ 연락처 자동 하이픈
-  ========================================================== */
+  /* 연락처 자동 하이픈 */
   const phoneInput = document.querySelector("input[name='phone']");
   if (phoneInput) {
     phoneInput.addEventListener("input", (e) => {
@@ -71,18 +61,13 @@ export function initApplyModal() {
     });
   }
 
-  /* =========================================================
-     ⭐ 상담 모달 닫기
-  ========================================================== */
+  /* 상담 모달 닫기 */
   closeBtn?.addEventListener("click", () => modal.style.display = "none");
-
   window.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
   });
 
-  /* =========================================================
-     ⭐ 개인정보 모달 열기/닫기
-  ========================================================== */
+  /* 개인정보 모달 */
   openPrivacy?.addEventListener("click", () => {
     privacyModal.style.display = "block";
   });
@@ -95,10 +80,8 @@ export function initApplyModal() {
     if (e.target === privacyModal) privacyModal.style.display = "none";
   });
 
-  /* =========================================================
-     ⭐ Firestore 저장
-  ========================================================== */
-  form.addEventListener("submit", async (e) => {
+  /* Firestore 저장 */
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const agree = document.getElementById("agreePrivacy");
@@ -120,12 +103,10 @@ export function initApplyModal() {
       email: fd.get("email"),
       applyType: fd.get("applyType"),
       content: fd.get("content"),
-
       manager: "",
       partner: "",
       status: "신청",
       contractCode: "",
-
       createdAt: serverTimestamp()
     };
 
