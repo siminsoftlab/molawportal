@@ -232,15 +232,40 @@
 
 <script type="module">
   Promise.all([
-    fetch("/footer-ch.html").then(res => res.text()),
-    fetch("/modals.html").then(res => res.text())
-  ]).then(([footerHtml, modalsHtml]) => {
-    document.getElementById("footer").innerHTML = footerHtml;
-    document.getElementById("modals").innerHTML = modalsHtml;
+  fetch("/footer-ch.html").then(res => res.text()),
+  fetch("/modals.html").then(res => res.text())
+]).then(([footerHtml, modalsHtml]) => {
 
-    // 두 파일이 모두 로드된 후 초기화
-    import("/common-apply-ch.js").then(module => module.initApplyModal());
+  document.getElementById("footer").innerHTML = footerHtml;
+  document.getElementById("modals").innerHTML = modalsHtml;
+
+  /* ⭐ 공통 모달 열기 */
+  document.querySelectorAll("[data-modal]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.getAttribute("data-modal");
+      const modal = document.getElementById(target);
+      if (modal) modal.style.display = "block";
+    });
   });
+
+  /* ⭐ 공통 모달 닫기 */
+  document.querySelectorAll(".close-modal, .close-privacy").forEach(closeBtn => {
+    closeBtn.addEventListener("click", () => {
+      closeBtn.closest(".modal").style.display = "none";
+    });
+  });
+
+  /* ⭐ 모달 바깥 클릭 시 닫기 */
+  window.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal")) {
+      e.target.style.display = "none";
+    }
+  });
+
+  /* ⭐ 상담신청 모달 초기화 */
+  import("/common-apply-ch.js").then(module => module.initApplyModal());
+});
+
 </script>
 
 <script src="/premium-optimized.js?v=2"></script>
