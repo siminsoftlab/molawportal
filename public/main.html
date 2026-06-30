@@ -228,26 +228,26 @@
 </div>
 
 <!-- ⭐ footer.html 로드 -->
-<div id="footer"></div>
-<script type="module">
-  fetch("/footer-ch.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("footer").innerHTML = html;
-    });
-</script>
+  <div id="footer"></div>
+  <script type="module">
+    fetch("/footer-ch.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("footer").innerHTML = html;
+      });
+  </script>
 
-<!-- ⭐ modals.html 로드 -->
-<div id="modals"></div>
-<script type="module">
-  fetch("/modals.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("modals").innerHTML = html;
-      import("/common-apply-ch.js").then(module => module.initApplyModal());
-    });
-</script>
-
+  <!-- ⭐ modals.html 로드 -->
+  <div id="modals"></div>
+  <script type="module">
+    fetch("/modals.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("modals").innerHTML = html;
+        // 모달 초기화 스크립트 실행
+        import("/common-apply-ch.js").then(module => module.initApplyModal());
+      });
+  </script>
 
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
