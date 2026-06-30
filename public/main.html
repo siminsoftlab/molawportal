@@ -227,27 +227,21 @@
 
 </div>
 
-<!-- ⭐ footer.html 로드 -->
-  <div id="footer"></div>
-  <script type="module">
-    fetch("/footer-ch.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("footer").innerHTML = html;
-      });
-  </script>
+<div id="footer"></div>
+<div id="modals"></div>
 
-  <!-- ⭐ modals.html 로드 -->
-  <div id="modals"></div>
-  <script type="module">
-    fetch("/modals.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("modals").innerHTML = html;
-        // 모달 초기화 스크립트 실행
-        import("/common-apply-ch.js").then(module => module.initApplyModal());
-      });
-  </script>
+<script type="module">
+  Promise.all([
+    fetch("/footer-ch.html").then(res => res.text()),
+    fetch("/modals.html").then(res => res.text())
+  ]).then(([footerHtml, modalsHtml]) => {
+    document.getElementById("footer").innerHTML = footerHtml;
+    document.getElementById("modals").innerHTML = modalsHtml;
+
+    // 두 파일이 모두 로드된 후 초기화
+    import("/common-apply-ch.js").then(module => module.initApplyModal());
+  });
+</script>
 
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
