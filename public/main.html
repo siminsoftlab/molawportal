@@ -243,6 +243,16 @@
     });
 </script>
 
+<!-- ⭐ footer-ch.html 로드 -->
+<div id="footer"></div>
+<script>
+  fetch("/footer-ch.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
+
 <!-- ⭐ Firebase 방문자 카운터 -->
 <script type="module" src="/firebase-counter.js"></script>
 
