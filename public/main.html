@@ -2,16 +2,68 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+
+  <!-- 사이트 인증 -->
+  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c">
+  <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4">
+
+  <!-- 모바일 최적화 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>딱요만큼변제 — 개인회생 계산 통합 서비스</title>
-  <meta name="description" content="개인회생 변제금·생계비·연이자·연이자율 계산을 자동 제공하는 통합 개인회생 계산 서비스">
-  <link rel="canonical" href="https://molawcalculator.com/main.html">
+  <!-- SEO Title -->
+  <title>딱요만큼변제 — 개인회생 계산기·생계비·가구수 자동 계산</title>
 
+  <!-- SEO Description -->
+  <meta name="description" content="개인회생 변제금, 법원 생계비, 가구수 생계비, 연이자·연이자율 계산을 자동 제공하는 통합 개인회생 계산 서비스. 회생·파산 신청 가이드까지 한 번에 확인하세요.">
+
+  <!-- Keywords -->
+  <meta name="keywords" content="개인회생 계산기, 변제금 계산기, 생계비 계산기, 가구수 계산기, 연이자 계산기, 개인회생 신청, 파산 신청">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://molawcalculator.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="딱요만큼변제 — 개인회생 계산기">
+  <meta property="og:description" content="개인회생 변제금·생계비·가구수·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="딱요만큼변제">
+  <meta property="og:url" content="https://molawcalculator.com/">
+  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- 구조화 데이터: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "딱요만큼변제",
+    "url": "https://molawcalculator.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://molawcalculator.com/search?q={query}",
+      "query-input": "required name=query"
+    }
+  }
+  </script>
+
+  <!-- 구조화 데이터: WebPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "딱요만큼변제 메인",
+    "url": "https://molawcalculator.com/",
+    "description": "개인회생 변제금·생계비·가구수·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스"
+  }
+  </script>
+
+  <!-- CSS -->
   <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/premium-optimized.css">
   <link rel="stylesheet" href="/common-apply-ch.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 </head>
 
 <body class="homepage">
@@ -19,17 +71,15 @@
 <!-- ⭐ header.html 로드 -->
 <div id="header"></div>
 <script>
-  // header 로드 후 JS 초기화
   fetch("/header.html")
     .then(res => res.text())
     .then(html => {
       document.getElementById("header").innerHTML = html;
-  
-      // ⭐ header가 로드된 후 전체 기능 초기화
       initAll();
     });
 </script>
-<!-- ⭐ 메인 대형 검색창 (네이버 스타일) -->
+
+<!-- ⭐ 메인 검색창 -->
 <section class="main-search-section">
   <div class="main-search-box">
     <input type="text" id="mainSearchInput" placeholder="검색어를 입력하세요" />
@@ -83,19 +133,19 @@
       <h2>계산기 바로가기</h2>
       <div class="quick-grid">
         <div class="quick-item" onclick="openCalc('/calculators/repay.html')">
-          <img src="/images/repay_icon_2.png" class="calc-img" alt="개인회생 변제금"><p>변제금</p>
+          <img src="/images/repay_icon_2.png" class="calc-img"><p>변제금</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/living-adjust.html')">
-          <img src="/images/living-adjust_icon_2.png" class="calc-img" alt="법원 생계비 계산기"><p>생계비</p>
+          <img src="/images/living-adjust_icon_2.png" class="calc-img"><p>생계비</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/household-auto-living.html')">
-          <img src="/images/household-auto-living_icon_2.png" class="calc-img" alt="가구수 생계비 계산기"><p>가구수</p>
+          <img src="/images/household-auto-living_icon_2.png" class="calc-img"><p>가구수</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/interest.html')">
-          <img src="/images/comp_icon.png" class="calc-img" alt="연이자 계산기"><p>연이자</p>
+          <img src="/images/comp_icon.png" class="calc-img"><p>연이자</p>
         </div>
         <div class="quick-item" onclick="openCalc('/calculators/compound.html')">
-          <img src="/images/interest_icon_2.png" class="calc-img" alt="연이자율 계산기"><p>연이자율</p>
+          <img src="/images/interest_icon_2.png" class="calc-img"><p>연이자율</p>
         </div>
       </div>
     </section>
@@ -106,131 +156,144 @@
 
       <div class="law-tabs">
         <button class="law-tab-btn active" data-tab="qualify">근로소득자</button>
-        <button class="law-tab-btn" data-tab="docs">영업소득자</button>    
+        <button class="law-tab-btn" data-tab="docs">영업소득자</button>
       </div>
 
       <div class="law-tab-content">
         <div class="law-panel active" id="qualify">
           <ul>
-            <li> 신용정보 조회서</li>
-            <li> 소득금액증명(최근 5년)</li>
-            <li> 근로소득원천징수영수증(최근 1년)</li>
-            <li> 지방세 세목별 과세증명서 (최근 5년)</li>
-            <li> 부채증명서</li>
+            <li>신용정보 조회서</li>
+            <li>소득금액증명(최근 5년)</li>
+            <li>근로소득원천징수영수증(최근 1년)</li>
+            <li>지방세 세목별 과세증명서 (최근 5년)</li>
+            <li>부채증명서</li>
           </ul>
         </div>
 
         <div class="law-panel" id="docs">
           <ul>
-            <li> 신용정보 조회서</li>
-            <li> 소득금액증명(최근 5년)</li>
-            <li> 근로소득원천징수영수증(최근 1년)</li>
-            <li> 표준재무제표증명(개인, 법인)</li>
-            <li> 부채증명서</li>
+            <li>신용정보 조회서</li>
+            <li>소득금액증명(최근 5년)</li>
+            <li>근로소득원천징수영수증(최근 1년)</li>
+            <li>표준재무제표증명(개인, 법인)</li>
+            <li>부채증명서</li>
           </ul>
-        </div>                  
+        </div>
       </div>
-    </section>  
-     <!-- ⭐ 전국 법원(회생법원) 통합 안내 -->
+    </section>
+
+    <!-- ⭐ 전국 회생법원 안내 -->
     <section class="court-master-section">
       <h2>전국 회생법원 안내</h2>
 
-      <!-- 지도 -->
       <div id="courtMap" class="court-map"></div>
 
-      <!-- 법원 리스트 -->
       <div class="court-list">
-
         <div class="court-item">
           <h3>서울회생법원</h3>
-          <p>📍 [06594] 서울특별시 서초구 서초중앙로 157 (서초동)</p>
+          <p>📍 [06594] 서울특별시 서초구 서초중앙로 157</p>
           <div class="court-links">
             <a href="https://slb.scourt.go.kr/" target="_blank">홈페이지</a>
             <a href="tel:025301114">전화걸기</a>
-          </div>          
+          </div>
         </div>
 
         <div class="court-item">
           <h3>수원회생법원</h3>
-          <p>📍 [16512] 경기도 수원시 영통구 법조로 105(하동)</p>
+          <p>📍 [16512] 경기도 수원시 영통구 법조로 105</p>
           <div class="court-links">
-            <a href="https://swb.scourt.go.kr/" target="_blank">홈페이지</a>            
+            <a href="https://swb.scourt.go.kr/" target="_blank">홈페이지</a>
             <a href="tel:0312104255">전화걸기</a>
-          </div>          
+          </div>
         </div>
 
         <div class="court-item">
           <h3>대전회생법원</h3>
-          <p>📍 [35237] 대전광역시 서구 둔산중로78번길 45 (둔산동)</p>
+          <p>📍 [35237] 대전광역시 서구 둔산중로78번길 45</p>
           <div class="court-links">
-            <a href="https://djb.scourt.go.kr/" target="_blank">홈페이지</a>            
+            <a href="https://djb.scourt.go.kr/" target="_blank">홈페이지</a>
             <a href="tel:0424701114">전화걸기</a>
-          </div>          
+          </div>
         </div>
 
         <div class="court-item">
           <h3>대구회생법원</h3>
-          <p>📍 [42027] 대구광역시 수성구 동대구로 364 (범어동 176-1)</p>
+          <p>📍 [42027] 대구광역시 수성구 동대구로 364</p>
           <div class="court-links">
-            <a href="https://dgb.scourt.go.kr/" target="_blank">홈페이지</a>           
+            <a href="https://dgb.scourt.go.kr/" target="_blank">홈페이지</a>
             <a href="tel:0537576600">전화걸기</a>
-          </div>          
+          </div>
         </div>
 
         <div class="court-item">
           <h3>부산회생법원</h3>
-          <p>📍 [47510] 부산광역시 연제구 법원로 31(거제동)</p>
+          <p>📍 [47510] 부산광역시 연제구 법원로 31</p>
           <div class="court-links">
-            <a href="https://bsb.scourt.go.kr/" target="_blank">홈페이지</a>            
+            <a href="https://bsb.scourt.go.kr/" target="_blank">홈페이지</a>
             <a href="tel:0515901114">전화걸기</a>
-          </div>          
+          </div>
         </div>
 
         <div class="court-item">
           <h3>광주회생법원</h3>
-          <p>📍 [61441] 광주광역시 동구 준법로 7-12 (지산동)</p>
+          <p>📍 [61441] 광주광역시 동구 준법로 7-12</p>
           <div class="court-links">
-            <a href="https://gjb.scourt.go.kr/" target="_blank">홈페이지</a>           
+            <a href="https://gjb.scourt.go.kr/" target="_blank">홈페이지</a>
             <a href="tel:0622391114">전화걸기</a>
-          </div>          
+          </div>
         </div>
-
       </div>
     </section>
-    
+
     <div class="board-wrapper">
       <section class="board-section">…공지사항…</section>
       <section class="board-section">…이용후기…</section>
     </div>
+
   </main>
 
   <!-- ⭐ 우측 사이드바 -->
   <aside class="right-sidebar">
+
+    <!-- 로그인/회원가입/마이페이지/로그아웃 -->
     <div class="sidebar-box">
-      <h3>로그인</h3>
-      <p>전체 계산 결과와 저장 기능을 이용할 수 있습니다.</p>
-      <button class="app-btn-primary" onclick="location.href='/auth/login.html'">로그인</button>
-      <button class="app-btn-secondary" onclick="location.href='/auth/signup.html'">회원가입</button>
+      <h3>계정</h3>
+
+      <!-- 로그인 전 -->
+      <div id="auth-before-sidebar" style="display:flex; flex-direction:column; gap:8px;">
+        <a href="/auth/login.html" class="app-btn-primary">로그인</a>
+        <a href="/auth/signup.html" class="app-btn-secondary">회원가입</a>
+      </div>
+
+      <!-- 로그인 후 -->
+      <div id="auth-after-sidebar" style="display:none; flex-direction:column; gap:8px;">
+        <span id="auth-username-sidebar"></span>님
+        <span id="ticket-remaining-sidebar" style="color:#4a6fff; font-weight:600;"></span>
+        <a href="/mypage/mypage.html" class="app-btn-primary">마이페이지</a>
+        <button id="logout-btn-sidebar" class="app-btn-secondary">로그아웃</button>
+      </div>
     </div>
 
+    <!-- 방문자 통계 -->
     <div class="sidebar-box">
       <h3>📊 방문자 통계</h3>
-      <p>오늘 방문자: <b id="todayVisitor">0</b></p>
-      <p>전체 방문자: <b id="totalVisitor">0</b></p>
+      <p>오늘 방문자: <b id="visitor-today-sidebar">조회중…</b></p>
+      <p>전체 방문자: <b id="visitor-total-sidebar">조회중…</b></p>
     </div>
 
     <div class="sidebar-box">
       <h3>최근 사용한 계산기</h3>
       <ul id="recentCalcListSidebar"></ul>
     </div>
+
   </aside>
 
 </div>
 
+<!-- ⭐ footer + modals -->
 <div id="footer"></div>
 <div id="modals"></div>
 
-<!-- ⭐ 모달 + footer 로드 및 초기화 -->
 <script type="module">
   window.addEventListener("load", () => {
 
@@ -242,7 +305,7 @@
       document.getElementById("footer").innerHTML = footerHtml;
       document.getElementById("modals").innerHTML = modalsHtml;
 
-      /* ⭐ 공통 모달 열기 */
+      /* 공통 모달 열기 */
       document.querySelectorAll("[data-modal]").forEach(btn => {
         btn.addEventListener("click", () => {
           const target = btn.getAttribute("data-modal");
@@ -251,29 +314,55 @@
         });
       });
 
-      /* ⭐ 공통 모달 닫기 */
+      /* 공통 모달 닫기 */
       document.querySelectorAll(".close-modal, .close-privacy").forEach(closeBtn => {
         closeBtn.addEventListener("click", () => {
           closeBtn.closest(".modal").style.display = "none";
         });
       });
 
-      /* ⭐ 모달 바깥 클릭 시 닫기 */
+      /* 모달 바깥 클릭 시 닫기 */
       window.addEventListener("click", (e) => {
         if (e.target.classList.contains("modal")) {
           e.target.style.display = "none";
         }
       });
 
-      /* ⭐ 상담신청 모달 초기화 */
+      /* 상담신청 모달 초기화 */
       import("/common-apply-ch.js").then(module => module.initApplyModal());
     });
 
   });
 </script>
 
+<!-- ⭐ 방문자 카운터 -->
+<script type="module" src="/firebase-counter.js"></script>
+
+<!-- ⭐ 로그인 상태 관리 -->
+<script type="module" src="/auth-state.js"></script>
+
+<!-- ⭐ 방문자 수를 사이드바 + 메뉴에도 반영 -->
+<script type="module">
+  const syncVisitorUI = () => {
+    const today = document.getElementById("visitor-today")?.textContent;
+    const total = document.getElementById("visitor-total")?.textContent;
+
+    if (today) {
+      document.getElementById("visitor-today-sidebar").textContent = today;
+      document.getElementById("visitor-today-menu")?.textContent = today;
+    }
+
+    if (total) {
+      document.getElementById("visitor-total-sidebar").textContent = total;
+      document.getElementById("visitor-total-menu")?.textContent = total;
+    }
+  };
+
+  setInterval(syncVisitorUI, 500);
+</script>
 
 <script src="/premium-optimized.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 </body>
 </html>
