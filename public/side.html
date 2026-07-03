@@ -1,4 +1,4 @@
-<!-- side.html (PC 우측 사이드바) -->
+<!-- side.html (우측 사이드바) -->
 <aside class="right-sidebar">
 
   <!-- 로그인 박스 -->
@@ -7,8 +7,8 @@
 
     <!-- 로그인 전 -->
     <div id="auth-before-sidebar" style="display:flex; flex-direction:column; gap:10px;">
-      <input type="email" id="login-email" placeholder="이메일" class="app-input">
-      <input type="password" id="login-password" placeholder="비밀번호" class="app-input">
+      <input type="email" id="login-email" placeholder="이메일" class="app-input" autocomplete="off">
+      <input type="password" id="login-password" placeholder="비밀번호" class="app-input" autocomplete="new-password">
       <button id="login-btn-sidebar" class="app-btn-primary">로그인</button>
       <a href="/auth/signup.html" class="app-btn-secondary">회원가입</a>
     </div>
@@ -37,9 +37,9 @@
 
 </aside>
 
+<!-- 모바일에서는 자동 숨김 -->
 <style>
-  /* 모바일에서는 side.html 숨김 */
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     .right-sidebar {
       display: none !important;
     }
