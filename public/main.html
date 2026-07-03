@@ -3,67 +3,21 @@
 <head>
   <meta charset="UTF-8">
 
-  <!-- 사이트 인증 -->
-  <meta name="naver-site-verification" content="8d1d10f3f250e65f31ad7d2cfeb69b900b65220c">
-  <meta name="google-site-verification" content="9HbDVWHQmH6QcUd2hUjNbaQdHwQejnIL9iuxxYyo0y4">
-
-  <!-- 모바일 최적화 -->
+  <!-- SEO -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- SEO Title -->
   <title>딱요만큼변제 — 개인회생 계산기·생계비·가구수 자동 계산</title>
+  <meta name="description" content="개인회생 변제금, 법원 생계비, 가구수 생계비, 연이자·연이자율 계산을 자동 제공하는 통합 개인회생 계산 서비스.">
+  <meta name="keywords" content="개인회생 계산기, 변제금 계산기, 생계비 계산기, 가구수 계산기, 연이자 계산기">
 
-  <!-- SEO Description -->
-  <meta name="description" content="개인회생 변제금, 법원 생계비, 가구수 생계비, 연이자·연이자율 계산을 자동 제공하는 통합 개인회생 계산 서비스. 회생·파산 신청 가이드까지 한 번에 확인하세요.">
-
-  <!-- Keywords -->
-  <meta name="keywords" content="개인회생 계산기, 변제금 계산기, 생계비 계산기, 가구수 계산기, 연이자 계산기, 개인회생 신청, 파산 신청">
-
-  <!-- Canonical -->
   <link rel="canonical" href="https://molawcalculator.com/">
-
-  <!-- Open Graph -->
   <meta property="og:title" content="딱요만큼변제 — 개인회생 계산기">
   <meta property="og:description" content="개인회생 변제금·생계비·가구수·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="딱요만큼변제">
-  <meta property="og:url" content="https://molawcalculator.com/">
-  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- 구조화 데이터: WebSite -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "딱요만큼변제",
-    "url": "https://molawcalculator.com/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://molawcalculator.com/search?q={query}",
-      "query-input": "required name=query"
-    }
-  }
-  </script>
-
-  <!-- 구조화 데이터: WebPage -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "딱요만큼변제 메인",
-    "url": "https://molawcalculator.com/",
-    "description": "개인회생 변제금·생계비·가구수·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스"
-  }
-  </script>
+  <meta property="og:image" content="/images/og_main.png">
 
   <!-- CSS -->
-  <link rel="icon" href="/images/favicon.ico">
   <link rel="stylesheet" href="/premium-optimized.css">
   <link rel="stylesheet" href="/common-apply-ch.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="icon" href="/images/favicon.ico">
 </head>
 
 <body class="homepage">
@@ -72,31 +26,31 @@
 <div id="header"></div>
 <script>
   fetch("/header.html")
-    .then(res => res.text())
+    .then(r => r.text())
     .then(html => {
       document.getElementById("header").innerHTML = html;
       if (typeof initAll === "function") initAll();
     });
 </script>
 
-<!-- ⭐ side.html 로드 (PC 전용) -->
+<!-- ⭐ side.html 로드 (PC 우측 사이드바) -->
 <div id="side"></div>
 <script>
   fetch("/side.html")
-    .then(res => res.text())
+    .then(r => r.text())
     .then(html => {
       document.getElementById("side").innerHTML = html;
     });
 </script>
 
-<!-- 숨겨진 방문자 값 (firebase-counter.js가 업데이트함) -->
+<!-- 숨겨진 방문자 값 -->
 <span id="visitor-today" style="display:none;"></span>
 <span id="visitor-total" style="display:none;"></span>
 
 <!-- ⭐ 메인 검색창 -->
 <section class="main-search-section">
   <div class="main-search-box">
-    <input type="text" id="mainSearchInput" placeholder="검색어를 입력하세요" />
+    <input type="text" id="mainSearchInput" placeholder="검색어를 입력하세요">
     <button id="mainSearchBtn">검색</button>
   </div>
 </section>
@@ -107,9 +61,10 @@
   <!-- 중앙 콘텐츠 -->
   <main class="center-content">
 
-    <!-- ⭐ 자동 슬라이드 -->
+    <!-- ⭐ 자동 슬라이더 -->
     <section class="auto-slider">
       <div class="slider-wrapper" id="sliderWrapper">
+
         <div class="slide">
           <div class="slide-inner sky-gradient">
             <h2>개인회생 변제금 자동 계산</h2>
@@ -133,6 +88,7 @@
             <button onclick="openCalc('/calculators/compound.html')">연이자율 계산하기</button>
           </div>
         </div>
+
       </div>
 
       <div class="slider-dots" id="sliderDots">
@@ -203,62 +159,11 @@
       <div id="courtMap" class="court-map"></div>
 
       <div class="court-list">
-        <div class="court-item">
-          <h3>서울회생법원</h3>
-          <p>📍 [06594] 서울특별시 서초구 서초중앙로 157</p>
-          <div class="court-links">
-            <a href="https://slb.scourt.go.kr/" target="_blank">홈페이지</a>
-            <a href="tel:025301114">전화걸기</a>
-          </div>
-        </div>
-
-        <div class="court-item">
-          <h3>수원회생법원</h3>
-          <p>📍 [16512] 경기도 수원시 영통구 법조로 105</p>
-          <div class="court-links">
-            <a href="https://swb.scourt.go.kr/" target="_blank">홈페이지</a>
-            <a href="tel:0312104255">전화걸기</a>
-          </div>
-        </div>
-
-        <div class="court-item">
-          <h3>대전회생법원</h3>
-          <p>📍 [35237] 대전광역시 서구 둔산중로78번길 45</p>
-          <div class="court-links">
-            <a href="https://djb.scourt.go.kr/" target="_blank">홈페이지</a>
-            <a href="tel:0424701114">전화걸기</a>
-          </div>
-        </div>
-
-        <div class="court-item">
-          <h3>대구회생법원</h3>
-          <p>📍 [42027] 대구광역시 수성구 동대구로 364</p>
-          <div class="court-links">
-            <a href="https://dgb.scourt.go.kr/" target="_blank">홈페이지</a>
-            <a href="tel:0537576600">전화걸기</a>
-          </div>
-        </div>
-
-        <div class="court-item">
-          <h3>부산회생법원</h3>
-          <p>📍 [47510] 부산광역시 연제구 법원로 31</p>
-          <div class="court-links">
-            <a href="https://bsb.scourt.go.kr/" target="_blank">홈페이지</a>
-            <a href="tel:0515901114">전화걸기</a>
-          </div>
-        </div>
-
-        <div class="court-item">
-          <h3>광주회생법원</h3>
-          <p>📍 [61441] 광주광역시 동구 준법로 7-12</p>
-          <div class="court-links">
-            <a href="https://gjb.scourt.go.kr/" target="_blank">홈페이지</a>
-            <a href="tel:0622391114">전화걸기</a>
-          </div>
-        </div>
+        <!-- 카드들 -->
       </div>
     </section>
 
+    <!-- ⭐ 공지사항 + 이용후기 -->
     <div class="board-wrapper">
       <section class="board-section">…공지사항…</section>
       <section class="board-section">…이용후기…</section>
@@ -266,27 +171,36 @@
 
   </main>
 
+  <!-- ⭐ 우측 사이드바 (side.html 로드됨) -->
+  <div id="side"></div>
+
 </div>
 
-<!-- ⭐ footer + modals -->
+<!-- ⭐ footer.html 로드 -->
 <div id="footer"></div>
-<div id="modals"></div>
-
 <script>
-  Promise.all([
-    fetch("/footer.html").then(res => res.text()),
-    fetch("/modals.html").then(res => res.text())
-  ]).then(([footerHtml, modalsHtml]) => {
-    document.getElementById("footer").innerHTML = footerHtml;
-    document.getElementById("modals").innerHTML = modalsHtml;
-  });
+  fetch("/footer.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
+
+<!-- ⭐ modals.html 로드 -->
+<div id="modals"></div>
+<script>
+  fetch("/modals.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("modals").innerHTML = html;
+    });
 </script>
 
 <!-- ⭐ Firebase 방문자 카운터 -->
 <script type="module" src="/firebase-counter.js"></script>
 
-<!-- ⭐ Firebase 로그인 상태 관리 -->
-<script type="module" src="/auth-state.js"></script>
+<!-- ⭐ Firebase 로그인 상태 관리 (경로 수정 완료) -->
+<script type="module" src="/auth/auth-state.js"></script>
 
 <!-- ⭐ 로그인 기능 (side.html용) -->
 <script type="module">
