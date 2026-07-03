@@ -75,9 +75,23 @@
     .then(res => res.text())
     .then(html => {
       document.getElementById("header").innerHTML = html;
-      initAll();
+      if (typeof initAll === "function") initAll();
     });
 </script>
+
+<!-- ⭐ side.html 로드 (PC 전용) -->
+<div id="side"></div>
+<script>
+  fetch("/side.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("side").innerHTML = html;
+    });
+</script>
+
+<!-- 숨겨진 방문자 값 (firebase-counter.js가 업데이트함) -->
+<span id="visitor-today" style="display:none;"></span>
+<span id="visitor-total" style="display:none;"></span>
 
 <!-- ⭐ 메인 검색창 -->
 <section class="main-search-section">
@@ -252,113 +266,73 @@
 
   </main>
 
-  <!-- ⭐ 우측 사이드바 -->
-  <aside class="right-sidebar">
-
-    <!-- 로그인/회원가입/마이페이지/로그아웃 -->
-    <div class="sidebar-box">
-      <h3>계정</h3>
-
-      <!-- 로그인 전 -->
-      <div id="auth-before-sidebar" style="display:flex; flex-direction:column; gap:8px;">
-        <a href="/auth/login.html" class="app-btn-primary">로그인</a>
-        <a href="/auth/signup.html" class="app-btn-secondary">회원가입</a>
-      </div>
-
-      <!-- 로그인 후 -->
-      <div id="auth-after-sidebar" style="display:none; flex-direction:column; gap:8px;">
-        <span id="auth-username-sidebar"></span>님
-        <span id="ticket-remaining-sidebar" style="color:#4a6fff; font-weight:600;"></span>
-        <a href="/mypage/mypage.html" class="app-btn-primary">마이페이지</a>
-        <button id="logout-btn-sidebar" class="app-btn-secondary">로그아웃</button>
-      </div>
-    </div>
-
-    <!-- 방문자 통계 -->
-    <div class="sidebar-box">
-      <h3>📊 방문자 통계</h3>
-      <p>오늘 방문자: <b id="visitor-today-sidebar">조회중…</b></p>
-      <p>전체 방문자: <b id="visitor-total-sidebar">조회중…</b></p>
-    </div>
-
-    <div class="sidebar-box">
-      <h3>최근 사용한 계산기</h3>
-      <ul id="recentCalcListSidebar"></ul>
-    </div>
-
-  </aside>
-
 </div>
 
 <!-- ⭐ footer + modals -->
 <div id="footer"></div>
 <div id="modals"></div>
 
-<script type="module">
-  window.addEventListener("load", () => {
-
-    Promise.all([
-      fetch("/footer-ch.html").then(res => res.text()),
-      fetch("/modals.html").then(res => res.text())
-    ]).then(([footerHtml, modalsHtml]) => {
-
-      document.getElementById("footer").innerHTML = footerHtml;
-      document.getElementById("modals").innerHTML = modalsHtml;
-
-      /* 공통 모달 열기 */
-      document.querySelectorAll("[data-modal]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const target = btn.getAttribute("data-modal");
-          const modal = document.getElementById(target);
-          if (modal) modal.style.display = "block";
-        });
-      });
-
-      /* 공통 모달 닫기 */
-      document.querySelectorAll(".close-modal, .close-privacy").forEach(closeBtn => {
-        closeBtn.addEventListener("click", () => {
-          closeBtn.closest(".modal").style.display = "none";
-        });
-      });
-
-      /* 모달 바깥 클릭 시 닫기 */
-      window.addEventListener("click", (e) => {
-        if (e.target.classList.contains("modal")) {
-          e.target.style.display = "none";
-        }
-      });
-
-      /* 상담신청 모달 초기화 */
-      import("/common-apply-ch.js").then(module => module.initApplyModal());
-    });
-
+<script>
+  Promise.all([
+    fetch("/footer.html").then(res => res.text()),
+    fetch("/modals.html").then(res => res.text())
+  ]).then(([footerHtml, modalsHtml]) => {
+    document.getElementById("footer").innerHTML = footerHtml;
+    document.getElementById("modals").innerHTML = modalsHtml;
   });
 </script>
 
-<!-- 방문자 카운터 -->
+<!-- ⭐ Firebase 방문자 카운터 -->
 <script type="module" src="/firebase-counter.js"></script>
 
-<!-- 로그인 상태 관리 (경로 수정!) -->
-<script type="module" src="/auth/auth-state.js"></script>
+<!-- ⭐ Firebase 로그인 상태 관리 -->
+<script type="module" src="/auth-state.js"></script>
 
-<!-- 방문자 수를 사이드바 + 메뉴에도 반영 -->
+<!-- ⭐ 로그인 기능 (side.html용) -->
+<script type="module">
+  import { auth } from "/firebase-init.js";
+  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+  const loginBtn = document.getElementById("login-btn-sidebar");
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", async () => {
+      const email = document.getElementById("login-email").value.trim();
+      const pw = document.getElementById("login-password").value.trim();
+
+      if (!email || !pw) {
+        alert("이메일과 비밀번호를 입력하세요.");
+        return;
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, pw);
+        window.location.reload();
+      } catch (err) {
+        alert("로그인 실패: " + err.message);
+      }
+    });
+  }
+</script>
+
+<!-- ⭐ 방문자 수 동기화 -->
 <script type="module">
   const syncVisitorUI = () => {
     const today = document.getElementById("visitor-today")?.textContent;
     const total = document.getElementById("visitor-total")?.textContent;
 
     if (today) {
-      const el1 = document.getElementById("visitor-today-sidebar");
-      const el2 = document.getElementById("visitor-today-menu");
-      if (el1) el1.textContent = today;
-      if (el2) el2.textContent = today;
+      const t1 = document.getElementById("visitor-today-sidebar");
+      const t2 = document.getElementById("visitor-today-menu");
+      if (t1) t1.textContent = today;
+      if (t2) t2.textContent = today;
     }
 
     if (total) {
-      const el1 = document.getElementById("visitor-total-sidebar");
-      const el2 = document.getElementById("visitor-total-menu");
-      if (el1) el1.textContent = total;
-      if (el2) el2.textContent = total;
+      const a1 = document.getElementById("visitor-total-sidebar");
+      const a2 = document.getElementById("visitor-total-menu");
+      if (a1) a1.textContent = total;
+      if (a2) a2.textContent = total;
     }
   };
 
