@@ -33,17 +33,7 @@
     });
 </script>
 
-<!-- ⭐ side.html 로드 (PC 우측 사이드바) -->
-<div id="side"></div>
-<script>
-  fetch("/side.html")
-    .then(r => r.text())
-    .then(html => {
-      document.getElementById("side").innerHTML = html;
-    });
-</script>
-
-<!-- 숨겨진 방문자 값 -->
+<!-- ⭐ 숨겨진 방문자 값 -->
 <span id="visitor-today" style="display:none;"></span>
 <span id="visitor-total" style="display:none;"></span>
 
