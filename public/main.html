@@ -243,13 +243,12 @@
     });
 </script>
 
-<!-- ⭐ footer-ch.html 로드 -->
-<div id="footer"></div>
+<!-- ⭐ side.html 로드 -->
 <script>
-  fetch("/footer-ch.html")
+  fetch("/side.html")
     .then(r => r.text())
     .then(html => {
-      document.getElementById("footer").innerHTML = html;
+      document.getElementById("side").innerHTML = html;
     });
 </script>
 
