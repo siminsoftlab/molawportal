@@ -913,3 +913,11 @@ body.homepage {
     padding-right: 14px;
   }
 }
+/* ===========================
+   모바일에서 side.html 숨기기
+=========================== */
+@media (max-width: 768px) {
+  .right-sidebar {
+    display: none !important;
+  }
+}
