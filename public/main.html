@@ -17,9 +17,8 @@
   <!-- CSS -->
   <link rel="stylesheet" href="/premium-optimized.css">
   <link rel="stylesheet" href="/common-apply-ch.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-  <link rel="icon" href="/images/favicon.ico">
-   <link rel="stylesheet" href="/review.css">
+   <link rel="icon" href="/images/favicon.ico">
+   <link rel="stylesheet" href="/review-ch.css">
   <link rel="stylesheet" href="/youtube.css">
 </head>
 
@@ -212,96 +211,87 @@
   </div>
 </section>
 
+<!-- ⭐ 리뷰 + 유튜브 통합 슬라이더 -->
+<div class="container">
+  <h2>리뷰 & 추천 영상</h2>
 
-    <!-- ⭐ 리뷰 섹션 추가 -->
-    <div class="container">
-      <h2>리뷰</h2>
+  <div class="review-slider-wrap">
+    <div class="review-slider">
 
-      <div class="review-slider-wrap">
-        <div class="review-slider">
-
-          <div class="review-card" onclick="openReview(1)">
-            <div class="review-stars">★★★★★</div>
-            <p class="review-text">우선 지난 약 3개월동안 지옥같은 생활에서 벗어나게 해주신 법무법인 영민 대표변호사님과...</p>
-            <div class="review-user">— 전기쟁이 님</div>
-          </div>
-
-          <div class="review-card" onclick="openReview(2)">
-            <div class="review-stars">★★★★★</div>
-            <p class="review-text">회생중이고 정말 막막하고 답도 없는 상환에 기댈곳도 나올 데도 없는 상황에...</p>
-            <div class="review-user">— 희망을품고 님</div>
-          </div>
-
-          <div class="review-card" onclick="openReview(3)">
-            <div class="review-stars">★★★★★</div>
-            <p class="review-text">제발 용기내서 채무자대리인 신청하시길 바랍니다. 매일같이 상환해야하는 문자에 이리저리...</p>
-            <div class="review-user">— 꼬니 님</div>
-          </div>
-
-          <div class="review-card" onclick="openReview(4)">
-            <div class="review-stars">★★★★★</div>
-            <p class="review-text">먼저 법무법인 영민 및 국장님 너무 감사드립니다. 다른 법무법인보다 훨씬 체계적이세요....</p>
-            <div class="review-user">— ㅎㅎㅎ 님</div>
-          </div>
-
-          <div class="review-card" onclick="openReview(5)">
-            <div class="review-stars">★★★★★</div>
-            <p class="review-text">먼눈물이나서 펑펑울면서 써내려갑니다. 입금받고 이자상환하기를 1년. 이렇게 쓰는곳은....</p>
-            <div class="review-user">— 만두 님</div>
-          </div>
-
-        </div>
-
-        <div class="review-dots"></div>
+      <!-- ⭐ 리뷰 카드들 -->
+      <div class="review-card" onclick="openReview(1)">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">우선 지난 약 3개월동안 지옥같은 생활에서 벗어나게 해주신 법무법인 영민 대표변호사님과...</p>
+        <div class="review-user">— 전기쟁이 님</div>
       </div>
 
-      <div id="reviewAccordion" class="review-accordion">
-        <div id="reviewContent"></div>
+      <div class="review-card" onclick="openReview(2)">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">회생중이고 정말 막막하고 답도 없는 상환에 기댈곳도 나올 데도 없는 상황에...</p>
+        <div class="review-user">— 희망을품고 님</div>
       </div>
+
+      <div class="review-card" onclick="openReview(3)">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">제발 용기내서 채무자대리인 신청하시길 바랍니다. 매일같이 상환해야하는 문자에 이리저리...</p>
+        <div class="review-user">— 꼬니 님</div>
+      </div>
+
+      <div class="review-card" onclick="openReview(4)">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">먼저 법무법인 영민 및 국장님 너무 감사드립니다. 다른 법무법인보다 훨씬 체계적이세요....</p>
+        <div class="review-user">— ㅎㅎㅎ 님</div>
+      </div>
+
+      <div class="review-card" onclick="openReview(5)">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">먼눈물이나서 펑펑울면서 써내려갑니다. 입금받고 이자상환하기를 1년. 이렇게 쓰는곳은....</p>
+        <div class="review-user">— 만두 님</div>
+      </div>
+
+      <!-- ⭐ 유튜브 카드들 (리뷰 카드 UI로 통합) -->
+      <div class="review-card" onclick="window.open('https://www.youtube.com/watch?v=Rcg5QzMVFSg','_blank')">
+        <img src="https://img.youtube.com/vi/Rcg5QzMVFSg/maxresdefault.jpg" class="youtube-slide-thumb">
+        <p class="review-text">📺 개인회생 변제금 계산 완전 설명</p>
+        <div class="review-user">YouTube</div>
+      </div>
+
+      <div class="review-card" onclick="window.open('https://www.youtube.com/watch?v=PPuVM1MtGSY','_blank')">
+        <img src="https://img.youtube.com/vi/PPuVM1MtGSY/maxresdefault.jpg" class="youtube-slide-thumb">
+        <p class="review-text">📺 생계비 계산 완전 설명</p>
+        <div class="review-user">YouTube</div>
+      </div>
+
+      <div class="review-card" onclick="window.open('https://www.youtube.com/watch?v=jLEQ8MyWcmA','_blank')">
+        <img src="https://img.youtube.com/vi/jLEQ8MyWcmA/maxresdefault.jpg" class="youtube-slide-thumb">
+        <p class="review-text">📺 가구수 계산 완전 설명</p>
+        <div class="review-user">YouTube</div>
+      </div>
+
+      <div class="review-card" onclick="window.open('https://www.youtube.com/watch?v=yzNsDj0x3Zo','_blank')">
+        <img src="https://img.youtube.com/vi/yzNsDj0x3Zo/maxresdefault.jpg" class="youtube-slide-thumb">
+        <p class="review-text">📺 연이자율 계산 완전 설명</p>
+        <div class="review-user">YouTube</div>
+      </div>
+
+      <div class="review-card" onclick="window.open('https://www.youtube.com/watch?v=Ms9RKrPDys0','_blank')">
+        <img src="https://img.youtube.com/vi/Ms9RKrPDys0/maxresdefault.jpg" class="youtube-slide-thumb">
+        <p class="review-text">📺 개인회생 전체 흐름 설명</p>
+        <div class="review-user">YouTube</div>
+      </div>
+
     </div>
 
-    <!-- ⭐ 유튜브 슬라이더 -->
-    <div class="container">
-      <h2 class="youtube-title">추천 영상</h2>
+    <!-- ⭐ 도트 인디케이터 -->
+    <div class="review-dots"></div>
+  </div>
 
-      <div class="swiper youtubeSwiper">
-        <div class="swiper-wrapper">
+  <!-- ⭐ 아코디언 -->
+  <div id="reviewAccordion" class="review-accordion">
+    <div id="reviewContent"></div>
+  </div>
+</div>
 
-          <div class="swiper-slide">
-            <a href="https://www.youtube.com/watch?v=Rcg5QzMVFSg" target="_blank">
-              <img src="https://img.youtube.com/vi/Rcg5QzMVFSg/maxresdefault.jpg" class="youtube-slide-thumb">
-            </a>
-          </div>
-
-          <div class="swiper-slide">
-            <a href="https://www.youtube.com/watch?v=PPuVM1MtGSY" target="_blank">
-              <img src="https://img.youtube.com/vi/PPuVM1MtGSY/maxresdefault.jpg" class="youtube-slide-thumb">
-            </a>
-          </div>
-
-          <div class="swiper-slide">
-            <a href="https://www.youtube.com/watch?v=jLEQ8MyWcmA" target="_blank">
-              <img src="https://img.youtube.com/vi/jLEQ8MyWcmA/maxresdefault.jpg" class="youtube-slide-thumb">
-            </a>
-          </div>
-
-          <div class="swiper-slide">
-            <a href="https://www.youtube.com/watch?v=yzNsDj0x3Zo" target="_blank">
-              <img src="https://img.youtube.com/vi/yzNsDj0x3Zo/maxresdefault.jpg" class="youtube-slide-thumb">
-            </a>
-          </div>
-
-          <div class="swiper-slide">
-            <a href="https://www.youtube.com/watch?v=Ms9RKrPDys0" target="_blank">
-              <img src="https://img.youtube.com/vi/Ms9RKrPDys0/maxresdefault.jpg" class="youtube-slide-thumb">
-            </a>
-          </div>
-
-        </div>
-
-        <div class="swiper-pagination"></div>
-      </div>
-    </div>
 
     <!-- ⭐ 찾아오시는 길 -->
     <div class="container location-section">
