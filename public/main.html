@@ -335,26 +335,30 @@
   });
 </script>
 
-<!-- ⭐ 방문자 카운터 -->
+<!-- 방문자 카운터 -->
 <script type="module" src="/firebase-counter.js"></script>
 
-<!-- ⭐ 로그인 상태 관리 -->
-<script type="module" src="/auth-state.js"></script>
+<!-- 로그인 상태 관리 (경로 수정!) -->
+<script type="module" src="/auth/auth-state.js"></script>
 
-<!-- ⭐ 방문자 수를 사이드바 + 메뉴에도 반영 -->
+<!-- 방문자 수를 사이드바 + 메뉴에도 반영 -->
 <script type="module">
   const syncVisitorUI = () => {
     const today = document.getElementById("visitor-today")?.textContent;
     const total = document.getElementById("visitor-total")?.textContent;
 
     if (today) {
-      document.getElementById("visitor-today-sidebar").textContent = today;
-      document.getElementById("visitor-today-menu")?.textContent = today;
+      const el1 = document.getElementById("visitor-today-sidebar");
+      const el2 = document.getElementById("visitor-today-menu");
+      if (el1) el1.textContent = today;
+      if (el2) el2.textContent = today;
     }
 
     if (total) {
-      document.getElementById("visitor-total-sidebar").textContent = total;
-      document.getElementById("visitor-total-menu")?.textContent = total;
+      const el1 = document.getElementById("visitor-total-sidebar");
+      const el2 = document.getElementById("visitor-total-menu");
+      if (el1) el1.textContent = total;
+      if (el2) el2.textContent = total;
     }
   };
 
