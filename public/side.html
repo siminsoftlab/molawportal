@@ -1,0 +1,47 @@
+<!-- side.html (PC 우측 사이드바) -->
+<aside class="right-sidebar">
+
+  <!-- 로그인 박스 -->
+  <div class="sidebar-box">
+    <h3>계정</h3>
+
+    <!-- 로그인 전 -->
+    <div id="auth-before-sidebar" style="display:flex; flex-direction:column; gap:10px;">
+      <input type="email" id="login-email" placeholder="이메일" class="app-input">
+      <input type="password" id="login-password" placeholder="비밀번호" class="app-input">
+      <button id="login-btn-sidebar" class="app-btn-primary">로그인</button>
+      <a href="/auth/signup.html" class="app-btn-secondary">회원가입</a>
+    </div>
+
+    <!-- 로그인 후 -->
+    <div id="auth-after-sidebar" style="display:none; flex-direction:column; gap:10px;">
+      <span id="auth-username-sidebar"></span>님
+      <span id="ticket-remaining-sidebar" style="color:#4a6fff; font-weight:600;"></span>
+      <a href="/mypage/mypage.html" class="app-btn-primary">마이페이지</a>
+      <button id="logout-btn-sidebar" class="app-btn-secondary">로그아웃</button>
+    </div>
+  </div>
+
+  <!-- 방문자 통계 -->
+  <div class="sidebar-box">
+    <h3>📊 방문자 통계</h3>
+    <p>오늘 방문자: <b id="visitor-today-sidebar">조회중…</b></p>
+    <p>전체 방문자: <b id="visitor-total-sidebar">조회중…</b></p>
+  </div>
+
+  <!-- 최근 계산기 -->
+  <div class="sidebar-box">
+    <h3>최근 사용한 계산기</h3>
+    <ul id="recentCalcListSidebar"></ul>
+  </div>
+
+</aside>
+
+<style>
+  /* 모바일에서는 side.html 숨김 */
+  @media (max-width: 768px) {
+    .right-sidebar {
+      display: none !important;
+    }
+  }
+</style>
