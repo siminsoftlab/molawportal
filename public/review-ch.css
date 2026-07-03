@@ -48,7 +48,7 @@
    ⭐ 카드 공통 스타일 (리뷰 + 유튜브)
 ========================================================= */
 .review-card {
-  flex: 0 0 75%;
+  flex: 0 0 calc(33.33% - 12px);   /* ⭐ 리뷰도 3개 보이고 4번째 살짝 보임 */
   background: #f7f9fc;
   padding: 16px;
   border-radius: 16px;
@@ -56,7 +56,7 @@
   scroll-snap-align: start;
   cursor: pointer;
   transition: transform .25s ease, box-shadow .25s ease;
-  min-height: 150px;
+  min-height: 150px;               /* 리뷰 높이는 그대로 유지 */
 }
 
 .review-card:hover {
@@ -72,27 +72,25 @@
   color: #333;
 }
 
-/* 리뷰 사용자 */
+/* 리뷰 사용자 + 채널명 */
 .review-user {
   font-size: 13px;
-  color: #666;
+  color: #4a6fff;
+  font-weight: 600;
+  margin-top: 4px;
 }
 
 /* =========================================================
-   ⭐ 유튜브 카드 (높이 증가 + 3개 보이고 4번째 살짝 보임)
+   ⭐ 유튜브 카드 (높이 증가)
 ========================================================= */
-
-/* 한 화면에 3개 보이고 4번째 살짝 보이도록 */
 .youtube-section .review-card {
-  flex: 0 0 calc(33.33% - 12px);   /* ⭐ 3개 보이도록 */
-  min-height: 240px;               /* ⭐ 카드 높이 증가 */
+  min-height: 240px;               /* 유튜브 카드만 높이 증가 */
 }
 
-/* 유튜브 썸네일 높이 증가 */
 .youtube-thumb-wrap {
   position: relative;
   width: 100%;
-  height: 160px;                   /* ⭐ 기존 140 → 160으로 증가 */
+  height: 160px;
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -192,20 +190,11 @@
   }
 
   .youtube-section .review-card {
-    flex: 0 0 85%;                /* 모바일에서는 1개씩 */
+    flex: 0 0 85%;
     min-height: 200px;
   }
 
   .youtube-thumb-wrap {
     height: 130px;
   }
-  
-}
-
-/* ⭐ 유튜브 채널명 스타일 */
-.youtube-section .review-user {
-  font-size: 13px;
-  color: #4a6fff;        /* 파란색 포인트 */
-  font-weight: 600;
-  margin-top: 4px;
 }
