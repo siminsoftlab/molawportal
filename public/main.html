@@ -390,6 +390,9 @@
     .then(r => r.text())
     .then(html => {
       document.getElementById("modals").innerHTML = html;
+
+       // modals.html 로드 후 common-apply-ch.js 실행
+      import("/common-apply-ch.js");
     });
 </script>
 
