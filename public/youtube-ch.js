@@ -4,11 +4,16 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   const wrap = document.querySelector(".youtube-section .review-slider-wrap");
-  if (!wrap) return;
+  if (!wrap) return;   // ⭐ DOM 없으면 즉시 종료 → 오류 방지
 
   const slider = wrap.querySelector(".review-slider");
+  if (!slider) return; // ⭐ 안전장치
+
   const dotsWrap = wrap.querySelector(".review-dots");
+  if (!dotsWrap) return; // ⭐ 안전장치
+
   const cards = Array.from(slider.children);
+  if (cards.length === 0) return; // ⭐ 카드 없으면 종료
 
   /* ⭐ 랜덤 셔플 */
   const shuffled = cards.sort(() => Math.random() - 0.5);
