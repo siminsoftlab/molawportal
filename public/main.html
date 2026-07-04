@@ -387,15 +387,10 @@
 <div id="modals"></div>
 
 <script type="module">
-  import { initApplyModal } from "/common-apply-ch.js";
-
   fetch("/modals.html")
     .then(r => r.text())
     .then(html => {
-      document.getElementById("modals").innerHTML = html;
-
-      // ⭐ side.html과 동일한 방식
-      initApplyModal();
+      document.getElementById("modals").innerHTML = html;      
     });
 </script>
 
