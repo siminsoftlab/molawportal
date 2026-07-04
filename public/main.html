@@ -385,16 +385,20 @@
 
 <!-- ⭐ modals.html 로드 -->
 <div id="modals"></div>
-<script>
+
+<script type="module">
+  import { initApplyModal } from "/common-apply-ch.js";
+
   fetch("/modals.html")
     .then(r => r.text())
     .then(html => {
       document.getElementById("modals").innerHTML = html;
 
-       // modals.html 로드 후 common-apply-ch.js 실행
-      import("/common-apply-ch.js");
+      // ⭐ side.html과 동일한 방식
+      initApplyModal();
     });
 </script>
+
 
 <!-- ⭐ side.html 로드 -->
 <script>
