@@ -1,13 +1,16 @@
 /* 공통 모달 기본 스타일 */
 .modal {
-  display: none; /* ← !important 제거 */
+  display: none;
   position: fixed;
-  z-index: 99999;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.45);
+  z-index: 999999 !important; /* 최상위 */
+  display: flex !important;   /* ⭐ 반드시 필요 */
+  justify-content: center;
+  align-items: center;
 }
 
 
@@ -21,7 +24,7 @@
   max-width: 600px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   position: relative;
-  z-index: 100000;
+  z-index: 1000000 !important;
 }
 
 
