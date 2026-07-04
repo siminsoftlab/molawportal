@@ -1,6 +1,6 @@
 /* 공통 모달 기본 스타일 */
 .modal {
-  display: none;
+  display: flex !important;
   position: fixed;
   top: 0;
   left: 0;
@@ -17,7 +17,8 @@
 .modal-content,
 .app-modal {
   background: #fff;
-  margin: 10% auto;
+  /* ❗ margin 제거 */
+  margin: 0 auto;
   padding: 20px;
   border-radius: 8px;
   width: 90%;
