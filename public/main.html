@@ -17,9 +17,10 @@
   <!-- CSS -->
   <link rel="stylesheet" href="/premium-optimized.css">
   <link rel="stylesheet" href="/common-apply-ch.css">
-   <link rel="icon" href="/images/favicon.ico">
-   <link rel="stylesheet" href="/review-ch.css">
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="stylesheet" href="/review-ch.css">
   <link rel="stylesheet" href="/youtube-ch.css">
+  <link rel="stylesheet" href="/map-ch.css">
 </head>
 
 <body class="homepage">
@@ -332,23 +333,31 @@
   </div>
 </div>
 
+<!-- ⭐ 찾아오시는 길 -->
+<div class="container location-section">
+  <h2 class="calc-title">찾아오시는 길</h2>
 
-    <!-- ⭐ 찾아오시는 길 -->
-    <div class="container location-section">
-      <h2 class="calc-title">찾아오시는 길</h2>
+  <div class="location-wrapper">
+    
+    <!-- 좌측: 정보 -->
+    <div class="location-info card-ui">
+      <p><strong>상호</strong> : 법무법인 영민</p>
+      <p><strong>주소</strong> : 서울특별시 서초구 반포대로30길 70, 5층</p>
+      <p><strong>전화번호</strong> : 02-595-5706</p>
+      <p><strong>업무시간</strong> : 평일 09:00 ~ 18:00</p>
+      <p><strong>교통안내</strong> : 교대역 9번 출구 도보 3분</p>
+    </div>
 
-      <div class="location-wrapper">
-        <div class="location-info">
-          <p><strong>상호</strong> : 법무법인 영민</p>
-          <p><strong>주소</strong> : 서울특별시 서초구 반포대로30길 70, 5층</p>
-          <p><strong>전화번호</strong> : 02-595-5706</p>
-          <p><strong>업무시간</strong> : 평일 09:00 ~ 18:00</p>
-          <p><strong>교통안내</strong> : 교대역 9번 출구 도보 3분</p>
-        </div>
-
-        <div id="daumRoughmapContainer1779184856757" class="root_daum_roughmap root_daum_roughmap_landing custom-map"></div>
+    <!-- 우측: 지도 -->
+    <div class="map-box card-ui">
+      <div id="daumRoughmapContainer1779184856757"
+           class="root_daum_roughmap root_daum_roughmap_landing custom-map">
       </div>
     </div>
+
+  </div>
+</div>
+
 
     <!-- ⭐ 공지사항 + 이용후기 -->
     <div class="board-wrapper">
