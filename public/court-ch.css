@@ -121,3 +121,13 @@
     flex: 0 0 85%;
   }
 }
+
+/* 홈페이지 버튼 → 흰색 글자 */
+.court-links a.home-link {
+  color: #ffffff !important;
+}
+
+/* 전화걸기 버튼 → 검정색 글자 */
+.court-links a.call-link {
+  color: #000000 !important;
+}
