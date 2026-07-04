@@ -86,13 +86,13 @@
   display: inline-block;
   margin-right: 10px;
   font-size: 14px;
-  color: #4a6fff;
+   color: #1f4aff;
   font-weight: 600;
   transition: color .25s ease;
 }
 
 .court-links a:hover {
-  color: #1f4aff;
+  color: #0039d6;
 }
 
 /* ⭐ 도트 */
