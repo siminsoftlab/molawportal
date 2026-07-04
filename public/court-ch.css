@@ -1,0 +1,112 @@
+/* ⭐ 섹션 여백 */
+.court-master-section {
+  margin: 40px 0;
+}
+
+.court-master-section .section-title {
+  margin-bottom: 24px;
+}
+
+/* ⭐ 슬라이더 래퍼 */
+.court-slider-wrap {
+  position: relative;
+  margin: 30px 0;
+}
+
+/* 좌우 페이드 */
+.court-slider-wrap::before,
+.court-slider-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.court-slider-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, #ffffff, transparent);
+}
+
+.court-slider-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, #ffffff, transparent);
+}
+
+/* ⭐ 슬라이더 */
+.court-slider {
+  display: flex;
+  overflow-x: auto;
+  gap: 18px;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+.court-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* ⭐ 카드 */
+.court-card {
+  flex: 0 0 calc(33.33% - 12px);
+  background: #f7f9fc;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  scroll-snap-align: start;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.court-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.court-card h3 {
+  margin-bottom: 8px;
+  font-size: 17px;
+}
+
+.court-card p {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.court-links a {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 14px;
+  color: #4a6fff;
+  font-weight: 600;
+}
+
+/* ⭐ 도트 */
+.court-dots {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.court-dots span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 4px;
+  background: #d0d0d0;
+  border-radius: 50%;
+  transition: background .25s;
+}
+
+.court-dots .active {
+  background: #4aa8ff;
+}
+
+/* ⭐ 모바일 */
+@media (max-width: 480px) {
+  .court-card {
+    flex: 0 0 85%;
+  }
+}
