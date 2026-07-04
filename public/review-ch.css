@@ -198,3 +198,10 @@
     height: 130px;
   }
 }
+/* ⭐ 리뷰 프로필 아이콘 (SVG) */
+.review-profile-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
