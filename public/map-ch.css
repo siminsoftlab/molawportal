@@ -1,6 +1,6 @@
 /* =========================================================
    ⭐ 찾아오시는 길 (Location Section)
-   앱 UI 스타일 + 2열 레이아웃 + hover 효과
+   앱 UI 스타일 + 2열 레이아웃 + hover 효과 + 모바일 지도 fix
 ========================================================= */
 
 /* 전체 섹션 */
@@ -9,29 +9,29 @@
   margin-bottom: 40px;
 }
 
-/* ⭐ 타이틀과 아래 div 여백 (추천영상과 동일) */
+/* ⭐ 타이틀 아래 여백 */
 .location-section .calc-title {
-  margin-bottom: 24px;   /* 타이틀 아래 여백 */
+  margin-bottom: 24px;
 }
 
 /* 2열 레이아웃 */
 .location-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr;   /* 좌측 정보 / 우측 지도 */
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
 }
 
-/* ⭐ 앱 UI 카드 스타일 */
+/* 앱 UI 카드 스타일 */
 .card-ui {
   background: #f7f9fc;
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-  transition: transform .25s ease, box-shadow .25s ease; /* ⭐ hover 효과 */
+  transition: transform .25s ease, box-shadow .25s ease;
 }
 
-/* ⭐ 카드 hover 효과 */
+/* hover 효과 */
 .card-ui:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 18px rgba(0,0,0,0.12);
@@ -46,21 +46,28 @@
 
 /* 지도 박스 */
 .map-box {
-  padding: 0; /* 지도는 내부 패딩 제거 */
+  padding: 0;
 }
 
-/* 카카오 지도 스타일 */
+/* ⭐ 카카오 지도 overflow fix */
+.custom-map,
+.root_daum_roughmap,
+.root_daum_roughmap_landing {
+  width: 100% !important;     /* 부모 폭을 강제로 따라가도록 */
+  max-width: 100% !important; /* 모바일에서 절대 넘치지 않도록 */
+  overflow: hidden !important;
+}
+
+/* 지도 높이 */
 .custom-map {
-  width: 100%;
   height: 330px;
   border-radius: 16px;
-  overflow: hidden;
 }
 
 /* 모바일 (1열로 변경) */
 @media (max-width: 768px) {
   .location-wrapper {
-    grid-template-columns: 1fr; /* 모바일에서는 1열 */
+    grid-template-columns: 1fr;
     gap: 20px;
   }
 
