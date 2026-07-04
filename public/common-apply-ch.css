@@ -133,3 +133,21 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+/* 서브 버튼 (자세히 보기) */
+.app-btn-sub {
+  display: inline-block;
+  padding: 6px 12px;          /* 🔥 더 작게 */
+  background: #e8f3ff;        /* 🔥 연한 파랑 */
+  color: #0077cc;             /* 🔥 진한 파랑 텍스트 */
+  border: 1px solid #bcdcff;  /* 🔥 테두리 */
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;         /* 🔥 글씨도 조금 작게 */
+  margin-left: 8px;           /* 체크박스와 간격 */
+}
+
+.app-btn-sub:hover {
+  background: #d7eaff;
+  border-color: #a5d0ff;
+}
