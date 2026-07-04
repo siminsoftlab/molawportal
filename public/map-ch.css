@@ -1,0 +1,58 @@
+/* =========================================================
+   ⭐ 찾아오시는 길 (Location Section)
+   앱 UI 스타일 + 2열 레이아웃
+========================================================= */
+
+/* 전체 섹션 */
+.location-section {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+/* 2열 레이아웃 */
+.location-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* 좌측 정보 / 우측 지도 */
+  gap: 24px;
+  align-items: start;
+}
+
+/* 앱 UI 카드 스타일 */
+.card-ui {
+  background: #f7f9fc;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* 좌측 정보 텍스트 */
+.location-info p {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* 지도 박스 */
+.map-box {
+  padding: 0; /* 지도는 내부 패딩 제거 */
+}
+
+/* 카카오 지도 스타일 */
+.custom-map {
+  width: 100%;
+  height: 360px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* 모바일 (1열로 변경) */
+@media (max-width: 768px) {
+  .location-wrapper {
+    grid-template-columns: 1fr; /* 모바일에서는 1열 */
+    gap: 20px;
+  }
+
+  .custom-map {
+    height: 300px;
+  }
+}
