@@ -7,54 +7,50 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* =========================================================
-   ⭐ HTML에서 직접 호출하는 함수 (버튼 onclick에서 사용)
+   ⭐ 모달 열기 함수 (HTML onclick에서 호출)
 ========================================================= */
 window.openApplyModal = function(type) {
-  const modal = document.getElementById("commonApplyModal");
+  const applyModal = document.getElementById("commonApplyModal");
+  const privacyModal = document.getElementById("privacyModal");
+
+  // 다른 모달이 떠 있으면 닫기
+  if (privacyModal) privacyModal.style.display = "none";
+
+  if (!applyModal) return;
+
   const typeEl = document.getElementById("applyType");
   const titleEl = document.getElementById("applyTitle");
-
-  if (!modal) {
-    console.error("❌ commonApplyModal 요소가 아직 DOM에 없습니다.");
-    return;
-  }
 
   if (typeEl) typeEl.value = type;
   if (titleEl) titleEl.textContent = "온라인 상담 신청";
 
-  modal.style.display = "block";
+  applyModal.style.display = "flex";   // ⭐ flex로 강제
 };
 
 window.closeApplyModal = function() {
-  const modal = document.getElementById("commonApplyModal");
-  if (modal) modal.style.display = "none";
+  const applyModal = document.getElementById("commonApplyModal");
+  if (applyModal) applyModal.style.display = "none";
 };
 
 /* =========================================================
-   ⭐ footer + modals 로드 후 실행되는 초기화 함수
+   ⭐ 초기화 함수 (modals.html 로드 후 실행)
 ========================================================= */
 export function initApplyModal() {
 
-  console.log("🔧 initApplyModal() 실행됨 — modals.html이 DOM에 존재합니다.");
+  console.log("🔧 initApplyModal() 실행됨 — 모달 DOM 연결 완료");
 
-  const modal = document.getElementById("commonApplyModal");
-  const form = document.getElementById("commonApplyForm");
-  const closeBtn = modal?.querySelector(".close-modal");
-  const statusEl = document.getElementById("applyStatus");
-
+  const applyModal = document.getElementById("commonApplyModal");
   const privacyModal = document.getElementById("privacyModal");
-  const closePrivacy = document.querySelector(".close-privacy");
+  const form = document.getElementById("commonApplyForm");
+
+  const closeApply = applyModal?.querySelector(".close-modal");
+  const closePrivacy = privacyModal?.querySelector(".close-privacy");
   const openPrivacy = document.getElementById("openPrivacy");
 
-  /* =========================================================
-     ⭐ 필수 요소 체크
-  ========================================================== */
-  if (!modal) {
-    console.error("❌ commonApplyModal 요소를 찾을 수 없습니다.");
-    return;
-  }
-  if (!form) {
-    console.error("❌ commonApplyForm 요소를 찾을 수 없습니다.");
+  const statusEl = document.getElementById("applyStatus");
+
+  if (!applyModal || !form) {
+    console.error("❌ 모달 요소가 존재하지 않습니다.");
     return;
   }
 
@@ -73,24 +69,28 @@ export function initApplyModal() {
   /* =========================================================
      ⭐ 상담 모달 닫기
   ========================================================== */
-  closeBtn?.addEventListener("click", () => modal.style.display = "none");
-
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) modal.style.display = "none";
+  closeApply?.addEventListener("click", () => {
+    applyModal.style.display = "none";
   });
 
   /* =========================================================
      ⭐ 개인정보 모달 열기/닫기
   ========================================================== */
   openPrivacy?.addEventListener("click", () => {
-    privacyModal.style.display = "block";
+    // 상담 모달이 떠 있으면 닫기
+    applyModal.style.display = "none";
+    privacyModal.style.display = "flex";   // ⭐ flex로 강제
   });
 
   closePrivacy?.addEventListener("click", () => {
     privacyModal.style.display = "none";
   });
 
+  /* =========================================================
+     ⭐ window 클릭 이벤트 — 하나로 통합 (중복 제거)
+  ========================================================== */
   window.addEventListener("click", (e) => {
+    if (e.target === applyModal) applyModal.style.display = "none";
     if (e.target === privacyModal) privacyModal.style.display = "none";
   });
 
@@ -119,12 +119,10 @@ export function initApplyModal() {
       email: fd.get("email"),
       applyType: fd.get("applyType"),
       content: fd.get("content"),
-
       manager: "",
       partner: "",
       status: "신청",
       contractCode: "",
-
       createdAt: serverTimestamp()
     };
 
@@ -135,7 +133,7 @@ export function initApplyModal() {
       statusEl.style.color = "green";
 
       setTimeout(() => {
-        modal.style.display = "none";
+        applyModal.style.display = "none";
         form.reset();
         statusEl.textContent = "";
       }, 1500);
@@ -147,5 +145,5 @@ export function initApplyModal() {
     }
   });
 
-  console.log("✅ initApplyModal() 완료 — 모든 모달 이벤트 연결됨");
+  console.log("✅ initApplyModal() 완료 — 모든 모달 이벤트 정상 연결됨");
 }
