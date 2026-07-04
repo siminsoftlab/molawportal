@@ -1,10 +1,19 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ⭐ daum 객체가 없으면 실행하지 않음 → 오류 방지
+  if (typeof daum === "undefined" || !daum.roughmap) {
+    console.warn("Daum map script not loaded yet.");
+    return;
+  }
+
   new daum.roughmap.Lander({
     "timestamp": "1779184856757",
-    "key": "no827uetjj8"
-    // mapWidth, mapHeight 제거 → CSS로 제어됨
+    "key": "no827uetjj8",
+    //"mapWidth": "100%",
+    //"mapHeight": "360"
   }).render();
 });
+
 
 /*
 document.addEventListener("DOMContentLoaded", function () {
