@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시판 상세보기 - 딱요만큼변제</title>
+  <meta name="description" content="게시판 상세보기 페이지입니다.">
+  <meta name="keywords" content="게시판, 상세보기, 개인회생, 변제금">
+
+  <link rel="stylesheet" href="/premium-optimized.css">
+  <link rel="stylesheet" href="/common-apply-ch.css">
+  <link rel="stylesheet" href="/bbs/board.css">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
+</head>
+
+<body class="homepage">
+
+<div id="header"></div>
+<script>
+  fetch("/header.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("header").innerHTML = html;
+      if (typeof initAll === "function") initAll();
+    });
+</script>
+
+<div class="layout-2col">
+
+  <main class="center-content">
+
+    <!-- ⭐ breadcrumb -->
+    <nav class="bbs-breadcrumb">
+      <a href="/">홈</a> >
+      <a href="/bbs/board-list.html">게시판</a> >
+      <span>상세보기</span>
+    </nav>
+
+    <h2>게시판 상세보기</h2>
+
+    <div id="post-view-box" class="post-view-box">
+      <!-- JS로 채워짐 -->
+    </div>
+
+    <div class="bbs-write-btn-wrap">
+      <a href="/bbs/board-list.html" class="app-btn-primary">목록으로</a>
+    </div>
+
+  </main>
+
+  <div id="side"></div>
+
+</div>
+
+<div id="footer"></div>
+<script>
+  fetch("/footer-ch.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
+
+<script type="module">
+  import { loadPost, getCategoryName } from "/bbs/board.js";
+
+  async function renderView() {
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+
+    const post = await loadPost(id);
+
+    if (!post) {
+      document.getElementById("post-view-box").innerHTML =
+        "<p>게시글을 찾을 수 없습니다.</p>";
+      return;
+    }
+
+    const date = new Date(post.createdAt.seconds * 1000).toLocaleDateString();
+
+    document.getElementById("post-view-box").innerHTML = `
+      <div class="post-view-title">${post.title}</div>
+      <div class="post-view-meta">
+        카테고리: ${getCategoryName(post.category)} |
+        작성일: ${date} |
+        조회수: ${post.views}
+      </div>
+      <div class="post-view-content">${post.content}</div>
+
+      ${post.fileUrl ? `
+        <div class="post-view-file">
+          <a href="${post.fileUrl}" target="_blank">첨부파일 다운로드</a>
+        </div>
+      ` : ""}
+
+      <div class="post-view-actions">
+        <a href="/bbs/board-write.html?id=${post.id}" class="app-btn-primary">수정</a>
+        <button id="delete-btn" class="app-btn-danger">삭제</button>
+      </div>
+    `;
+
+    document.getElementById("delete-btn").onclick = () => {
+      const pw = prompt("비밀번호를 입력하세요");
+      if (!pw) return;
+
+      import("/bbs/board.js").then(async ({ deletePost }) => {
+        try {
+          await deletePost(post.id, pw);
+          alert("삭제되었습니다.");
+          location.href = "/bbs/board-list.html";
+        } catch (err) {
+          alert("비밀번호가 틀렸습니다.");
+        }
+      });
+    };
+  }
+
+  renderView();
+</script>
+
+<script type="module">
+  fetch("/side.html")
+    .then(r => r.text())
+    .then(async html => {
+      document.getElementById("side").innerHTML = html;
+
+      const { initAuthStateSidebar } = await import("/auth/auth-state-ch.js");
+      initAuthStateSidebar();
+
+      const { initSidebarLogin } = await import("/auth/login-ch.js");
+      initSidebarLogin();
+
+      setTimeout(() => {
+        const today = document.getElementById("visitor-today")?.textContent;
+        const total = document.getElementById("visitor-total")?.textContent;
+
+        if (today) {
+          const t1 = document.getElementById("visitor-today-sidebar");
+          const t2 = document.getElementById("visitor-today-menu");
+          if (t1) t1.textContent = today;
+          if (t2) t2.textContent = today;
+        }
+
+        if (total) {
+          const a1 = document.getElementById("visitor-total-sidebar");
+          const a2 = document.getElementById("visitor-total-menu");
+          if (a1) a1.textContent = total;
+          if (a2) a2.textContent = total;
+        }
+      }, 300);
+    });
+</script>
+
+<script type="module" src="/firebase-init.js"></script>
+<script src="/premium-optimized.js?v=2"></script>
+<script src="/block-right-click.js"></script>
+
+</body>
+</html>
