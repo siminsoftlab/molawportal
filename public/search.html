@@ -5,14 +5,110 @@
   <title>검색 결과</title>
   <link rel="stylesheet" href="/premium-optimized.css">
   <script src="/search-index.js"></script>
+
+  <style>
+    /* 전체 레이아웃 */
+    .search-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+    }
+
+    /* 좌측 결과 영역 */
+    .search-left {
+      flex: 1;
+    }
+
+    /* 우측 추천 영역 */
+    .search-right {
+      width: 260px;
+    }
+
+    /* 검색창 */
+    .search-bar-box {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .search-btn {
+      padding: 12px 18px;
+      background: #4a6fff;
+      color: white;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    /* 검색 결과 카드 */
+    .result-card {
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .result-card a {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0066cc;
+    }
+
+    .result-desc {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* 검색어 강조 */
+    .highlight {
+      background: yellow;
+    }
+
+    /* 결과 없음 */
+    .no-result {
+      padding: 24px;
+      font-size: 16px;
+      color: #666;
+    }
+  </style>
 </head>
 
 <body>
   <div id="header"></div>
 
-  <main class="search-result-page">
-    <h2>검색 결과</h2>
-    <ul id="searchResults"></ul>
+  <main class="search-container">
+
+    <!-- 좌측: 검색 결과 -->
+    <div class="search-left">
+
+      <!-- 검색창 -->
+      <div class="search-bar-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="검색어를 입력하세요">
+        <button class="search-btn" id="searchBtn">검색</button>
+      </div>
+
+      <h2>검색 결과</h2>
+      <div id="searchResults"></div>
+    </div>
+
+    <!-- 우측: 추천 영역 -->
+    <aside class="search-right">
+      <h3>추천 콘텐츠</h3>
+      <ul>
+        <li><a href="/calc/debt.html">부채 계산기</a></li>
+        <li><a href="/calc/loan.html">대출 계산기</a></li>
+        <li><a href="/calc/card.html">카드값 계산기</a></li>
+      </ul>
+    </aside>
+
   </main>
 
   <div id="footer"></div>
@@ -33,15 +129,33 @@
 
     const list = document.getElementById("searchResults");
 
+    // 검색어 강조 함수
+    function highlight(text, keyword) {
+      const reg = new RegExp(keyword, "gi");
+      return text.replace(reg, match => `<span class="highlight">${match}</span>`);
+    }
+
     if (results.length === 0) {
-      list.innerHTML = "<li>검색 결과가 없습니다.</li>";
+      list.innerHTML = `<div class="no-result">검색 결과가 없습니다.</div>`;
     } else {
       results.forEach(r => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${r.path}">${r.title}</a>`;
-        list.appendChild(li);
+        const div = document.createElement("div");
+        div.className = "result-card";
+
+        div.innerHTML = `
+          <a href="${r.path}">${highlight(r.title, q)}</a>
+          <div class="result-desc">${highlight(r.keywords, q)}</div>
+        `;
+
+        list.appendChild(div);
       });
     }
+
+    // 검색창에서 검색 실행
+    document.getElementById("searchBtn").onclick = () => {
+      const keyword = document.getElementById("searchInput").value.trim();
+      if (keyword) location.href = "/search.html?q=" + encodeURIComponent(keyword);
+    };
   </script>
 </body>
 </html>
