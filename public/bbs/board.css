@@ -24,21 +24,21 @@
 
 /* ⭐ 앱 스타일 select */
 .bbs-select {
-  width: 100%;
-  padding: 12px 14px;
+  width: 240px;
+  padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid #d0d0d0;
   background: #fff;
-  font-size: 15px;
+  font-size: 14px;
   color: #333;
   appearance: none;
   outline: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   background-image: url('/images/select-arrow.svg');
   background-repeat: no-repeat;
-  background-position: right 14px center;
+  background-position: right 12px center;
   margin-bottom: 20px;
 }
+
 
 /* ⭐ 게시판 테이블 */
 .bbs-table {
