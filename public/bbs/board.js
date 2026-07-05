@@ -272,4 +272,6 @@ export async function searchComments(keyword) {
   const snap = await getDocs(collection(db, "comments"));
 
   return snap.docs
-    .map(d => ({ id:
+    .map(d => ({ id: d.id, ...d.data() }))
+    .filter(c => (c.text || "").toLowerCase().includes(q));
+}
