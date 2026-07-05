@@ -814,8 +814,8 @@ details {
 }
 /* 타이틀 */
 .sidebar-box .title-small {
-  font-size: 14px;   /* 원하는 크기로 조절 */
-  font-weight: 600;  /* 필요하면 두께 조절 */
+  font-size: 12px;   /* 원하는 크기로 조절 */
+  font-weight: 300;  /* 필요하면 두께 조절 */
   line-height: 1.4;  /* 줄 간격도 자연스럽게 */
 }
 
