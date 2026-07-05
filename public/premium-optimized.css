@@ -813,7 +813,7 @@ details {
   text-align: center;
 }
 /* 타이틀 */
-.sidebar-box .title-small {
+.sidebar-box h3.small-title {
   font-size: 12px;   /* 원하는 크기로 조절 */
   font-weight: 300;  /* 필요하면 두께 조절 */
   line-height: 1.4;  /* 줄 간격도 자연스럽게 */
