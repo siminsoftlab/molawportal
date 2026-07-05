@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 
-  <!-- ⭐ SEO 최적화 -->
+  <!-- ⭐ SEO -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>딱요만큼변제 게시판 — 공지·뉴스·자료실·판례 모음</title>
   <meta name="description" content="공지사항, 뉴스, 이벤트, 자료실, 판례를 한곳에서 확인할 수 있는 딱요만큼변제 통합 게시판입니다.">
@@ -20,6 +20,7 @@
 
   <meta name="twitter:card" content="summary_large_image">
 
+  <!-- JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -36,7 +37,7 @@
   <link rel="stylesheet" href="/bbs/board.css">
   <link rel="icon" href="/images/favicon.ico">
 
-  <!-- sha256 (전역 함수) -->
+  <!-- sha256 -->
   <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
 </head>
 
@@ -68,7 +69,6 @@
 
     <h2>게시판</h2>
 
-    <!-- ⭐ 앱 스타일 select -->
     <select id="categoryFilter" class="bbs-select">
       <option value="">전체</option>
       <option value="notice">공지사항</option>
@@ -78,7 +78,6 @@
       <option value="case">판례</option>
     </select>
 
-    <!-- ⭐ 게시판 목록 -->
     <table id="postTable" class="bbs-table">
       <thead>
         <tr>
@@ -91,7 +90,6 @@
       <tbody></tbody>
     </table>
 
-    <!-- ⭐ 글쓰기 버튼 (footer 바로 위) -->
     <div class="bbs-write-btn-wrap">
       <a href="/bbs/board-write.html" class="app-btn-primary">글쓰기</a>
     </div>
@@ -128,8 +126,6 @@
 
 <!-- ⭐ side.html -->
 <script type="module">
-  import { syncVisitorUI } from "/firebase-counter.js";
-
   fetch("/side.html")
     .then(r => r.text())
     .then(async html => {
@@ -141,8 +137,25 @@
       const { initSidebarLogin } = await import("/auth/login-ch.js");
       initSidebarLogin();
 
-      // ⭐ 방문자수 즉시 동기화
-      setTimeout(syncVisitorUI, 300);
+      // 방문자수 즉시 동기화
+      setTimeout(() => {
+        const today = document.getElementById("visitor-today")?.textContent;
+        const total = document.getElementById("visitor-total")?.textContent;
+
+        if (today) {
+          const t1 = document.getElementById("visitor-today-sidebar");
+          const t2 = document.getElementById("visitor-today-menu");
+          if (t1) t1.textContent = today;
+          if (t2) t2.textContent = today;
+        }
+
+        if (total) {
+          const a1 = document.getElementById("visitor-total-sidebar");
+          const a2 = document.getElementById("visitor-total-menu");
+          if (a1) a1.textContent = total;
+          if (a2) a2.textContent = total;
+        }
+      }, 300);
     });
 </script>
 
@@ -159,7 +172,6 @@
 
     const category = catParam || document.getElementById("categoryFilter").value;
 
-    // breadcrumb 표시
     document.getElementById("bbs-current-category").textContent =
       getCategoryName(category);
 
