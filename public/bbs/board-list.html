@@ -54,23 +54,22 @@
     });
 </script>
 
-<!-- ⭐ breadcrumb (header 바로 아래, 본문 좌측) -->
-<div class="center-content">
-  <nav class="bbs-breadcrumb">
-    <a href="/">홈</a> >
-    <a href="/bbs/board-list.html">게시판</a> >
-    <span id="bbs-current-category">전체</span>
-  </nav>
-</div>
-
 <!-- ⭐ 2단 레이아웃 -->
 <div class="layout-2col">
 
   <!-- 중앙 콘텐츠 -->
   <main class="center-content">
 
+    <!-- ⭐ breadcrumb (본문 좌측 최상단) -->
+    <nav class="bbs-breadcrumb">
+      <a href="/">홈</a> >
+      <a href="/bbs/board-list.html">게시판</a> >
+      <span id="bbs-current-category">전체</span>
+    </nav>
+
     <h2>게시판</h2>
 
+    <!-- ⭐ 앱 스타일 select -->
     <select id="categoryFilter" class="bbs-select">
       <option value="">전체</option>
       <option value="notice">공지사항</option>
@@ -80,6 +79,7 @@
       <option value="case">판례</option>
     </select>
 
+    <!-- ⭐ 게시판 목록 -->
     <table id="postTable" class="bbs-table">
       <thead>
         <tr>
@@ -92,6 +92,7 @@
       <tbody></tbody>
     </table>
 
+    <!-- ⭐ 글쓰기 버튼 (footer 바로 위) -->
     <div class="bbs-write-btn-wrap">
       <a href="/bbs/board-write.html" class="app-btn-primary">글쓰기</a>
     </div>
@@ -139,7 +140,7 @@
       const { initSidebarLogin } = await import("/auth/login-ch.js");
       initSidebarLogin();
 
-      // 방문자수 즉시 동기화
+      // ⭐ 방문자수 즉시 동기화
       setTimeout(() => {
         const today = document.getElementById("visitor-today")?.textContent;
         const total = document.getElementById("visitor-total")?.textContent;
