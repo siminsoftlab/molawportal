@@ -5,20 +5,12 @@
 
   <!-- ⭐ SEO 최적화 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- ⭐ Title (40자 이내) -->
   <title>딱요만큼변제 게시판 — 공지·뉴스·자료실·판례 모음</title>
-
-  <!-- ⭐ Description (80자 이내) -->
   <meta name="description" content="공지사항, 뉴스, 이벤트, 자료실, 판례를 한곳에서 확인할 수 있는 딱요만큼변제 통합 게시판입니다.">
-
-  <!-- ⭐ Keywords -->
   <meta name="keywords" content="개인회생 계산기, 변제금 계산기, 생계비 계산기, 연이자 계산기, 월변제금, 청산가치, 불법사채 이자계산">
 
-  <!-- ⭐ Canonical -->
   <link rel="canonical" href="https://molawcalculator.com/index.html">
 
-  <!-- ⭐ Open Graph -->
   <meta property="og:title" content="개인회생 계산기 — 변제금·생계비 자동 계산">
   <meta property="og:description" content="개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스">
   <meta property="og:type" content="website">
@@ -26,10 +18,8 @@
   <meta property="og:url" content="https://molawcalculator.com/index.html">
   <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
 
-  <!-- ⭐ Twitter -->
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- ⭐ JSON-LD 구조화 데이터 -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -43,12 +33,11 @@
   <!-- CSS -->
   <link rel="stylesheet" href="/premium-optimized.css">
   <link rel="stylesheet" href="/common-apply-ch.css">
-  <link rel="stylesheet" href="/review-ch.css">
-  <link rel="stylesheet" href="/youtube-ch.css">
-  <link rel="stylesheet" href="/map-ch.css">
-  <link rel="stylesheet" href="/court-ch.css">
-  <link rel="stylesheet" href="/bbs/board.css"> <!-- ⭐ 추가 -->
+  <link rel="stylesheet" href="/bbs/board.css">
   <link rel="icon" href="/images/favicon.ico">
+
+  <!-- sha256 (전역 함수) -->
+  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
 </head>
 
 <body class="homepage">
@@ -64,6 +53,13 @@
     });
 </script>
 
+<!-- ⭐ breadcrumb (header 바로 아래) -->
+<nav class="bbs-breadcrumb">
+  <a href="/">홈</a> >
+  <a href="/bbs/board-list.html">게시판</a> >
+  <span id="bbs-current-category">전체</span>
+</nav>
+
 <!-- ⭐ 2단 레이아웃 -->
 <div class="layout-2col">
 
@@ -71,15 +67,6 @@
   <main class="center-content">
 
     <h2>게시판</h2>
-
-    <!-- ⭐ 네비게이션 -->
-    <nav class="bbs-nav">
-      <a href="/bbs/board-list.html?cat=notice">공지사항</a>
-      <a href="/bbs/board-list.html?cat=news">뉴스</a>
-      <a href="/bbs/board-list.html?cat=event">이벤트</a>
-      <a href="/bbs/board-list.html?cat=resource">자료실</a>
-      <a href="/bbs/board-list.html?cat=case">판례</a>
-    </nav>
 
     <!-- ⭐ 앱 스타일 select -->
     <select id="categoryFilter" class="bbs-select">
@@ -141,6 +128,8 @@
 
 <!-- ⭐ side.html -->
 <script type="module">
+  import { syncVisitorUI } from "/firebase-counter.js";
+
   fetch("/side.html")
     .then(r => r.text())
     .then(async html => {
@@ -151,12 +140,15 @@
 
       const { initSidebarLogin } = await import("/auth/login-ch.js");
       initSidebarLogin();
+
+      // ⭐ 방문자수 즉시 동기화
+      setTimeout(syncVisitorUI, 300);
     });
 </script>
 
 <!-- ⭐ 게시판 로직 -->
 <script type="module">
-  import { loadPostList, filterByCategory } from "/bbs/board.js";
+  import { loadPostList, filterByCategory, getCategoryName } from "/bbs/board.js";
 
   async function renderBoard() {
     const posts = await loadPostList();
@@ -166,6 +158,10 @@
     const catParam = params.get("cat");
 
     const category = catParam || document.getElementById("categoryFilter").value;
+
+    // breadcrumb 표시
+    document.getElementById("bbs-current-category").textContent =
+      getCategoryName(category);
 
     const filtered = filterByCategory(posts, category);
 
@@ -178,7 +174,7 @@
         <tr onclick="location.href='/bbs/board-view.html?id=${p.id}'">
           <td>${p.postId}</td>
           <td>${p.title}</td>
-          <td>${p.category}</td>
+          <td>${getCategoryName(p.category)}</td>
           <td>${date}</td>
         </tr>
       `;
@@ -192,11 +188,6 @@
 
 <script type="module" src="/firebase-init.js"></script>
 <script src="/premium-optimized.js?v=2"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="/review-ch.js"></script>
-<script src="/youtube-ch.js"></script>
-<script src="/map.js"></script>
-<script src="/court-ch.js"></script>
 <script src="/block-right-click.js"></script>
 
 </body>
