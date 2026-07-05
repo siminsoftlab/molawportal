@@ -65,34 +65,48 @@
     margin-bottom: 4px;
   }
 
-  /* 로그인 전/후 공통 UI */
-  .auth-box {
-    display: flex;
-    flex-direction: column;
-    gap: 12px; /* 여백 통일 */
-  }
+/* 로그인 전/후 공통 UI */
+.auth-box {
+  display: flex;
+  flex-direction: column;
+}
 
-  /* 입력창 */
-  .app-input {
-    padding: 12px; /* 여백 통일 */
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 100%;
-  }
+/* 입력창 + 버튼 여백을 동일하게 */
+.app-input,
+.right-sidebar .app-btn-primary,
+.right-sidebar .app-btn-secondary {
+  margin-bottom: 10px;  /* ← 네 요소 모두 동일 여백 */
+}
 
-  /* 버튼 공통 — 사이드바 범위로 제한 */
-  .right-sidebar .app-btn-primary,
-  .right-sidebar .app-btn-secondary {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px; /* 여백 통일 */
-    border-radius: 8px;
-    font-size: 15px;
-    width: 100%;
-    text-align: center;
-  }
+/* 입력창 */
+.app-input {
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%;
+}
+
+/* 버튼 공통 — 사이드바 범위로 제한 */
+.right-sidebar .app-btn-primary,
+.right-sidebar .app-btn-secondary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  width: 100%;
+  text-align: center;
+}
+
+/* 로그인 상태 메시지 */
+.login-status {
+  font-size: 13px;
+  min-height: 18px;
+  color: #666;
+  margin-bottom: 4px;  /* 살짝만 띄워서 자연스럽게 */
+}
 
   .app-btn-primary {
     background: #4a6fff;
@@ -102,13 +116,6 @@
   .app-btn-secondary {
     background: #e5e5e5;
     color: #333;
-  }
-
-  /* 로그인 상태 메시지 */
-  .login-status {
-    font-size: 13px;
-    min-height: 18px;
-    color: #666;
   }
 
   /* 로그인 후 사용자명 */
