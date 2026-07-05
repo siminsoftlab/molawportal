@@ -400,46 +400,25 @@
 
 
 <!-- ⭐ side.html 로드 -->
-<script>
+<script type="module">
   fetch("/side.html")
     .then(r => r.text())
-    .then(html => {
+    .then(async html => {
       document.getElementById("side").innerHTML = html;
 
-      // side.html 로드 후 auth-state.js 실행
-      import("/auth/auth-state.js");
+      // 로그인 상태 UI 처리
+      await import("/auth/auth-state-ch.js");
+
+      // 🔥 사이드바 로그인 초기화
+      const { initSidebarLogin } = await import("/auth/login-ch.js");
+      initSidebarLogin();
     });
 </script>
+
 
 <!-- ⭐ Firebase 방문자 카운터 -->
 <script type="module" src="/firebase-counter.js"></script>
 
-<!-- ⭐ 로그인 기능 -->
-<script type="module">
-  import { auth } from "/firebase-init.js";
-  import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-
-  const loginBtn = document.getElementById("login-btn-sidebar");
-
-  if (loginBtn) {
-    loginBtn.addEventListener("click", async () => {
-      const email = document.getElementById("login-email").value.trim();
-      const pw = document.getElementById("login-password").value.trim();
-
-      if (!email || !pw) {
-        alert("이메일과 비밀번호를 입력하세요.");
-        return;
-      }
-
-      try {
-        await signInWithEmailAndPassword(auth, email, pw);
-        window.location.reload();
-      } catch (err) {
-        alert("로그인 실패: " + err.message);
-      }
-    });
-  }
-</script>
 
 <!-- ⭐ 방문자 수 동기화 -->
 <script type="module">
