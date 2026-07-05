@@ -47,6 +47,7 @@
   <link rel="stylesheet" href="/youtube-ch.css">
   <link rel="stylesheet" href="/map-ch.css">
   <link rel="stylesheet" href="/court-ch.css">
+  <link rel="stylesheet" href="/bbs/board.css"> <!-- ⭐ 추가 -->
   <link rel="icon" href="/images/favicon.ico">
 </head>
 
@@ -63,18 +64,6 @@
     });
 </script>
 
-<!-- 숨겨진 방문자 값 -->
-<span id="visitor-today" style="display:none;"></span>
-<span id="visitor-total" style="display:none;"></span>
-
-<!-- ⭐ 메인 검색창 -->
-<section class="main-search-section">
-  <div class="main-search-box">
-    <input type="text" id="mainSearchInput" placeholder="검색어를 입력하세요">
-    <button id="mainSearchBtn">검색</button>
-  </div>
-</section>
-
 <!-- ⭐ 2단 레이아웃 -->
 <div class="layout-2col">
 
@@ -82,6 +71,15 @@
   <main class="center-content">
 
     <h2>게시판</h2>
+
+    <!-- ⭐ 네비게이션 추가 -->
+    <nav class="bbs-nav">
+      <a href="/bbs/board-list.html?cat=notice">공지사항</a>
+      <a href="/bbs/board-list.html?cat=news">뉴스</a>
+      <a href="/bbs/board-list.html?cat=event">이벤트</a>
+      <a href="/bbs/board-list.html?cat=resource">자료실</a>
+      <a href="/bbs/board-list.html?cat=case">판례</a>
+    </nav>
 
     <select id="categoryFilter">
       <option value="">전체</option>
@@ -151,32 +149,6 @@
     });
 </script>
 
-<!-- ⭐ 방문자 카운터 -->
-<script type="module" src="/firebase-counter.js"></script>
-
-<script type="module">
-  const syncVisitorUI = () => {
-    const today = document.getElementById("visitor-today")?.textContent;
-    const total = document.getElementById("visitor-total")?.textContent;
-
-    if (today) {
-      const t1 = document.getElementById("visitor-today-sidebar");
-      const t2 = document.getElementById("visitor-today-menu");
-      if (t1) t1.textContent = today;
-      if (t2) t2.textContent = today;
-    }
-
-    if (total) {
-      const a1 = document.getElementById("visitor-total-sidebar");
-      const a2 = document.getElementById("visitor-total-menu");
-      if (a1) a1.textContent = total;
-      if (a2) a2.textContent = total;
-    }
-  };
-
-  setInterval(syncVisitorUI, 500);
-</script>
-
 <!-- ⭐ 게시판 로직 -->
 <script type="module">
   import { loadPostList, filterByCategory } from "/bbs/board.js";
@@ -184,7 +156,11 @@
   async function renderBoard() {
     const posts = await loadPostList();
     const tbody = document.querySelector("#postTable tbody");
-    const category = document.getElementById("categoryFilter").value;
+
+    const params = new URLSearchParams(location.search);
+    const catParam = params.get("cat");
+
+    const category = catParam || document.getElementById("categoryFilter").value;
 
     const filtered = filterByCategory(posts, category);
 
