@@ -30,13 +30,13 @@ export function initAuthStateSidebar() {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists() && username) {
-          username.textContent = userSnap.data().name;
+          username.textContent = userSnap.data().name + "님";
         } else if (username) {
-          username.textContent = user.email;
+          username.textContent = user.email + "님";
         }
       } catch (err) {
         console.error("Firestore 조회 오류:", err);
-        if (username) username.textContent = user.email;
+        if (username) username.textContent = user.email + "님";
       }
 
       // 이용권 표시
