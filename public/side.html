@@ -2,21 +2,27 @@
 <aside class="right-sidebar">
 
   <!-- 로그인 박스 -->
-  <div class="sidebar-box">
-    <h5>딱요만큼변제를 편리하게 이용하세요</h5>
+  <div class="sidebar-box login-section">
+
+    <h5 class="sidebar-title">딱요만큼변제를 편리하게 이용하세요</h5>
 
     <!-- 로그인 전 -->
-    <div id="auth-before-sidebar" style="display:flex; flex-direction:column; gap:10px;">
+    <div id="auth-before-sidebar" class="auth-box">
       <input type="email" id="login-email" placeholder="이메일" class="app-input" autocomplete="off">
       <input type="password" id="login-password" placeholder="비밀번호" class="app-input" autocomplete="new-password">
+
+      <!-- 로그인 상태 메시지 -->
+      <div id="login-status" class="login-status"></div>
+
       <button id="login-btn-sidebar" class="app-btn-primary">로그인</button>
       <a href="/auth/signup.html" class="app-btn-secondary">회원가입</a>
     </div>
 
     <!-- 로그인 후 -->
-    <div id="auth-after-sidebar" style="display:none; flex-direction:column; gap:10px;">
+    <div id="auth-after-sidebar" class="auth-box" style="display:none;">
       <span id="auth-username-sidebar" class="username-inline"></span>
-      <span id="ticket-remaining-sidebar" style="color:#4a6fff; font-weight:600;"></span>
+      <span id="ticket-remaining-sidebar" class="ticket-remaining"></span>
+
       <a href="/mypage/mypage.html" class="app-btn-primary">마이페이지</a>
       <button id="logout-btn-sidebar" class="app-btn-secondary">로그아웃</button>
     </div>
@@ -24,14 +30,14 @@
 
   <!-- 방문자 통계 -->
   <div class="sidebar-box">
-    <h3>📊 방문자 통계</h3>
+    <h3 class="sidebar-title">📊 방문자 통계</h3>
     <p>오늘 방문자: <b id="visitor-today-sidebar">조회중…</b></p>
     <p>전체 방문자: <b id="visitor-total-sidebar">조회중…</b></p>
   </div>
 
   <!-- 최근 계산기 -->
   <div class="sidebar-box">
-    <h3>최근 사용한 계산기</h3>
+    <h3 class="sidebar-title">최근 사용한 계산기</h3>
     <ul id="recentCalcListSidebar"></ul>
   </div>
 
@@ -43,5 +49,78 @@
     .right-sidebar {
       display: none !important;
     }
+  }
+
+  /* 공통 박스 스타일 */
+  .sidebar-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .sidebar-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* 로그인 전/후 공통 UI */
+  .auth-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* 입력창 */
+  .app-input {
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  /* 버튼 공통 */
+  .app-btn-primary,
+  .app-btn-secondary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .app-btn-primary {
+    background: #4a6fff;
+    color: white;
+  }
+
+  .app-btn-secondary {
+    background: #e5e5e5;
+    color: #333;
+  }
+
+  /* 로그인 상태 메시지 */
+  .login-status {
+    font-size: 13px;
+    min-height: 18px;
+    color: #666;
+  }
+
+  /* 로그인 후 사용자명 */
+  .username-inline {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  /* 이용권 표시 */
+  .ticket-remaining {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a6fff;
   }
 </style>
