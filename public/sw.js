@@ -1,11 +1,13 @@
 // ===============================
-// 기본 캐시 설정
+// 캐시 설정 (리뉴얼 중에는 기존 서비스만 캐싱)
 // ===============================
 const CACHE_NAME = "molaw-cache-v1";
+
+// 기존 서비스(index.html)만 캐싱
+// 리뉴얼 파일(main.html, -ch.js 등)은 절대 캐싱 금지
 const urlsToCache = [
-  "/", 
-  "/index.html",
-  "/mypage/mypage.html"
+  "/",
+  "/index.html"
 ];
 
 // ===============================
@@ -23,9 +25,29 @@ self.addEventListener("install", (event) => {
 // 네트워크 요청 가로채기
 // ===============================
 self.addEventListener("fetch", (event) => {
+  const url = event.request.url;
+
+  // 🔥 Firebase 요청은 절대 캐싱 금지 (로그인 문제 해결 핵심)
+  if (
+    url.includes("firebase") ||
+    url.includes("googleapis") ||
+    url.includes("gstatic")
+  ) {
+    return; // 네트워크로 직접 보내기
+  }
+
+  // 🔥 리뉴얼 파일은 캐싱 금지
+  if (
+    url.includes("-ch.js") ||
+    url.includes("-ch.css") ||
+    url.includes("main.html")
+  ) {
+    return; // 네트워크로 직접 보내기
+  }
+
+  // 기본 캐싱 전략
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // 캐시에 있으면 캐시 사용, 없으면 네트워크 요청
       return response || fetch(event.request);
     })
   );
