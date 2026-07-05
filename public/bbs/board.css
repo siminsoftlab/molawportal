@@ -1,21 +1,28 @@
+/* ============================================================
+   게시판 전용 스타일 — board.css
+============================================================ */
+
+/* ⭐ 네비게이션 */
 .bbs-nav {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
 .bbs-nav a {
-  padding: 8px 14px;
-  background: #f5f5f5;
-  border-radius: 6px;
+  padding: 10px 14px;
+  background: #f5f7fa;
+  border-radius: 8px;
   font-size: 14px;
   color: #333;
+  border: 1px solid #e2e2e2;
 }
 
 .bbs-nav a:hover {
-  background: #e8e8e8;
+  background: #e9eef5;
 }
 
+/* ⭐ 앱 스타일 select */
 .bbs-select {
   width: 100%;
   padding: 12px 14px;
@@ -30,4 +37,31 @@
   background-image: url('/images/select-arrow.svg');
   background-repeat: no-repeat;
   background-position: right 14px center;
+  margin-bottom: 20px;
+}
+
+/* ⭐ 게시판 테이블 */
+.bbs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.bbs-table th,
+.bbs-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 14px;
+}
+
+.bbs-table tr:hover {
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+/* ⭐ 글쓰기 버튼 */
+.bbs-write-btn-wrap {
+  margin-top: 30px;
+  margin-bottom: 40px;
+  text-align: right;
 }
