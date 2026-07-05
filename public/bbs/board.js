@@ -24,7 +24,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
 /* ============================================================
-   비밀번호 해시 (CDN 로드된 sha256 사용)
+   비밀번호 해시 (CDN sha256)
 ============================================================ */
 export function hashPassword(pw) {
   return sha256(pw || "");
@@ -75,7 +75,7 @@ export async function getNextCommentId() {
 }
 
 /* ============================================================
-   파일 업로드 (자료실)
+   파일 업로드
 ============================================================ */
 export async function uploadFile(file) {
   if (!file) return null;
@@ -88,7 +88,7 @@ export async function uploadFile(file) {
 }
 
 /* ============================================================
-   게시물 저장 (새 글 + 수정)
+   게시물 저장
 ============================================================ */
 export async function savePost({ category, title, content, password, file }, editId = null) {
   const now = new Date();
@@ -272,6 +272,4 @@ export async function searchComments(keyword) {
   const snap = await getDocs(collection(db, "comments"));
 
   return snap.docs
-    .map(d => ({ id: d.id, ...d.data() }))
-    .filter(c => (c.text || "").toLowerCase().includes(q));
-}
+    .map(d => ({ id:
