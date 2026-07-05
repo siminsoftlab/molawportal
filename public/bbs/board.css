@@ -65,3 +65,18 @@
   margin-bottom: 40px;
   text-align: right;
 }
+
+.bbs-breadcrumb {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.bbs-breadcrumb a {
+  color: #333;
+}
+
+.bbs-breadcrumb span {
+  color: #000;
+  font-weight: 600;
+}
