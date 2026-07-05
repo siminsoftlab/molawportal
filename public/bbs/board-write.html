@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 작성 - 딱요만큼변제</title>
+  <meta name="description" content="게시글 작성 페이지입니다.">
+
+  <link rel="stylesheet" href="/premium-optimized.css">
+  <link rel="stylesheet" href="/common-apply-ch.css">
+  <link rel="stylesheet" href="/bbs/board.css">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
+</head>
+
+<body class="homepage">
+
+<div id="header"></div>
+<script>
+  fetch("/header.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("header").innerHTML = html;
+      if (typeof initAll === "function") initAll();
+    });
+</script>
+
+<div class="layout-2col">
+
+  <main class="center-content">
+
+    <nav class="bbs-breadcrumb">
+      <a href="/">홈</a> >
+      <a href="/bbs/board-list.html">게시판</a> >
+      <span>작성하기</span>
+    </nav>
+
+    <h2>게시글 작성</h2>
+
+    <form id="writeForm" class="write-form">
+
+      <label>카테고리</label>
+      <select id="write-category" class="bbs-select">
+        <option value="notice">공지사항</option>
+        <option value="news">뉴스</option>
+        <option value="event">이벤트</option>
+        <option value="resource">자료실</option>
+        <option value="case">판례</option>
+      </select>
+
+      <label>제목</label>
+      <input type="text" id="write-title" class="write-input">
+
+      <label>내용</label>
+      <textarea id="write-content" class="write-textarea"></textarea>
+
+      <label>비밀번호</label>
+      <input type="password" id="write-password" class="write-input">
+
+      <label>첨부파일</label>
+      <input type="file" id="write-file">
+
+      <button type="button" id="write-submit" class="app-btn-primary">등록</button>
+
+    </form>
+
+    <div class="bbs-write-btn-wrap">
+      <a href="/bbs/board-list.html" class="app-btn-primary">목록으로</a>
+    </div>
+
+  </main>
+
+  <div id="side"></div>
+
+</div>
+
+<div id="footer"></div>
+<script>
+  fetch("/footer-ch.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
+
+<script type="module">
+  import { savePost, loadPost } from "/bbs/board.js";
+
+  async function initWrite() {
+    const params = new URLSearchParams(location.search);
+    const editId = params.get("id");
+
+    if (editId) {
+      const post = await loadPost(editId, false);
+
+      document.getElementById("write-category").value = post.category;
+      document.getElementById("write-title").value = post.title;
+      document.getElementById("write-content").value = post.content;
+    }
+
+    document.getElementById("write-submit").onclick = async () => {
+      const category = document.getElementById("write-category").value;
+      const title = document.getElementById("write-title").value.trim();
+      const content = document.getElementById("write-content").value.trim();
+      const password = document.getElementById("write-password").value.trim();
+      const file = document.getElementById("write-file").files[0];
+
+      if (!title || !content || !password) {
+        alert("제목, 내용, 비밀번호를 입력해주세요.");
+        return;
+      }
+
+      const id = await savePost({ category, title, content, password, file }, editId);
+
+      alert("등록되었습니다.");
+      location.href = "/bbs/board-view.html?id=" + id;
+    };
+  }
+
+  initWrite();
+</script>
+
+<script type="module">
+  fetch("/side.html")
+    .then(r => r.text())
+    .then(async html => {
+      document.getElementById("side").innerHTML = html;
+
+      const { initAuthStateSidebar } = await import("/auth/auth-state-ch.js");
+      initAuthStateSidebar();
+
+      const { initSidebarLogin } = await import("/auth/login-ch.js");
+      initSidebarLogin();
+
+      setTimeout(() => {
+        const today = document.getElementById("visitor-today")?.textContent;
+        const total = document.getElementById("visitor-total")?.textContent;
+
+        if (today) {
+          const t1 = document.getElementById("visitor-today-sidebar");
+          const t2 = document.getElementById("visitor-today-menu");
+          if (t1) t1.textContent = today;
+          if (t2) t2.textContent = today;
+        }
+
+        if (total) {
+          const a1 = document.getElementById("visitor-total-sidebar");
+          const a2 = document.getElementById("visitor-total-menu");
+          if (a1) a1.textContent = total;
+          if (a2) a2.textContent = total;
+        }
+      }, 300);
+    });
+</script>
+
+<script type="module" src="/firebase-init.js"></script>
+<script src="/premium-optimized.js?v=2"></script>
+<script src="/block-right-click.js"></script>
+
+</body>
+</html>
