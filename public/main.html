@@ -398,7 +398,6 @@
 </script>
 
 
-
 <!-- ⭐ side.html 로드 -->
 <script type="module">
   fetch("/side.html")
@@ -406,10 +405,11 @@
     .then(async html => {
       document.getElementById("side").innerHTML = html;
 
-      // 로그인 상태 UI 처리
-      await import("/auth/auth-state-ch.js");
+      // 로그인 상태 UI 적용
+      const { initAuthStateSidebar } = await import("/auth/auth-state-ch.js");
+      initAuthStateSidebar();
 
-      // 🔥 사이드바 로그인 초기화
+      // 로그인 기능 적용
       const { initSidebarLogin } = await import("/auth/login-ch.js");
       initSidebarLogin();
     });
