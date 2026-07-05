@@ -12,6 +12,7 @@ window.openApplyModal = function(type) {
   const applyModal = document.getElementById("commonApplyModal");
   const privacyModal = document.getElementById("privacyModal");
 
+  // 개인정보 모달은 항상 닫고 시작
   if (privacyModal) privacyModal.style.display = "none";
 
   const typeEl = document.getElementById("applyType");
@@ -53,21 +54,30 @@ export function initApplyModal() {
     applyModal.style.display = "none";
   });
 
-  /* 개인정보 모달 열기 */
+  /* 개인정보 모달 열기 (상담신청 모달은 유지) */
   openPrivacy?.addEventListener("click", () => {
-    applyModal.style.display = "none";
     privacyModal.style.display = "flex";
   });
 
-  /* 개인정보 모달 닫기 */
+  /* 개인정보 모달 닫기 → 상담신청 모달 유지 */
   closePrivacy?.addEventListener("click", () => {
     privacyModal.style.display = "none";
+    applyModal.style.display = "flex";
   });
 
-  /* 바깥 클릭 시 닫기 (단 하나) */
+  /* 바깥 클릭 처리 */
   window.addEventListener("click", (e) => {
-    if (e.target === applyModal) applyModal.style.display = "none";
-    if (e.target === privacyModal) privacyModal.style.display = "none";
+
+    // 개인정보 모달 바깥 클릭 → 개인정보 모달만 닫고 상담신청 모달 유지
+    if (e.target === privacyModal) {
+      privacyModal.style.display = "none";
+      applyModal.style.display = "flex";
+    }
+
+    // 상담신청 모달 바깥 클릭 → 상담신청 모달 닫기
+    if (e.target === applyModal) {
+      applyModal.style.display = "none";
+    }
   });
 
   /* Firestore 저장 */
