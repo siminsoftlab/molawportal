@@ -41,7 +41,8 @@ export function initSidebarLogin() {
         statusBox.textContent = "";
       }, 1200);
 
-      window.location.href = "/main.html";
+      // ⭐ 로그인 후 현재 페이지 그대로 유지
+      window.location.href = window.location.pathname + window.location.search;
 
     } catch (err) {
       console.error(err);
