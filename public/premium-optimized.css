@@ -810,6 +810,7 @@ details {
   border-radius: 10px;
   margin-right: 8px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  text-align: center;
 }
 
 .sidebar-box .app-btn-secondary {
