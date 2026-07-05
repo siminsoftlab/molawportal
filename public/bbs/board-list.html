@@ -72,7 +72,7 @@
 
     <h2>게시판</h2>
 
-    <!-- ⭐ 네비게이션 추가 -->
+    <!-- ⭐ 네비게이션 -->
     <nav class="bbs-nav">
       <a href="/bbs/board-list.html?cat=notice">공지사항</a>
       <a href="/bbs/board-list.html?cat=news">뉴스</a>
@@ -81,7 +81,8 @@
       <a href="/bbs/board-list.html?cat=case">판례</a>
     </nav>
 
-    <select id="categoryFilter">
+    <!-- ⭐ 앱 스타일 select -->
+    <select id="categoryFilter" class="bbs-select">
       <option value="">전체</option>
       <option value="notice">공지사항</option>
       <option value="news">뉴스</option>
@@ -90,7 +91,8 @@
       <option value="case">판례</option>
     </select>
 
-    <table id="postTable">
+    <!-- ⭐ 게시판 목록 -->
+    <table id="postTable" class="bbs-table">
       <thead>
         <tr>
           <th>번호</th>
@@ -102,7 +104,10 @@
       <tbody></tbody>
     </table>
 
-    <a href="/bbs/board-write.html" class="app-btn-primary">글쓰기</a>
+    <!-- ⭐ 글쓰기 버튼 (footer 바로 위) -->
+    <div class="bbs-write-btn-wrap">
+      <a href="/bbs/board-write.html" class="app-btn-primary">글쓰기</a>
+    </div>
 
   </main>
 
