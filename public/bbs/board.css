@@ -1,0 +1,17 @@
+.bbs-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.bbs-nav a {
+  padding: 8px 14px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.bbs-nav a:hover {
+  background: #e8e8e8;
+}
