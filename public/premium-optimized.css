@@ -814,9 +814,8 @@ details {
 }
 /* 타이틀 */
 .sidebar-box h3.small-title {
-  font-size: 12px;   /* 원하는 크기로 조절 */
-  font-weight: 300;  /* 필요하면 두께 조절 */
-  line-height: 1.4;  /* 줄 간격도 자연스럽게 */
+  font-size: 14px !important;
+  line-height: 1.4;
 }
 
 .sidebar-box .app-btn-secondary {
