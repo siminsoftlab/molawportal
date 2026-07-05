@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- ⭐ SEO 최적화 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ⭐ Title (40자 이내) -->
+  <title>딱요만큼변제 게시판 — 공지·뉴스·자료실·판례 모음</title>
+
+  <!-- ⭐ Description (80자 이내) -->
+  <meta name="description" content="공지사항, 뉴스, 이벤트, 자료실, 판례를 한곳에서 확인할 수 있는 딱요만큼변제 통합 게시판입니다.">
+
+  <!-- ⭐ Keywords -->
+  <meta name="keywords" content="개인회생 계산기, 변제금 계산기, 생계비 계산기, 연이자 계산기, 월변제금, 청산가치, 불법사채 이자계산">
+
+  <!-- ⭐ Canonical -->
+  <link rel="canonical" href="https://molawcalculator.com/index.html">
+
+  <!-- ⭐ Open Graph -->
+  <meta property="og:title" content="개인회생 계산기 — 변제금·생계비 자동 계산">
+  <meta property="og:description" content="개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="딱요만큼변제">
+  <meta property="og:url" content="https://molawcalculator.com/index.html">
+  <meta property="og:image" content="https://molawcalculator.com/images/og_main.png">
+
+  <!-- ⭐ Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- ⭐ JSON-LD 구조화 데이터 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "딱요만큼변제",
+    "url": "https://molawcalculator.com",
+    "description": "개인회생 변제금·생계비·연이자 계산을 자동 제공하는 통합 개인회생 계산 서비스"
+  }
+  </script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/premium-optimized.css">
+  <link rel="stylesheet" href="/common-apply-ch.css">
+  <link rel="stylesheet" href="/review-ch.css">
+  <link rel="stylesheet" href="/youtube-ch.css">
+  <link rel="stylesheet" href="/map-ch.css">
+  <link rel="stylesheet" href="/court-ch.css">
+  <link rel="icon" href="/images/favicon.ico">
+</head>
+
+<body class="homepage">
+
+<!-- ⭐ header -->
+<div id="header"></div>
+<script>
+  fetch("/header.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("header").innerHTML = html;
+      if (typeof initAll === "function") initAll();
+    });
+</script>
+
+<!-- 숨겨진 방문자 값 -->
+<span id="visitor-today" style="display:none;"></span>
+<span id="visitor-total" style="display:none;"></span>
+
+<!-- ⭐ 메인 검색창 -->
+<section class="main-search-section">
+  <div class="main-search-box">
+    <input type="text" id="mainSearchInput" placeholder="검색어를 입력하세요">
+    <button id="mainSearchBtn">검색</button>
+  </div>
+</section>
+
+<!-- ⭐ 2단 레이아웃 -->
+<div class="layout-2col">
+
+  <!-- 중앙 콘텐츠 -->
+  <main class="center-content">
+
+    <h2>게시판</h2>
+
+    <select id="categoryFilter">
+      <option value="">전체</option>
+      <option value="notice">공지사항</option>
+      <option value="news">뉴스</option>
+      <option value="event">이벤트</option>
+      <option value="resource">자료실</option>
+      <option value="case">판례</option>
+    </select>
+
+    <table id="postTable">
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>카테고리</th>
+          <th>작성일</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <a href="/bbs/board-write.html" class="app-btn-primary">글쓰기</a>
+
+  </main>
+
+  <!-- ⭐ 우측 사이드바 -->
+  <div id="side"></div>
+
+</div>
+
+<!-- ⭐ footer -->
+<div id="footer"></div>
+<script>
+  fetch("/footer-ch.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("footer").innerHTML = html;
+    });
+</script>
+
+<!-- ⭐ modals -->
+<div id="modals"></div>
+<script type="module">
+  import { initApplyModal } from "/common-apply-ch.js";
+
+  fetch("/modals.html")
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById("modals").innerHTML = html;
+      initApplyModal();
+    });
+</script>
+
+<!-- ⭐ side.html -->
+<script type="module">
+  fetch("/side.html")
+    .then(r => r.text())
+    .then(async html => {
+      document.getElementById("side").innerHTML = html;
+
+      const { initAuthStateSidebar } = await import("/auth/auth-state-ch.js");
+      initAuthStateSidebar();
+
+      const { initSidebarLogin } = await import("/auth/login-ch.js");
+      initSidebarLogin();
+    });
+</script>
+
+<!-- ⭐ 방문자 카운터 -->
+<script type="module" src="/firebase-counter.js"></script>
+
+<script type="module">
+  const syncVisitorUI = () => {
+    const today = document.getElementById("visitor-today")?.textContent;
+    const total = document.getElementById("visitor-total")?.textContent;
+
+    if (today) {
+      const t1 = document.getElementById("visitor-today-sidebar");
+      const t2 = document.getElementById("visitor-today-menu");
+      if (t1) t1.textContent = today;
+      if (t2) t2.textContent = today;
+    }
+
+    if (total) {
+      const a1 = document.getElementById("visitor-total-sidebar");
+      const a2 = document.getElementById("visitor-total-menu");
+      if (a1) a1.textContent = total;
+      if (a2) a2.textContent = total;
+    }
+  };
+
+  setInterval(syncVisitorUI, 500);
+</script>
+
+<!-- ⭐ 게시판 로직 -->
+<script type="module">
+  import { loadPostList, filterByCategory } from "/bbs/board.js";
+
+  async function renderBoard() {
+    const posts = await loadPostList();
+    const tbody = document.querySelector("#postTable tbody");
+    const category = document.getElementById("categoryFilter").value;
+
+    const filtered = filterByCategory(posts, category);
+
+    tbody.innerHTML = "";
+
+    filtered.forEach(p => {
+      const date = new Date(p.createdAt.seconds * 1000).toLocaleDateString();
+
+      tbody.innerHTML += `
+        <tr onclick="location.href='/bbs/board-view.html?id=${p.id}'">
+          <td>${p.postId}</td>
+          <td>${p.title}</td>
+          <td>${p.category}</td>
+          <td>${date}</td>
+        </tr>
+      `;
+    });
+  }
+
+  document.getElementById("categoryFilter").onchange = renderBoard;
+
+  renderBoard();
+</script>
+
+<script type="module" src="/firebase-init.js"></script>
+<script src="/premium-optimized.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="/review-ch.js"></script>
+<script src="/youtube-ch.js"></script>
+<script src="/map.js"></script>
+<script src="/court-ch.js"></script>
+<script src="/block-right-click.js"></script>
+
+</body>
+</html>
