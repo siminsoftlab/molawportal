@@ -23,10 +23,8 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
-import { sha256 } from "https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/src/sha256.min.js";
-
 /* ============================================================
-   공통: 비밀번호 해시/검증
+   비밀번호 해시 (CDN 로드된 sha256 사용)
 ============================================================ */
 export function hashPassword(pw) {
   return sha256(pw || "");
@@ -34,6 +32,20 @@ export function hashPassword(pw) {
 
 export function verifyPassword(inputPw, storedHash) {
   return hashPassword(inputPw) === storedHash;
+}
+
+/* ============================================================
+   카테고리 이름 (breadcrumb용)
+============================================================ */
+export function getCategoryName(cat) {
+  const map = {
+    "notice": "공지사항",
+    "news": "뉴스",
+    "event": "이벤트",
+    "resource": "자료실",
+    "case": "판례"
+  };
+  return map[cat] || "전체";
 }
 
 /* ============================================================
@@ -72,9 +84,7 @@ export async function uploadFile(file) {
   const fileRef = storageRef(storage, filePath);
 
   await uploadBytes(fileRef, file);
-  const url = await getDownloadURL(fileRef);
-
-  return url;
+  return await getDownloadURL(fileRef);
 }
 
 /* ============================================================
@@ -137,7 +147,7 @@ export async function loadPost(id, increaseView = true) {
 }
 
 /* ============================================================
-   게시물 삭제 (비밀번호 검증 포함)
+   게시물 삭제
 ============================================================ */
 export async function deletePost(id, inputPw) {
   const ref = doc(db, "posts", id);
@@ -186,7 +196,6 @@ export async function loadComments(postId) {
 
   const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-  // 대댓글 트리 구조로 변환
   const tree = [];
   const map = {};
 
@@ -206,7 +215,7 @@ export async function loadComments(postId) {
 }
 
 /* ============================================================
-   댓글 추가 (대댓글 포함)
+   댓글 추가
 ============================================================ */
 export async function addComment(postId, { user, text, password, parentId = null }) {
   const commentId = await getNextCommentId();
@@ -227,7 +236,7 @@ export async function addComment(postId, { user, text, password, parentId = null
 }
 
 /* ============================================================
-   댓글 삭제 (비밀번호 검증)
+   댓글 삭제
 ============================================================ */
 export async function deleteComment(commentId, inputPw) {
   const ref = doc(db, "comments", commentId);
@@ -244,7 +253,7 @@ export async function deleteComment(commentId, inputPw) {
 }
 
 /* ============================================================
-   검색 (게시물 + 댓글)
+   검색
 ============================================================ */
 export async function searchPosts(keyword) {
   const q = (keyword || "").toLowerCase();
