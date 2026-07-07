@@ -1,6 +1,3 @@
-// =========================
-// PDF.js 설정
-// =========================
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
@@ -18,40 +15,28 @@ function log(msg) {
   statusEl.textContent = msg;
 }
 
-// =========================
-// Vision OCR 기반 PDF OCR
-// =========================
 async function ocrPdf(file) {
   log("스캔본 OCR 시작...");
-
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-
   let fullText = "";
-
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     log(`페이지 ${pageNum} 렌더링 중...`);
-
     const page = await pdf.getPage(pageNum);
     const viewport = page.getViewport({ scale: 5.5 });
-
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-
     await page.render({ canvasContext: ctx, viewport }).promise;
-
     const dataUrl = canvas.toDataURL("image/png");
     const base64 = dataUrl.replace(/^data:image\/png;base64,/, "");
-
     const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/visionOCR", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image: base64 })
     });
-
     const result = await res.json();
     fullText += `\n=== PAGE ${pageNum} ===\n` + result.text;
   }
@@ -60,9 +45,6 @@ async function ocrPdf(file) {
   return fullText;
 }
 
-// =========================
-// 문자열 유사도 / 정규화
-// =========================
 function similarity(a, b) {
   a = a.toLowerCase();
   b = b.toLowerCase();
@@ -76,38 +58,26 @@ function normalize(str) {
   return str.replace(/\s+/g, "").replace(/[^가-힣A-Za-z0-9]/g, "");
 }
 
-// =========================
-// 전화번호 추출
-// =========================
 function extractPhone(line) {
   const m = line.match(/\(?0\d{1,2}-\d{3,4}-\d{4}\)?/);
   return m ? m[0].replace(/[()]/g, "") : "-";
 }
 
-// =========================
-// 채권사 파싱
-// =========================
 function parseCreditReport(text) {
-
-  // 1. 섹션 분리
   function splitSections(text) {
     const lines = text.split(/\r?\n/);
     const sections = {};
     let current = "기타";
-
     for (const line of lines) {
       const l = line.trim();
-
       if (l.includes("대출정보")) current = "대출정보";
       else if (l.includes("신용도판단정보") && l.includes("공공정보")) current = "변동분";
       else if (l.includes("공공정보")) current = "공공정보";
       else if (l.includes("채권자변동정보 조회서")) current = "채권자변동정보";
       else if (l.includes("연체채권의 채권자 변동 현황")) current = "연체변동";
-
       if (!sections[current]) sections[current] = [];
       sections[current].push(l);
     }
-
     return sections;
   }
 
@@ -136,24 +106,20 @@ function parseCreditReport(text) {
     "국세청 포천세무서","의정부지방법원","우리은행 여신관리부"
   ];
 
-  // 3. 대출정보 파싱
   function parseLoanInfo(lines) {
     const rows = [];
     for (const line of lines) {
       const clean = line.replace(/\s+/g, " ");
       const norm = normalize(clean);
-
       let bestMatch = null;
       let bestScore = 0;
       for (const c of CREDITORS) {
         const score = similarity(norm, normalize(c));
         if (score > bestScore) { bestScore = score; bestMatch = c; }
       }
-
       if (bestScore > 0.55) {
         const amountMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
         const amount = amountMatch ? parseInt(amountMatch[1].replace(/,/g, ""), 10) : 0;
-
         rows.push({
           creditor: bestMatch,
           account: "-",
@@ -169,27 +135,22 @@ function parseCreditReport(text) {
     return rows;
   }
 
-  // 4. 변동분 / 공공정보 파싱
   function parseJudgmentAndPublic(lines) {
     const rows = [];
     let currentCreditor = null;
-
     for (const line of lines) {
       const clean = line.replace(/\s+/g, " ");
       const norm = normalize(clean);
-
       let bestMatch = null;
       let bestScore = 0;
       for (const c of CREDITORS) {
         const score = similarity(norm, normalize(c));
         if (score > bestScore) { bestScore = score; bestMatch = c; }
       }
-
       if (bestScore > 0.55) {
         currentCreditor = bestMatch;
         continue;
       }
-
       if (!currentCreditor) continue;
 
       let type = null;
@@ -199,7 +160,6 @@ function parseCreditReport(text) {
 
       const accountMatch = clean.match(/\d{6,}/);
       const account = accountMatch ? accountMatch[0] : "-";
-
       const amountMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
       const amount = amountMatch ? parseInt(amountMatch[1].replace(/,/g, ""), 10) : 0;
 
@@ -223,27 +183,22 @@ function parseCreditReport(text) {
     return rows;
   }
 
-  // 5. 연체변동 파싱
   function parseArrearChange(lines) {
     const rows = [];
     let currentCreditor = null;
-
     for (const line of lines) {
       const clean = line.replace(/\s+/g, " ");
       const norm = normalize(clean);
-
       let bestMatch = null;
       let bestScore = 0;
       for (const c of CREDITORS) {
         const score = similarity(norm, normalize(c));
         if (score > bestScore) { bestScore = score; bestMatch = c; }
       }
-
       if (bestScore > 0.55) {
         currentCreditor = bestMatch;
         continue;
       }
-
       if (!currentCreditor) continue;
 
       const isArrear =
@@ -277,12 +232,10 @@ function parseCreditReport(text) {
     return rows;
   }
 
-  // 6. 전체 변제 판정
   function isFullyRepaid(group) {
     return group.some(r => r.releaseReason === "본인변제");
   }
 
-  // 7. buyer 탐색 (계좌/금액이 "-"여도 작동)
   function findBuyer(allRows, sellerCreditor) {
     return allRows.find(r =>
       r.creditor !== sellerCreditor &&
@@ -290,15 +243,12 @@ function parseCreditReport(text) {
     );
   }
 
-  // 8. 양도양수 변환
   function convertTransferFormat(group, allRows) {
     const creditor = group[0].creditor;
-
     const transfers = group
       .map(r => r.transfers)
       .filter(Boolean)
       .filter(t => t !== "-");
-
     if (!transfers.length) return "-";
 
     return transfers
@@ -315,10 +265,8 @@ function parseCreditReport(text) {
       .join(" / ");
   }
 
-  // 9. 후처리
   function postProcess(rows) {
     const byKey = new Map();
-
     for (const row of rows) {
       const creditor = row.creditor || "채권사모름";
       const account = row.account || "-";
@@ -331,7 +279,6 @@ function parseCreditReport(text) {
 
     for (const [key, group] of byKey.entries()) {
       const [creditor, account] = key.split("::");
-
       const hasRegister = group.some(r => r.type === "대출" || r.type === "등록");
       const hasRelease = group.some(r => r.type === "해제");
       const fullyRepaid = isFullyRepaid(group);
@@ -343,8 +290,18 @@ function parseCreditReport(text) {
         if (result.some(r => r.creditor === creditor && r.account === "-")) continue;
       }
 
-      const transfers = convertTransferFormat(group, rows);
+      let transfers = convertTransferFormat(group, rows);
       const repaid = fullyRepaid ? "해제됨" : "미변제";
+
+      if (transfers.includes("→")) {
+        const [seller, buyer] = transfers.split("→").map(s => s.trim());
+        if (buyer && seller === creditor) {
+          continue;
+        }
+        if (buyer && creditor === buyer) {
+          transfers = `${seller}(매각) → ${buyer}`;
+        }
+      }
 
       result.push({
         creditor,
@@ -369,20 +326,15 @@ function parseCreditReport(text) {
   }
 
   const sections = splitSections(text);
-
   const loanRows = parseLoanInfo(sections["대출정보"] || []);
   const judgmentRows = parseJudgmentAndPublic(sections["변동분"] || []);
   const publicRows = parseJudgmentAndPublic(sections["공공정보"] || []);
   const arrearRows = parseArrearChange(sections["연체변동"] || []);
-
   const allRows = [...loanRows, ...judgmentRows, ...publicRows, ...arrearRows];
 
   return postProcess(allRows);
 }
 
-// =========================
-// 실행
-// =========================
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files && pdfInput.files[0];
   if (!file) {
@@ -394,7 +346,6 @@ parseBtn.addEventListener("click", async () => {
   statusEl.textContent = "OCR 처리 중...";
 
   let fullText = "";
-
   try {
     fullText = await ocrPdf(file);
   } catch (e) {
@@ -411,12 +362,8 @@ parseBtn.addEventListener("click", async () => {
   statusEl.textContent = `완료: 표가 생성되었습니다. (총 ${rows.length}건)`;
 });
 
-// =========================
-// 테이블 렌더링
-// =========================
 function renderTable(rows) {
   tableBody.innerHTML = "";
-
   rows.forEach(row => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -430,13 +377,9 @@ function renderTable(rows) {
   });
 }
 
-// =========================
-// 양도/양수 흐름도 렌더링
-// =========================
 function renderFlowMap(rows) {
   if (!flowContainer) return;
   flowContainer.innerHTML = "";
-
   rows.forEach(r => {
     if (r.transfers.includes("→")) {
       const div = document.createElement("div");
@@ -452,9 +395,6 @@ function renderFlowMap(rows) {
   });
 }
 
-// =========================
-// 엑셀 내보내기
-// =========================
 exportExcelBtn.addEventListener("click", () => {
   if (!_rows.length) {
     alert("먼저 PDF를 분석하세요.");
@@ -472,6 +412,5 @@ exportExcelBtn.addEventListener("click", () => {
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "채권현황");
-
   XLSX.writeFile(wb, "채권현황.xlsx");
 });
