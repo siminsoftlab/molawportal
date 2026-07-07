@@ -1,5 +1,5 @@
 // =========================
-// 기본 DOM 요소 (ocr.html 기준)
+// 기본 DOM 요소
 // =========================
 const pdfInput = document.getElementById("pdfFile");
 const parseBtn = document.getElementById("parseBtn");
@@ -11,23 +11,11 @@ const exportExcelBtn = document.getElementById("exportExcelBtn");
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
-let _creditors = []; // 엑셀 내보내기용
+let _rows = []; // 엑셀용 저장
 
 function log(msg) {
   console.log(msg);
   statusEl.textContent = msg;
-}
-
-// =========================
-// 이미지 OCR
-// =========================
-async function ocrImage(file) {
-  log("이미지 OCR 시작...");
-  const url = URL.createObjectURL(file);
-  const { data: { text } } = await Tesseract.recognize(url, "kor+eng");
-  URL.revokeObjectURL(url);
-  log("이미지 OCR 완료");
-  return text;
 }
 
 // =========================
@@ -78,129 +66,53 @@ async function ocrPdf(file) {
 }
 
 // =========================
-// 부채 자동 추출 (기존 debt.js 그대로)
+// ⭐ 신용정보원 전용 파서
 // =========================
-function parseDebts(text) {
+function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  const debts = [];
-
-  const typeKeywords = ["연 체", "연체", "대 지 급", "대지급", "공 공 정 보", "공공정보", "해 제"];
+  const rows = [];
 
   for (const line of lines) {
-    const hasType = typeKeywords.find(k => line.includes(k));
-    if (!hasType) continue;
-
     const clean = line.replace(/\s+/g, " ");
 
-    const type = detectType(clean);
-    if (!type) continue;
+    // 사건번호 (5자리)
+    const caseMatch = clean.match(/\b\d{5}\b/);
+    const caseNum = caseMatch ? caseMatch[0] : "-";
 
-    const dates = clean.match(/\d{4}-\d{2}-\d{2}/g) || [];
-    const numbers = clean.match(/\d{1,3}(?:,\d{3})+/g) || [];
-    const codeMatch = clean.match(/\b\d{5}\b/);
+    // 계좌번호 (6자리 이상)
+    const accountMatch = clean.match(/\d{6,}/);
+    const account = accountMatch ? accountMatch[0] : caseNum;
 
-    const code = codeMatch ? codeMatch[0] : "";
-    const amount1 = numbers[0] ? numbers[0].replace(/,/g, "") : "";
-    const amount2 = numbers[1] ? numbers[1].replace(/,/g, "") : "";
+    // 채권사 추출
+    let creditor = "-";
+    if (clean.includes("공공 정보")) {
+      creditor = clean.split("공공 정보")[1]?.trim() || "공공 정보";
+    } else {
+      creditor = clean.split(" " )[0];
+    }
 
-    let inst = clean;
-    inst = inst.replace(type, "");
-    if (code) inst = inst.replace(code, "");
-    dates.forEach(d => inst = inst.replace(d, ""));
-    numbers.forEach(n => inst = inst.replace(n, ""));
-    inst = inst.replace(/[|,:]/g, "").trim();
-
-    debts.push({
-      raw: clean,
-      type,
-      institution: inst,
-      code,
-      date1: dates[0] || "",
-      date2: dates[1] || "",
-      amountRegistered: amount1,
-      amountOverdue: amount2
-    });
-  }
-
-  return debts;
-}
-
-function detectType(line) {
-  if (line.includes("연 체") || line.includes("연체")) return "연체";
-  if (line.includes("대 지 급") || line.includes("대지급")) return "대지급";
-  if (line.includes("공 공 정 보") || line.includes("공공정보")) return "공공정보";
-  if (line.includes("해 제")) return "해제";
-  return null;
-}
-
-// =========================
-// 흐름 추정 (연체 → 해제)
-// =========================
-function inferFlows(debts) {
-  const flows = new Map();
-  const byAmount = {};
-
-  debts.forEach((d, idx) => {
-    const key = d.amountRegistered;
-    if (!key) return;
-    if (!byAmount[key]) byAmount[key] = [];
-    byAmount[key].push({ idx, d });
-  });
-
-  for (const key in byAmount) {
-    const list = byAmount[key];
-    const overdue = list.filter(x => x.d.type === "연체");
-    const release = list.filter(x => x.d.type === "해제");
-
-    overdue.forEach(o => {
-      const r = release[0];
-      if (r) {
-        flows.set(o.idx, `${o.d.institution} → ${r.d.institution}`);
-        flows.set(r.idx, `${o.d.institution} → ${r.d.institution} (해제)`);
-      }
-    });
-  }
-
-  return flows;
-}
-
-// =========================
-// ⭐ 핵심: debts → creditors 변환
-// =========================
-function debtsToCreditors(debts, flows) {
-  const creditors = [];
-
-  debts.forEach((d, idx) => {
-    const creditor = d.institution || "기관미상";
-
-    // 계좌번호/사건번호
-    const account =
-      d.code ||
-      d.date1 ||
-      d.date2 ||
-      "-";
-
-    // 양도/양수
-    const flow = flows.get(idx) || "";
-    const transfers = flow ? flow : "-";
+    // 양도/양수 여부
+    const transfer =
+      clean.includes("양도") || clean.includes("양수") || clean.includes("채권자변동")
+        ? "양도/양수 있음"
+        : "-";
 
     // 변제 여부
     const repaid =
-      d.type === "해제"
+      clean.includes("해제") || clean.includes("면책") || clean.includes("회생")
         ? "변제됨"
-        : d.type === "연체"
-        ? "미변제"
-        : "기타";
+        : "미변제";
 
-    creditors.push({
+    // 실제 표에 들어갈 구조
+    rows.push({
       creditor,
       account,
-      transfers,
+      transfers: transfer,
       repaid
     });
-  });
+  }
 
-  return creditors;
+  return rows;
 }
 
 // =========================
@@ -209,37 +121,32 @@ function debtsToCreditors(debts, flows) {
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files && pdfInput.files[0];
   if (!file) {
-    alert("PDF 또는 이미지 파일을 선택해 주세요.");
+    alert("PDF 파일을 선택하세요.");
     return;
   }
 
   tableBody.innerHTML = "";
   statusEl.textContent = "OCR 처리 중...";
 
-  const ext = file.name.toLowerCase().split(".").pop();
   let fullText = "";
 
   try {
-    if (ext === "pdf") fullText = await ocrPdf(file);
-    else fullText = await ocrImage(file);
+    fullText = await ocrPdf(file);
   } catch (e) {
-    console.error(e);
     statusEl.textContent = "OCR 오류: " + e.message;
     return;
   }
 
-  const debts = parseDebts(fullText);
-  const flows = inferFlows(debts);
-  const creditors = debtsToCreditors(debts, flows);
+  const rows = parseCreditReport(fullText);
+  _rows = rows;
 
-  _creditors = creditors;
-  renderTable(creditors);
+  renderTable(rows);
 
-  statusEl.textContent = `완료: 표가 생성되었습니다. (총 ${creditors.length}건)`;
+  statusEl.textContent = `완료: 표가 생성되었습니다. (총 ${rows.length}건)`;
 });
 
 // =========================
-// 테이블 렌더링 (ocr.html 형식)
+// 테이블 렌더링
 // =========================
 function renderTable(rows) {
   tableBody.innerHTML = "";
@@ -260,12 +167,12 @@ function renderTable(rows) {
 // 엑셀(xlsx) 내보내기
 // =========================
 exportExcelBtn.addEventListener("click", () => {
-  if (!_creditors.length) {
+  if (!_rows.length) {
     alert("먼저 PDF를 분석하세요.");
     return;
   }
 
-  const data = _creditors.map(row => ({
+  const data = _rows.map(row => ({
     채권사: row.creditor,
     계좌번호_사건번호: row.account,
     양도양수이력: row.transfers,
