@@ -72,3 +72,42 @@ th {
 tbody tr:nth-child(even) {
   background: #fafafa;
 }
+
+.phone-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.phone-link:hover {
+  text-decoration: underline;
+}
+
+.flow-item {
+  padding: 6px 10px;
+  margin: 4px 0;
+  background: #f7f7f7;
+  border-left: 4px solid #4a90e2;
+  font-size: 14px;
+}
+
+.flow-creditor {
+  font-weight: bold;
+  color: #333;
+}
+
+.flow-arrow {
+  margin: 0 6px;
+  color: #4a90e2;
+  font-weight: bold;
+}
+
+.flow-target {
+  font-weight: bold;
+  color: #d9534f;
+}
+
+.flow-account {
+  margin-left: 6px;
+  color: #777;
+}
