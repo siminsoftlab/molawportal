@@ -18,7 +18,7 @@ function log(msg) {
 }
 
 // =========================
-// 스캔본 PDF → 이미지 → 전처리 → OCR
+// Vision OCR 기반 PDF OCR
 // =========================
 async function ocrPdf(file) {
   log("스캔본 OCR 시작...");
@@ -35,62 +35,26 @@ async function ocrPdf(file) {
     log(`페이지 ${pageNum} 렌더링 중...`);
 
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 5.5 }); // 스캔본은 고해상도 필수
+    const viewport = page.getViewport({ scale: 5.5 }); // 고해상도 렌더링
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    // 이미지 데이터 가져오기
-    let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-    // -------------------------
-    // OpenCV 전처리
-    // -------------------------
-    let src = cv.matFromImageData(imgData);
-    let gray = new cv.Mat();
-    let thresh = new cv.Mat();
-    let denoise = new cv.Mat();
-    let morph = new cv.Mat();
-
-    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
-
-    // adaptive threshold (스캔본 필수)
-    cv.adaptiveThreshold(
-      gray,
-      thresh,
-      255,
-      cv.ADAPTIVE_THRESH_GAUSSIAN_C,
-      cv.THRESH_BINARY,
-      35,
-      15
-    );
-
-    // 노이즈 제거
-    cv.bilateralFilter(thresh, denoise, 9, 75, 75);
-
-    // 글자 붙이기
-    let kernel = cv.Mat.ones(2, 2, cv.CV_8U);
-    cv.dilate(denoise, morph, kernel);
-
-    // 최종 이미지
-    cv.imshow(canvas, morph);
-
-    // -------------------------
-    // OCR 실행
-    // -------------------------
+    // 캔버스를 Base64 PNG로 변환
     const dataUrl = canvas.toDataURL("image/png");
+    const base64 = dataUrl.replace(/^data:image\/png;base64,/, "");
 
-    const { data: { text } } = await Tesseract.recognize(dataUrl, "kor+eng", {
-      logger: m => log(`OCR 진행률: ${Math.round(m.progress * 100)}%`)
+    // Vision OCR 호출
+    const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/visionOCR", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: base64 })
     });
 
-    fullText += text + "\n";
-
-    // 메모리 해제
-    src.delete(); gray.delete(); thresh.delete();
-    denoise.delete(); morph.delete(); kernel.delete();
+    const result = await res.json();
+    fullText += `\n=== PAGE ${pageNum} ===\n` + result.text;
   }
 
   log("OCR 완료");
@@ -120,7 +84,7 @@ function normalize(str) {
 }
 
 // =========================
-// 채권사 파싱 (스캔본 전용)
+// 채권사 파싱 (Vision OCR 전용)
 // =========================
 function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -128,26 +92,26 @@ function parseCreditReport(text) {
 
   const creditors = [
     "우리카드","케이비국민카드","신한카드","하나카드","현대카드",
-  "삼성카드","롯데카드","비씨카드","기업은행","씨티은행",
-  "농협은행","농협은행 의정부여신관리단","농업협동조합자산관리",
-  "전북은행","부산은행","경남은행","카카오뱅크","토스뱅크",
-  "상상인저축은행","웰컴저축은행","동원제일저축은행",
-  "에스비아이저축은행","고려저축은행","예가람저축은행",
-  "우리금융저축은행","다올저축은행","오케이저축은행",
-  "키움저축은행","신한저축은행","엔에이치저축은행",
-  "롯데캐피탈","케이비캐피탈","비엔케이캐피탈","하나캐피탈",
-  "현대캐피탈","우리금융캐피탈","한국투자캐피탈",
-  "리딩에이스캐피탈",
-  "리드코프","웰릭스에프앤아이대부","아프로에프앤아이대부",
-  "한빛자산관리대부","베리타스자산대부","애플자산관리대부",
-  "엠메이드대부","에이원자산대부관리","아이앤유크레디트대부",
-  "제니스자산관리대부","한국에셋채권대부",
-  "고려신용정보","흥국생명보험","서울보증보험",
-  "서민금융진흥원","소상공인시장진흥공단","신용보증기금",
-  "국민행복기금","새도약기금","한국자산관리공사",
-  "서울신용보증재단","경기신용보증재단","경북신용보증재단",
-  "경남신용보증재단",
-  "LGU+","SKT","KT","SK브로드밴드"
+    "삼성카드","롯데카드","비씨카드","기업은행","씨티은행",
+    "농협은행","농협은행 의정부여신관리단","농업협동조합자산관리",
+    "전북은행","부산은행","경남은행","카카오뱅크","토스뱅크",
+    "상상인저축은행","웰컴저축은행","동원제일저축은행",
+    "에스비아이저축은행","고려저축은행","예가람저축은행",
+    "우리금융저축은행","다올저축은행","오케이저축은행",
+    "키움저축은행","신한저축은행","엔에이치저축은행",
+    "롯데캐피탈","케이비캐피탈","비엔케이캐피탈","하나캐피탈",
+    "현대캐피탈","우리금융캐피탈","한국투자캐피탈",
+    "리딩에이스캐피탈",
+    "리드코프","웰릭스에프앤아이대부","아프로에프앤아이대부",
+    "한빛자산관리대부","베리타스자산대부","애플자산관리대부",
+    "엠메이드대부","에이원자산대부관리","아이앤유크레디트대부",
+    "제니스자산관리대부","한국에셋채권대부",
+    "고려신용정보","흥국생명보험","서울보증보험",
+    "서민금융진흥원","소상공인시장진흥공단","신용보증기금",
+    "국민행복기금","새도약기금","한국자산관리공사",
+    "서울신용보증재단","경기신용보증재단","경북신용보증재단",
+    "경남신용보증재단",
+    "LGU+","SKT","KT","SK브로드밴드"
   ];
 
   let current = null;
