@@ -29,9 +29,11 @@ parseBtn.addEventListener("click", async () => {
       const page = await pdf.getPage(pageNum);
       const textContent = await page.getTextContent();
       const pageText = textContent.items.map(item => item.str).join(" ");
-      fullText += "\n" + pageText;
+      fullText += "\n" + pageText;      
     }
 
+    console.log(fullText);   // ← 이 줄 추가
+    
     statusEl.textContent = "텍스트 추출 완료. 채권자변동정보 분석 중...";
 
     const debts = parseFromDocumentText(fullText);
