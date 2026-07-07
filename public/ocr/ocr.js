@@ -46,20 +46,20 @@ async function ocrPdf(file) {
     log(`페이지 ${pageNum} OCR 중...`);
 
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 3.5 }); // 고해상도
+    const viewport = page.getViewport({ scale: 3.5 });
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    // 흑백 + 대비 강화
+    // 흑백 전처리
     const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = img.data;
     for (let i = 0; i < data.length; i += 4) {
-      const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+      const avg = (data[i] + data[i+1] + data[i+2]) / 3;
       const v = avg > 150 ? 255 : 0;
-      data[i] = data[i + 1] = data[i + 2] = v;
+      data[i] = data[i+1] = data[i+2] = v;
     }
     ctx.putImageData(img, 0, 0);
 
@@ -70,7 +70,7 @@ async function ocrPdf(file) {
       logger: m => log(`p${pageNum} 진행률: ${Math.round(m.progress * 100)}%`)
     });
 
-    fullText += `\n=== PAGE ${pageNum} ===\n` + text;
+    fullText += text + "\n";
   }
 
   log("PDF OCR 완료");
@@ -78,7 +78,7 @@ async function ocrPdf(file) {
 }
 
 // =========================
-// 부채 자동 추출 (참고 코드 그대로)
+// 부채 자동 추출 (기존 debt.js 그대로)
 // =========================
 function parseDebts(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -106,8 +106,8 @@ function parseDebts(text) {
     let inst = clean;
     inst = inst.replace(type, "");
     if (code) inst = inst.replace(code, "");
-    dates.forEach(d => (inst = inst.replace(d, "")));
-    numbers.forEach(n => (inst = inst.replace(n, "")));
+    dates.forEach(d => inst = inst.replace(d, ""));
+    numbers.forEach(n => inst = inst.replace(n, ""));
     inst = inst.replace(/[|,:]/g, "").trim();
 
     debts.push({
@@ -165,27 +165,31 @@ function inferFlows(debts) {
 }
 
 // =========================
-// 부채 → 채권사/계좌/양도·양수/변제 여부로 변환
+// ⭐ 핵심: debts → creditors 변환
 // =========================
 function debtsToCreditors(debts, flows) {
   const creditors = [];
 
   debts.forEach((d, idx) => {
     const creditor = d.institution || "기관미상";
+
+    // 계좌번호/사건번호
     const account =
       d.code ||
       d.date1 ||
       d.date2 ||
       "-";
 
+    // 양도/양수
     const flow = flows.get(idx) || "";
-    const transfers = flow ? "양도/양수 있음: " + flow : "-";
+    const transfers = flow ? flow : "-";
 
+    // 변제 여부
     const repaid =
       d.type === "해제"
-        ? "변제/해제"
+        ? "변제됨"
         : d.type === "연체"
-        ? "미변제(연체)"
+        ? "미변제"
         : "기타";
 
     creditors.push({
