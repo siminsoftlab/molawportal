@@ -6,7 +6,6 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
-const fetch = require("node-fetch");
 const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
 const visionOCR = require("./vision");
