@@ -6,6 +6,10 @@ const parseBtn = document.getElementById("parseBtn");
 const statusEl = document.getElementById("status");
 const tableBody = document.querySelector("#debtTable tbody");
 const exportExcelBtn = document.getElementById("exportExcelBtn");
+
+// =========================
+// 채권사 화이트리스트
+// =========================
 const creditorWhitelist = [
   // 카드사
   "우리카드","케이비국민카드","신한카드","하나카드","현대카드",
@@ -57,7 +61,9 @@ const creditorWhitelist = [
   "공공 정보","법원"
 ];
 
+// =========================
 // PDF.js 워커 설정
+// =========================
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
@@ -116,30 +122,36 @@ async function ocrPdf(file) {
 }
 
 // =========================
-// ⭐ 신용정보원 전용 파서
+// ⭐ 신용정보원 전용 파서 (화이트리스트 적용)
 // =========================
 function parseCreditReport(text) {
-  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const lines = text.split(/\r?\n/).map(l => l.trim());
   const rows = [];
 
-  for (const line of lines) {
+  for (let line of lines) {
+    if (!line) continue;
+
+    // 쓰레기 OCR 제거
+    if (line.length <= 2) continue;
+    if (/^[^A-Za-z0-9가-힣]+$/.test(line)) continue;
+    if (/^\d+$/.test(line)) continue;
+    if (line.match(/[ㄱ-ㅎㅏ-ㅣ]/g)?.length > 3) continue;
+
     const clean = line.replace(/\s+/g, " ");
 
-    // 사건번호 (5자리)
+    // 화이트리스트 기반 채권사 감지
+    const matchedCreditor = creditorWhitelist.find(k => clean.includes(k));
+    if (!matchedCreditor) continue;
+
+    const creditor = matchedCreditor;
+
+    // 사건번호(5자리)
     const caseMatch = clean.match(/\b\d{5}\b/);
     const caseNum = caseMatch ? caseMatch[0] : "-";
 
-    // 계좌번호 (6자리 이상)
+    // 계좌번호(6자리 이상)
     const accountMatch = clean.match(/\d{6,}/);
     const account = accountMatch ? accountMatch[0] : caseNum;
-
-    // 채권사 추출
-    let creditor = "-";
-    if (clean.includes("공공 정보")) {
-      creditor = clean.split("공공 정보")[1]?.trim() || "공공 정보";
-    } else {
-      creditor = clean.split(" " )[0];
-    }
 
     // 양도/양수 여부
     const transfer =
@@ -153,7 +165,6 @@ function parseCreditReport(text) {
         ? "변제됨"
         : "미변제";
 
-    // 실제 표에 들어갈 구조
     rows.push({
       creditor,
       account,
