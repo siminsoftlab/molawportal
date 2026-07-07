@@ -131,7 +131,7 @@ function parseCreditReport(text) {
   // OCR 오타 대비: 문자열 정규화 함수
   function normalize(str) {
     return str
-      .replace(/\s+/g, "")     // 모든 띄어쓰기 제거
+      .replace(/\s+/g, "")     // 띄어쓰기 제거
       .replace(/[^가-힣A-Za-z0-9]/g, ""); // 특수문자 제거
   }
 
