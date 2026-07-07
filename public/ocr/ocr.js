@@ -125,73 +125,64 @@ async function ocrPdf(file) {
 // ⭐ 신용정보원 전용 파서 (화이트리스트 적용)
 // =========================
 function parseCreditReport(text) {
-  const lines = text.split(/\r?\n/).map(l => l.trim());
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const rows = [];
 
-  // OCR 오타 대비: 문자열 정규화 함수
+  // OCR 오타 대비 정규화
   function normalize(str) {
-    return str
-      .replace(/\s+/g, "")     // 띄어쓰기 제거
-      .replace(/[^가-힣A-Za-z0-9]/g, ""); // 특수문자 제거
+    return str.replace(/\s+/g, "").replace(/[^가-힣A-Za-z0-9]/g, "");
   }
 
   const normalizedWhitelist = creditorWhitelist.map(normalize);
 
+  let current = null; // 현재 채권사 블록
+
   for (let line of lines) {
-    if (!line) continue;
-
-    // 쓰레기 OCR 제거
-    if (line.length <= 2) continue;
-    if (/^[^A-Za-z0-9가-힣]+$/.test(line)) continue;
-    if (/^\d+$/.test(line)) continue;
-    if (line.match(/[ㄱ-ㅎㅏ-ㅣ]/g)?.length > 3) continue;
-
     const clean = line.replace(/\s+/g, " ");
     const normLine = normalize(clean);
 
-    // ⭐ 유사도 기반 채권사 감지 (부분 일치 + 띄어쓰기 제거)
-    let matchedCreditor = null;
+    // 1) 채권사 감지
+    const matchedCreditor = normalizedWhitelist.find((normCreditor, idx) =>
+      normLine.includes(normCreditor)
+    );
 
-    normalizedWhitelist.forEach((normCreditor, idx) => {
-      if (normLine.includes(normCreditor)) {
-        matchedCreditor = creditorWhitelist[idx];
-      }
-    });
+    if (matchedCreditor) {
+      // 새로운 채권사 블록 시작
+      if (current) rows.push(current);
 
-    if (!matchedCreditor) continue;
+      current = {
+        creditor: creditorWhitelist[normalizedWhitelist.indexOf(matchedCreditor)],
+        account: "-",
+        transfers: "-",
+        repaid: "미변제"
+      };
+      continue;
+    }
 
-    const creditor = matchedCreditor;
+    if (!current) continue;
 
-    // 사건번호(5자리)
-    const caseMatch = clean.match(/\b\d{5}\b/);
-    const caseNum = caseMatch ? caseMatch[0] : "-";
+    // 2) 계좌번호 / 사건번호
+    const accountMatch = clean.match(/\d{6,}/) || clean.match(/\b\d{5}\b/);
+    if (accountMatch) {
+      current.account = accountMatch[0];
+    }
 
-    // 계좌번호(6자리 이상)
-    const accountMatch = clean.match(/\d{6,}/);
-    const account = accountMatch ? accountMatch[0] : caseNum;
+    // 3) 양도/양수
+    if (clean.includes("양수") || clean.includes("양도") || clean.includes("채권자변동")) {
+      current.transfers = clean;
+    }
 
-    // 양도/양수 여부
-    const transfer =
-      clean.includes("양도") || clean.includes("양수") || clean.includes("채권자변동")
-        ? "양도/양수 있음"
-        : "-";
-
-    // 변제 여부
-    const repaid =
-      clean.includes("해제") || clean.includes("면책") || clean.includes("회생")
-        ? "변제됨"
-        : "미변제";
-
-    rows.push({
-      creditor,
-      account,
-      transfers: transfer,
-      repaid
-    });
+    // 4) 변제 여부
+    if (clean.includes("해제") || clean.includes("면책") || clean.includes("회생")) {
+      current.repaid = "해제됨";
+    }
   }
+
+  if (current) rows.push(current);
 
   return rows;
 }
+
 
 // =========================
 // 버튼 클릭 → OCR → 파싱 → 표 생성
