@@ -50,27 +50,63 @@ parseBtn.addEventListener("click", async () => {
 
 // 문서 텍스트에서 채권자변동정보 부분을 파싱하는 함수
 function parseFromDocumentText(text) {
-  const result = [];
+  const words = text.split(/\s+/).filter(w => w.trim() !== "");
 
-  // "채권자변동정보" 테이블의 패턴을 기반으로 정규식 구성
-  const regex =
-    /([가-힣A-Za-z0-9()·\s]+?)\s*\((.*?)\)\s*(양수채권|일반대출|대위변제대지급)\s*'(\d{2}\.\d{2}\.\d{2}\.)\s*([\d,]+)\s*([\d,]+)\s*([가-힣A-Za-z]+)\s*([가-힣A-Za-z]+)/g;
+  const rows = [];
+  let buffer = [];
 
-  let match;
-  while ((match = regex.exec(text)) !== null) {
-    result.push({
-      creditor: match[1].trim(),
-      phone: match[2].trim(),
-      type: match[3].trim(),
-      date: match[4].trim(),
-      principal: match[5].trim(),
-      interest: match[6].trim(),
-      adjustType: match[7].trim(),
-      transferStatus: match[8].trim()
-    });
+  const types = ["양수채권", "일반대출", "대위변제대지급"];
+
+  for (let i = 0; i < words.length; i++) {
+    buffer.push(words[i]);
+
+    // 전화번호 패턴 감지
+    const hasPhone = buffer.some(w => /\(\d{2,4}-\d{3,4}-\d{3,4}\)/.test(w));
+
+    // 채권구분 감지
+    const hasType = buffer.some(w => types.includes(w));
+
+    // 날짜 감지
+    const hasDate = buffer.some(w => /^'\d{2}\.\d{2}\.\d{2}\.$/.test(w));
+
+    // 금액 감지
+    const hasMoney = buffer.filter(w => /^[\d,]+$/.test(w)).length >= 2;
+
+    // 한 행이 완성되었는지 판단
+    if (hasPhone && hasType && hasDate && hasMoney) {
+      const creditor = buffer[0];
+      const phone = buffer.find(w => /\(\d/.test(w));
+      const type = buffer.find(w => types.includes(w));
+      const date = buffer.find(w => /^'\d{2}\.\d{2}\.\d{2}\.$/.test(w));
+
+      const money = buffer.filter(w => /^[\d,]+$/.test(w));
+      const principal = money[0];
+      const interest = money[1];
+
+      const adjustType = buffer.find(w =>
+        ["개인회생", "파산", "면책", "기타"].includes(w)
+      ) || "";
+
+      const transferStatus = buffer.find(w =>
+        ["미양도", "양도", "매각"].includes(w)
+      ) || "";
+
+      rows.push({
+        creditor,
+        phone,
+        type,
+        date,
+        principal,
+        interest,
+        adjustType,
+        transferStatus
+      });
+
+      buffer = [];
+    }
   }
 
-  return result;
+  return rows;
 }
 
 
