@@ -15,6 +15,7 @@
     "nodemailer": "^8.0.10",
     "openai": "^4.0.0",
     "web-push": "^3.6.7",
-    "@google-cloud/vision": "^3.2.0"
+    "@google-cloud/vision": "^3.2.0",
+    "cors": "^2.8.5"
   }
 }
