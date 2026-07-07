@@ -8,7 +8,25 @@ const statusEl = document.getElementById("status");
 const tableBody = document.querySelector("#debtTable tbody");
 const exportExcelBtn = document.getElementById("exportExcelBtn");
 
-let parsedRows = []; // 최종 테이블 데이터
+let parsedRows = [];
+
+// OCR 함수
+async function ocrPage(page) {
+  const viewport = page.getViewport({ scale: 2 });
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+
+  await page.render({ canvasContext: ctx, viewport }).promise;
+
+  const result = await Tesseract.recognize(canvas, "kor+eng", {
+    logger: m => console.log(m)
+  });
+
+  return result.data.text;
+}
 
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files[0];
@@ -17,7 +35,7 @@ parseBtn.addEventListener("click", async () => {
     return;
   }
 
-  statusEl.textContent = "PDF 텍스트 추출 중...";
+  statusEl.textContent = "PDF 페이지 렌더링 및 OCR 중... (시간이 조금 걸립니다)";
 
   try {
     const arrayBuffer = await file.arrayBuffer();
@@ -27,14 +45,13 @@ parseBtn.addEventListener("click", async () => {
 
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items.map(item => item.str).join(" ");
-      fullText += "\n" + pageText;      
+      const pageText = await ocrPage(page); // ← OCR로 텍스트 추출
+      fullText += "\n" + pageText;
     }
 
-    console.log(fullText);   // ← 이 줄 추가
-    
-    statusEl.textContent = "텍스트 추출 완료. 채권자변동정보 분석 중...";
+    console.log("OCR 결과:", fullText);
+
+    statusEl.textContent = "OCR 완료. 채권자변동정보 분석 중...";
 
     const debts = parseFromDocumentText(fullText);
     parsedRows = buildRowsForTable(debts);
@@ -48,92 +65,51 @@ parseBtn.addEventListener("click", async () => {
   }
 });
 
-// 문서 텍스트에서 채권자변동정보 부분을 파싱하는 함수
+// OCR 텍스트 파싱
 function parseFromDocumentText(text) {
-  const words = text.split(/\s+/).filter(w => w.trim() !== "");
+  const lines = text.split("\n").map(l => l.trim()).filter(l => l);
 
   const rows = [];
-  let buffer = [];
 
-  const types = ["양수채권", "일반대출", "대위변제대지급"];
+  lines.forEach(line => {
+    // 신용정보원 패턴 감지
+    if (
+      line.includes("양수채권") ||
+      line.includes("일반대출") ||
+      line.includes("대위변제") ||
+      line.includes("대지급")
+    ) {
+      const parts = line.split(/\s+/);
 
-  for (let i = 0; i < words.length; i++) {
-    buffer.push(words[i]);
-
-    const hasPhone = buffer.some(w => /\(\d{2,4}-\d{3,4}-\d{3,4}\)/.test(w));
-    const hasType = buffer.some(w => types.includes(w));
-    const hasDate = buffer.some(w => /^'\d{2}\.\d{2}\.\d{2}\.$/.test(w));
-    const moneyList = buffer.filter(w => /^[\d,]+$/.test(w));
-    const hasMoney = moneyList.length >= 1;
-
-    // 계좌번호(사건번호) 후보: 숫자 또는 영문+숫자 조합
-    const accountCandidate = buffer.find(w =>
-      /^[A-Za-z0-9]+$/.test(w) &&
-      !types.includes(w) &&
-      !/^'\d{2}\.\d{2}\.\d{2}\.$/.test(w) &&
-      !/\(\d{2,4}-\d{3,4}-\d{3,4}\)/.test(w)
-    );
-
-    if (hasPhone && hasType && hasDate && hasMoney) {
-      const creditor = buffer[0];
-      const phone = buffer.find(w => /\(\d/.test(w));
-      const type = buffer.find(w => types.includes(w));
-      const date = buffer.find(w => /^'\d{2}\.\d{2}\.\d{2}\.$/.test(w));
-
-      const principal = moneyList[0];
-      const interest = moneyList[1] || "0";
-
-      const adjustType = buffer.find(w =>
-        ["개인회생", "파산", "면책", "기타"].includes(w)
-      ) || "";
-
-      const transferStatus = buffer.find(w =>
-        ["미양도", "양도", "매각"].includes(w)
-      ) || "";
+      const creditor = parts[0];
+      const type = parts.find(p => p.includes("채권"));
+      const date = parts.find(p => p.match(/\d{4}\.\d{2}\.\d{2}/));
+      const account = parts.find(p => p.match(/^[A-Za-z0-9]+$/));
+      const principal = parts.find(p => p.match(/^[\d,]+$/));
 
       rows.push({
         creditor,
-        phone,
-        type,
-        date,
-        principal,
-        interest,
-        adjustType,
-        transferStatus,
-        account: accountCandidate || ""
+        account: account || "",
+        transfers: [type],
+        repaid: false
       });
-
-      buffer = [];
     }
-  }
+  });
 
   return rows;
 }
 
-// 테이블용 데이터 구성
+// 테이블 구성
 function buildRowsForTable(debts) {
-  return debts.map(d => {
-    const transfers = [];
-
-    if (d.type === "양수채권") transfers.push("양수채권");
-    if (d.transferStatus.includes("미양도")) transfers.push("미양도 (최종 보유)");
-    if (d.transferStatus.includes("매각")) transfers.push("매각");
-
-    const repaid =
-      d.adjustType.includes("회생") ||
-      d.adjustType.includes("면책") ||
-      d.adjustType.includes("변제");
-
-    return {
-      creditor: d.creditor,
-      account: d.account || `${d.date} / ${d.principal}`,
-      transfers,
-      repaid
-    };
-  });
+  return debts.map(d => ({
+    creditor: d.creditor,
+    account: d.account,
+    transfers: d.transfers,
+    repaid: d.repaid
+  }));
 }
 
-// HTML 테이블 렌더링
+// 테이블 렌더링
 function renderTable(rows) {
   tableBody.innerHTML = "";
 
@@ -143,26 +119,26 @@ function renderTable(rows) {
     tr.innerHTML = `
       <td>${row.creditor}</td>
       <td>${row.account}</td>
-      <td>${row.transfers.join("<br>") || "-"}</td>
-      <td>${row.repaid ? "변제됨/조정" : "미변제 추정"}</td>
+      <td>${row.transfers.join("<br>")}</td>
+      <td>${row.repaid ? "변제됨" : "미변제"}</td>
     `;
 
     tableBody.appendChild(tr);
   });
 }
 
-// 엑셀(xlsx) 내보내기 (SheetJS)
+// 엑셀(xlsx) 내보내기
 exportExcelBtn.addEventListener("click", () => {
-  if (!parsedRows || parsedRows.length === 0) {
-    alert("먼저 PDF를 분석해서 표를 생성하세요.");
+  if (!parsedRows.length) {
+    alert("먼저 PDF를 분석하세요.");
     return;
   }
 
   const data = parsedRows.map(row => ({
     채권사: row.creditor,
-    계좌번호_사건번호: row.account,
+    계좌번호: row.account,
     양도양수이력: row.transfers.join(" / "),
-    채무변제여부: row.repaid ? "변제됨/조정" : "미변제 추정"
+    채무변제여부: row.repaid ? "변제됨" : "미변제"
   }));
 
   const ws = XLSX.utils.json_to_sheet(data);
