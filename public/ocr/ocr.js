@@ -128,31 +128,33 @@ function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const rows = [];
 
-  // OCR 오타 대비 정규화
+  // 1. 구체적인 채권사 vs 일반 키워드 분리
+  const genericKeywords = ["은행","캐피탈","대부","저축은행","자산관리","공공 정보","법원"];
+  const specificCreditors = creditorWhitelist.filter(c => !genericKeywords.includes(c));
+
   function normalize(str) {
     return str.replace(/\s+/g, "").replace(/[^가-힣A-Za-z0-9]/g, "");
   }
 
-  const normalizedWhitelist = creditorWhitelist.map(normalize);
+  const normalizedSpecific = specificCreditors.map(normalize);
 
-  let current = null; // 현재 채권사 블록
+  let current = null;
 
   for (let line of lines) {
     const clean = line.replace(/\s+/g, " ");
     const normLine = normalize(clean);
 
-    // 1) 채권사 감지 (화이트리스트 기반)
-    const matchedCreditorIndex = normalizedWhitelist.findIndex(normCreditor =>
+    // 2. 먼저 "구체적인 채권사"만 찾기
+    let matchedIndex = normalizedSpecific.findIndex(normCreditor =>
       normLine.includes(normCreditor)
     );
 
-    if (matchedCreditorIndex !== -1) {
-      // 기존 블록 저장
+    if (matchedIndex !== -1) {
+      // 이전 블록 저장
       if (current) rows.push(current);
 
-      // 새로운 블록 시작
       current = {
-        creditor: creditorWhitelist[matchedCreditorIndex],
+        creditor: specificCreditors[matchedIndex],
         account: "-",
         transfers: "-",
         repaid: "미변제"
@@ -162,15 +164,15 @@ function parseCreditReport(text) {
 
     if (!current) continue;
 
-    // 2) 계좌번호 / 사건번호
+    // 3. 계좌번호 / 사건번호
     const accountMatch =
       clean.match(/\d{6,}/) || clean.match(/\b\d{5}\b/) || clean.match(/\d{4}\.\d{2}\.\d{2}/);
 
-    if (accountMatch) {
+    if (accountMatch && current.account === "-") {
       current.account = accountMatch[0];
     }
 
-    // 3) 양도/양수
+    // 4. 양도/양수
     if (
       clean.includes("양수") ||
       clean.includes("양도") ||
@@ -180,7 +182,7 @@ function parseCreditReport(text) {
       current.transfers = clean;
     }
 
-    // 4) 변제 여부
+    // 5. 변제 여부
     if (
       clean.includes("해제") ||
       clean.includes("면책") ||
