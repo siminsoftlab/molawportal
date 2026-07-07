@@ -9,8 +9,7 @@ const axios = require("axios");
 const fetch = require("node-fetch");
 const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
-const vision = require("@google-cloud/vision");
-const client = new vision.ImageAnnotatorClient();
+
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -457,24 +456,5 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
   } catch (err) {
     console.error("sendPushToUser 오류:", err);
     throw new functions.https.HttpsError("internal", err.message);
-  }
-});
-/* ============================================================
-   Firebase Functions 코드 (Vision OCR 호출)
-============================================================ */
-exports.visionOCR = functions.https.onRequest(async (req, res) => {
-  try {
-    const { image } = req.body; // Base64 PNG
-
-    const [result] = await client.textDetection({
-      image: { content: image }
-    });
-
-    const detections = result.textAnnotations;
-    const text = detections && detections.length ? detections[0].description : "";
-
-    res.json({ text });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
   }
 });
