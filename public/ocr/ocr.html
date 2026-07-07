@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>채권사별 채권현황 정리</title>
-  <link rel="stylesheet" href="/ocr/ocr.css" />
+  <link rel="stylesheet" href="ocr.css" />
 </head>
 <body>
   <div class="container">
@@ -23,7 +23,7 @@
         <thead>
           <tr>
             <th>채권사</th>
-            <th>계좌번호</th>
+            <th>계좌번호/사건번호</th>
             <th>양도/양수 이력</th>
             <th>채무변제 여부</th>
           </tr>
@@ -33,14 +33,17 @@
     </div>
 
     <div class="export-section">
-      <button id="exportCsvBtn">CSV로 내보내기 (엑셀에서 열기)</button>
+      <button id="exportExcelBtn">엑셀(xlsx)로 내보내기</button>
     </div>
   </div>
 
-  <!-- PDF.js CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
 
-<script src="ocr.js"></script>
+  <!-- SheetJS (xlsx) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <script src="ocr.js"></script>
 </body>
 </html>
