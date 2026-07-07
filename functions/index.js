@@ -9,7 +9,7 @@ const axios = require("axios");
 const fetch = require("node-fetch");
 const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
-
+const visionOCR = require("./vision");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -458,3 +458,5 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
+
+exports.visionOCR = visionOCR.visionOCR;
