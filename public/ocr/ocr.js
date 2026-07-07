@@ -183,7 +183,6 @@ function parseCreditReport(text) {
   return rows;
 }
 
-
 // =========================
 // 버튼 클릭 → OCR → 파싱 → 표 생성
 // =========================
