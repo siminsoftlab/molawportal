@@ -95,17 +95,32 @@ async function ocrPdf(file) {
 }
 
 // =========================
-// 신용정보원 전용 파서 (블록 기반)
+// 문자열 유사도 계산 (핵심)
+// =========================
+function similarity(a, b) {
+  a = a.toLowerCase();
+  b = b.toLowerCase();
+
+  let matches = 0;
+  const len = Math.min(a.length, b.length);
+
+  for (let i = 0; i < len; i++) {
+    if (a[i] === b[i]) matches++;
+  }
+
+  return matches / Math.max(a.length, b.length);
+}
+
+function normalize(str) {
+  return str.replace(/\s+/g, "").replace(/[^가-힣A-Za-z0-9]/g, "");
+}
+
+// =========================
+// 신용정보원 전용 파서 (유사도 매칭 포함)
 // =========================
 function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const rows = [];
-
-  function normalize(str) {
-    return str.replace(/\s+/g, "").replace(/[^가-힣A-Za-z0-9]/g, "");
-  }
-
-  const normalizedWhitelist = creditorWhitelist.map(normalize);
 
   let current = null;
 
@@ -113,13 +128,24 @@ function parseCreditReport(text) {
     const clean = line.replace(/\s+/g, " ");
     const normLine = normalize(clean);
 
-    // 채권사 감지
-    const idx = normalizedWhitelist.findIndex(c => normLine.includes(c));
-    if (idx !== -1) {
+    // 1) 유사도 기반 채권사 자동 매칭
+    let bestMatch = null;
+    let bestScore = 0;
+
+    for (let i = 0; i < creditorWhitelist.length; i++) {
+      const score = similarity(normLine, normalize(creditorWhitelist[i]));
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = creditorWhitelist[i];
+      }
+    }
+
+    // 유사도 0.55 이상이면 채권사로 인정
+    if (bestScore > 0.55) {
       if (current) rows.push(current);
 
       current = {
-        creditor: creditorWhitelist[idx],
+        creditor: bestMatch,
         account: "-",
         transfers: "-",
         repaid: "미변제"
@@ -129,7 +155,7 @@ function parseCreditReport(text) {
 
     if (!current) continue;
 
-    // 계좌번호 / 사건번호 / 날짜
+    // 2) 계좌번호 / 사건번호 / 날짜
     const accountMatch =
       clean.match(/\d{6,}/) ||
       clean.match(/\b\d{5}\b/) ||
@@ -139,7 +165,7 @@ function parseCreditReport(text) {
       current.account = accountMatch[0];
     }
 
-    // 양도/양수
+    // 3) 양도/양수
     if (
       clean.includes("양수") ||
       clean.includes("양도") ||
@@ -149,7 +175,7 @@ function parseCreditReport(text) {
       current.transfers = clean;
     }
 
-    // 변제 여부
+    // 4) 변제 여부
     if (
       clean.includes("해제") ||
       clean.includes("면책") ||
