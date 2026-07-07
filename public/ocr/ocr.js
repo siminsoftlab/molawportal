@@ -378,10 +378,10 @@ function renderTable(rows) {
 }
 
 function renderFlowMap(rows) {
-  if (!flowContainer) return;
   flowContainer.innerHTML = "";
+
   rows.forEach(r => {
-    if (r.transfers.includes("→")) {
+    if (r.transfers && r.transfers.includes("→")) {
       const div = document.createElement("div");
       div.className = "flow-item";
       div.innerHTML = `
