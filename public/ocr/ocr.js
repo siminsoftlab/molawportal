@@ -208,6 +208,7 @@ parseBtn.addEventListener("click", async () => {
 
   try {
     fullText = await ocrPdf(file);
+    console.log(fullText);   // ★ OCR 결과 확인용
   } catch (e) {
     statusEl.textContent = "OCR 오류: " + e.message;
     return;
