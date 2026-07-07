@@ -54,18 +54,8 @@ const creditorWhitelist = [
   // 통신 / 렌탈 / 기타
   "LGU+","SKT","KT","SK브로드밴드",
   "오리온에셀","소노스테이션","바로렌탈",
-  "엔에스텔레콤렌탈","오토핸즈",
-
-  // 기존 금융 키워드
-  "은행","캐피탈","대부","저축은행","자산관리",
-  "공공 정보","법원"
+  "엔에스텔레콤렌탈","오토핸즈"
 ];
-
-// =========================
-// PDF.js 워커 설정
-// =========================
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
 let _rows = []; // 엑셀용 저장
 
@@ -75,60 +65,42 @@ function log(msg) {
 }
 
 // =========================
-// PDF OCR (고해상도 + 전처리)
+// PDF 텍스트 추출 (getTextContent 사용)
 // =========================
-async function ocrPdf(file) {
-  log("PDF OCR 시작...");
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+async function extractPdfText(file) {
+  log("PDF 텍스트 추출 시작...");
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
   let fullText = "";
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-    log(`페이지 ${pageNum} OCR 중...`);
-
+    log(`페이지 ${pageNum} 텍스트 추출 중...`);
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 3.5 });
+    const textContent = await page.getTextContent();
 
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    const pageText = textContent.items
+      .map(item => item.str.trim())
+      .filter(Boolean)
+      .join("\n");
 
-    await page.render({ canvasContext: ctx, viewport }).promise;
-
-    // 흑백 전처리
-    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = img.data;
-    for (let i = 0; i < data.length; i += 4) {
-      const avg = (data[i] + data[i+1] + data[i+2]) / 3;
-      const v = avg > 150 ? 255 : 0;
-      data[i] = data[i+1] = data[i+2] = v;
-    }
-    ctx.putImageData(img, 0, 0);
-
-    const dataUrl = canvas.toDataURL("image/png");
-
-    const { data: { text } } = await Tesseract.recognize(dataUrl, "kor+eng", {
-      tessedit_pageseg_mode: 6,
-      logger: m => log(`p${pageNum} 진행률: ${Math.round(m.progress * 100)}%`)
-    });
-
-    fullText += text + "\n";
+    fullText += pageText + "\n";
   }
 
-  log("PDF OCR 완료");
+  log("PDF 텍스트 추출 완료");
   return fullText;
 }
 
 // =========================
-// ⭐ 신용정보원 전용 파서 (화이트리스트 적용)
+// 신용정보원 전용 파서 (블록 기반)
 // =========================
 function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const rows = [];
 
-  // 1. 구체적인 채권사 vs 일반 키워드 분리
   const genericKeywords = ["은행","캐피탈","대부","저축은행","자산관리","공공 정보","법원"];
   const specificCreditors = creditorWhitelist.filter(c => !genericKeywords.includes(c));
 
@@ -144,13 +116,12 @@ function parseCreditReport(text) {
     const clean = line.replace(/\s+/g, " ");
     const normLine = normalize(clean);
 
-    // 2. 먼저 "구체적인 채권사"만 찾기
-    let matchedIndex = normalizedSpecific.findIndex(normCreditor =>
+    // 1) 구체적인 채권사 감지
+    const matchedIndex = normalizedSpecific.findIndex(normCreditor =>
       normLine.includes(normCreditor)
     );
 
     if (matchedIndex !== -1) {
-      // 이전 블록 저장
       if (current) rows.push(current);
 
       current = {
@@ -164,15 +135,17 @@ function parseCreditReport(text) {
 
     if (!current) continue;
 
-    // 3. 계좌번호 / 사건번호
+    // 2) 계좌번호 / 사건번호 / 날짜 패턴
     const accountMatch =
-      clean.match(/\d{6,}/) || clean.match(/\b\d{5}\b/) || clean.match(/\d{4}\.\d{2}\.\d{2}/);
+      clean.match(/\d{6,}/) ||
+      clean.match(/\b\d{5}\b/) ||
+      clean.match(/\d{4}\.\d{2}\.\d{2}/);
 
     if (accountMatch && current.account === "-") {
       current.account = accountMatch[0];
     }
 
-    // 4. 양도/양수
+    // 3) 양도/양수 이력
     if (
       clean.includes("양수") ||
       clean.includes("양도") ||
@@ -182,7 +155,7 @@ function parseCreditReport(text) {
       current.transfers = clean;
     }
 
-    // 5. 변제 여부
+    // 4) 변제 여부
     if (
       clean.includes("해제") ||
       clean.includes("면책") ||
@@ -199,7 +172,7 @@ function parseCreditReport(text) {
 }
 
 // =========================
-// 버튼 클릭 → OCR → 파싱 → 표 생성
+// 버튼 클릭 → 텍스트 추출 → 파싱 → 표 생성
 // =========================
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files && pdfInput.files[0];
@@ -209,14 +182,14 @@ parseBtn.addEventListener("click", async () => {
   }
 
   tableBody.innerHTML = "";
-  statusEl.textContent = "OCR 처리 중...";
+  statusEl.textContent = "텍스트 추출 및 분석 중...";
 
   let fullText = "";
 
   try {
-    fullText = await ocrPdf(file);
+    fullText = await extractPdfText(file);
   } catch (e) {
-    statusEl.textContent = "OCR 오류: " + e.message;
+    statusEl.textContent = "텍스트 추출 오류: " + e.message;
     return;
   }
 
