@@ -136,52 +136,81 @@ function parseCreditReport(text) {
   }
 
   function parseJudgmentAndPublic(lines) {
-    const rows = [];
-    let currentCreditor = null;
-    for (const line of lines) {
-      const clean = line.replace(/\s+/g, " ");
-      const norm = normalize(clean);
-      let bestMatch = null;
-      let bestScore = 0;
-      for (const c of CREDITORS) {
-        const score = similarity(norm, normalize(c));
-        if (score > bestScore) { bestScore = score; bestMatch = c; }
-      }
-      if (bestScore > 0.55) {
-        currentCreditor = bestMatch;
-        continue;
-      }
-      if (!currentCreditor) continue;
+  const rows = [];
+  let currentCreditor = null;
 
-      let type = null;
-      if (clean.startsWith("등록")) type = "등록";
-      else if (clean.startsWith("해제")) type = "해제";
-      if (!type) continue;
+  for (const line of lines) {
+    const clean = line.replace(/\s+/g, " ");
+    const norm = normalize(clean);
 
-      const accountMatch = clean.match(/\d{6,}/);
-      const account = accountMatch ? accountMatch[0] : "-";
-      const amountMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
-      const amount = amountMatch ? parseInt(amountMatch[1].replace(/,/g, ""), 10) : 0;
-
-      let releaseReason = null;
-      if (clean.includes("본인변제")) releaseReason = "본인변제";
-      else if (clean.includes("회생계획인가결정")) releaseReason = "회생계획인가결정";
-      else if (clean.includes("면책")) releaseReason = "면책";
-      else if (clean.includes("기타")) releaseReason = "기타";
-
-      rows.push({
-        creditor: currentCreditor,
-        account,
-        type,
-        amount,
-        transfers: "-",
-        repaid: releaseReason ? "해제됨" : "미변제",
-        releaseReason,
-        phone: extractPhone(clean)
-      });
+    // 1) 채권사 탐색
+    let bestMatch = null;
+    let bestScore = 0;
+    for (const c of CREDITORS) {
+      const score = similarity(norm, normalize(c));
+      if (score > bestScore) { bestScore = score; bestMatch = c; }
     }
-    return rows;
+
+    if (bestScore > 0.55) {
+      currentCreditor = bestMatch;
+      continue;
+    }
+
+    if (!currentCreditor) continue;
+
+    // 2) 전화번호 추출 (항상 먼저)
+    const phone = extractPhone(clean);
+
+    // 3) 등록/해제 여부
+    let type = null;
+    if (clean.startsWith("등록")) type = "등록";
+    else if (clean.startsWith("해제")) type = "해제";
+
+    // 4) 등록/해제 줄이 아닌데 전화번호만 있는 경우 → 전화번호 정보만 저장
+    if (!type) {
+      if (phone !== "-") {
+        rows.push({
+          creditor: currentCreditor,
+          account: "-",
+          type: "정보",
+          amount: 0,
+          transfers: "-",
+          repaid: "미변제",
+          releaseReason: null,
+          phone
+        });
+      }
+      continue;
+    }
+
+    // 5) 등록/해제 줄 처리
+    const accountMatch = clean.match(/\d{6,}/);
+    const account = accountMatch ? accountMatch[0] : "-";
+
+    const amountMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
+    const amount = amountMatch ? parseInt(amountMatch[1].replace(/,/g, ""), 10) : 0;
+
+    let releaseReason = null;
+    if (clean.includes("본인변제")) releaseReason = "본인변제";
+    else if (clean.includes("회생계획인가결정")) releaseReason = "회생계획인가결정";
+    else if (clean.includes("면책")) releaseReason = "면책";
+    else if (clean.includes("기타")) releaseReason = "기타";
+
+    rows.push({
+      creditor: currentCreditor,
+      account,
+      type,
+      amount,
+      transfers: "-",
+      repaid: releaseReason ? "해제됨" : "미변제",
+      releaseReason,
+      phone
+    });
   }
+
+  return rows;
+}
+
 
   function parseArrearChange(lines) {
     const rows = [];
