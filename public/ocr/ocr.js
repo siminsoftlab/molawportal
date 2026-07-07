@@ -1,6 +1,6 @@
 // PDF.js 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.420/pdf.worker.min.js";
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
 const pdfInput = document.getElementById("pdfFile");
 const parseBtn = document.getElementById("parseBtn");
