@@ -10,9 +10,11 @@ const exportExcelBtn = document.getElementById("exportExcelBtn");
 
 let parsedRows = [];
 
-// OCR 함수
+/* ---------------------------------------------------------
+   OCR 함수 (속도 최적화 버전)
+--------------------------------------------------------- */
 async function ocrPage(page) {
-  const viewport = page.getViewport({ scale: 2 });
+  const viewport = page.getViewport({ scale: 1 }); // 속도 개선
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
@@ -21,13 +23,39 @@ async function ocrPage(page) {
 
   await page.render({ canvasContext: ctx, viewport }).promise;
 
-  const result = await Tesseract.recognize(canvas, "kor+eng", {
-    logger: m => console.log(m)
-  });
+  // 표 영역만 OCR (상단/하단 제외)
+  const cropCanvas = document.createElement("canvas");
+  const cropCtx = cropCanvas.getContext("2d");
+
+  const cropY = viewport.height * 0.20;
+  const cropHeight = viewport.height * 0.60;
+
+  cropCanvas.width = viewport.width;
+  cropCanvas.height = cropHeight;
+
+  cropCtx.drawImage(
+    canvas,
+    0, cropY, viewport.width, cropHeight,
+    0, 0, viewport.width, cropHeight
+  );
+
+  // OCR 타임아웃 설정
+  const ocrTimeout = ms =>
+    new Promise((_, reject) => setTimeout(() => reject("OCR TIMEOUT"), ms));
+
+  const result = await Promise.race([
+    Tesseract.recognize(cropCanvas, "eng", {
+      logger: () => {} // 로그 비활성화
+    }),
+    ocrTimeout(15000) // 15초 제한
+  ]);
 
   return result.data.text;
 }
 
+/* ---------------------------------------------------------
+   PDF → OCR → 텍스트 추출
+--------------------------------------------------------- */
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files[0];
   if (!file) {
@@ -35,7 +63,7 @@ parseBtn.addEventListener("click", async () => {
     return;
   }
 
-  statusEl.textContent = "PDF 페이지 렌더링 및 OCR 중... (시간이 조금 걸립니다)";
+  statusEl.textContent = "PDF 페이지 렌더링 및 OCR 중... (최대 15초)";
 
   try {
     const arrayBuffer = await file.arrayBuffer();
@@ -45,7 +73,7 @@ parseBtn.addEventListener("click", async () => {
 
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
-      const pageText = await ocrPage(page); // ← OCR로 텍스트 추출
+      const pageText = await ocrPage(page);
       fullText += "\n" + pageText;
     }
 
@@ -61,11 +89,13 @@ parseBtn.addEventListener("click", async () => {
     statusEl.textContent = `완료: 표가 생성되었습니다. (총 ${parsedRows.length}건)`;
   } catch (err) {
     console.error(err);
-    statusEl.textContent = "오류 발생: 콘솔을 확인하세요.";
+    statusEl.textContent = "오류 발생: OCR 중단됨 (타임아웃 또는 렌더링 실패)";
   }
 });
 
-// OCR 텍스트 파싱
+/* ---------------------------------------------------------
+   OCR 텍스트 파싱 (신용정보원 패턴 기반)
+--------------------------------------------------------- */
 function parseFromDocumentText(text) {
   const lines = text.split("\n").map(l => l.trim()).filter(l => l);
 
@@ -99,7 +129,9 @@ function parseFromDocumentText(text) {
   return rows;
 }
 
-// 테이블 구성
+/* ---------------------------------------------------------
+   테이블용 데이터 구성
+--------------------------------------------------------- */
 function buildRowsForTable(debts) {
   return debts.map(d => ({
     creditor: d.creditor,
@@ -109,7 +141,9 @@ function buildRowsForTable(debts) {
   }));
 }
 
-// 테이블 렌더링
+/* ---------------------------------------------------------
+   HTML 테이블 렌더링
+--------------------------------------------------------- */
 function renderTable(rows) {
   tableBody.innerHTML = "";
 
@@ -127,7 +161,9 @@ function renderTable(rows) {
   });
 }
 
-// 엑셀(xlsx) 내보내기
+/* ---------------------------------------------------------
+   엑셀(xlsx) 내보내기
+--------------------------------------------------------- */
 exportExcelBtn.addEventListener("click", () => {
   if (!parsedRows.length) {
     alert("먼저 PDF를 분석하세요.");
