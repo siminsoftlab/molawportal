@@ -128,6 +128,15 @@ function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim());
   const rows = [];
 
+  // OCR 오타 대비: 문자열 정규화 함수
+  function normalize(str) {
+    return str
+      .replace(/\s+/g, "")     // 모든 띄어쓰기 제거
+      .replace(/[^가-힣A-Za-z0-9]/g, ""); // 특수문자 제거
+  }
+
+  const normalizedWhitelist = creditorWhitelist.map(normalize);
+
   for (let line of lines) {
     if (!line) continue;
 
@@ -138,10 +147,18 @@ function parseCreditReport(text) {
     if (line.match(/[ㄱ-ㅎㅏ-ㅣ]/g)?.length > 3) continue;
 
     const clean = line.replace(/\s+/g, " ");
+    const normLine = normalize(clean);
 
-    // ⭐ 화이트리스트 기반 채권사 감지
-    const matchedCreditor = creditorWhitelist.find(k => clean.includes(k));
-    if (!matchedCreditor) continue;   // ← 이게 핵심
+    // ⭐ 유사도 기반 채권사 감지 (부분 일치 + 띄어쓰기 제거)
+    let matchedCreditor = null;
+
+    normalizedWhitelist.forEach((normCreditor, idx) => {
+      if (normLine.includes(normCreditor)) {
+        matchedCreditor = creditorWhitelist[idx];
+      }
+    });
+
+    if (!matchedCreditor) continue;
 
     const creditor = matchedCreditor;
 
