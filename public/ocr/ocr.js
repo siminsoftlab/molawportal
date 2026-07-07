@@ -11,29 +11,24 @@ const exportExcelBtn = document.getElementById("exportExcelBtn");
 // 채권사 화이트리스트
 // =========================
 const creditorWhitelist = [
-  "우리카드","케이비국민카드","신한카드","하나카드","현대카드",
-  "삼성카드","롯데카드","비씨카드","기업은행","씨티은행",
-  "농협은행","농협은행 의정부여신관리단","농업협동조합자산관리",
-  "전북은행","부산은행","경남은행","카카오뱅크","토스뱅크",
-  "상상인저축은행","웰컴저축은행","동원제일저축은행",
-  "에스비아이저축은행","고려저축은행","예가람저축은행",
-  "우리금융저축은행","다올저축은행","오케이저축은행",
-  "키움저축은행","신한저축은행","엔에이치저축은행",
-  "롯데캐피탈","케이비캐피탈","비엔케이캐피탈","하나캐피탈",
-  "현대캐피탈","우리금융캐피탈","한국투자캐피탈",
+  "농협은행 의정부여신관리단",
+  "농협은행",
   "리딩에이스캐피탈",
-  "리드코프","웰릭스에프앤아이대부","아프로에프앤아이대부",
-  "한빛자산관리대부","베리타스자산대부","애플자산관리대부",
-  "엠메이드대부","에이원자산대부관리","아이앤유크레디트대부",
-  "제니스자산관리대부","한국에셋채권대부",
-  "고려신용정보","흥국생명보험","서울보증보험",
-  "서민금융진흥원","소상공인시장진흥공단","신용보증기금",
-  "국민행복기금","새도약기금","한국자산관리공사",
-  "서울신용보증재단","경기신용보증재단","경북신용보증재단",
-  "경남신용보증재단",
-  "LGU+","SKT","KT","SK브로드밴드"
+  "한빛자산관리대부",
+  "제니스자산관리대부",
+  "헬릭스에프앤아이대부",
+  "한국자산관리공사",
+  "우리카드",
+  "우리은행",
+  "현대캐피탈",
+  "경기신용보증재단",
+  "의정부지방법원",
+  // 필요하면 계속 추가
 ];
 
+// =========================
+// 상태 저장
+// =========================
 let _rows = [];
 
 function log(msg) {
@@ -64,19 +59,19 @@ async function ocrPdf(file) {
     log(`페이지 ${pageNum} OCR 중...`);
 
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 3.5 });
+    const viewport = page.getViewport({ scale: 5.0 }); // 해상도 올림
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    // 흑백 전처리
+    // 흑백 전처리 (조금 더 강하게)
     const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = img.data;
     for (let i = 0; i < data.length; i += 4) {
       const avg = (data[i] + data[i+1] + data[i+2]) / 3;
-      const v = avg > 150 ? 255 : 0;
+      const v = avg > 160 ? 255 : 0;
       data[i] = data[i+1] = data[i+2] = v;
     }
     ctx.putImageData(img, 0, 0);
@@ -91,11 +86,12 @@ async function ocrPdf(file) {
   }
 
   log("PDF OCR 완료");
+  console.log(fullText); // 실제 OCR 결과 확인용
   return fullText;
 }
 
 // =========================
-// 문자열 유사도 계산 (핵심)
+// 문자열 유사도 계산
 // =========================
 function similarity(a, b) {
   a = a.toLowerCase();
@@ -116,7 +112,7 @@ function normalize(str) {
 }
 
 // =========================
-// 신용정보원 전용 파서 (유사도 매칭 포함)
+// 신용정보원 전용 파서 (지금 OCR 텍스트에 맞춰 튜닝)
 // =========================
 function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -128,7 +124,7 @@ function parseCreditReport(text) {
     const clean = line.replace(/\s+/g, " ");
     const normLine = normalize(clean);
 
-    // 1) 유사도 기반 채권사 자동 매칭
+    // 1) 유사도 기반 채권사 매칭
     let bestMatch = null;
     let bestScore = 0;
 
@@ -140,8 +136,8 @@ function parseCreditReport(text) {
       }
     }
 
-    // 유사도 0.55 이상이면 채권사로 인정
-    if (bestScore > 0.55) {
+    // 유사도 0.5 이상이면 채권사로 인정
+    if (bestScore > 0.5) {
       if (current) rows.push(current);
 
       current = {
@@ -155,18 +151,25 @@ function parseCreditReport(text) {
 
     if (!current) continue;
 
-    // 2) 계좌번호 / 사건번호 / 날짜
-    const accountMatch =
+    // 2) 계좌번호/사건번호/대출정보 추출
+    //   - 숫자 6자리 이상
+    //   - 또는 "신 용 대 출 ..." 같은 라인
+    let accountMatch =
       clean.match(/\d{6,}/) ||
       clean.match(/\b\d{5}\b/) ||
       clean.match(/\d{4}\.\d{2}\.\d{2}/);
+
+    if (!accountMatch && clean.includes("신 용 대 출")) {
+      accountMatch = [clean];
+    }
 
     if (accountMatch && current.account === "-") {
       current.account = accountMatch[0];
     }
 
-    // 3) 양도/양수
+    // 3) 양도/양수 이력
     if (
+      clean.includes("양수채권") ||
       clean.includes("양수") ||
       clean.includes("양도") ||
       clean.includes("채권자변동") ||
@@ -177,6 +180,7 @@ function parseCreditReport(text) {
 
     // 4) 변제 여부
     if (
+      clean.includes("해제됨") ||
       clean.includes("해제") ||
       clean.includes("면책") ||
       clean.includes("회생") ||
