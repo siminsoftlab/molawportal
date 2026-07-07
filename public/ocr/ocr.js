@@ -9,7 +9,7 @@ const parseBtn = document.getElementById("parseBtn");
 const statusEl = document.getElementById("status");
 const tableBody = document.querySelector("#debtTable tbody");
 const exportExcelBtn = document.getElementById("exportExcelBtn");
-const flowContainer = document.getElementById("flowContainer"); // 양도/양수 흐름도용
+const flowContainer = document.getElementById("flowContainer");
 
 let _rows = [];
 
@@ -36,7 +36,7 @@ async function ocrPdf(file) {
     log(`페이지 ${pageNum} 렌더링 중...`);
 
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 5.5 }); // 고해상도 렌더링
+    const viewport = page.getViewport({ scale: 5.5 });
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
@@ -57,7 +57,6 @@ async function ocrPdf(file) {
   }
 
   log("OCR 완료");
-  console.log(fullText);
   return fullText;
 }
 
@@ -67,14 +66,9 @@ async function ocrPdf(file) {
 function similarity(a, b) {
   a = a.toLowerCase();
   b = b.toLowerCase();
-
   let matches = 0;
   const len = Math.min(a.length, b.length);
-
-  for (let i = 0; i < len; i++) {
-    if (a[i] === b[i]) matches++;
-  }
-
+  for (let i = 0; i < len; i++) if (a[i] === b[i]) matches++;
   return matches / Math.max(a.length, b.length);
 }
 
@@ -83,7 +77,15 @@ function normalize(str) {
 }
 
 // =========================
-// 채권사 파싱 (Vision OCR 전용)
+// 전화번호 추출
+// =========================
+function extractPhone(line) {
+  const m = line.match(/\(?0\d{1,2}-\d{3,4}-\d{4}\)?/);
+  return m ? m[0].replace(/[()]/g, "") : "-";
+}
+
+// =========================
+// 채권사 파싱
 // =========================
 function parseCreditReport(text) {
 
@@ -107,15 +109,6 @@ function parseCreditReport(text) {
     }
 
     return sections;
-  }
-
-  // 2. 유틸
-  function similarityLocal(a, b) {
-    return similarity(a, b);
-  }
-
-  function normalizeLocal(str) {
-    return normalize(str);
   }
 
   const CREDITORS = [
@@ -143,28 +136,18 @@ function parseCreditReport(text) {
     "국세청 포천세무서","의정부지방법원","우리은행 여신관리부"
   ];
 
-  function extractPhone(line) {
-    const m = line.match(/\(?0\d{1,2}-\d{3,4}-\d{4}\)?/);
-    return m ? m[0].replace(/[()]/g, "") : "-";
-  }
-
   // 3. 대출정보 파싱
   function parseLoanInfo(lines) {
     const rows = [];
-
     for (const line of lines) {
       const clean = line.replace(/\s+/g, " ");
-      const norm = normalizeLocal(clean);
+      const norm = normalize(clean);
 
       let bestMatch = null;
       let bestScore = 0;
-
       for (const c of CREDITORS) {
-        const score = similarityLocal(norm, normalizeLocal(c));
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatch = c;
-        }
+        const score = similarity(norm, normalize(c));
+        if (score > bestScore) { bestScore = score; bestMatch = c; }
       }
 
       if (bestScore > 0.55) {
@@ -183,28 +166,25 @@ function parseCreditReport(text) {
         });
       }
     }
-
     return rows;
   }
 
-  // 4. 신용도판단정보·공공정보 변동분 파싱
+  // 4. 변동분 / 공공정보 파싱
   function parseJudgmentAndPublic(lines) {
     const rows = [];
     let currentCreditor = null;
 
     for (const line of lines) {
       const clean = line.replace(/\s+/g, " ");
-      const norm = normalizeLocal(clean);
+      const norm = normalize(clean);
 
       let bestMatch = null;
       let bestScore = 0;
       for (const c of CREDITORS) {
-        const score = similarityLocal(norm, normalizeLocal(c));
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatch = c;
-        }
+        const score = similarity(norm, normalize(c));
+        if (score > bestScore) { bestScore = score; bestMatch = c; }
       }
+
       if (bestScore > 0.55) {
         currentCreditor = bestMatch;
         continue;
@@ -217,7 +197,7 @@ function parseCreditReport(text) {
       else if (clean.startsWith("해제")) type = "해제";
       if (!type) continue;
 
-      const accountMatch = clean.match(/\d{6,}[A-Z]?/) || clean.match(/[A-Z]\d{6,}/);
+      const accountMatch = clean.match(/\d{6,}/);
       const account = accountMatch ? accountMatch[0] : "-";
 
       const amountMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
@@ -240,28 +220,25 @@ function parseCreditReport(text) {
         phone: extractPhone(clean)
       });
     }
-
     return rows;
   }
 
-  // 5. 연체채권의 채권자 변동 현황 파싱
+  // 5. 연체변동 파싱
   function parseArrearChange(lines) {
     const rows = [];
     let currentCreditor = null;
 
     for (const line of lines) {
       const clean = line.replace(/\s+/g, " ");
-      const norm = normalizeLocal(clean);
+      const norm = normalize(clean);
 
       let bestMatch = null;
       let bestScore = 0;
       for (const c of CREDITORS) {
-        const score = similarityLocal(norm, normalizeLocal(c));
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatch = c;
-        }
+        const score = similarity(norm, normalize(c));
+        if (score > bestScore) { bestScore = score; bestMatch = c; }
       }
+
       if (bestScore > 0.55) {
         currentCreditor = bestMatch;
         continue;
@@ -272,15 +249,15 @@ function parseCreditReport(text) {
       const isArrear =
         clean.includes("양수채권") ||
         clean.includes("대위변제") ||
-        clean.includes("일반대출");
+        clean.includes("일반대출") ||
+        clean.includes("매각");
 
       if (!isArrear) continue;
 
-      const principalMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*(?=\s*$)/);
+      const principalMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
       const principal = principalMatch ? parseInt(principalMatch[1].replace(/,/g, ""), 10) : 0;
 
       let transfers = [];
-
       if (clean.includes("매각")) transfers.push("매각");
       if (clean.includes("미양도")) transfers.push("미양도");
       if (clean.includes("개인회생")) transfers.push("개인회생");
@@ -297,7 +274,6 @@ function parseCreditReport(text) {
         phone: extractPhone(clean)
       });
     }
-
     return rows;
   }
 
@@ -306,42 +282,40 @@ function parseCreditReport(text) {
     return group.some(r => r.releaseReason === "본인변제");
   }
 
-  // 7. buyer 탐색 로직
-  function findBuyer(allRows, sellerCreditor, account, amount) {
-    // 같은 문서 안에서, 나(현대캐피탈)가 아닌 연체변동 채권사 하나를 buyer로 본다
+  // 7. buyer 탐색 (계좌/금액이 "-"여도 작동)
+  function findBuyer(allRows, sellerCreditor) {
     return allRows.find(r =>
       r.creditor !== sellerCreditor &&
       r.type === "연체변동"
     );
   }
 
-  // 8. 양도양수이력 “기관명 → 기관명” 변환
+  // 8. 양도양수 변환
   function convertTransferFormat(group, allRows) {
-  const creditor = group[0].creditor;
+    const creditor = group[0].creditor;
 
-  const transfers = group
-    .map(r => r.transfers)
-    .filter(Boolean)
-    .filter(t => t !== "-");
+    const transfers = group
+      .map(r => r.transfers)
+      .filter(Boolean)
+      .filter(t => t !== "-");
 
-  if (!transfers.length) return "-";
+    if (!transfers.length) return "-";
 
-  return transfers
-    .map(t => {
-      if (t.includes("매각")) {
-        const buyer = findBuyer(allRows, creditor);
-        return buyer ? `${creditor} → ${buyer.creditor}` : `${creditor} → (매각)`;
-      }
-      if (t.includes("미양도")) return `${creditor} → (미양도)`;
-      if (t.includes("대위변제")) return `${creditor} → (대위변제)`;
-      if (t.includes("개인회생")) return `${creditor} → (개인회생)`;
-      return `${creditor} → (${t})`;
-    })
-    .join(" / ");
-}
+    return transfers
+      .map(t => {
+        if (t.includes("매각")) {
+          const buyer = findBuyer(allRows, creditor);
+          return buyer ? `${creditor} → ${buyer.creditor}` : `${creditor} → (매각)`;
+        }
+        if (t.includes("미양도")) return `${creditor} → (미양도)`;
+        if (t.includes("대위변제")) return `${creditor} → (대위변제)`;
+        if (t.includes("개인회생")) return `${creditor} → (개인회생)`;
+        return `${creditor} → (${t})`;
+      })
+      .join(" / ");
+  }
 
-
-  // 9. 후처리 엔진
+  // 9. 후처리
   function postProcess(rows) {
     const byKey = new Map();
 
@@ -374,30 +348,26 @@ function parseCreditReport(text) {
 
       result.push({
         creditor,
+        phone: group[0].phone || "-",
         account: account === "-" ? "-" : account,
         transfers,
-        repaid,
-        phone: group[0].phone || "-"
+        repaid
       });
     }
 
     result.sort((a, b) => {
       if (a.creditor < b.creditor) return -1;
       if (a.creditor > b.creditor) return 1;
-
       if (a.account < b.account) return -1;
       if (a.account > b.account) return 1;
-
       if (a.repaid === "미변제" && b.repaid === "해제됨") return -1;
       if (a.repaid === "해제됨" && b.repaid === "미변제") return 1;
-
       return 0;
     });
 
     return result;
   }
 
-  // 10. 실행
   const sections = splitSections(text);
 
   const loanRows = parseLoanInfo(sections["대출정보"] || []);
