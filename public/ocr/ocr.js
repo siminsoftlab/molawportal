@@ -6,9 +6,9 @@ const pdfInput = document.getElementById("pdfFile");
 const parseBtn = document.getElementById("parseBtn");
 const statusEl = document.getElementById("status");
 const tableBody = document.querySelector("#debtTable tbody");
-const exportCsvBtn = document.getElementById("exportCsvBtn");
+const exportExcelBtn = document.getElementById("exportExcelBtn");
 
-let parsedRows = []; // 최종 테이블 데이터 저장
+let parsedRows = []; // 최종 테이블 데이터
 
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files[0];
@@ -34,14 +34,12 @@ parseBtn.addEventListener("click", async () => {
 
     statusEl.textContent = "텍스트 추출 완료. 채권자변동정보 분석 중...";
 
-    // 여기서 실제 문서 구조에 맞게 파싱
     const debts = parseFromDocumentText(fullText);
-
     parsedRows = buildRowsForTable(debts);
 
     renderTable(parsedRows);
 
-    statusEl.textContent = "완료: 표가 생성되었습니다.";
+    statusEl.textContent = `완료: 표가 생성되었습니다. (총 ${parsedRows.length}건)`;
   } catch (err) {
     console.error(err);
     statusEl.textContent = "오류 발생: 콘솔을 확인하세요.";
@@ -60,28 +58,28 @@ function parseFromDocumentText(text) {
   for (let i = 0; i < words.length; i++) {
     buffer.push(words[i]);
 
-    // 전화번호 패턴 감지
     const hasPhone = buffer.some(w => /\(\d{2,4}-\d{3,4}-\d{3,4}\)/.test(w));
-
-    // 채권구분 감지
     const hasType = buffer.some(w => types.includes(w));
-
-    // 날짜 감지
     const hasDate = buffer.some(w => /^'\d{2}\.\d{2}\.\d{2}\.$/.test(w));
+    const moneyList = buffer.filter(w => /^[\d,]+$/.test(w));
+    const hasMoney = moneyList.length >= 1;
 
-    // 금액 감지
-    const hasMoney = buffer.filter(w => /^[\d,]+$/.test(w)).length >= 2;
+    // 계좌번호(사건번호) 후보: 숫자 또는 영문+숫자 조합
+    const accountCandidate = buffer.find(w =>
+      /^[A-Za-z0-9]+$/.test(w) &&
+      !types.includes(w) &&
+      !/^'\d{2}\.\d{2}\.\d{2}\.$/.test(w) &&
+      !/\(\d{2,4}-\d{3,4}-\d{3,4}\)/.test(w)
+    );
 
-    // 한 행이 완성되었는지 판단
     if (hasPhone && hasType && hasDate && hasMoney) {
       const creditor = buffer[0];
       const phone = buffer.find(w => /\(\d/.test(w));
       const type = buffer.find(w => types.includes(w));
       const date = buffer.find(w => /^'\d{2}\.\d{2}\.\d{2}\.$/.test(w));
 
-      const money = buffer.filter(w => /^[\d,]+$/.test(w));
-      const principal = money[0];
-      const interest = money[1];
+      const principal = moneyList[0];
+      const interest = moneyList[1] || "0";
 
       const adjustType = buffer.find(w =>
         ["개인회생", "파산", "면책", "기타"].includes(w)
@@ -99,7 +97,8 @@ function parseFromDocumentText(text) {
         principal,
         interest,
         adjustType,
-        transferStatus
+        transferStatus,
+        account: accountCandidate || ""
       });
 
       buffer = [];
@@ -109,21 +108,14 @@ function parseFromDocumentText(text) {
   return rows;
 }
 
-
-// 양도·양수 이력 체인 및 테이블용 데이터 구성 (간단 버전)
+// 테이블용 데이터 구성
 function buildRowsForTable(debts) {
-  // 여기서는 계좌번호 정보가 없다고 가정하고,
-  // 실제 문서에서는 "계좌번호(사건번호)" 컬럼을 함께 파싱해서 넣어야 함.
-  // 예시로 creditor + date를 계좌번호처럼 사용
   return debts.map(d => {
     const transfers = [];
 
-    if (d.type === "양수채권") {
-      transfers.push("양수채권");
-    }
-    if (d.transferStatus && d.transferStatus.includes("미양도")) {
-      transfers.push("미양도 (최종 보유)");
-    }
+    if (d.type === "양수채권") transfers.push("양수채권");
+    if (d.transferStatus.includes("미양도")) transfers.push("미양도 (최종 보유)");
+    if (d.transferStatus.includes("매각")) transfers.push("매각");
 
     const repaid =
       d.adjustType.includes("회생") ||
@@ -132,7 +124,7 @@ function buildRowsForTable(debts) {
 
     return {
       creditor: d.creditor,
-      account: `${d.date} / ${d.principal}`, // 실제로는 계좌번호를 파싱해서 넣어야 함
+      account: d.account || `${d.date} / ${d.principal}`,
       transfers,
       repaid
     };
@@ -150,42 +142,30 @@ function renderTable(rows) {
       <td>${row.creditor}</td>
       <td>${row.account}</td>
       <td>${row.transfers.join("<br>") || "-"}</td>
-      <td>${row.repaid ? "변제 가능/조정" : "미변제 추정"}</td>
+      <td>${row.repaid ? "변제됨/조정" : "미변제 추정"}</td>
     `;
 
     tableBody.appendChild(tr);
   });
 }
 
-// CSV 내보내기
-exportCsvBtn.addEventListener("click", () => {
+// 엑셀(xlsx) 내보내기 (SheetJS)
+exportExcelBtn.addEventListener("click", () => {
   if (!parsedRows || parsedRows.length === 0) {
     alert("먼저 PDF를 분석해서 표를 생성하세요.");
     return;
   }
 
-  const header = ["채권사", "계좌번호", "양도/양수 이력", "채무변제 여부"];
-  const csvRows = [header.join(",")];
+  const data = parsedRows.map(row => ({
+    채권사: row.creditor,
+    계좌번호_사건번호: row.account,
+    양도양수이력: row.transfers.join(" / "),
+    채무변제여부: row.repaid ? "변제됨/조정" : "미변제 추정"
+  }));
 
-  parsedRows.forEach(row => {
-    const line = [
-      row.creditor,
-      row.account,
-      row.transfers.join(" / "),
-      row.repaid ? "변제 가능/조정" : "미변제 추정"
-    ];
-    csvRows.push(line.join(","));
-  });
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "채권현황");
 
-  const blob = new Blob([csvRows.join("\n")], {
-    type: "text/csv;charset=utf-8;"
-  });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "채권현황.csv";
-  a.click();
-
-  URL.revokeObjectURL(url);
+  XLSX.writeFile(wb, "채권현황.xlsx");
 });
