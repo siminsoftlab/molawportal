@@ -139,9 +139,9 @@ function parseCreditReport(text) {
 
     const clean = line.replace(/\s+/g, " ");
 
-    // 화이트리스트 기반 채권사 감지
+    // ⭐ 화이트리스트 기반 채권사 감지
     const matchedCreditor = creditorWhitelist.find(k => clean.includes(k));
-    if (!matchedCreditor) continue;
+    if (!matchedCreditor) continue;   // ← 이게 핵심
 
     const creditor = matchedCreditor;
 
