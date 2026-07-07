@@ -23,7 +23,9 @@ async function runOCR(file) {
 
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 2 });
+
+      // debt.js와 동일한 방식: PDF 페이지를 이미지로 렌더링
+      const viewport = page.getViewport({ scale: 1.5 });
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -35,8 +37,9 @@ async function runOCR(file) {
 
       const imageUrl = canvas.toDataURL("image/png");
 
+      // OCR 실행
       const result = await Tesseract.recognize(imageUrl, "kor+eng", {
-        logger: m => console.log(m),
+        logger: m => console.log(m), // debt.js와 동일
       });
 
       fullText += result.data.text + "\n";
@@ -69,15 +72,15 @@ parseBtn.addEventListener("click", async () => {
     return;
   }
 
-  statusEl.textContent = "OCR 처리 중...";
+  statusEl.textContent = "OCR 처리 중... (잠시만 기다려주세요)";
 
   try {
     const fullText = await runOCR(file);
 
     console.log("OCR 결과:", fullText);
 
-    const debts = parseFromDocumentText(fullText);
-    parsedRows = buildRowsForTable(debts);
+    const debts = parseFromOCR(fullText);
+    parsedRows = debts;
 
     renderTable(parsedRows);
 
@@ -89,13 +92,14 @@ parseBtn.addEventListener("click", async () => {
 });
 
 /* ---------------------------------------------------------
-   신용정보원 텍스트 파싱 (기본 버전)
+   OCR 텍스트 파싱 (신용정보원 패턴 기반)
 --------------------------------------------------------- */
-function parseFromDocumentText(text) {
+function parseFromOCR(text) {
   const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
   const rows = [];
 
   lines.forEach(line => {
+    // 신용정보원에서 실제로 나오는 패턴 기반
     if (
       line.includes("은행") ||
       line.includes("카드") ||
@@ -103,31 +107,31 @@ function parseFromDocumentText(text) {
       line.includes("캐피탈") ||
       line.includes("대부")
     ) {
-      const accountMatch = line.match(/\d{8,}/);
+      const accountMatch = line.match(/\d{6,}/); // 계좌번호/사건번호
       const account = accountMatch ? accountMatch[0] : "-";
+
+      const transfer =
+        line.includes("양수") || line.includes("양도")
+          ? "양도/양수 있음"
+          : "-";
+
+      const repaid =
+        line.includes("면책") ||
+        line.includes("회생") ||
+        line.includes("변제")
+          ? "변제됨"
+          : "미변제";
 
       rows.push({
         creditor: line,
         account,
-        transfers: [],
-        repaid: false,
+        transfers: transfer,
+        repaid,
       });
     }
   });
 
   return rows;
-}
-
-/* ---------------------------------------------------------
-   테이블 구성
---------------------------------------------------------- */
-function buildRowsForTable(debts) {
-  return debts.map(d => ({
-    creditor: d.creditor,
-    account: d.account,
-    transfers: d.transfers,
-    repaid: d.repaid
-  }));
 }
 
 /* ---------------------------------------------------------
@@ -142,8 +146,8 @@ function renderTable(rows) {
     tr.innerHTML = `
       <td>${row.creditor}</td>
       <td>${row.account}</td>
-      <td>${row.transfers.join("<br>") || "-"}</td>
-      <td>${row.repaid ? "변제됨" : "미변제"}</td>
+      <td>${row.transfers}</td>
+      <td>${row.repaid}</td>
     `;
 
     tableBody.appendChild(tr);
@@ -162,8 +166,8 @@ exportExcelBtn.addEventListener("click", () => {
   const data = parsedRows.map(row => ({
     채권사: row.creditor,
     계좌번호: row.account,
-    양도양수이력: row.transfers.join(" / "),
-    채무변제여부: row.repaid ? "변제됨" : "미변제"
+    양도양수이력: row.transfers,
+    채무변제여부: row.repaid
   }));
 
   const ws = XLSX.utils.json_to_sheet(data);
