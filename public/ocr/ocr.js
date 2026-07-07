@@ -1,34 +1,15 @@
 // =========================
-// DOM 요소
+// PDF.js 설정
 // =========================
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
 const pdfInput = document.getElementById("pdfFile");
 const parseBtn = document.getElementById("parseBtn");
 const statusEl = document.getElementById("status");
 const tableBody = document.querySelector("#debtTable tbody");
 const exportExcelBtn = document.getElementById("exportExcelBtn");
 
-// =========================
-// 채권사 화이트리스트
-// =========================
-const creditorWhitelist = [
-  "농협은행 의정부여신관리단",
-  "농협은행",
-  "리딩에이스캐피탈",
-  "한빛자산관리대부",
-  "제니스자산관리대부",
-  "헬릭스에프앤아이대부",
-  "한국자산관리공사",
-  "우리카드",
-  "우리은행",
-  "현대캐피탈",
-  "경기신용보증재단",
-  "의정부지방법원",
-  // 필요하면 계속 추가
-];
-
-// =========================
-// 상태 저장
-// =========================
 let _rows = [];
 
 function log(msg) {
@@ -37,61 +18,88 @@ function log(msg) {
 }
 
 // =========================
-// PDF.js 설정
-// =========================
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
-
-// =========================
-// OCR로 PDF 텍스트 추출
+// 스캔본 PDF → 이미지 → 전처리 → OCR
 // =========================
 async function ocrPdf(file) {
-  log("PDF OCR 시작...");
+  log("스캔본 OCR 시작...");
 
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
   let fullText = "";
+
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-    log(`페이지 ${pageNum} OCR 중...`);
+    log(`페이지 ${pageNum} 렌더링 중...`);
 
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 5.0 }); // 해상도 올림
+    const viewport = page.getViewport({ scale: 5.5 }); // 스캔본은 고해상도 필수
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    // 흑백 전처리 (조금 더 강하게)
-    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = img.data;
-    for (let i = 0; i < data.length; i += 4) {
-      const avg = (data[i] + data[i+1] + data[i+2]) / 3;
-      const v = avg > 160 ? 255 : 0;
-      data[i] = data[i+1] = data[i+2] = v;
-    }
-    ctx.putImageData(img, 0, 0);
+    // 이미지 데이터 가져오기
+    let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
+    // -------------------------
+    // OpenCV 전처리
+    // -------------------------
+    let src = cv.matFromImageData(imgData);
+    let gray = new cv.Mat();
+    let thresh = new cv.Mat();
+    let denoise = new cv.Mat();
+    let morph = new cv.Mat();
+
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+
+    // adaptive threshold (스캔본 필수)
+    cv.adaptiveThreshold(
+      gray,
+      thresh,
+      255,
+      cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+      cv.THRESH_BINARY,
+      35,
+      15
+    );
+
+    // 노이즈 제거
+    cv.bilateralFilter(thresh, denoise, 9, 75, 75);
+
+    // 글자 붙이기
+    let kernel = cv.Mat.ones(2, 2, cv.CV_8U);
+    cv.dilate(denoise, morph, kernel);
+
+    // 최종 이미지
+    cv.imshow(canvas, morph);
+
+    // -------------------------
+    // OCR 실행
+    // -------------------------
     const dataUrl = canvas.toDataURL("image/png");
 
     const { data: { text } } = await Tesseract.recognize(dataUrl, "kor+eng", {
-      logger: m => log(`p${pageNum} 진행률: ${Math.round(m.progress * 100)}%`)
+      logger: m => log(`OCR 진행률: ${Math.round(m.progress * 100)}%`)
     });
 
     fullText += text + "\n";
+
+    // 메모리 해제
+    src.delete(); gray.delete(); thresh.delete();
+    denoise.delete(); morph.delete(); kernel.delete();
   }
 
-  log("PDF OCR 완료");
-  console.log(fullText); // 실제 OCR 결과 확인용
+  log("OCR 완료");
+  console.log(fullText);
   return fullText;
 }
 
 // =========================
-// 문자열 유사도 계산
+// 문자열 유사도
 // =========================
 function similarity(a, b) {
   a = a.toLowerCase();
@@ -112,32 +120,46 @@ function normalize(str) {
 }
 
 // =========================
-// 신용정보원 전용 파서 (지금 OCR 텍스트에 맞춰 튜닝)
+// 채권사 파싱 (스캔본 전용)
 // =========================
 function parseCreditReport(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const rows = [];
 
+  const creditors = [
+    "농협은행 의정부여신관리단",
+    "농협은행",
+    "리딩에이스캐피탈",
+    "한빛자산관리대부",
+    "제니스자산관리대부",
+    "한국에셋채권대부",
+    "웰릭스에프앤아이대부",
+    "우리카드",
+    "우리은행",
+    "현대캐피탈",
+    "경기신용보증재단",
+    "의정부지방법원"
+  ];
+
   let current = null;
 
   for (let line of lines) {
     const clean = line.replace(/\s+/g, " ");
-    const normLine = normalize(clean);
+    const norm = normalize(clean);
 
-    // 1) 유사도 기반 채권사 매칭
+    // 유사도 기반 채권사 매칭
     let bestMatch = null;
     let bestScore = 0;
 
-    for (let i = 0; i < creditorWhitelist.length; i++) {
-      const score = similarity(normLine, normalize(creditorWhitelist[i]));
+    for (let c of creditors) {
+      const score = similarity(norm, normalize(c));
       if (score > bestScore) {
         bestScore = score;
-        bestMatch = creditorWhitelist[i];
+        bestMatch = c;
       }
     }
 
-    // 유사도 0.5 이상이면 채권사로 인정
-    if (bestScore > 0.5) {
+    if (bestScore > 0.55) {
       if (current) rows.push(current);
 
       current = {
@@ -151,41 +173,22 @@ function parseCreditReport(text) {
 
     if (!current) continue;
 
-    // 2) 계좌번호/사건번호/대출정보 추출
-    //   - 숫자 6자리 이상
-    //   - 또는 "신 용 대 출 ..." 같은 라인
-    let accountMatch =
+    // 계좌번호 / 사건번호
+    const accountMatch =
       clean.match(/\d{6,}/) ||
-      clean.match(/\b\d{5}\b/) ||
-      clean.match(/\d{4}\.\d{2}\.\d{2}/);
-
-    if (!accountMatch && clean.includes("신 용 대 출")) {
-      accountMatch = [clean];
-    }
+      clean.match(/[A-Z]\d{6,}/);
 
     if (accountMatch && current.account === "-") {
       current.account = accountMatch[0];
     }
 
-    // 3) 양도/양수 이력
-    if (
-      clean.includes("양수채권") ||
-      clean.includes("양수") ||
-      clean.includes("양도") ||
-      clean.includes("채권자변동") ||
-      clean.includes("매각")
-    ) {
+    // 양도/양수
+    if (clean.includes("양수") || clean.includes("양도")) {
       current.transfers = clean;
     }
 
-    // 4) 변제 여부
-    if (
-      clean.includes("해제됨") ||
-      clean.includes("해제") ||
-      clean.includes("면책") ||
-      clean.includes("회생") ||
-      clean.includes("인가")
-    ) {
+    // 변제 여부
+    if (clean.includes("해제") || clean.includes("면책") || clean.includes("회생")) {
       current.repaid = "해제됨";
     }
   }
@@ -196,7 +199,7 @@ function parseCreditReport(text) {
 }
 
 // =========================
-// 버튼 클릭 → OCR → 파싱 → 표 생성
+// 실행
 // =========================
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files && pdfInput.files[0];
@@ -212,7 +215,6 @@ parseBtn.addEventListener("click", async () => {
 
   try {
     fullText = await ocrPdf(file);
-    console.log(fullText);   // ★ OCR 결과 확인용
   } catch (e) {
     statusEl.textContent = "OCR 오류: " + e.message;
     return;
