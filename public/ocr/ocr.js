@@ -141,17 +141,18 @@ function parseCreditReport(text) {
     const clean = line.replace(/\s+/g, " ");
     const normLine = normalize(clean);
 
-    // 1) 채권사 감지
-    const matchedCreditor = normalizedWhitelist.find((normCreditor, idx) =>
+    // 1) 채권사 감지 (화이트리스트 기반)
+    const matchedCreditorIndex = normalizedWhitelist.findIndex(normCreditor =>
       normLine.includes(normCreditor)
     );
 
-    if (matchedCreditor) {
-      // 새로운 채권사 블록 시작
+    if (matchedCreditorIndex !== -1) {
+      // 기존 블록 저장
       if (current) rows.push(current);
 
+      // 새로운 블록 시작
       current = {
-        creditor: creditorWhitelist[normalizedWhitelist.indexOf(matchedCreditor)],
+        creditor: creditorWhitelist[matchedCreditorIndex],
         account: "-",
         transfers: "-",
         repaid: "미변제"
@@ -162,18 +163,30 @@ function parseCreditReport(text) {
     if (!current) continue;
 
     // 2) 계좌번호 / 사건번호
-    const accountMatch = clean.match(/\d{6,}/) || clean.match(/\b\d{5}\b/);
+    const accountMatch =
+      clean.match(/\d{6,}/) || clean.match(/\b\d{5}\b/) || clean.match(/\d{4}\.\d{2}\.\d{2}/);
+
     if (accountMatch) {
       current.account = accountMatch[0];
     }
 
     // 3) 양도/양수
-    if (clean.includes("양수") || clean.includes("양도") || clean.includes("채권자변동")) {
+    if (
+      clean.includes("양수") ||
+      clean.includes("양도") ||
+      clean.includes("채권자변동") ||
+      clean.includes("매각")
+    ) {
       current.transfers = clean;
     }
 
     // 4) 변제 여부
-    if (clean.includes("해제") || clean.includes("면책") || clean.includes("회생")) {
+    if (
+      clean.includes("해제") ||
+      clean.includes("면책") ||
+      clean.includes("회생") ||
+      clean.includes("인가")
+    ) {
       current.repaid = "해제됨";
     }
   }
