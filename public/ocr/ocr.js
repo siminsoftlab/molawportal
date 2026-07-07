@@ -11,7 +11,7 @@ const exportExcelBtn = document.getElementById("exportExcelBtn");
 let parsedRows = [];
 
 /* ---------------------------------------------------------
-   PDF 또는 이미지 → OCR 처리 (debt.js 방식)
+   PDF 또는 이미지 → OCR 처리 (debt.js 방식 그대로)
 --------------------------------------------------------- */
 async function runOCR(file) {
   // PDF 처리
@@ -89,7 +89,7 @@ parseBtn.addEventListener("click", async () => {
 });
 
 /* ---------------------------------------------------------
-   신용정보원 텍스트 파싱
+   신용정보원 텍스트 파싱 (기본 버전)
 --------------------------------------------------------- */
 function parseFromDocumentText(text) {
   const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
