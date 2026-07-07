@@ -4,11 +4,16 @@ const vision = require("@google-cloud/vision");
 const client = new vision.ImageAnnotatorClient();
 
 exports.visionOCR = functions.https.onRequest(async (req, res) => {
-  // CORS 허용
-  res.set("Access-Control-Allow-Origin", "*");
+  // ============================
+  // CORS 허용 (반드시 최상단)
+  // ============================
+  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
 
+  // ============================
+  // OPTIONS 요청 처리 (preflight)
+  // ============================
   if (req.method === "OPTIONS") {
     return res.status(204).send("");
   }
@@ -26,8 +31,6 @@ exports.visionOCR = functions.https.onRequest(async (req, res) => {
     const [result] = await client.textDetection({
       image: { content: image }
     });
-
-    console.log("📌 Vision OCR 결과:", result);
 
     const detections = result.textAnnotations;
     const text =
