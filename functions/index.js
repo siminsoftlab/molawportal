@@ -10,9 +10,7 @@ const fetch = require("node-fetch");
 const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
 const vision = require("@google-cloud/vision");
-const client = new vision.ImageAnnotatorClient({
-  // Firebase에서는 자동 인증됨 → keyFilename 필요 없음
-});
+const client = new vision.ImageAnnotatorClient();
 
 admin.initializeApp();
 const db = admin.firestore();
