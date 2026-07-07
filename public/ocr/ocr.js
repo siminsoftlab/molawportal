@@ -308,43 +308,38 @@ function parseCreditReport(text) {
 
   // 7. buyer 탐색 로직
   function findBuyer(allRows, sellerCreditor, account, amount) {
+    // 같은 문서 안에서, 나(현대캐피탈)가 아닌 연체변동 채권사 하나를 buyer로 본다
     return allRows.find(r =>
       r.creditor !== sellerCreditor &&
-      (
-        r.account === account ||                     // 계좌번호 동일
-        r.amount === amount ||                       // 금액 동일
-        (r.account !== "-" && account !== "-" &&
-         r.account.slice(-4) === account.slice(-4))  // 사건번호 끝자리 동일
-      )
+      r.type === "연체변동"
     );
   }
 
   // 8. 양도양수이력 “기관명 → 기관명” 변환
   function convertTransferFormat(group, allRows) {
-    const creditor = group[0].creditor;
-    const account = group[0].account;
-    const amount = group[0].amount;
+  const creditor = group[0].creditor;
 
-    const transfers = group
-      .map(r => r.transfers)
-      .filter(Boolean)
-      .filter(t => t !== "-");
+  const transfers = group
+    .map(r => r.transfers)
+    .filter(Boolean)
+    .filter(t => t !== "-");
 
-    if (!transfers.length) return "-";
+  if (!transfers.length) return "-";
 
-    return transfers
-      .map(t => {
-        if (t.includes("매각")) {
-          const buyer = findBuyer(allRows, creditor, account, amount);
-          return buyer ? `${creditor} → ${buyer.creditor}` : `${creditor} → (매각)`;
-        }
-        if (t.includes("미양도")) return `${creditor} → (미양도)`;
-        if (t.includes("대위변제")) return `${creditor} → (대위변제)`;
-        if (t.includes("개인회생")) return `${creditor} → (개인회생)`;
-        return `${creditor} → (${t})`;
-      })
-      .join(" / ");
-  }
+  return transfers
+    .map(t => {
+      if (t.includes("매각")) {
+        const buyer = findBuyer(allRows, creditor);
+        return buyer ? `${creditor} → ${buyer.creditor}` : `${creditor} → (매각)`;
+      }
+      if (t.includes("미양도")) return `${creditor} → (미양도)`;
+      if (t.includes("대위변제")) return `${creditor} → (대위변제)`;
+      if (t.includes("개인회생")) return `${creditor} → (개인회생)`;
+      return `${creditor} → (${t})`;
+    })
+    .join(" / ");
+}
+
 
   // 9. 후처리 엔진
   function postProcess(rows) {
