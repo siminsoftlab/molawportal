@@ -66,13 +66,13 @@ function similarity(a, b) {
   return matches / Math.max(a.length, b.length);
 }
 
+// 본점·대괄호 제거 + 정규식 안전 버전
 function normalize(str) {
   let s = str
-    .replace(/\s+/g, "")                 // 공백 제거
-    .replace(/[^가-힣A-Za-z0-9\[\]]/g, "") // 특수문자 제거 (대괄호는 남겨둠)
-    .replace(/본점/g, "");               // '본점' 글자 제거
+    .replace(/\s+/g, "")
+    .replace(/[^가-힣A-Za-z0-9\[\]]/g, "")
+    .replace(/본점/g, "");
 
-  // 대괄호 내용 제거 (정규식 줄바꿈 문제 방지용)
   if (s.includes("[")) {
     s = s.replace(/\[/g, "").replace(/\]/g, "");
   }
@@ -80,12 +80,13 @@ function normalize(str) {
   return s;
 }
 
-
+// 전화번호 추출 (괄호/공백 허용)
 function extractPhone(line) {
-  const m = line.match(/\(?0\d{1,2}-\d{3,4}-\d{4}\)?/);
-  return m ? m[0].replace(/[()]/g, "") : "-";
+  const m = line.match(/0\d{1,2}[-)\s]*\d{3,4}[-\s]*\d{4}/);
+  return m ? m[0].replace(/[()\s]/g, "") : "-";
 }
 
+// 대출종류 추출
 function extractLoanType(clean) {
   if (clean.includes("일반대출")) return "일반대출";
   if (clean.includes("카드론")) return "카드론";
@@ -97,6 +98,7 @@ function extractLoanType(clean) {
   return "-";
 }
 
+// 채권사 매칭 (본점 표기 없이 통합)
 function matchCreditor(line, CREDITORS) {
   const norm = normalize(line);
   let bestMatch = null;
@@ -111,7 +113,6 @@ function matchCreditor(line, CREDITORS) {
   }
 
   if (bestScore > 0.45) {
-    // 본점 여부와 상관없이 항상 동일한 채권사명만 사용
     return bestMatch;
   }
   return null;
@@ -160,6 +161,7 @@ function splitSections(text) {
   return sections;
 }
 
+// 대출정보 파싱
 function parseLoanInfo(lines) {
   const rows = [];
   for (const line of lines) {
@@ -185,6 +187,7 @@ function parseLoanInfo(lines) {
   return rows;
 }
 
+// 변동분/공공정보 파싱
 function parseJudgmentAndPublic(lines) {
   const rows = [];
   let currentCreditor = null;
@@ -201,24 +204,23 @@ function parseJudgmentAndPublic(lines) {
     const phone = extractPhone(clean);
 
     let type = null;
-if (clean.startsWith("등록")) type = "등록";
-else if (clean.startsWith("해제")) type = "해제";
+    if (clean.startsWith("등록")) type = "등록";
+    else if (clean.startsWith("해제")) type = "해제";
 
-if (!type) {
-  // 전화번호가 있든 없든, 정보 행으로 한 번은 남겨둔다
-  rows.push({
-    creditor: currentCreditor,
-    account: "-",
-    type: "정보",
-    amount: 0,
-    loanType: extractLoanType(clean),
-    transfers: "-",
-    repaid: "미변제",
-    releaseReason: null,
-    phone
-  });
-  continue;
-}
+    if (!type) {
+      rows.push({
+        creditor: currentCreditor,
+        account: "-",
+        type: "정보",
+        amount: 0,
+        loanType: extractLoanType(clean),
+        transfers: "-",
+        repaid: "미변제",
+        releaseReason: null,
+        phone
+      });
+      continue;
+    }
 
     const accountMatch = clean.match(/\d{6,}/);
     const account = accountMatch ? accountMatch[0] : "-";
@@ -247,6 +249,7 @@ if (!type) {
   return rows;
 }
 
+// 연체변동 파싱 (전화번호 있는 줄 반드시 보존)
 function parseArrearChange(lines) {
   const rows = [];
   let currentCreditor = null;
@@ -269,19 +272,17 @@ function parseArrearChange(lines) {
       clean.includes("매각");
 
     if (!isArrear) {
-      if (phone !== "-") {
-        rows.push({
-          creditor: currentCreditor,
-          account: "-",
-          type: "정보",
-          amount: 0,
-          loanType: extractLoanType(clean),
-          transfers: "-",
-          repaid: "미변제",
-          releaseReason: null,
-          phone
-        });
-      }
+      rows.push({
+        creditor: currentCreditor,
+        account: "-",
+        type: "정보",
+        amount: 0,
+        loanType: extractLoanType(clean),
+        transfers: "-",
+        repaid: "미변제",
+        releaseReason: null,
+        phone
+      });
       continue;
     }
 
@@ -373,21 +374,12 @@ function postProcess(rows) {
     let transfers = convertTransferFormat(group, rows);
     const repaid = fullyRepaid ? "해제됨" : "미변제";
 
-    if (transfers.includes("→")) {
-      const [seller, buyer] = transfers.split("→").map(s => s.trim());
-
-      if (buyer && seller === creditor) {
-        continue;
-      }
-
-      if (buyer && creditor === buyer) {
-        transfers = `${seller}(매각) → ${buyer}`;
-      }
-    }
+    const phoneRow = group.find(r => r.phone && r.phone !== "-");
+    const phone = phoneRow ? phoneRow.phone : "-";
 
     result.push({
       creditor,
-      phone: group[0].phone || "-",
+      phone,
       account: account === "-" ? "-" : account,
       loanType: group[0].loanType || "-",
       transfers,
@@ -418,9 +410,7 @@ function parseCreditReport(text) {
   return postProcess(allRows);
 }
 
-// =========================
 // 실행 버튼
-// =========================
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files && pdfInput.files[0];
   if (!file) {
@@ -448,9 +438,7 @@ parseBtn.addEventListener("click", async () => {
   statusEl.textContent = `완료: 표가 생성되었습니다. (총 ${rows.length}건)`;
 });
 
-// =========================
-// 테이블 렌더링
-// =========================
+// 테이블 렌더링 (대출종류 열 포함)
 function renderTable(rows) {
   tableBody.innerHTML = "";
 
@@ -468,11 +456,9 @@ function renderTable(rows) {
   });
 }
 
-// =========================
-// 히스토리 흐름도 렌더링
-// =========================
+// 히스토리 흐름도
 function renderFlowMap(rows) {
-   if (!flowContainer) return;
+  if (!flowContainer) return;
   flowContainer.innerHTML = "";
 
   rows.forEach(r => {
@@ -490,9 +476,7 @@ function renderFlowMap(rows) {
   });
 }
 
-// =========================
 // 엑셀 내보내기
-// =========================
 exportExcelBtn.addEventListener("click", () => {
   if (!_rows.length) {
     alert("먼저 PDF를 분석하세요.");
