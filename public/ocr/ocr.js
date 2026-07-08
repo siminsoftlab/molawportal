@@ -80,10 +80,19 @@ function normalize(str) {
   return s;
 }
 
+function extractFieldAfter(label, line) {
+  const idx = line.indexOf(label);
+  if (idx === -1) return "-";
+  const part = line.slice(idx + label.length).trim();
+  const m = part.match(/[:：]?\s*([가-힣A-Za-z0-9]+)/);
+  return m ? m[1] : "-";
+}
+
 // 전화번호 추출 (괄호/공백 허용)
 function extractPhone(line) {
-  const m = line.match(/0\d{1,2}[-)\s]*\d{3,4}[-\s]*\d{4}/);
-  return m ? m[0].replace(/[()\s]/g, "") : "-";
+  // 0XX-XXXX-XXXX 또는 0X-XXX-XXXX 또는 1577-5900 같은 패턴만 허용
+  const m = line.match(/\b(0\d{1,2}-\d{3,4}-\d{4}|1\d{3}-\d{4})\b/);
+  return m ? m[0] : "-";
 }
 
 // 대출종류 추출
@@ -177,15 +186,16 @@ function parseLoanInfo(lines) {
       account: "-",
       type: "대출",
       amount,
-      loanType: extractLoanType(clean),
+      loanType: extractFieldAfter("구분", clean),   // 🔥 여기
       transfers: "-",
       repaid: "미변제",
       releaseReason: null,
-      phone: extractPhone(clean)
+      phone: "-"   // 이 섹션에는 전화번호 없음
     });
   }
   return rows;
 }
+
 
 // 변동분/공공정보 파싱
 function parseJudgmentAndPublic(lines) {
@@ -263,7 +273,7 @@ function parseArrearChange(lines) {
     }
     if (!currentCreditor) continue;
 
-    const phone = extractPhone(clean);
+    const phone = extractPhone(clean);  // 🔥 이 섹션에서만 전화번호 추출
 
     const isArrear =
       clean.includes("양수채권") ||
@@ -277,7 +287,7 @@ function parseArrearChange(lines) {
         account: "-",
         type: "정보",
         amount: 0,
-        loanType: extractLoanType(clean),
+        loanType: extractFieldAfter("채권구분", clean),  // 🔥 여기
         transfers: "-",
         repaid: "미변제",
         releaseReason: null,
@@ -300,7 +310,7 @@ function parseArrearChange(lines) {
       account: "-",
       type: "연체변동",
       amount: principal,
-      loanType: extractLoanType(clean),
+      loanType: extractFieldAfter("채권구분", clean),  // 🔥 여기
       transfers: transfers.length ? transfers.join(" / ") : "-",
       repaid: "미변제",
       releaseReason: null,
@@ -309,6 +319,7 @@ function parseArrearChange(lines) {
   }
   return rows;
 }
+
 
 function isFullyRepaid(group) {
   return group.some(r => r.releaseReason === "본인변제");
