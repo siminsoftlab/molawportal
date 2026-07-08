@@ -67,11 +67,17 @@ function similarity(a, b) {
 }
 
 function normalize(str) {
-  return str
+  let s = str
     .replace(/\s+/g, "")                 // 공백 제거
-    .replace(/[^가-힣A-Za-z0-9]/g, "")   // 특수문자 제거
-    .replace(/본점/g, "")                // '본점' 글자 제거
-    .replace(/\[.*?\]/g, "");            // [본점], [지점] 등 대괄호 내용 제거
+    .replace(/[^가-힣A-Za-z0-9\[\]]/g, "") // 특수문자 제거 (대괄호는 남겨둠)
+    .replace(/본점/g, "");               // '본점' 글자 제거
+
+  // 대괄호 내용 제거 (정규식 줄바꿈 문제 방지용)
+  if (s.includes("[")) {
+    s = s.replace(/\[/g, "").replace(/\]/g, "");
+  }
+
+  return s;
 }
 
 
@@ -105,11 +111,8 @@ function matchCreditor(line, CREDITORS) {
   }
 
   if (bestScore > 0.45) {
-    let creditorName = bestMatch;
-    if (line.includes("본점") || /\[본점\]/.test(line)) {
-      creditorName = `${bestMatch} [본점]`;
-    }
-    return creditorName;
+    // 본점 여부와 상관없이 항상 동일한 채권사명만 사용
+    return bestMatch;
   }
   return null;
 }
@@ -198,25 +201,24 @@ function parseJudgmentAndPublic(lines) {
     const phone = extractPhone(clean);
 
     let type = null;
-    if (clean.startsWith("등록")) type = "등록";
-    else if (clean.startsWith("해제")) type = "해제";
+if (clean.startsWith("등록")) type = "등록";
+else if (clean.startsWith("해제")) type = "해제";
 
-    if (!type) {
-      if (phone !== "-") {
-        rows.push({
-          creditor: currentCreditor,
-          account: "-",
-          type: "정보",
-          amount: 0,
-          loanType: extractLoanType(clean),
-          transfers: "-",
-          repaid: "미변제",
-          releaseReason: null,
-          phone
-        });
-      }
-      continue;
-    }
+if (!type) {
+  // 전화번호가 있든 없든, 정보 행으로 한 번은 남겨둔다
+  rows.push({
+    creditor: currentCreditor,
+    account: "-",
+    type: "정보",
+    amount: 0,
+    loanType: extractLoanType(clean),
+    transfers: "-",
+    repaid: "미변제",
+    releaseReason: null,
+    phone
+  });
+  continue;
+}
 
     const accountMatch = clean.match(/\d{6,}/);
     const account = accountMatch ? accountMatch[0] : "-";
@@ -470,7 +472,7 @@ function renderTable(rows) {
 // 히스토리 흐름도 렌더링
 // =========================
 function renderFlowMap(rows) {
-  if (!flowContainer) return;
+   if (!flowContainer) return;
   flowContainer.innerHTML = "";
 
   rows.forEach(r => {
