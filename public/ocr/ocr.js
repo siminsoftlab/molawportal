@@ -68,15 +68,12 @@ function similarity(a, b) {
 
 function normalize(str) {
   return str
-    .replace(/\s+/g, "")
-    .replace(/[^가-힣A-Za-z0-9]/g, "")
-    .replace(/본점/g, "")
-    .replace(/
-
-\[.*?\]
-
-/g, "");
+    .replace(/\s+/g, "")                 // 공백 제거
+    .replace(/[^가-힣A-Za-z0-9]/g, "")   // 특수문자 제거
+    .replace(/본점/g, "")                // '본점' 글자 제거
+    .replace(/\[.*?\]/g, "");            // [본점], [지점] 등 대괄호 내용 제거
 }
+
 
 function extractPhone(line) {
   const m = line.match(/\(?0\d{1,2}-\d{3,4}-\d{4}\)?/);
@@ -109,11 +106,7 @@ function matchCreditor(line, CREDITORS) {
 
   if (bestScore > 0.45) {
     let creditorName = bestMatch;
-    if (line.includes("본점") || /
-
-\[본점\]
-
-/.test(line)) {
+    if (line.includes("본점") || /\[본점\]/.test(line)) {
       creditorName = `${bestMatch} [본점]`;
     }
     return creditorName;
