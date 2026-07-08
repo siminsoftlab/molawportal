@@ -106,7 +106,7 @@ function extractFieldAfter(label, line) {
   return m ? m[1] : "-";
 }
 
-// 채권사 매칭
+// 채권사 매칭 (오탐지 방지 위해 유사도 강화)
 function matchCreditor(line, CREDITORS) {
   const norm = normalize(line);
   let bestMatch = null;
@@ -120,7 +120,7 @@ function matchCreditor(line, CREDITORS) {
     }
   }
 
-  return bestScore > 0.45 ? bestMatch : null;
+  return bestScore > 0.60 ? bestMatch : null;
 }
 
 // 채권사 목록
@@ -140,7 +140,7 @@ const CREDITORS = [
   "한빛자산관리대부","베리타스자산대부","애플자산관리대부",
   "엠메이드대부","에이원자산대부관리","아이앤유크레디트대부",
   "제니스자산관리대부","한국에셋채권대부",
-  "고려신용정보","흥국생명보험","서울보증보험",
+  "흥국생명보험","서울보증보험",
   "서민금융진흥원","소상공인시장진흥공단","신용보증기금",
   "국민행복기금","새도약기금","한국자산관리공사",
   "서울신용보증재단","경기신용보증재단","경북신용보증재단",
@@ -149,7 +149,11 @@ const CREDITORS = [
   "국세청 포천세무서","의정부지방법원","우리은행 여신관리부"
 ];
 
-// 섹션 분리
+/*  
+───────────────────────────────────────────────
+  섹션 분리
+───────────────────────────────────────────────
+*/
 function splitSections(text) {
   const lines = text.split(/\r?\n/);
   const sections = {};
@@ -160,7 +164,7 @@ function splitSections(text) {
 
     if (l.includes("대출정보")) current = "대출정보";
     else if (l.includes("신용도판단정보") && l.includes("공공정보")) current = "변동분";
-    else if (l.includes("공공정보")) current = "공공정보";
+    else if (l.includes("공공정보") && !l.includes("신용도판단정보")) current = "공공정보";
     else if (l.includes("채권자변동정보 조회서")) current = "채권자변동정보";
     else if (l.includes("연체채권의 채권자 변동 현황")) current = "연체변동";
 
@@ -173,7 +177,7 @@ function splitSections(text) {
 /*  
 ───────────────────────────────────────────────
   1) 신용정보조회서 → 대출정보 파싱
-     대출종류 = "구분" 값
+     대출종류 = "구분"
 ───────────────────────────────────────────────
 */
 function parseLoanInfo(lines) {
@@ -192,11 +196,11 @@ function parseLoanInfo(lines) {
       account: "-",
       type: "대출",
       amount,
-      loanType: extractFieldAfter("구분", clean),   // ★ 구분 값
+      loanType: extractFieldAfter("구분", clean),
       transfers: "-",
       repaid: "미변제",
       releaseReason: null,
-      phone: "-"   // 이 섹션에는 전화번호 없음
+      phone: "-"
     });
   }
   return rows;
@@ -204,8 +208,7 @@ function parseLoanInfo(lines) {
 
 /*  
 ───────────────────────────────────────────────
-  2) 채권자변동정보조회서 → 변동분/공공정보 파싱
-     대출종류 = "대출종류" 값
+  2) 변동분/공공정보 → 대출종류 = "대출종류"
 ───────────────────────────────────────────────
 */
 function parseJudgmentAndPublic(lines) {
@@ -222,20 +225,19 @@ function parseJudgmentAndPublic(lines) {
     }
     if (!currentCreditor) continue;
 
-    const phone = "-"; // 이 섹션에는 전화번호 없음
+    const phone = "-";
 
     let type = null;
     if (clean.startsWith("등록")) type = "등록";
     else if (clean.startsWith("해제")) type = "해제";
 
-    // 정보 행
     if (!type) {
       rows.push({
         creditor: currentCreditor,
         account: "-",
         type: "정보",
         amount: 0,
-        loanType: extractFieldAfter("대출종류", clean),  // ★ 대출종류 값
+        loanType: extractFieldAfter("대출종류", clean),
         transfers: "-",
         repaid: "미변제",
         releaseReason: null,
@@ -244,8 +246,7 @@ function parseJudgmentAndPublic(lines) {
       continue;
     }
 
-    // 등록/해제 행
-    const accountMatch = clean.match(/\d{6,}/);
+    const accountMatch = clean.match(/\b[0-9A-Za-z]{6,20}\b/);
     const account = accountMatch ? accountMatch[0] : "-";
 
     const amountMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
@@ -262,7 +263,7 @@ function parseJudgmentAndPublic(lines) {
       account,
       type,
       amount,
-      loanType: extractFieldAfter("대출종류", clean),  // ★ 대출종류 값
+      loanType: extractFieldAfter("대출종류", clean),
       transfers: "-",
       repaid: releaseReason ? "해제됨" : "미변제",
       releaseReason,
@@ -274,9 +275,8 @@ function parseJudgmentAndPublic(lines) {
 
 /*  
 ───────────────────────────────────────────────
-  3) 연체채권의 채권자 변동 현황 → 연체변동 파싱
-     대출종류 = "채권구분" 값
-     전화번호 = 이 섹션에서만 존재
+  3) 연체채권자변동 → 대출종류 = "채권구분"
+     전화번호는 이 섹션에서만 존재
 ───────────────────────────────────────────────
 */
 function parseArrearChange(lines) {
@@ -293,7 +293,7 @@ function parseArrearChange(lines) {
     }
     if (!currentCreditor) continue;
 
-    const phone = extractPhone(clean);  // ★ 전화번호는 여기서만 추출
+    const phone = extractPhone(clean);
 
     const isArrear =
       clean.includes("양수채권") ||
@@ -301,14 +301,13 @@ function parseArrearChange(lines) {
       clean.includes("일반대출") ||
       clean.includes("매각");
 
-    // 정보 행
     if (!isArrear) {
       rows.push({
         creditor: currentCreditor,
         account: "-",
         type: "정보",
         amount: 0,
-        loanType: extractFieldAfter("채권구분", clean),  // ★ 채권구분 값
+        loanType: extractFieldAfter("채권구분", clean),
         transfers: "-",
         repaid: "미변제",
         releaseReason: null,
@@ -317,7 +316,6 @@ function parseArrearChange(lines) {
       continue;
     }
 
-    // 연체변동 행
     const principalMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
     const principal = principalMatch ? parseInt(principalMatch[1].replace(/,/g, ""), 10) : 0;
 
@@ -332,7 +330,7 @@ function parseArrearChange(lines) {
       account: "-",
       type: "연체변동",
       amount: principal,
-      loanType: extractFieldAfter("채권구분", clean),  // ★ 채권구분 값
+      loanType: extractFieldAfter("채권구분", clean),
       transfers: transfers.length ? transfers.join(" / ") : "-",
       repaid: "미변제",
       releaseReason: null,
@@ -416,15 +414,12 @@ function postProcess(rows) {
     let transfers = convertTransferFormat(group, rows);
     const repaid = fullyRepaid ? "해제됨" : "미변제";
 
-    // ★ 전화번호 있는 행 우선
     const phoneRow = group.find(r => r.phone && r.phone !== "-");
     const phone = phoneRow ? phoneRow.phone : "-";
 
-    // ★ 계좌번호 = 최종 등록 계좌번호
     const accountRow = group.find(r => r.type === "등록" && r.account !== "-");
     const finalAccount = accountRow ? accountRow.account : account;
 
-    // ★ 대출종류 = 섹션별 파서에서 이미 정확히 들어옴
     const loanTypeRow = group.find(r => r.loanType && r.loanType !== "-");
     const loanType = loanTypeRow ? loanTypeRow.loanType : "-";
 
