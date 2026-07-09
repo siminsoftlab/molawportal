@@ -82,19 +82,11 @@ function similarity(a, b) {
 // 정규화 (본점 제거 + OCR 교정)
 function normalize(str) {
   let s = str.replace(/\s+/g, "")
-             .replace(/[^가-힣A-Za-z0-9
-
-\[\]
-
-]/g, "")
+             .replace(/[^가-힣A-Za-z0-9\[\]]/g, "")
              .replace(/본점/g, "");
 
   if (s.includes("[")) {
-    s = s.replace(/
-
-\[/g, "").replace(/\]
-
-/g, "");
+    s = s.replace(/\[/g, "").replace(/\]/g, "");
   }
 
   // OCR 교정 예시 (필요시 추가)
