@@ -493,18 +493,25 @@ function postProcess(rows) {
   return result;
 }
 
-function parseCreditReport(text) {
+ffunction parseCreditReport(text) {
   extractDebtorInfo(text);
 
   const sections = splitSections(text);
+
   const loanRows = parseLoanInfo(sections["대출정보"] || []);
-  const judgmentRows = parseJudgmentAndPublic(sections["변동분"] || []);
+
+  // 🔥 변동분1 + 변동분2 모두 파싱
+  const judgmentRows1 = parseJudgmentAndPublic(sections["변동분1"] || []);
+  const judgmentRows2 = parseJudgmentAndPublic(sections["변동분2"] || []);
+  const judgmentRows = [...judgmentRows1, ...judgmentRows2];
+
   const publicRows = parseJudgmentAndPublic(sections["공공정보"] || []);
   const arrearRows = parseArrearChange(sections["연체변동"] || []);
 
   const allRows = [...loanRows, ...judgmentRows, ...publicRows, ...arrearRows];
   return postProcess(allRows);
 }
+
 
 /*  
 ───────────────────────────────────────────────
