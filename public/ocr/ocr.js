@@ -79,7 +79,7 @@ function similarity(a, b) {
   return matches / Math.max(a.length, b.length);
 }
 
-// 정규화 (본점 제거 + OCR 교정)
+// 정규화 (OCR 교정 포함)
 function normalize(str) {
   let s = str.replace(/\s+/g, "")
              .replace(/[^가-힣A-Za-z0-9\[\]]/g, "")
@@ -89,14 +89,14 @@ function normalize(str) {
     s = s.replace(/\[/g, "").replace(/\]/g, "");
   }
 
-  // OCR 교정 예시 (필요시 추가)
+  // OCR 교정
   s = s.replace(/린딩에스/g, "리딩에이스");
   s = s.replace(/렉스스페셜에이/g, "웰릭스에프앤아이");
 
   return s;
 }
 
-// 전화번호 추출 (정확한 패턴만)
+// 전화번호 추출
 function extractPhone(line) {
   const m = line.match(/\b(0\d{1,2}-\d{3,4}-\d{4}|1\d{3}-\d{4}|070-\d{4}-\d{4})\b/);
   return m ? m[0] : "-";
@@ -131,11 +131,11 @@ function matchCreditor(line, CREDITORS) {
 // 채권사 목록
 const CREDITORS = [
   "우리카드","KB국민카드","신한카드","하나카드","현대카드",
-  "삼성카드","롯데카드","비씨카드","기업은행카드","씨티은행카드",  
+  "삼성카드","롯데카드","비씨카드","기업은행카드","씨티은행카드",
   "부산은행카드","농협카드","경남은행카드",
   "하나은행","국민은행","우리은행","케이뱅크","한국씨티은행",
   "농협은행(본점)","기업은행","농협은행(지역)","농업협동조합자산관리",
-  "농협은행 의정부여신관리단","우리은행 여신관리부","서산수산업협동조합",  
+  "농협은행 의정부여신관리단","우리은행 여신관리부","서산수산업협동조합",
   "전북은행","부산은행","경남은행","카카오뱅크","토스뱅크",
   "농협은행 경산여신관리단","새마을금고","페퍼저축은행",
   "상상인저축은행","웰컴저축은행","동원제일저축은행",
@@ -150,7 +150,7 @@ const CREDITORS = [
   "리딩에이스캐피탈","오케이캐피탈","아이엠캐피탈","에이원대부캐피탈",
   "리드코프","웰릭스에프앤아이대부",
   "아프로에프앤아이대부","한빛자산관리대부","베리타스자산대부",
-  "애플자산관리대부", "엠메이드대부","에이원자산대부관리",
+  "애플자산관리대부","엠메이드대부","에이원자산대부관리",
   "아이앤유크레디트대부","제니스자산관리대부","한국에셋채권대부",
   "바리움홀딩스대부","와이케이대부","비케이자산관리대부",
   "희망1자산대부관리","엘하비스트대부","저스트인타임대부",
@@ -163,15 +163,15 @@ const CREDITORS = [
   "경남신용보증재단",
   "LGU+","SKT","KT","SK브로드밴드",
   "국세청","의정부지방법원",
-  "한국장학재단","노란우산공제",  
+  "한국장학재단","노란우산공제",
   "에스엠신용정보",
-  "오리온에셀","소노스테이션","바로렌탈","엔에스텔레콤렌탈",  
+  "오리온에셀","소노스테이션","바로렌탈","엔에스텔레콤렌탈",
   "신용회복위원회"
 ];
 
 /*  
 ───────────────────────────────────────────────
-  섹션 분리 (변동분 인식 수정)
+  섹션 분리 (변동분 인식 완전 수정)
 ───────────────────────────────────────────────
 */
 function splitSections(text) {
@@ -179,20 +179,33 @@ function splitSections(text) {
   const sections = {};
   let current = "기타";
 
-  for (const line of lines) {
+  for (let line of lines) {
     let l = line.trim();
-    l = l.replace(/'/g, "");
+    l = l.replace(/'/g, ""); // OCR 특수문자 제거
 
+    // 대출정보
     if (l.includes("대출정보")) current = "대출정보";
+
+    // ★ 변동분 섹션 정확히 인식 (핵심 수정)
     else if (l.includes("변동분 조회")) current = "변동분";
     else if (l.includes("신용도판단정보") && l.includes("변동분")) current = "변동분";
-    else if (l.includes("공공정보") && !l.includes("신용도판단정보")) current = "공공정보";
-    else if (l.includes("채권자변동정보 조회서")) current = "채권자변동정보";
-    else if (l.includes("연체채권의 채권자 변동 현황")) current = "연체변동";
+
+    // 공공정보
+    else if (l.includes("공공정보") && !l.includes("신용도판단정보"))
+      current = "공공정보";
+
+    // 채권자변동정보
+    else if (l.includes("채권자변동정보 조회서"))
+      current = "채권자변동정보";
+
+    // 연체채권자 변동 현황
+    else if (l.includes("연체채권의 채권자 변동 현황"))
+      current = "연체변동";
 
     if (!sections[current]) sections[current] = [];
     sections[current].push(l);
   }
+
   return sections;
 }
 
@@ -205,8 +218,7 @@ function parseLoanInfo(lines) {
   const rows = [];
 
   for (let line of lines) {
-    let clean = line.replace(/\s+/g, " ");
-    clean = clean.replace(/'/g, "");
+    let clean = line.replace(/\s+/g, " ").replace(/'/g, "");
 
     const creditorName = matchCreditor(clean, CREDITORS);
     if (!creditorName) continue;
@@ -226,12 +238,13 @@ function parseLoanInfo(lines) {
       phone: "-"
     });
   }
+
   return rows;
 }
 
 /*  
 ───────────────────────────────────────────────
-  2) 변동분/공공정보 → 대출종류 = "대출종류"
+  2) 변동분/공공정보 → 등록/해제/정보 파싱
 ───────────────────────────────────────────────
 */
 function parseJudgmentAndPublic(lines) {
@@ -239,8 +252,7 @@ function parseJudgmentAndPublic(lines) {
   let currentCreditor = null;
 
   for (let line of lines) {
-    let clean = line.replace(/\s+/g, " ");
-    clean = clean.replace(/'/g, "");
+    let clean = line.replace(/\s+/g, " ").replace(/'/g, "");
 
     const matched = matchCreditor(clean, CREDITORS);
 
@@ -256,6 +268,7 @@ function parseJudgmentAndPublic(lines) {
     if (clean.startsWith("등록")) type = "등록";
     else if (clean.startsWith("해제")) type = "해제";
 
+    // 정보행
     if (!type) {
       rows.push({
         creditor: currentCreditor,
@@ -271,6 +284,7 @@ function parseJudgmentAndPublic(lines) {
       continue;
     }
 
+    // 계좌번호 정규식 강화
     const clean2 = clean.replace(/[^0-9A-Za-z]/g, "");
     const accountMatch = clean2.match(/[0-9A-Za-z]{6,20}/);
     const account = accountMatch ? accountMatch[0] : "-";
@@ -296,12 +310,13 @@ function parseJudgmentAndPublic(lines) {
       phone
     });
   }
+
   return rows;
 }
 
 /*  
 ───────────────────────────────────────────────
-  3) 연체채권자변동 → 대출종류 = "채권구분"
+  3) 연체채권자변동 → 채권구분 파싱
 ───────────────────────────────────────────────
 */
 function parseArrearChange(lines) {
@@ -309,8 +324,7 @@ function parseArrearChange(lines) {
   let currentCreditor = null;
 
   for (let line of lines) {
-    let clean = line.replace(/\s+/g, " ");
-    clean = clean.replace(/'/g, "");
+    let clean = line.replace(/\s+/g, " ").replace(/'/g, "");
 
     const matched = matchCreditor(clean, CREDITORS);
 
@@ -364,6 +378,7 @@ function parseArrearChange(lines) {
       phone
     });
   }
+
   return rows;
 }
 
@@ -604,7 +619,8 @@ function renderDebtorInfo() {
   if (!_debtorName || !_debtorSSN) return;
 
   debtorInfoEl.innerHTML = `
-      <div style="margin-top:10px; font-weight:bold;">
+    <hr style="margin-top:20px;">
+    <div style="margin-top:10px; font-weight:bold;">
       채무자명: ${_debtorName} (${_debtorSSN})
     </div>
   `;
