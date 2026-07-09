@@ -592,8 +592,7 @@ function renderDebtorInfo() {
   if (!_debtorName || !_debtorSSN) return;
 
   debtorInfoEl.innerHTML = `
-    <hr style="margin-top:20px;">
-    <div style="margin-top:10px; font-weight:bold;">
+      <div style="margin-top:10px; font-weight:bold;">
       채무자명: ${_debtorName} (${_debtorSSN})
     </div>
   `;
