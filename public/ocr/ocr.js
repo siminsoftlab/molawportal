@@ -456,9 +456,7 @@ function postProcess(rows) {
     const hasRelease = group.some(r => r.type === "해제");
     const fullyRepaid = isFullyRepaid(group);
 
-    if (account !== "-" && fullyRepaid) continue;
-    if (account !== "-" && !hasRegister && hasRelease) continue;
-
+   
     if (account === "-") {
       if (result.some(r => r.creditor === creditor && r.account === "-")) continue;
     }
