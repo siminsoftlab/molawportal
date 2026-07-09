@@ -192,9 +192,12 @@ function splitSections(text) {
 
     // ★ 등록내용이 두 번 나오므로 각각 분리해야 한다
     else if (
-    l.includes("등록내용") ||
-    l.replace(/\s+/g, "") === "등록내용" ||
-    l.replace(/[☐\s]/g, "") === "등록내용"
+        l.includes("등록내용") ||
+        l.includes("등록내역") ||
+        l.replace(/\s+/g, "") === "등록내용" ||
+        l.replace(/\s+/g, "") === "등록내역" ||
+        l.replace(/[☐\s]/g, "") === "등록내용" ||
+        l.replace(/[☐\s]/g, "") === "등록내역"
     ) {
         regCount++;
         current = `변동분${regCount}`;
