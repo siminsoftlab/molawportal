@@ -120,7 +120,7 @@ function matchCreditor(line, CREDITORS) {
     }
   }
 
-  return bestScore > 0.60 ? bestMatch : null;
+  return bestScore > 0.75 ? bestMatch : null;
 }
 
 // 채권사 목록 (최종 확장본)
