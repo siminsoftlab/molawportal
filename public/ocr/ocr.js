@@ -125,8 +125,10 @@ function matchCreditor(line, CREDITORS) {
     }
   }
 
-  return bestScore > 0.60 ? bestMatch : null;
+  // ★ 유사도 기준 강화 (핵심 수정)
+  return bestScore > 0.85 ? bestMatch : null;
 }
+
 
 // 채권사 목록
 const CREDITORS = [
