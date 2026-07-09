@@ -191,10 +191,15 @@ function splitSections(text) {
     }
 
     // ★ 등록내용이 두 번 나오므로 각각 분리해야 한다
-    else if (l.includes("등록내용")) {
-      regCount++;
-      current = `변동분${regCount}`;   // 변동분1, 변동분2로 분리
+    else if (
+    l.includes("등록내용") ||
+    l.replace(/\s+/g, "") === "등록내용" ||
+    l.replace(/[☐\s]/g, "") === "등록내용"
+    ) {
+        regCount++;
+        current = `변동분${regCount}`;
     }
+
 
     // 공공정보
     else if (l.includes("공공정보") && !l.includes("신용도판단정보")) {
