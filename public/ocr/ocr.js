@@ -179,28 +179,29 @@ function splitSections(text) {
   const sections = {};
   let current = "기타";
 
-  for (let line of lines) {
+  for (const line of lines) {
     let l = line.trim();
-    l = l.replace(/'/g, ""); // OCR 특수문자 제거
+    l = l.replace(/'/g, "");
 
     // 대출정보
-    if (l.includes("대출정보")) current = "대출정보";
+    if (l.includes("대출정보")) {
+      current = "대출정보";
+    }
 
-    // ★ 변동분 섹션 정확히 인식 (핵심 수정)
-    else if (l.includes("변동분 조회")) current = "변동분";
-    else if (l.includes("신용도판단정보") && l.includes("변동분")) current = "변동분";
+    // ★ 변동분 섹션의 실제 키워드 = "등록내용"
+    else if (l.includes("등록내용")) {
+      current = "변동분";
+    }
 
     // 공공정보
-    else if (l.includes("공공정보") && !l.includes("신용도판단정보"))
+    else if (l.includes("공공정보") && !l.includes("신용도판단정보")) {
       current = "공공정보";
-
-    // 채권자변동정보
-    else if (l.includes("채권자변동정보 조회서"))
-      current = "채권자변동정보";
+    }
 
     // 연체채권자 변동 현황
-    else if (l.includes("연체채권의 채권자 변동 현황"))
+    else if (l.includes("연체채권의 채권자 변동 현황")) {
       current = "연체변동";
+    }
 
     if (!sections[current]) sections[current] = [];
     sections[current].push(l);
@@ -208,6 +209,7 @@ function splitSections(text) {
 
   return sections;
 }
+
 
 /*  
 ───────────────────────────────────────────────
