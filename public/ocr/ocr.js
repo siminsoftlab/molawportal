@@ -92,7 +92,6 @@ function normalize(str) {
   // OCR 교정 예시 (필요시 추가)
   s = s.replace(/린딩에스/g, "리딩에이스");
   s = s.replace(/렉스스페셜에이/g, "웰릭스에프앤아이");
-  s = s.replace(/농협중앙회/g, "농업협동조합");
 
   return s;
 }
