@@ -194,6 +194,8 @@ function splitSections(text) {
     else if (
         l.includes("등록내용") ||
         l.includes("등록내역") ||
+        l.includes("등록내역표") ||
+        l.includes("등록내역조회") ||
         l.replace(/\s+/g, "") === "등록내용" ||
         l.replace(/\s+/g, "") === "등록내역" ||
         l.replace(/[☐\s]/g, "") === "등록내용" ||
