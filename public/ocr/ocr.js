@@ -493,7 +493,7 @@ function postProcess(rows) {
   return result;
 }
 
-ffunction parseCreditReport(text) {
+function parseCreditReport(text) {
   extractDebtorInfo(text);
 
   const sections = splitSections(text);
