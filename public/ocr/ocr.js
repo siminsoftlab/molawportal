@@ -178,19 +178,20 @@ function splitSections(text) {
   const lines = text.split(/\r?\n/);
   const sections = {};
   let current = "기타";
+  let regCount = 0;   // 등록내용 섹션 카운트
 
   for (const line of lines) {
-    let l = line.trim();
-    l = l.replace(/'/g, "");
+    let l = line.trim().replace(/'/g, "");
 
     // 대출정보
     if (l.includes("대출정보")) {
       current = "대출정보";
     }
 
-    // ★ 변동분 섹션의 실제 키워드 = "등록내용"
+    // ★ 등록내용이 두 번 나오므로 각각 분리해야 한다
     else if (l.includes("등록내용")) {
-      current = "변동분";
+      regCount++;
+      current = `변동분${regCount}`;   // 변동분1, 변동분2로 분리
     }
 
     // 공공정보
