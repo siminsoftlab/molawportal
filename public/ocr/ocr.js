@@ -346,18 +346,41 @@ function parseArrearChange(lines) {
 /****************************************************
  * 살아있는 부채 판정 함수
  ****************************************************/
-function isAliveDebt(row) {
+function isAliveDebt(row, allRows) {
+  // 1) 해제사유 있으면 종료
   if (row.releaseReason) return false;
+
+  // 2) 금액 0이면 종료
   if (row.amount === 0) return false;
 
+  // 3) 연체채권자 변동에서 미양도면 살아있음
+  if (row.transfers && row.transfers.includes("미양도")) {
+    return true;
+  }
+
+  // 4) 매각이면 → 양수기관이 살아있는 채권자
+  if (row.transfers && row.transfers.includes("매각")) {
+    const buyer = findBuyer(allRows, row.creditor);
+    return !!buyer;
+  }
+
+  // 5) 대출정보는 기본적으로 살아있는 채권
+  if (row.type === "대출") return true;
+
+  // 6) 채권구분 기반 alive 판정
   const t = row.loanType || "";
-  const isArrearOrAssigned =
+  if (
     t.includes("양수채권") ||
     t.includes("일반대출") ||
     t.includes("신용카드채권") ||
-    row.type === "대출";
+    t.includes("대위변제") ||
+    t.includes("대지급") ||
+    t.includes("지급보증")
+  ) {
+    return true;
+  }
 
-  return isArrearOrAssigned;
+  return false;
 }
 
 /****************************************************
