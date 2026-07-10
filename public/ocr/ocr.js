@@ -96,7 +96,6 @@ function normalize(str) {
   let s = str.replace(/\s+/g, "")
              .replace(/[^\w가-힣]/g, "");
 
-  // OCR 교정
   s = s.replace(/본점/g, "");
   s = s.replace(/센터/g, "");
   s = s.replace(/관리부/g, "");
@@ -117,23 +116,8 @@ function extractPhone(line) {
 }
 
 /****************************************************
- * 문서에서 채권사 자동 수집
+ * 특정 라벨 뒤 값 추출
  ****************************************************/
-let DYNAMIC_CREDITORS = new Set();
-
-function collectCreditorsFromText(text) {
-  const lines = text.split(/\r?\n/);
-
-  for (const raw of lines) {
-    const clean = raw.replace(/\s+/g, "");
-
-    // 기관명 패턴 강화
-    if (clean.match(/(대부|캐피탈|저축|은행|카드|보증|법원|재단|센터|관리부|여신|금융)/)) {
-      DYNAMIC_CREDITORS.add(clean);
-    }
-  }
-}
-
 function extractFieldAfter(label, line) {
   const idx = line.indexOf(label);
   if (idx === -1) return "-";
@@ -143,18 +127,33 @@ function extractFieldAfter(label, line) {
 }
 
 /****************************************************
- * 보정용 채권사 목록 (OCR 오류 대비)
+ * 동적 채권사 자동 수집
+ ****************************************************/
+let DYNAMIC_CREDITORS = new Set();
+
+function collectCreditorsFromText(text) {
+  const lines = text.split(/\r?\n/);
+
+  for (const raw of lines) {
+    const clean = raw.replace(/\s+/g, "");
+
+    if (clean.match(/(대부|캐피탈|저축|은행|카드|보증|법원|재단|센터|관리부|여신|금융)/)) {
+      DYNAMIC_CREDITORS.add(clean);
+    }
+  }
+}
+
+/****************************************************
+ * 보정용 최소 채권사 목록
  ****************************************************/
 const FALLBACK_CREDITORS = [
-  "농심캐피탈","제이엠캐피탈","바리움홀딩스대부","샤인캐피탈대부",
-  "제니스자산관리대부","아프로에프앤아이대부","동양자산관리대부",
-  "애큐온저축은행","한국투자저축은행","청주상호저축은행",
-  "참저축은행","우리금융저축은행","기업은행","전북은행",
-  "KB국민카드","신한카드","우리카드"
+  "농협은행","리딩에이스캐피탈","농업협동조합자산관리",
+  "한빛자산관리대부","한국에셋채권대부","제니스자산관리대부",
+  "경기신용보증재단","의정부지방법원","웰릭스에프앤아이대부"
 ];
 
 /****************************************************
- * 채권사 매칭 (자동 + 보정)
+ * 채권사 매칭 (확장형)
  ****************************************************/
 function matchCreditor(line) {
   const norm = normalize(line);
@@ -264,7 +263,20 @@ function parseJudgmentAndPublic(lines) {
     if (clean.startsWith("등록")) type = "등록";
     else if (clean.startsWith("해제")) type = "해제";
 
-    if (!type) continue;
+    if (!type) {
+      rows.push({
+        creditor: currentCreditor,
+        account: "-",
+        type: "정보",
+        amount: 0,
+        loanType: extractFieldAfter("대출종류", clean),
+        transfers: "-",
+        repaid: "미변제",
+        releaseReason: null,
+        phone
+      });
+      continue;
+    }
 
     const clean2 = clean.replace(/[^0-9A-Za-z]/g, "");
     const accountMatch = clean2.match(/[0-9A-Za-z]{6,20}/);
@@ -276,6 +288,7 @@ function parseJudgmentAndPublic(lines) {
     let releaseReason = null;
     if (clean.includes("본인변제")) releaseReason = "본인변제";
     else if (clean.includes("회생계획인가결정")) releaseReason = "회생계획인가결정";
+    else if (clean.includes("면책")) releaseReason = "면책";
     else if (clean.includes("기타")) releaseReason = "기타";
 
     rows.push({
@@ -315,10 +328,24 @@ function parseArrearChange(lines) {
 
     const isArrear =
       clean.includes("양수채권") ||
+      clean.includes("대위변제") ||
       clean.includes("일반대출") ||
       clean.includes("매각");
 
-    if (!isArrear) continue;
+    if (!isArrear) {
+      rows.push({
+        creditor: currentCreditor,
+        account: "-",
+        type: "정보",
+        amount: 0,
+        loanType: extractFieldAfter("채권구분", clean),
+        transfers: "-",
+        repaid: "미변제",
+        releaseReason: null,
+        phone
+      });
+      continue;
+    }
 
     const principalMatch = clean.match(/(\d{1,3}(,\d{3})*|\d+)\s*$/);
     const principal = principalMatch ? parseInt(principalMatch[1].replace(/,/g, ""), 10) : 0;
@@ -326,6 +353,8 @@ function parseArrearChange(lines) {
     let transfers = [];
     if (clean.includes("매각")) transfers.push("매각");
     if (clean.includes("미양도")) transfers.push("미양도");
+    if (clean.includes("개인회생")) transfers.push("개인회생");
+    if (clean.includes("대위변제")) transfers.push("대위변제");
 
     rows.push({
       creditor: currentCreditor,
@@ -344,30 +373,32 @@ function parseArrearChange(lines) {
 }
 
 /****************************************************
- * 살아있는 부채 판정 함수
+ * alive 판정 보조
  ****************************************************/
+function findBuyer(allRows, sellerCreditor) {
+  return allRows.find(r =>
+    r.creditor !== sellerCreditor &&
+    r.loanType &&
+    r.loanType.includes("양수채권")
+  );
+}
+
 function isAliveDebt(row, allRows) {
-  // 1) 해제사유 있으면 종료
   if (row.releaseReason) return false;
 
-  // 2) 금액 0이면 종료
-  if (row.amount === 0) return false;
+  if (row.amount === 0 && !row.loanType) return false;
 
-  // 3) 연체채권자 변동에서 미양도면 살아있음
   if (row.transfers && row.transfers.includes("미양도")) {
     return true;
   }
 
-  // 4) 매각이면 → 양수기관이 살아있는 채권자
   if (row.transfers && row.transfers.includes("매각")) {
     const buyer = findBuyer(allRows, row.creditor);
-    return !!buyer;
+    if (buyer) return true;
   }
 
-  // 5) 대출정보는 기본적으로 살아있는 채권
   if (row.type === "대출") return true;
 
-  // 6) 채권구분 기반 alive 판정
   const t = row.loanType || "";
   if (
     t.includes("양수채권") ||
@@ -377,6 +408,10 @@ function isAliveDebt(row, allRows) {
     t.includes("대지급") ||
     t.includes("지급보증")
   ) {
+    return true;
+  }
+
+  if (row.type === "등록" && !row.releaseReason) {
     return true;
   }
 
@@ -393,7 +428,6 @@ function postProcess(rows) {
     const creditor = row.creditor || "채권사모름";
     const account = row.account || "-";
     const key = `${creditor}::${account}`;
-
     if (!byKey.has(key)) byKey.set(key, []);
     byKey.get(key).push({ ...row, creditor, account });
   }
@@ -403,7 +437,7 @@ function postProcess(rows) {
   for (const [key, group] of byKey.entries()) {
     const [creditor, account] = key.split("::");
 
-    const alive = group.some(r => isAliveDebt(r));
+    const alive = group.some(r => isAliveDebt(r, rows));
     const repaid = alive ? "미변제" : "해제됨";
 
     const phoneRow = group.find(r => r.phone && r.phone !== "-");
@@ -432,26 +466,6 @@ function postProcess(rows) {
 
   return result;
 }
-
-function isAliveDebt(row) {
-  // 해제 사유 있으면 종료
-  if (row.releaseReason) return false;
-
-  // 금액 0이면 종료
-  if (row.amount === 0) return false;
-
-  const t = row.loanType || "";
-
-  // 살아있는 채권 조건
-  const alive =
-    t.includes("양수채권") ||
-    t.includes("일반대출") ||
-    t.includes("신용카드채권") ||
-    row.type === "대출";
-
-  return alive;
-}
-
 
 /****************************************************
  * 전체 파싱
@@ -524,9 +538,12 @@ function renderTable(rows) {
   });
 }
 
-/****************************************************
- * 히스토리 흐름도
- ****************************************************/
+
+/*  
+───────────────────────────────────────────────
+  히스토리 흐름도
+───────────────────────────────────────────────
+*/
 function renderFlowMap(rows) {
   if (!flowContainer) return;
   flowContainer.innerHTML = "";
@@ -546,9 +563,11 @@ function renderFlowMap(rows) {
   });
 }
 
-/****************************************************
- * 공공정보 표시
- ****************************************************/
+/*  
+───────────────────────────────────────────────
+  공공정보 표시
+───────────────────────────────────────────────
+*/
 function renderPublicInfo(rows) {
   const div = document.createElement("div");
   div.className = "public-info";
@@ -573,9 +592,11 @@ function renderPublicInfo(rows) {
   flowContainer.appendChild(div);
 }
 
-/****************************************************
- * 채무자명 표시
- ****************************************************/
+/*  
+───────────────────────────────────────────────
+  채무자명 표시
+───────────────────────────────────────────────
+*/
 function renderDebtorInfo() {
   if (!_debtorName || !_debtorSSN) return;
 
@@ -587,9 +608,11 @@ function renderDebtorInfo() {
   `;
 }
 
-/****************************************************
- * 엑셀 내보내기
- ****************************************************/
+/*  
+───────────────────────────────────────────────
+  엑셀 내보내기
+───────────────────────────────────────────────
+*/
 exportExcelBtn.style.marginTop = "20px";
 
 exportExcelBtn.addEventListener("click", () => {
