@@ -94,14 +94,14 @@ function similarity(a, b) {
  ****************************************************/
 function normalize(str) {
   let s = str.replace(/\s+/g, "")
-             .replace(/[^가-힣A-Za-z0-9\[\]]/g, "")
-             .replace(/본점/g, "");
-
-  if (s.includes("[")) {
-    s = s.replace(/\[/g, "").replace(/\]/g, "");
-  }
+             .replace(/[^\w가-힣]/g, "");
 
   // OCR 교정
+  s = s.replace(/본점/g, "");
+  s = s.replace(/센터/g, "");
+  s = s.replace(/관리부/g, "");
+  s = s.replace(/여신관리단/g, "여신관리단");
+
   s = s.replace(/린딩에스/g, "리딩에이스");
   s = s.replace(/렉스스페셜에이/g, "웰릭스에프앤아이");
 
@@ -124,14 +124,16 @@ let DYNAMIC_CREDITORS = new Set();
 function collectCreditorsFromText(text) {
   const lines = text.split(/\r?\n/);
 
-  for (const line of lines) {
-    const clean = line.replace(/\s+/g, "");
+  for (const raw of lines) {
+    const clean = raw.replace(/\s+/g, "");
 
-    if (clean.match(/(대부|캐피탈|저축은행|카드|은행|보증|법원|재단|저축)/)) {
+    // 기관명 패턴 강화
+    if (clean.match(/(대부|캐피탈|저축|은행|카드|보증|법원|재단|센터|관리부|여신|금융)/)) {
       DYNAMIC_CREDITORS.add(clean);
     }
   }
 }
+
 
 /****************************************************
  * 보정용 채권사 목록 (OCR 오류 대비)
@@ -162,7 +164,7 @@ function matchCreditor(line) {
     }
   }
 
-  return bestScore > 0.85 ? best : null;
+  return bestScore > 0.75 ? best : null;
 }
 
 /****************************************************
@@ -400,6 +402,26 @@ function postProcess(rows) {
 
   return result;
 }
+
+function isAliveDebt(row) {
+  // 해제 사유 있으면 종료
+  if (row.releaseReason) return false;
+
+  // 금액 0이면 종료
+  if (row.amount === 0) return false;
+
+  const t = row.loanType || "";
+
+  // 살아있는 채권 조건
+  const alive =
+    t.includes("양수채권") ||
+    t.includes("일반대출") ||
+    t.includes("신용카드채권") ||
+    row.type === "대출";
+
+  return alive;
+}
+
 
 /****************************************************
  * 전체 파싱
