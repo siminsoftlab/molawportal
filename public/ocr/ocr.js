@@ -552,4 +552,11 @@ exportExcelBtn.addEventListener("click", () => {
     계좌번호_사건번호: row.account,
     대출종류: row.loanType,
     양도양수이력: row.transfers,
-    채무변제여부:
+    채무변제여부: row.repaid
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "채권현황");
+  XLSX.writeFile(wb, "채권현황.xlsx");
+});
