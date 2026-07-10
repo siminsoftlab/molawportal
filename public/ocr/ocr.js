@@ -134,6 +134,13 @@ function collectCreditorsFromText(text) {
   }
 }
 
+function extractFieldAfter(label, line) {
+  const idx = line.indexOf(label);
+  if (idx === -1) return "-";
+  const part = line.slice(idx + label.length).trim();
+  const m = part.match(/[:：]?\s*([가-힣A-Za-z0-9]+)/);
+  return m ? m[1] : "-";
+}
 
 /****************************************************
  * 보정용 채권사 목록 (OCR 오류 대비)
