@@ -379,14 +379,18 @@ function postProcess(rows) {
   const byKey = new Map();
 
   for (const row of rows) {
-    if (!WHITELIST.includes(row.creditor)) continue; // 화이트리스트 외 제거
+    const normCreditor = normalize(row.creditor);
 
-    const creditor = row.creditor;
+    // 화이트리스트와 유사도 비교하여 필터링
+    const isValid = WHITELIST.some(w => similarity(normCreditor, normalize(w)) > 0.75);
+    if (!isValid) continue;
+
+    const creditor = WHITELIST.find(w => similarity(normCreditor, normalize(w)) > 0.75);
     const account = row.account || "-";
     const key = `${creditor}::${account}`;
 
     if (!byKey.has(key)) byKey.set(key, []);
-    byKey.get(key).push({ ...row });
+    byKey.get(key).push({ ...row, creditor });
   }
 
   const result = [];
@@ -423,6 +427,7 @@ function postProcess(rows) {
 
   return result;
 }
+
 
 function parseCreditReport(text) {
   extractDebtorInfo(text);
