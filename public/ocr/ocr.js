@@ -93,6 +93,7 @@ function normalize(str) {
 }
 
 
+
 function extractPhone(line) {
   const m = line.match(/\b(0\d{1,2}-\d{3,4}-\d{4}|1\d{3}-\d{4}|070-\d{4}-\d{4})\b/);
   return m ? m[0] : "-";
@@ -108,33 +109,30 @@ function extractFieldAfter(label, line) {
 
 function buildCreditorWhitelist(text) {
   const lines = text.split(/\r?\n/);
-  const candidates = new Set();
+  const freq = {};
 
   for (let raw of lines) {
     const clean = raw.replace(/\s+/g, "");
 
-    // 채권사 후보군 자동 수집 (담보 포함)
-    if (clean.match(/(대부|캐피탈|저축|은행|카드|보증|법원|재단|여신|금융|담보)/)) {
-      candidates.add(clean);
-    }
+    if (!clean.match(/(대부|캐피탈|저축|은행|카드|보증|법원|재단|여신|금융|담보)/)) continue;
+
+    const norm = normalize(clean);
+    if (norm.length < 3) continue;
+
+    freq[norm] = (freq[norm] || 0) + 1;
   }
 
-  const whitelist = new Set();
+  // 1) 등장 횟수 상위 후보군
+  const sorted = Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name]) => name);
 
-  for (let c of candidates) {
-    let s = normalize(c);
+  // 2) 채권사 패턴 필터링
+  const valid = sorted.filter(name =>
+    name.match(/(대부|캐피탈|은행|보증재단|자산관리|지방법원|채권대부|에프앤아이대부)$/)
+  );
 
-    // 비채권 기관 제거
-    if (s.match(/(도청|시청|군청|증권|투자증권|신용정보|회복위원회|공단|진흥원)/)) continue;
-    if (s.match(/(금융기관명|채무보증정보)/)) continue;
-
-    // 너무 짧은 이름 제거
-    if (s.length < 4) continue;
-
-    whitelist.add(s);
-  }
-
-  return Array.from(whitelist);
+  return valid;
 }
 
 
