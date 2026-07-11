@@ -75,7 +75,7 @@ function normalize(str) {
              .replace(/[^가-힣A-Za-z0-9]/g, "");
 
   // 부서명 제거
-  s = s.replace(/(본점|본부|심사부|여신관리단|학자금대출부|대양|중앙회|본사)/g, "");
+  s = s.replace(/(본점|본부|심사부|여신관리단|학자금대출부|대양|중앙회|본사|신용분석팀|본부총괄|지점|센터)/g, "");
 
   // OCR 교정
   s = s.replace(/린딩에스/g, "리딩에이스");
@@ -103,20 +103,24 @@ function extractFieldAfter(label, line) {
   return m ? m[1] : "-";
 }
 
-// 기관명 직접 추출
+// 기관명 자동 추출 (패턴 기반)
 function extractCreditorFromLine(line) {
   const m = line.match(
-    /([가-힣A-Za-z0-9]+대부|
-      [가-힣A-Za-z0-9]+캐피탈|
-      [가-힣A-Za-z0-9]+금고|
-      [가-힣A-Za-z0-9]+카드|
+    (국세청[가-힣]*세무서|
       [가-힣A-Za-z0-9]+지방법원|
+      [가-힣A-Za-z0-9]+대부|
+      [가-힣A-Za-z0-9]+캐피탈|
+      [가-힣A-Za-z0-9]+카드|
+      [가-힣A-Za-z0-9]+금고|
+      [가-힣A-Za-z0-9]+은행|
+      [가-힣A-Za-z0-9]+자산관리대부|
+      [가-힣A-Za-z0-9]+자산관리|
+      [가-힣A-Za-z0-9]+보증재단|
       서울보증보험|
       한국장학재단|
-      농업협동조합자산관리|
-      농협은행|
-      우리은행|
-      경기신용보증재단)/x
+      신용보증기금|
+      신용회복위원회
+    )
   );
   return m ? normalizeCreditor(m[0]) : null;
 }
