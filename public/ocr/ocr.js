@@ -314,37 +314,39 @@ function collectAllInstitutions(rows) {
 function isAliveInstitution(inst, rows) {
   let alive = false;
 
+  const normInst = normalizeCreditor(inst);
+
   // 이 기관이 연체변동 외 다른 섹션에도 등장하는지 확인
   const hasNonArrearRow = rows.some(r => {
     const norm = normalizeCreditor(r.creditor);
-    return norm === inst && r.type !== "연체변동";
+    return norm === normInst && r.type !== "연체변동";
   });
 
   // 이 기관의 모든 연체변동 행만 모음
-  const arrearRows = rows.filter(r => normalizeCreditor(r.creditor) === inst && r.type === "연체변동");
+  const arrearRows = rows.filter(r => normalizeCreditor(r.creditor) === normInst && r.type === "연체변동");
 
   // 이 기관이 실제로 채권을 보유한 적이 있는지 확인 (대출/등록 섹션)
   const hasLoanOrRegister = rows.some(r => {
     const norm = normalizeCreditor(r.creditor);
-    return norm === inst && (r.type === "대출" || r.type === "등록");
+    return norm === normInst && (r.type === "대출" || r.type === "등록");
   });
 
-  // 연체변동 섹션에서 매각만 있고 양수채권/대위변제 없고,
-  // 대출/등록 섹션에도 등장하지 않으면 → 순수 양도인 → 제외
-  if (!hasLoanOrRegister) {
+  // ⭐ 핵심 추가 조건: 연체변동만 있고, 매각 중심이면 → 양도인 → 제외
+  if (!hasLoanOrRegister && !hasNonArrearRow) {
     const allTransfers = arrearRows.map(r => r.transfers).join(" ");
+
     const isPureSeller =
       allTransfers.includes("매각") &&
-      !allTransfers.includes("양수채권") &&
-      !allTransfers.includes("대위변제");
+      !allTransfers.includes("대위변제") &&
+      !allTransfers.includes("양수채권");
 
-    if (isPureSeller) return false; // alive 아님
+    if (isPureSeller) return false;
   }
 
   // 일반 alive 판정
   for (const r of rows) {
     const norm = normalizeCreditor(r.creditor);
-    if (norm !== inst) continue;
+    if (norm !== normInst) continue;
 
     // 해제된 채권 제외
     if (r.repaid === "해제됨") continue;
