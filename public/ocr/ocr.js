@@ -327,21 +327,16 @@ function isAliveInstitution(inst, rows) {
     const norm = normalizeCreditor(r.creditor);
     if (norm !== inst) continue;
 
-    // 매각한 채권사는 제외
-    if (r.transfers && r.transfers.includes("매각")) continue;
+    // ❌ 제외 조건
+    if (r.transfers && r.transfers.includes("매각")) continue;  // 양도인 제외
+    if (r.type === "정보") continue;                           // 정보행 제외
+    if (r.repaid === "해제됨") continue;                       // 해제된 채권 제외
+    if (r.releaseReason) continue;                             // 해제사유 존재 시 제외
 
-    // 제외 조건
-    if (r.repaid === "해제됨") continue;
-    if (r.releaseReason) continue;
-
-    // 포함 조건
-    if (r.amount > 0) alive = true;
-    if (r.type === "대출" && r.amount > 0) alive = true;
-    if (r.type === "등록" && r.amount > 0) alive = true;
-    if (r.type === "연체변동" && r.amount > 0) alive = true;
-    if (r.transfers && r.transfers.includes("양수채권")) alive = true;
-    if (r.transfers && r.transfers.includes("대위변제")) alive = true;
-    if (r.repaid === "미변제") alive = true;
+    // ✔ 포함 조건
+    if (r.amount > 0) alive = true;                            // 금액 존재
+    if (r.transfers && r.transfers.includes("양수채권")) alive = true; // 양수기관
+    if (r.transfers && r.transfers.includes("대위변제")) alive = true; // 보증기관
   }
 
   return alive;
