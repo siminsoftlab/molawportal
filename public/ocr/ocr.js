@@ -82,8 +82,8 @@ function normalize(str) {
   let s = str.replace(/\s+/g, "")
              .replace(/[^\w가-힣]/g, "");
 
-  // 부서명 제거
-  s = s.replace(/본점|본부|관리단|여신관리단|영업부|센터|지점|본/g, "");
+  // 부서명/지점/본부/센터/관리단/총괄/공공정보 제거
+  s = s.replace(/(본점|본부|관리단|여신관리단|영업부|센터|지점|총괄|공공정보|여신관리부|여신관리|관리부|본)/g, "");
 
   // OCR 교정
   s = s.replace(/린딩에스/g, "리딩에이스");
@@ -91,6 +91,7 @@ function normalize(str) {
 
   return s;
 }
+
 
 function extractPhone(line) {
   const m = line.match(/\b(0\d{1,2}-\d{3,4}-\d{4}|1\d{3}-\d{4}|070-\d{4}-\d{4})\b/);
@@ -112,7 +113,7 @@ function buildCreditorWhitelist(text) {
   for (let raw of lines) {
     const clean = raw.replace(/\s+/g, "");
 
-    // 1) 채권사 후보군 자동 수집 (담보 추가)
+    // 채권사 후보군 자동 수집 (담보 포함)
     if (clean.match(/(대부|캐피탈|저축|은행|카드|보증|법원|재단|여신|금융|담보)/)) {
       candidates.add(clean);
     }
@@ -123,14 +124,11 @@ function buildCreditorWhitelist(text) {
   for (let c of candidates) {
     let s = normalize(c);
 
-    // 2) 비채권 기관 자동 제거 (패턴 기반)
+    // 비채권 기관 제거
     if (s.match(/(도청|시청|군청|증권|투자증권|신용정보|회복위원회|공단|진흥원)/)) continue;
     if (s.match(/(금융기관명|채무보증정보)/)) continue;
 
-    // 3) 부서명 제거
-    s = s.replace(/(본점|본부|관리단|여신관리단|영업부|센터|지점|본)/g, "");
-
-    // 4) 너무 짧은 이름 제거
+    // 너무 짧은 이름 제거
     if (s.length < 4) continue;
 
     whitelist.add(s);
@@ -138,6 +136,7 @@ function buildCreditorWhitelist(text) {
 
   return Array.from(whitelist);
 }
+
 
 function matchCreditor(line) {
   const norm = normalize(line);
@@ -379,14 +378,13 @@ function postProcess(rows) {
   const byKey = new Map();
 
   for (const row of rows) {
-    // 1) creditor 정규화
     const normCreditor = normalize(row.creditor);
 
-    // 2) 화이트리스트와 유사도 비교하여 유효 채권사인지 판정
+    // 화이트리스트와 유사도 비교하여 유효 채권사인지 판정
     const isValid = WHITELIST.some(w => similarity(normCreditor, normalize(w)) > 0.75);
     if (!isValid) continue;
 
-    // 3) 화이트리스트에서 실제 매칭되는 채권사 이름 찾기
+    // 실제 매칭되는 채권사 이름 찾기
     const creditor = WHITELIST.find(w => similarity(normCreditor, normalize(w)) > 0.75);
 
     const account = row.account || "-";
@@ -401,23 +399,18 @@ function postProcess(rows) {
   for (const [key, group] of byKey.entries()) {
     const [creditor, account] = key.split("::");
 
-    // 4) alive 판정
     const alive = group.some(r => isAliveDebt(r, rows));
     const repaid = alive ? "미변제" : "해제됨";
 
-    // 5) 전화번호
     const phoneRow = group.find(r => r.phone && r.phone !== "-");
     const phone = phoneRow ? phoneRow.phone : "-";
 
-    // 6) 계좌번호 (등록 정보 우선)
     const accountRow = group.find(r => r.type === "등록" && r.account !== "-");
     const finalAccount = accountRow ? accountRow.account : account;
 
-    // 7) 대출종류
     const loanTypeRow = group.find(r => r.loanType && r.loanType !== "-");
     const loanType = loanTypeRow ? loanTypeRow.loanType : "-";
 
-    // 8) 양도/양수 이력
     const transfers = group
       .map(r => r.transfers)
       .filter(t => t && t !== "-")
