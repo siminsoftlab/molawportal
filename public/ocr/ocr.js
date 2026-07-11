@@ -379,13 +379,16 @@ function postProcess(rows) {
   const byKey = new Map();
 
   for (const row of rows) {
+    // 1) creditor 정규화
     const normCreditor = normalize(row.creditor);
 
-    // 화이트리스트와 유사도 비교하여 필터링
+    // 2) 화이트리스트와 유사도 비교하여 유효 채권사인지 판정
     const isValid = WHITELIST.some(w => similarity(normCreditor, normalize(w)) > 0.75);
     if (!isValid) continue;
 
+    // 3) 화이트리스트에서 실제 매칭되는 채권사 이름 찾기
     const creditor = WHITELIST.find(w => similarity(normCreditor, normalize(w)) > 0.75);
+
     const account = row.account || "-";
     const key = `${creditor}::${account}`;
 
@@ -398,18 +401,23 @@ function postProcess(rows) {
   for (const [key, group] of byKey.entries()) {
     const [creditor, account] = key.split("::");
 
+    // 4) alive 판정
     const alive = group.some(r => isAliveDebt(r, rows));
     const repaid = alive ? "미변제" : "해제됨";
 
+    // 5) 전화번호
     const phoneRow = group.find(r => r.phone && r.phone !== "-");
     const phone = phoneRow ? phoneRow.phone : "-";
 
+    // 6) 계좌번호 (등록 정보 우선)
     const accountRow = group.find(r => r.type === "등록" && r.account !== "-");
     const finalAccount = accountRow ? accountRow.account : account;
 
+    // 7) 대출종류
     const loanTypeRow = group.find(r => r.loanType && r.loanType !== "-");
     const loanType = loanTypeRow ? loanTypeRow.loanType : "-";
 
+    // 8) 양도/양수 이력
     const transfers = group
       .map(r => r.transfers)
       .filter(t => t && t !== "-")
@@ -427,6 +435,7 @@ function postProcess(rows) {
 
   return result;
 }
+
 
 
 function parseCreditReport(text) {
