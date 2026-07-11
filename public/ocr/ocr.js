@@ -94,15 +94,6 @@ function extractPhone(line) {
   return m ? m[0] : "-";
 }
 
-// 라벨 뒤 값
-function extractFieldAfter(label, line) {
-  const idx = line.indexOf(label);
-  if (idx === -1) return "-";
-  const part = line.slice(idx + label.length).trim();
-  const m = part.match(/[:：]?\s*([가-힣A-Za-z0-9]+)/);
-  return m ? m[1] : "-";
-}
-
 // 기관명 자동 추출
 function extractCreditorFromLine(line) {
   const m = line.match(
@@ -166,7 +157,6 @@ function parseLoanInfo(lines) {
       account: "-",
       type: "대출",
       amount,
-      loanType: extractFieldAfter("구분", clean),
       transfers: "-",
       repaid: "미변제",
       releaseReason: null,
@@ -197,8 +187,7 @@ function parseJudgmentAndPublic(lines) {
     let type = null;
     if (clean.startsWith("등록")) type = "등록";
     else if (clean.startsWith("해제")) type = "해제";
-
-    if (!type && clean.includes("공공정보")) type = "정보";
+    else if (clean.includes("공공정보")) type = "정보";
 
     if (!type) {
       rows.push({
@@ -206,7 +195,6 @@ function parseJudgmentAndPublic(lines) {
         account: "-",
         type: "정보",
         amount: 0,
-        loanType: extractFieldAfter("대출종류", clean),
         transfers: "-",
         repaid: "미변제",
         releaseReason: null,
@@ -233,7 +221,6 @@ function parseJudgmentAndPublic(lines) {
       account,
       type,
       amount,
-      loanType: extractFieldAfter("대출종류", clean),
       transfers: "-",
       repaid: releaseReason ? "해제됨" : "미변제",
       releaseReason,
@@ -273,7 +260,6 @@ function parseArrearChange(lines) {
         account: "-",
         type: "정보",
         amount: 0,
-        loanType: extractFieldAfter("채권구분", clean),
         transfers: "-",
         repaid: "미변제",
         releaseReason: null,
@@ -297,7 +283,6 @@ function parseArrearChange(lines) {
       account: "-",
       type: "연체변동",
       amount: principal,
-      loanType: extractFieldAfter("채권구분", clean),
       transfers: transfers.length ? transfers.join(" / ") : "-",
       repaid: "미변제",
       releaseReason: null,
@@ -496,6 +481,7 @@ parseBtn.addEventListener("click", async () => {
 
   statusEl.textContent = `자료수집이 완료되었습니다.(총 ${rows.length}건)`;
 });
+
 
 // 엑셀 내보내기
 exportExcelBtn.style.marginTop = "20px";
