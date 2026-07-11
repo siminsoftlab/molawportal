@@ -320,38 +320,49 @@ function isAliveInstitution(inst, rows) {
     return norm === inst && r.type !== "연체변동";
   });
 
+  // 이 기관의 모든 연체변동 행만 모음
+  const arrearRows = rows.filter(r => normalizeCreditor(r.creditor) === inst && r.type === "연체변동");
+
+  // 이 기관이 실제로 채권을 보유한 적이 있는지 확인 (대출/등록 섹션)
+  const hasLoanOrRegister = rows.some(r => {
+    const norm = normalizeCreditor(r.creditor);
+    return norm === inst && (r.type === "대출" || r.type === "등록");
+  });
+
+  // 연체변동 섹션에서 매각만 있고 양수채권/대위변제 없고,
+  // 대출/등록 섹션에도 등장하지 않으면 → 순수 양도인 → 제외
+  if (!hasLoanOrRegister) {
+    const allTransfers = arrearRows.map(r => r.transfers).join(" ");
+    const isPureSeller =
+      allTransfers.includes("매각") &&
+      !allTransfers.includes("양수채권") &&
+      !allTransfers.includes("대위변제");
+
+    if (isPureSeller) return false; // alive 아님
+  }
+
+  // 일반 alive 판정
   for (const r of rows) {
     const norm = normalizeCreditor(r.creditor);
     if (norm !== inst) continue;
-
-    // 순수 양도인(매각만 있고, 다른 섹션에 안 나오는 경우) 제외
-    if (
-      r.type === "연체변동" &&
-      r.transfers &&
-      r.transfers.includes("매각") &&
-      !r.transfers.includes("양수채권") &&
-      !r.transfers.includes("대위변제") &&
-      !hasNonArrearRow
-    ) {
-      continue;
-    }
 
     // 해제된 채권 제외
     if (r.repaid === "해제됨") continue;
     if (r.releaseReason) continue;
 
-    // 대출/등록/연체변동 금액 존재
+    // 대출/등록/연체변동 금액 존재 → alive
     if (r.type === "대출" && r.amount > 0) alive = true;
     if (r.type === "등록" && r.amount > 0) alive = true;
     if (r.type === "연체변동" && r.amount > 0) alive = true;
 
-    // 양수채권 / 대위변제
+    // 양수채권 / 대위변제 → alive
     if (r.transfers && r.transfers.includes("양수채권")) alive = true;
     if (r.transfers && r.transfers.includes("대위변제")) alive = true;
   }
 
   return alive;
 }
+
 
 // alive 기관 목록
 function buildFinalCreditorList(rows) {
