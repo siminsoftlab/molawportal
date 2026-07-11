@@ -1,3 +1,5 @@
+// ===================== ocr.js 최종본 =====================
+
 // PDF.js 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
@@ -14,7 +16,7 @@ let _rows = [];
 let _debtorName = "";
 let _debtorSSN = "";
 
-// 로그 출력
+// 로그
 function log(msg) {
   console.log(msg);
   statusEl.textContent = msg;
@@ -60,7 +62,7 @@ async function ocrPdf(file) {
   return fullText;
 }
 
-// 채무자명 + 주민번호 추출
+// 채무자 정보
 function extractDebtorInfo(text) {
   const nameMatch = text.match(/성명\(대표자\)\s*([가-힣]+)/);
   const ssnMatch = text.match(/주민등록번호\s*([0-9]{6}-[0-9]{7})/);
@@ -74,10 +76,8 @@ function normalize(str) {
   let s = str.replace(/\s+/g, "")
              .replace(/[^가-힣A-Za-z0-9]/g, "");
 
-  // 부서명 제거
   s = s.replace(/(본점|본부|심사부|여신관리단|학자금대출부|대양|중앙회|본사|신용분석팀|본부총괄|지점|센터)/g, "");
 
-  // OCR 교정
   s = s.replace(/린딩에스/g, "리딩에이스");
   s = s.replace(/렉스스페셜에이/g, "웰릭스에프앤아이");
 
@@ -88,13 +88,13 @@ function normalizeCreditor(name) {
   return normalize(name);
 }
 
-// 전화번호 추출
+// 전화번호
 function extractPhone(line) {
   const m = line.match(/\b(0\d{1,2}-\d{3,4}-\d{4}|1\d{3}-\d{4}|070-\d{4}-\d{4})\b/);
   return m ? m[0] : "-";
 }
 
-// 특정 라벨 뒤 값 추출
+// 라벨 뒤 값
 function extractFieldAfter(label, line) {
   const idx = line.indexOf(label);
   if (idx === -1) return "-";
@@ -103,14 +103,13 @@ function extractFieldAfter(label, line) {
   return m ? m[1] : "-";
 }
 
-// 기관명 자동 추출 (패턴 기반)
+// 기관명 자동 추출
 function extractCreditorFromLine(line) {
   const m = line.match(
     /(국세청[가-힣]*세무서|[가-힣A-Za-z0-9]+지방법원|[가-힣A-Za-z0-9]+대부|[가-힣A-Za-z0-9]+캐피탈|[가-힣A-Za-z0-9]+카드|[가-힣A-Za-z0-9]+금고|[가-힣A-Za-z0-9]+은행|[가-힣A-Za-z0-9]+자산관리대부|[가-힣A-Za-z0-9]+자산관리|[가-힣A-Za-z0-9]+보증재단|서울보증보험|한국장학재단|신용보증기금|신용회복위원회)/
   );
   return m ? normalizeCreditor(m[0]) : null;
 }
-
 
 // 섹션 분리
 function splitSections(text) {
@@ -149,7 +148,7 @@ function splitSections(text) {
   return sections;
 }
 
-// 1) 대출정보 파싱
+// 1) 대출정보
 function parseLoanInfo(lines) {
   const rows = [];
 
@@ -178,7 +177,7 @@ function parseLoanInfo(lines) {
   return rows;
 }
 
-// 2) 변동분/공공정보 파싱
+// 2) 등록/해제/공공정보
 function parseJudgmentAndPublic(lines) {
   const rows = [];
   let currentCreditor = null;
@@ -198,6 +197,8 @@ function parseJudgmentAndPublic(lines) {
     let type = null;
     if (clean.startsWith("등록")) type = "등록";
     else if (clean.startsWith("해제")) type = "해제";
+
+    if (!type && clean.includes("공공정보")) type = "정보";
 
     if (!type) {
       rows.push({
@@ -243,7 +244,7 @@ function parseJudgmentAndPublic(lines) {
   return rows;
 }
 
-// 3) 연체채권자 변동 파싱
+// 3) 연체채권자 변동
 function parseArrearChange(lines) {
   const rows = [];
   let currentCreditor = null;
@@ -319,7 +320,7 @@ function collectAllInstitutions(rows) {
   return Array.from(set);
 }
 
-// 살아있는 채권사 판정
+// alive 판정
 function isAliveInstitution(inst, rows) {
   let alive = false;
 
@@ -327,41 +328,33 @@ function isAliveInstitution(inst, rows) {
     const norm = normalizeCreditor(r.creditor);
     if (norm !== inst) continue;
 
-    // ❌ 양도인(매각한 기관) 제외
+    // 양도인(매각한 기관) 제외
     if (r.transfers && r.transfers.includes("매각")) continue;
 
-    // ❌ 해제된 채권 제외
+    // 해제된 채권 제외
     if (r.repaid === "해제됨") continue;
     if (r.releaseReason) continue;
 
-    // ✔ 대출정보 금액 존재 → alive
+    // 대출/등록/연체변동 금액 존재
     if (r.type === "대출" && r.amount > 0) alive = true;
-
-    // ✔ 등록정보 금액 존재 → alive
     if (r.type === "등록" && r.amount > 0) alive = true;
-
-    // ✔ 연체변동 금액 존재 → alive
     if (r.type === "연체변동" && r.amount > 0) alive = true;
 
-    // ✔ 양수기관 → alive
+    // 양수채권 / 대위변제
     if (r.transfers && r.transfers.includes("양수채권")) alive = true;
-
-    // ✔ 대위변제 → alive
     if (r.transfers && r.transfers.includes("대위변제")) alive = true;
   }
 
   return alive;
 }
 
-
-
-// 최종 살아있는 채권사 목록
+// alive 기관 목록
 function buildFinalCreditorList(rows) {
   const institutions = collectAllInstitutions(rows);
   return institutions.filter(inst => isAliveInstitution(inst, rows));
 }
 
-// postProcess — 살아있는 채권사만 대표 행 생성
+// postProcess
 function postProcess(rows) {
   const aliveInstitutions = buildFinalCreditorList(rows);
   const result = [];
@@ -394,7 +387,7 @@ function postProcess(rows) {
   return result;
 }
 
-// 전체 파싱 엔진
+// 전체 파싱
 function parseCreditReport(text) {
   extractDebtorInfo(text);
 
@@ -431,27 +424,13 @@ function renderTable(rows) {
   });
 }
 
-// 흐름도 렌더링
+// 흐름도 (지금은 필요 최소)
 function renderFlowMap(rows) {
   if (!flowContainer) return;
   flowContainer.innerHTML = "";
-
-  rows.forEach(r => {
-    if (r.transfers && r.transfers.includes("→")) {
-      const div = document.createElement("div");
-      div.className = "flow-item";
-      div.innerHTML = `
-        <span class="flow-creditor">${r.creditor}</span>
-        <span class="flow-arrow">→</span>
-        <span class="flow-target">${r.transfers.split("→")[1].trim()}</span>
-        <span class="flow-account">(${r.account})</span>
-      `;
-      flowContainer.appendChild(div);
-    }
-  });
 }
 
-// 공공정보 표시
+// 공공정보 표시 (옵션)
 function renderPublicInfo(rows) {
   const div = document.createElement("div");
   div.className = "public-info";
@@ -476,7 +455,7 @@ function renderPublicInfo(rows) {
   flowContainer.appendChild(div);
 }
 
-// 채무자명(주민번호) 표시
+// 채무자 정보 표시
 function renderDebtorInfo() {
   if (!_debtorName || !_debtorSSN) return;
 
