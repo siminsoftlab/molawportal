@@ -157,6 +157,7 @@ function parseLoanInfo(lines) {
       account: "-",
       type: "대출",
       amount,
+      loanType: "-",
       transfers: "-",
       repaid: "미변제",
       releaseReason: null,
@@ -195,6 +196,7 @@ function parseJudgmentAndPublic(lines) {
         account: "-",
         type: "정보",
         amount: 0,
+        loanType: "-",
         transfers: "-",
         repaid: "미변제",
         releaseReason: null,
@@ -221,6 +223,7 @@ function parseJudgmentAndPublic(lines) {
       account,
       type,
       amount,
+      loanType: "-",
       transfers: "-",
       repaid: releaseReason ? "해제됨" : "미변제",
       releaseReason,
@@ -260,6 +263,7 @@ function parseArrearChange(lines) {
         account: "-",
         type: "정보",
         amount: 0,
+        loanType: "-",
         transfers: "-",
         repaid: "미변제",
         releaseReason: null,
@@ -283,6 +287,7 @@ function parseArrearChange(lines) {
       account: "-",
       type: "연체변동",
       amount: principal,
+      loanType: "-",
       transfers: transfers.length ? transfers.join(" / ") : "-",
       repaid: "미변제",
       releaseReason: null,
@@ -309,12 +314,27 @@ function collectAllInstitutions(rows) {
 function isAliveInstitution(inst, rows) {
   let alive = false;
 
+  // 이 기관이 연체변동 외 다른 섹션에도 등장하는지 확인
+  const hasNonArrearRow = rows.some(r => {
+    const norm = normalizeCreditor(r.creditor);
+    return norm === inst && r.type !== "연체변동";
+  });
+
   for (const r of rows) {
     const norm = normalizeCreditor(r.creditor);
     if (norm !== inst) continue;
 
-    // 양도인(매각한 기관) 제외
-    if (r.transfers && r.transfers.includes("매각")) continue;
+    // 순수 양도인(매각만 있고, 다른 섹션에 안 나오는 경우) 제외
+    if (
+      r.type === "연체변동" &&
+      r.transfers &&
+      r.transfers.includes("매각") &&
+      !r.transfers.includes("양수채권") &&
+      !r.transfers.includes("대위변제") &&
+      !hasNonArrearRow
+    ) {
+      continue;
+    }
 
     // 해제된 채권 제외
     if (r.repaid === "해제됨") continue;
@@ -481,7 +501,6 @@ parseBtn.addEventListener("click", async () => {
 
   statusEl.textContent = `자료수집이 완료되었습니다.(총 ${rows.length}건)`;
 });
-
 
 // 엑셀 내보내기
 exportExcelBtn.style.marginTop = "20px";
