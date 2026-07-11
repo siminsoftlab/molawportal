@@ -354,7 +354,6 @@ function isAliveInstitution(inst, rows) {
 }
 
 
-
 // 최종 살아있는 채권사 목록
 function buildFinalCreditorList(rows) {
   const institutions = collectAllInstitutions(rows);
