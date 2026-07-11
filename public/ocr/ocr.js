@@ -329,18 +329,23 @@ function isAliveInstitution(inst, rows) {
 
     // ❌ 제외 조건
     if (r.transfers && r.transfers.includes("매각")) continue;  // 양도인 제외
-    if (r.type === "정보") continue;                           // 정보행 제외
     if (r.repaid === "해제됨") continue;                       // 해제된 채권 제외
     if (r.releaseReason) continue;                             // 해제사유 존재 시 제외
 
+    // ❌ 공공정보만 있는 기관 제외
+    if (r.type === "정보" && r.amount === 0 && !r.transfers) continue;
+
     // ✔ 포함 조건
-    if (r.amount > 0) alive = true;                            // 금액 존재
+    if (r.type === "대출" && r.amount > 0) alive = true;       // 대출정보 금액 존재
+    if (r.type === "등록" && r.amount > 0) alive = true;       // 등록정보 금액 존재
+    if (r.type === "연체변동" && r.amount > 0) alive = true;   // 연체변동 금액 존재
     if (r.transfers && r.transfers.includes("양수채권")) alive = true; // 양수기관
     if (r.transfers && r.transfers.includes("대위변제")) alive = true; // 보증기관
   }
 
   return alive;
 }
+
 
 // 최종 살아있는 채권사 목록
 function buildFinalCreditorList(rows) {
