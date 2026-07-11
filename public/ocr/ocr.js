@@ -337,8 +337,7 @@ function isAliveInstitution(inst, rows) {
 
     const isPureSeller =
       allTransfers.includes("매각") &&
-      !allTransfers.includes("대위변제") &&
-      !allTransfers.includes("양수채권");
+      !allTransfers.includes("대위변제");
 
     if (isPureSeller) return false;
   }
@@ -364,6 +363,7 @@ function isAliveInstitution(inst, rows) {
 
   return alive;
 }
+
 
 
 // alive 기관 목록
