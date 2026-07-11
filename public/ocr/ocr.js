@@ -442,64 +442,37 @@ function convertTransferFormat(group, allRows) {
 ───────────────────────────────────────────────
 */
 function postProcess(rows) {
-  const byKey = new Map();
-
-  for (const row of rows) {
-    const creditor = row.creditor || "채권사모름";
-    const account = row.account || "-";
-    const key = `${creditor}::${account}`;
-    if (!byKey.has(key)) byKey.set(key, []);
-    byKey.get(key).push({ ...row, creditor, account });
-  }
-
+  const aliveInstitutions = buildFinalCreditorList(rows);
   const result = [];
 
-  for (const [key, group] of byKey.entries()) {
-    const [creditor, account] = key.split("::");
+  for (const inst of aliveInstitutions) {
+    const group = rows.filter(r => normalizeCreditor(r.creditor) === inst);
 
-    const hasRegister = group.some(r => r.type === "대출" || r.type === "등록");
-    const hasRelease = group.some(r => r.type === "해제");
-    const fullyRepaid = isFullyRepaid(group);
+    const creditor = inst;
+    const repaid = group.some(r => r.repaid === "미변제") ? "미변제" : "해제됨";
 
-   
-    if (account === "-") {
-      if (result.some(r => r.creditor === creditor && r.account === "-")) continue;
-    }
+    const phone = group.find(r => r.phone && r.phone !== "-")?.phone || "-";
+    const account = group.find(r => r.account && r.account !== "-")?.account || "-";
+    const loanType = group.find(r => r.loanType && r.loanType !== "-")?.loanType || "-";
 
-    let transfers = convertTransferFormat(group, rows);
-    const repaid = fullyRepaid ? "해제됨" : "미변제";
-
-    const phoneRow = group.find(r => r.phone && r.phone !== "-");
-    const phone = phoneRow ? phoneRow.phone : "-";
-
-    const accountRow = group.find(r => r.type === "등록" && r.account !== "-");
-    const finalAccount = accountRow ? accountRow.account : account;
-
-    const loanTypeRow = group.find(r => r.loanType && r.loanType !== "-");
-    const loanType = loanTypeRow ? loanTypeRow.loanType : "-";
+    const transfers = group
+      .map(r => r.transfers)
+      .filter(t => t && t !== "-")
+      .join(" / ") || "-";
 
     result.push({
       creditor,
       phone,
-      account: finalAccount,
+      account,
       loanType,
       transfers,
       repaid
     });
   }
 
-  result.sort((a, b) => {
-    if (a.creditor < b.creditor) return -1;
-    if (a.creditor > b.creditor) return 1;
-    if (a.account < b.account) return -1;
-    if (a.account > b.account) return 1;
-    if (a.repaid === "미변제" && b.repaid === "해제됨") return -1;
-    if (a.repaid === "해제됨" && b.repaid === "미변제") return 1;
-    return 0;
-  });
-
   return result;
 }
+
 
 function parseCreditReport(text) {
   extractDebtorInfo(text);
@@ -673,3 +646,53 @@ exportExcelBtn.addEventListener("click", () => {
   XLSX.utils.book_append_sheet(wb, ws, "채권현황");
   XLSX.writeFile(wb, "채권현황.xlsx");
 });
+
+function normalizeCreditor(name) {
+  let s = name.replace(/\s+/g, "")
+              .replace(/[^가-힣A-Za-z0-9]/g, "");
+
+  // 부서명 제거
+  s = s.replace(/(본점|본부|심사부|여신관리단|학자금대출부|대양|중앙회|본사)/g, "");
+
+  return s;
+}
+
+function collectAllInstitutions(rows) {
+  const set = new Set();
+  for (const r of rows) {
+    if (!r.creditor) continue;
+    const norm = normalizeCreditor(r.creditor);
+    if (norm.length < 2) continue;
+    set.add(norm);
+  }
+  return Array.from(set);
+}
+
+function isAliveInstitution(inst, rows) {
+  let alive = false;
+
+  for (const r of rows) {
+    const norm = normalizeCreditor(r.creditor);
+    if (norm !== inst) continue;
+
+    // 제외 조건
+    if (r.repaid === "해제됨") continue;
+    if (r.releaseReason) continue;
+
+    // 포함 조건
+    if (r.amount > 0) alive = true;
+    if (r.type === "대출" && r.amount > 0) alive = true;
+    if (r.type === "등록" && r.amount > 0) alive = true;
+    if (r.type === "연체변동" && r.amount > 0) alive = true;
+    if (r.transfers && r.transfers.includes("양수")) alive = true;
+    if (r.transfers && r.transfers.includes("매각")) alive = true;
+    if (r.repaid === "미변제") alive = true;
+  }
+
+  return alive;
+}
+
+function buildFinalCreditorList(rows) {
+  const institutions = collectAllInstitutions(rows);
+  return institutions.filter(inst => isAliveInstitution(inst, rows));
+}
