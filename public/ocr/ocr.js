@@ -82,8 +82,8 @@ function normalize(str) {
   let s = str.replace(/\s+/g, "")
              .replace(/[^\w가-힣]/g, "");
 
-  // 부서명/지점/본부/센터/관리단/총괄/공공정보 제거
-  s = s.replace(/(본점|본부|관리단|여신관리단|영업부|센터|지점|총괄|공공정보|여신관리부|여신관리|관리부|본)/g, "");
+  // 부서명/지점/본부/센터/관리단/총괄/공공정보/여신관리부 등 완전 제거
+  s = s.replace(/(본점|본부|관리단|여신관리단|여신관리부|여신관리|영업부|센터|지점|총괄|공공정보|의정부여신|여신|관리부|본)/g, "");
 
   // OCR 교정
   s = s.replace(/린딩에스/g, "리딩에이스");
@@ -91,6 +91,7 @@ function normalize(str) {
 
   return s;
 }
+
 
 
 function extractPhone(line) {
