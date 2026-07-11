@@ -153,7 +153,18 @@ const FALLBACK_CREDITORS = [
 ];
 
 /****************************************************
- * 채권사 매칭 (확장형)
+ * 채권사 제외 목록 (비채권 기관 필터링)
+ ****************************************************/
+const EXCLUDE_CREDITORS = [
+  "경기도청","평택시청","의정부시청",
+  "코리아에셋투자증권","한국신용정보","한국신용정보주식회사",
+  "SKT","KT","LGU","LGU+","SK브로드밴드",
+  "한국장학재단","신용회복위원회","소상공인시장진흥공단",
+  "국세청","경찰청","법원","지방법원"
+];
+
+/****************************************************
+ * 채권사 매칭 (확장형 + 필터링)
  ****************************************************/
 function matchCreditor(line) {
   const norm = normalize(line);
@@ -163,7 +174,13 @@ function matchCreditor(line) {
   const all = [...DYNAMIC_CREDITORS, ...FALLBACK_CREDITORS];
 
   for (const c of all) {
-    const score = similarity(norm, normalize(c));
+    const nc = normalize(c);
+
+    if (EXCLUDE_CREDITORS.some(ex => nc.includes(normalize(ex)))) {
+      continue;
+    }
+
+    const score = similarity(norm, nc);
     if (score > bestScore) {
       bestScore = score;
       best = c;
@@ -538,12 +555,9 @@ function renderTable(rows) {
   });
 }
 
-
-/*  
-───────────────────────────────────────────────
-  히스토리 흐름도
-───────────────────────────────────────────────
-*/
+/****************************************************
+ * 히스토리 흐름도
+ ****************************************************/
 function renderFlowMap(rows) {
   if (!flowContainer) return;
   flowContainer.innerHTML = "";
@@ -563,12 +577,12 @@ function renderFlowMap(rows) {
   });
 }
 
-/*  
-───────────────────────────────────────────────
-  공공정보 표시
-───────────────────────────────────────────────
-*/
+/****************************************************
+ * 공공정보 표시
+ ****************************************************/
 function renderPublicInfo(rows) {
+  if (!flowContainer) return;
+
   const div = document.createElement("div");
   div.className = "public-info";
   div.style.marginTop = "20px";
@@ -592,11 +606,9 @@ function renderPublicInfo(rows) {
   flowContainer.appendChild(div);
 }
 
-/*  
-───────────────────────────────────────────────
-  채무자명 표시
-───────────────────────────────────────────────
-*/
+/****************************************************
+ * 채무자명 표시
+ ****************************************************/
 function renderDebtorInfo() {
   if (!_debtorName || !_debtorSSN) return;
 
@@ -608,11 +620,9 @@ function renderDebtorInfo() {
   `;
 }
 
-/*  
-───────────────────────────────────────────────
-  엑셀 내보내기
-───────────────────────────────────────────────
-*/
+/****************************************************
+ * 엑셀 내보내기
+ ****************************************************/
 exportExcelBtn.style.marginTop = "20px";
 
 exportExcelBtn.addEventListener("click", () => {
