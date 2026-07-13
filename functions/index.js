@@ -514,7 +514,6 @@ exports.docAI = functions.https.onRequest((req, res) => {
 
       const result = await docRes.json();
 
-      // ⭐ 프론트엔드가 기대하는 구조로 반환
       res.status(200).json(result.document);
 
     } catch (e) {
@@ -522,6 +521,7 @@ exports.docAI = functions.https.onRequest((req, res) => {
     }
   });
 });
+
 
 
 
