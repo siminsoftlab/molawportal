@@ -512,16 +512,23 @@ exports.docAI = functions.https.onRequest((req, res) => {
         })
       });
 
-      const result = await docRes.json();
+      // ⭐ Document AI 실패 시 JSON 파싱 금지
+        if (!docRes.ok) {
+          const text = await docRes.text();   // HTML 에러 페이지
+          return res.status(docRes.status).json({
+            error: "Document AI error",
+            status: docRes.status,
+            message: text
+          });
+        }
 
-      res.status(200).json(result.document);
+        const result = await docRes.json();
+        res.status(200).json(result.document);
 
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
   });
 });
-
-
 
 
