@@ -8,7 +8,6 @@ const nodemailer = require("nodemailer");
 const axios = require("axios");
 const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
-//const visionOCR = require("./vision");
 // Cloud Functions for Document AI
 const fetch = require("node-fetch");
 
@@ -459,8 +458,6 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
-
-//exports.visionOCR = visionOCR.visionOCR;
 
 exports.docAI = async (req, res) => {
   try {
