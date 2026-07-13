@@ -486,7 +486,7 @@ exports.docAI = functions.https.onRequest((req, res) => {
       }
 
       const PROJECT_ID = "989958208701";
-      const PROCESSOR_ID = "f9e46199b4ba2266a";
+      const PROCESSOR_ID = "f9e461994ba2266a";
       const LOCATION = "us";
 
       const endpoint =
