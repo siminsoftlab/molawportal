@@ -10,7 +10,6 @@ const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
 // Cloud Functions for Document AI
 const fetch = require("node-fetch");
-const corsHandler = cors({ origin: true });
 
 admin.initializeApp();
 const db = admin.firestore();
