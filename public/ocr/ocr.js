@@ -1,4 +1,4 @@
-// ===================== Document AI 통합본 =====================
+// ===================== Document AI 통합본 (Cloud Functions 연동) =====================
 
 // PDF.js 설정
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -15,11 +15,6 @@ const debtorInfoEl = document.getElementById("debtorInfo");
 let _rows = [];
 let _debtorName = "";
 let _debtorSSN = "";
-
-// ===================== Document AI 설정 =====================
-const PROJECT_ID = "989958208701";
-const PROCESSOR_ID = "f9e46199b4ba2266a";   // 네가 만든 Form Parser
-const LOCATION = "us";
 
 // ===================== 로그 =====================
 function log(msg) {
@@ -57,25 +52,20 @@ async function pdfToBase64(file) {
   return pagesBase64;
 }
 
-// ===================== Document AI 호출 =====================
+// ===================== Cloud Functions(docAI) 호출 =====================
 async function callDocumentAI(base64Pages) {
-  log("Document AI 호출 중...");
+  log("Cloud Functions(docAI) 호출 중...");
 
-  const endpoint =
-    `https://${LOCATION}-documentai.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}:process`;
-
-  const res = await fetch(endpoint, {
+  const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/docAI", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      rawDocument: {
-        content: base64Pages[0],   // PDF 전체를 하나의 이미지로 처리 (Form Parser는 페이지 단위도 가능)
-        mimeType: "image/png"
-      }
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ base64: base64Pages[0] })
   });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`docAI 호출 실패: ${res.status} ${text}`);
+  }
 
   const result = await res.json();
   return result.document;
@@ -175,8 +165,8 @@ function computeAlive(rows) {
     const hasOnlyArrear = list.every(r => r.sectionType === "연체변동");
 
     const hasAcquisition = list.some(r =>
-      r.transfers.includes("양수") ||
-      r.transfers.includes("대위변제")
+      (r.transfers || "").includes("양수") ||
+      (r.transfers || "").includes("대위변제")
     );
 
     // 1) 연체변동만 있고, 양수/대위변제도 없으면 → 양도인 → 제외
@@ -193,7 +183,6 @@ function computeAlive(rows) {
 
   return alive;
 }
-
 
 // ===================== 테이블 렌더링 =====================
 function renderTable(alive) {
@@ -236,6 +225,7 @@ parseBtn.addEventListener("click", async () => {
     renderTable(alive);
     statusEl.textContent = `완료 (${alive.length}개 채권사)`;
   } catch (e) {
+    console.error(e);
     statusEl.textContent = "오류: " + e.message;
   }
 });
@@ -253,8 +243,8 @@ exportExcelBtn.addEventListener("click", () => {
       채권사: item.creditor,
       계좌번호: r.account,
       대출종류: r.loanType,
-      양도양수: r.transfers,
-      변제여부: r.repaid
+      양도양수이력: r.transfers,
+      채무변제여부: r.repaid
     };
   });
 
