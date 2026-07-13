@@ -460,10 +460,19 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 });
 
 exports.docAI = functions.https.onRequest((req, res) => {
+  const allowedOrigins = [
+    "https://molawcalculator.com",
+    "https://molawcounter.web.app"
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.set("Access-Control-Allow-Origin", origin);
+  }
+
   corsHandler(req, res, async () => {
 
     if (req.method === "OPTIONS") {
-      res.set("Access-Control-Allow-Origin", "*");
       res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
       res.set("Access-Control-Allow-Headers", "Content-Type");
       return res.status(204).send("");
@@ -505,15 +514,14 @@ exports.docAI = functions.https.onRequest((req, res) => {
 
       const result = await docRes.json();
 
-      // ⭐⭐ 핵심: 프론트엔드가 기대하는 구조로 반환
-      res.set("Access-Control-Allow-Origin", "*");
+      // ⭐ 프론트엔드가 기대하는 구조로 반환
       res.status(200).json(result.document);
 
     } catch (e) {
-      res.set("Access-Control-Allow-Origin", "*");
       res.status(500).json({ error: e.message });
     }
   });
 });
+
 
 
