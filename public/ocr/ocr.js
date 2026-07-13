@@ -177,10 +177,13 @@ function parseJudgmentAndPublic(lines) {
     let clean = line.replace(/\s+/g, " ").replace(/'/g, "");
 
     const matched = extractCreditorFromLine(clean);
-    if (matched) {
+
+    // ⭐ 대부업체는 등록/공공정보 섹션에서 제외
+    if (matched && !matched.includes("대부")) {
       currentCreditor = matched;
       continue;
     }
+
     if (!currentCreditor) continue;
 
     const phone = "-";
