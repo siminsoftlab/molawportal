@@ -10,7 +10,6 @@ const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
 const visionOCR = require("./vision");
 // Cloud Functions for Document AI
-const { GoogleAuth } = require("google-auth-library");
 const fetch = require("node-fetch");
 
 admin.initializeApp();
