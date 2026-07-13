@@ -459,51 +459,6 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
   }
 });
 
-exports.docAI = async (req, res) => {
-  try {
-    const { base64 } = req.body;
-
-    if (!base64) {
-      return res.status(400).json({ error: "base64 missing" });
-    }
-
-    const PROJECT_ID = "989958208701";
-    const PROCESSOR_ID = "f9e46199b4ba2266a";
-    const LOCATION = "us";
-
-    const endpoint =
-      `https://${LOCATION}-documentai.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}:process`;
-
-    // 1) Access Token 발급
-    const auth = new GoogleAuth({
-      scopes: ["https://www.googleapis.com/auth/cloud-platform"]
-    });
-    const client = await auth.getClient();
-    const accessToken = await client.getAccessToken();
-
-    // 2) Document AI 호출
-    const docRes = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken.token || accessToken}`
-      },
-      body: JSON.stringify({
-        rawDocument: {
-          content: base64,
-          mimeType: "image/png"
-        }
-      })
-    });
-
-    const result = await docRes.json();
-    res.json(result);
-
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-};
-
 exports.docAI = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
 
