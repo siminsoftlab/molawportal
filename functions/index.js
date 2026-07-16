@@ -448,21 +448,8 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 /* ============================================================
    8) Document AI — 최종 완성본 (CORS + OPTIONS + 안정화)
 ============================================================ */
-
 exports.docAI = functions.https.onRequest((req, res) => {
-  const allowedOrigins = [
-    "https://molawcalculator.com",
-    "https://molawcounter.web.app"
-  ];
-
-  const origin = req.headers.origin;
-
-  // ⭐ OPTIONS 요청에서도 origin이 undefined일 수 있으므로 기본 허용
-  if (allowedOrigins.includes(origin)) {
-    res.set("Access-Control-Allow-Origin", origin);
-  } else {
-    res.set("Access-Control-Allow-Origin", "*");
-  }
+  const corsHandler = cors({ origin: true });
 
   corsHandler(req, res, async () => {
 
