@@ -1,5 +1,5 @@
 /* ============================================================
-   Firebase Cloud Functions — FCM v1 기반 최종 통합본 (알림 저장 분리)
+   Firebase Cloud Functions — 최종 통합본
 ============================================================ */
 
 const functions = require("firebase-functions");
@@ -8,7 +8,6 @@ const nodemailer = require("nodemailer");
 const axios = require("axios");
 const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
-// Cloud Functions for Document AI
 const fetch = require("node-fetch");
 
 admin.initializeApp();
@@ -33,7 +32,7 @@ function emailTemplate(name) {
     <h2>📢 이용권 만료 3일 전 안내</h2>
     <p>${name}님, 안녕하세요.</p>
     <p>이용 중인 개인회생 계산기 이용권이 <strong>3일 후 만료</strong>됩니다.</p>
-    <p><a href="https://molawcounter.com/payment.html">👉 이용권 연장하기</a></p>
+    <p><a href="https://molawcalculator.com/payment.html">👉 이용권 연장하기</a></p>
   `;
 }
 
@@ -50,7 +49,7 @@ async function getAccessToken() {
 }
 
 /* ============================================================
-   FCM v1 발송 함수 (URL 포함)
+   FCM v1 발송 함수
 ============================================================ */
 async function sendFcmV1(tokens, title, body, url) {
   if (!tokens || tokens.length === 0) return;
@@ -63,15 +62,8 @@ async function sendFcmV1(tokens, title, body, url) {
     const message = {
       message: {
         token,
-        notification: {
-          title,
-          body
-        },
-        data: {
-          title,
-          body,
-          url
-        }
+        notification: { title, body },
+        data: { title, body, url }
       }
     };
 
@@ -107,10 +99,7 @@ async function getValidFcmTokens(uid) {
 }
 
 /* ============================================================
-   알림 저장 로직 분리
-   - 일반 사용자: users/{uid}/notifications
-   - 관리자/담당자: managers/{uid}/notifications
-   - 전체 관리자: admin_notifications
+   알림 저장
 ============================================================ */
 async function saveNotification(uid, role, title, body, url) {
   const data = {
@@ -131,7 +120,7 @@ async function saveNotification(uid, role, title, body, url) {
 }
 
 /* ============================================================
-   1) 이용권 만료 3일 전 알림 (이메일 + FCM v1 + 알림 저장)
+   1) 이용권 만료 3일 전 알림
 ============================================================ */
 exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(async () => {
   const now = Date.now();
@@ -187,7 +176,7 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
 });
 
 /* ============================================================
-   2) 자동 매칭 시스템 (FCM v1 적용 + 관리자 알림 저장)
+   2) 자동 매칭 시스템
 ============================================================ */
 exports.autoMatchDeposits = functions.firestore
   .document("bank_deposits/{depositId}")
@@ -201,9 +190,7 @@ exports.autoMatchDeposits = functions.firestore
       .where("depositor_name", "==", depositor)
       .get();
 
-    /* 자동 매칭 실패 */
     if (pendingSnap.empty) {
-
       await db.collection("match_failures").add({
         depositor_name: depositor,
         amount: deposit.amount,
@@ -234,7 +221,6 @@ exports.autoMatchDeposits = functions.firestore
       return null;
     }
 
-    /* 자동 매칭 성공 */
     for (const doc of pendingSnap.docs) {
       const paymentId = doc.id;
       const payment = doc.data();
@@ -339,7 +325,7 @@ exports.fetchBankDeposits = functions.pubsub
   });
 
 /* ============================================================
-   4) GeoIP API
+   4) GeoIP API (CORS 완전 적용)
 ============================================================ */
 const corsHandler = cors({ origin: true });
 
@@ -435,7 +421,7 @@ exports.setManagerRole = functions.https.onCall(async (data, context) => {
 });
 
 /* ============================================================
-   7) 관리자 → 특정 사용자에게 FCM v1 푸시 발송 + 알림 저장
+   7) 관리자 → 특정 사용자에게 FCM v1 푸시 발송
 ============================================================ */
 exports.sendPushToUser = functions.https.onCall(async (data, context) => {
   try {
@@ -458,6 +444,10 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", err.message);
   }
 });
+
+/* ============================================================
+   8) Document AI — 최종 완성본 (CORS + PDF base64 + 안정화)
+============================================================ */
 
 exports.docAI = functions.https.onRequest((req, res) => {
   const allowedOrigins = [
@@ -507,28 +497,25 @@ exports.docAI = functions.https.onRequest((req, res) => {
         body: JSON.stringify({
           rawDocument: {
             content: base64,
-            mimeType: "application/pdf"   // ⭐ PDF면 반드시 이걸로!
+            mimeType: "application/pdf"
           }
         })
       });
 
-      // ⭐ Document AI 실패 시 JSON 파싱 금지
-        if (!docRes.ok) {
-          const text = await docRes.text();   // HTML 에러 페이지
-          return res.status(docRes.status).json({
-            error: "Document AI error",
-            status: docRes.status,
-            message: text
-          });
-        }
+      if (!docRes.ok) {
+        const text = await docRes.text();
+        return res.status(docRes.status).json({
+          error: "Document AI error",
+          status: docRes.status,
+          message: text
+        });
+      }
 
-        const result = await docRes.json();
-        res.status(200).json(result.document);
+      const result = await docRes.json();
+      res.status(200).json(result.document);
 
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
   });
 });
-
-
