@@ -53,13 +53,13 @@ async function pdfToBase64(file) {
 }
 
 // ===================== Cloud Functions(docAI) 호출 =====================
-async function callDocumentAI(base64Pages) {
+async function callDocumentAI(base64) {
   log("Cloud Functions(docAI) 호출 중...");
 
   const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ base64: base64Pages[0] })
+    body: JSON.stringify({ base64 })   // ⭐ 여기!
   });
 
   if (!res.ok) {
