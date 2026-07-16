@@ -1,12 +1,14 @@
 /* ============================================================
-   Firebase Cloud Functions — 최종 통합본
+   Firebase Cloud Functions → Cloud Run(1st gen) 환경 최종본
+   - Cloud Run은 cors() 미들웨어가 작동하지 않음
+   - 반드시 직접 CORS 헤더를 붙여야 함
+   - OPTIONS 프리플라이트도 직접 처리해야 함
 ============================================================ */
 
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
-const cors = require("cors");
 const { GoogleAuth } = require("google-auth-library");
 const fetch = require("node-fetch");
 
@@ -276,7 +278,7 @@ exports.fetchBankDeposits = functions.pubsub
         "https://openapi.openbanking.or.kr/v2.0/account/transaction_list",
         {
           bank_tran_id: "MOLAW" + Date.now(),
-          fintech_use_num: fintechUseNum,
+          fintech_use_num: fintechUse_num,
           inquiry_type: "A",
           inquiry_base: "D",
           from_date: "20240101",
@@ -325,47 +327,37 @@ exports.fetchBankDeposits = functions.pubsub
   });
 
 /* ============================================================
-   4) GeoIP API (CORS 완전 적용)
+   4) GeoIP API (Cloud Run용 CORS 적용)
 ============================================================ */
-const corsHandler = cors({ origin: true });
+exports.geoip = functions.https.onRequest(async (req, res) => {
 
-exports.geoip = functions.https.onRequest((req, res) => {
-  const allowedOrigins = [
-    "https://molawcalculator.com",
-    "https://molawcounter.web.app"
-  ];
+  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
+  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
+  res.set("Access-Control-Max-Age", "3600");
 
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.set("Access-Control-Allow-Origin", origin);
+  if (req.method === "OPTIONS") {
+    return res.status(204).send("");
   }
 
-  corsHandler(req, res, async () => {
-    if (req.method === "OPTIONS") {
-      res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-      res.set("Access-Control-Allow-Headers", "Content-Type");
-      return res.status(204).send("");
-    }
+  try {
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+      req.connection.remoteAddress;
 
-    try {
-      const ip =
-        req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
-        req.connection.remoteAddress;
+    const geoRes = await fetch(`https://ipwho.is/${ip}`);
+    const geoData = await geoRes.json();
 
-      const geoRes = await fetch(`https://ipwho.is/${ip}`);
-      const geoData = await geoRes.json();
-
-      res.status(200).json({
-        success: true,
-        ip: ip,
-        country: geoData.country,
-        city: geoData.city
-      });
-    } catch (err) {
-      console.error("GeoIP Error:", err);
-      res.status(500).json({ success: false, error: err.toString() });
-    }
-  });
+    res.status(200).json({
+      success: true,
+      ip: ip,
+      country: geoData.country,
+      city: geoData.city
+    });
+  } catch (err) {
+    console.error("GeoIP Error:", err);
+    res.status(500).json({ success: false, error: err.toString() });
+  }
 });
 
 /* ============================================================
@@ -446,68 +438,69 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 });
 
 /* ============================================================
-   8) Document AI — 최종 완성본 (CORS + OPTIONS + 안정화)
+   8) Document AI — Cloud Run 완전 대응 버전 (CORS + OPTIONS)
 ============================================================ */
-exports.docAI = functions.https.onRequest((req, res) => {
-  const corsHandler = cors({ origin: true });
 
-  corsHandler(req, res, async () => {
+exports.docAI = functions.https.onRequest(async (req, res) => {
 
-    if (req.method === "OPTIONS") {
-      res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-      res.set("Access-Control-Allow-Headers", "Content-Type");
-      res.set("Access-Control-Max-Age", "3600");
-      return res.status(204).send("");
+  // ⭐ Cloud Run에서는 반드시 직접 CORS 헤더를 붙여야 한다
+  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
+  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
+  res.set("Access-Control-Max-Age", "3600");
+
+  // ⭐ OPTIONS 프리플라이트 요청 처리
+  if (req.method === "OPTIONS") {
+    return res.status(204).send("");
+  }
+
+  try {
+    const { base64 } = req.body;
+
+    if (!base64) {
+      return res.status(400).json({ 오류: "base64가 누락되었습니다" });
     }
 
-    try {
-      const { base64 } = req.body;
+    const PROJECT_ID = "989958208701";
+    const PROCESSOR_ID = "f9e461994ba2266a";
+    const LOCATION = "us";
 
-      if (!base64) {
-        return res.status(400).json({ 오류: "base64가 누락되었습니다" });
-      }
+    const endpoint =
+      `https://${LOCATION}-documentai.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}:process`;
 
-      const PROJECT_ID = "989958208701";
-      const PROCESSOR_ID = "f9e461994ba2266a";
-      const LOCATION = "us";
+    const auth = new GoogleAuth({
+      scopes: ["https://www.googleapis.com/auth/cloud-platform"]
+    });
+    const client = await auth.getClient();
+    const accessToken = await client.getAccessToken();
 
-      const endpoint =
-        `https://${LOCATION}-documentai.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}:process`;
+    const docRes = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken.token || accessToken}`
+      },
+      body: JSON.stringify({
+        rawDocument: {
+          content: base64,
+          mimeType: "application/pdf"
+        }
+      })
+    });
 
-      const auth = new GoogleAuth({
-        scopes: ["https://www.googleapis.com/auth/cloud-platform"]
+    if (!docRes.ok) {
+      const text = await docRes.text();
+      return res.status(docRes.status).json({
+        error: "Document AI error",
+        status: docRes.status,
+        message: text
       });
-      const client = await auth.getClient();
-      const accessToken = await client.getAccessToken();
-
-      const docRes = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken.token || accessToken}`
-        },
-        body: JSON.stringify({
-          rawDocument: {
-            content: base64,
-            mimeType: "application/pdf"
-          }
-        })
-      });
-
-      if (!docRes.ok) {
-        const text = await docRes.text();
-        return res.status(docRes.status).json({
-          error: "Document AI error",
-          status: docRes.status,
-          message: text
-        });
-      }
-
-      const result = await docRes.json();
-      res.status(200).json(result.document);
-
-    } catch (e) {
-      res.status(500).json({ error: e.message });
     }
-  });
+
+    const result = await docRes.json();
+    return res.status(200).json(result.document);
+
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 });
