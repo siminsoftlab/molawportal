@@ -507,7 +507,7 @@ exports.docAI = functions.https.onRequest((req, res) => {
         body: JSON.stringify({
           rawDocument: {
             content: base64,
-            mimeType: "image/png"
+            mimeType: "application/pdf"   // ⭐ PDF면 반드시 이걸로!
           }
         })
       });
