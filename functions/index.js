@@ -446,7 +446,7 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 });
 
 /* ============================================================
-   8) Document AI — 최종 완성본 (CORS + PDF base64 + 안정화)
+   8) Document AI — 최종 완성본 (CORS + OPTIONS + 안정화)
 ============================================================ */
 
 exports.docAI = functions.https.onRequest((req, res) => {
@@ -456,8 +456,12 @@ exports.docAI = functions.https.onRequest((req, res) => {
   ];
 
   const origin = req.headers.origin;
+
+  // ⭐ OPTIONS 요청에서도 origin이 undefined일 수 있으므로 기본 허용
   if (allowedOrigins.includes(origin)) {
     res.set("Access-Control-Allow-Origin", origin);
+  } else {
+    res.set("Access-Control-Allow-Origin", "*");
   }
 
   corsHandler(req, res, async () => {
@@ -465,6 +469,7 @@ exports.docAI = functions.https.onRequest((req, res) => {
     if (req.method === "OPTIONS") {
       res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
       res.set("Access-Control-Allow-Headers", "Content-Type");
+      res.set("Access-Control-Max-Age", "3600");
       return res.status(204).send("");
     }
 
@@ -472,7 +477,7 @@ exports.docAI = functions.https.onRequest((req, res) => {
       const { base64 } = req.body;
 
       if (!base64) {
-        return res.status(400).json({ error: "base64 missing" });
+        return res.status(400).json({ 오류: "base64가 누락되었습니다" });
       }
 
       const PROJECT_ID = "989958208701";
