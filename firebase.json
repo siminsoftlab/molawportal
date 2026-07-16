@@ -18,6 +18,7 @@
     ]
   },
   "functions": {
-    "runtime": "nodejs20"
+    "runtime": "nodejs20",
+    "source": "functions"
   }
 }
