@@ -215,8 +215,8 @@ parseBtn.addEventListener("click", async () => {
   statusEl.textContent = "PDF 처리 중...";
 
   try {
-    const base64Pages = await pdfToBase64(file);
-    const document = await callDocumentAI(base64Pages);
+    const base64 = await fileToBase64(file);   // ⭐ PDF 원본 그대로 base64
+    const document = await callDocumentAI(base64);
     const rows = buildRowsFromDocumentAI(document);
     const alive = computeAlive(rows);
 
@@ -229,6 +229,18 @@ parseBtn.addEventListener("click", async () => {
     statusEl.textContent = "오류: " + e.message;
   }
 });
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result.split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 // ===================== 엑셀 내보내기 =====================
 exportExcelBtn.addEventListener("click", () => {
