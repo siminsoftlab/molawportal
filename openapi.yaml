@@ -12,6 +12,7 @@ paths:
   /docAI:
     post:
       summary: "Document AI processing"
+      operationId: docAI
       consumes:
         - application/json
       parameters:
