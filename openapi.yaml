@@ -1,0 +1,20 @@
+openapi: 3.0.0
+info:
+  title: docAI API Gateway
+  version: 1.0.0
+
+paths:
+  /docAI:
+    post:
+      description: Proxy to Cloud Run docAI service
+      operationId: docAI
+      x-google-backend:
+        address: https://YOUR_CLOUD_RUN_URL
+        protocol: h2
+      responses:
+        '200':
+          description: Successful response
+
+x-google-endpoints:
+  - name: YOUR_API_GATEWAY_DOMAIN
+    allowCors: true
