@@ -19,6 +19,7 @@
   },
   "functions": {
     "runtime": "nodejs20",
-    "source": "functions"
+    "source": "functions",
+    "platform": "gcfv1"
   }
 }
