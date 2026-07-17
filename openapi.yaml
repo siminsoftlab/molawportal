@@ -9,12 +9,12 @@ paths:
       description: Proxy to Cloud Run docAI service
       operationId: docAI
       x-google-backend:
-        address: https://YOUR_CLOUD_RUN_URL
+        address: https://docai-server-989958208701.us-central1.run.app
         protocol: h2
       responses:
         '200':
           description: Successful response
 
 x-google-endpoints:
-  - name: YOUR_API_GATEWAY_DOMAIN
+  - name: docai-api.endpoints.molawcounter.cloud.goog
     allowCors: true
