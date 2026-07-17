@@ -1,19 +1,30 @@
 openapi: 3.0.0
 info:
-  title: docAI API Gateway
+  title: docai-api
   version: 1.0.0
+
+servers:
+  - url: https://docai-api.endpoints.molawcounter.cloud.goog
 
 paths:
   /docAI:
     post:
-      description: Proxy to Cloud Run docAI service
       operationId: docAI
-      x-google-backend:
-        address: https://docai-server-989958208701.us-central1.run.app
-        protocol: h2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                base64:
+                  type: string
       responses:
         '200':
-          description: Successful response
+          description: Document AI result
+
+x-google-backend:
+  address: https://docai-server-989958208701.us-central1.run.app
+  protocol: h2
 
 x-google-endpoints:
   - name: docai-api.endpoints.molawcounter.cloud.goog
