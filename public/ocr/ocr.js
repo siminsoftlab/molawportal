@@ -54,12 +54,12 @@ async function pdfToBase64(file) {
 
 // ===================== Cloud Functions(docAI) 호출 =====================
 async function callDocumentAI(base64) {
-  log("Cloud Functions(docAI) 호출 중...");
+  log("API Gateway(docAI) 호출 중...");
 
-  const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/docAI", {
+  const res = await fetch("https://docai-api.endpoints.molawcounter.cloud.goog/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ base64 })   // ⭐ 여기!
+    body: JSON.stringify({ base64 })
   });
 
   if (!res.ok) {
@@ -70,6 +70,7 @@ async function callDocumentAI(base64) {
   const result = await res.json();
   return result.document;
 }
+
 
 // ===================== Document AI 응답 → rows 변환 =====================
 function extractTables(document) {
