@@ -1,32 +1,35 @@
-openapi: 3.0.0
+swagger: "2.0"
 info:
-  title: docai-api
-  version: 1.0.0
+  title: "docai-api"
+  description: "Document AI Gateway"
+  version: "1.0.0"
 
-servers:
-  - url: https://docai-api.endpoints.molawcounter.cloud.goog
+host: "docai-api.endpoints.molawcounter.cloud.goog"
+schemes:
+  - https
 
 paths:
   /docAI:
     post:
-      operationId: docAI
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                base64:
-                  type: string
+      summary: "Document AI processing"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              base64:
+                type: string
       responses:
-        '200':
-          description: Document AI result
-
-x-google-backend:
-  address: https://docai-server-989958208701.us-central1.run.app
-  protocol: h2
+        200:
+          description: "Document AI result"
 
 x-google-endpoints:
   - name: docai-api.endpoints.molawcounter.cloud.goog
     allowCors: true
+
+x-google-backend:
+  address: https://docai-server-989958208701.us-central1.run.app
+  protocol: h2
