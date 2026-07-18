@@ -443,13 +443,14 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 
 exports.docAI = functions.https.onRequest(async (req, res) => {
 
-  // ⭐ Cloud Run에서는 반드시 직접 CORS 헤더를 붙여야 한다
   res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Max-Age", "3600");
 
-  // ⭐ OPTIONS 프리플라이트 요청 처리
+  // ⭐ 첫 바이트 즉시 전송 → 503 방지
+  res.write(" ");
+
   if (req.method === "OPTIONS") {
     return res.status(204).send("");
   }
@@ -463,7 +464,7 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
 
     const PROJECT_ID = "989958208701";
     const PROCESSOR_ID = "f9e461994ba2266a";
-    const LOCATION = "us";
+    const LOCATION = "us-central1";   // ⭐ 반드시 콘솔에서 확인
 
     const endpoint =
       `https://${LOCATION}-documentai.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}:process`;
@@ -473,6 +474,8 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     });
     const client = await auth.getClient();
     const accessToken = await client.getAccessToken();
+
+    const fetch = global.fetch;   // ⭐ gcfv2 안정화
 
     const docRes = await fetch(endpoint, {
       method: "POST",
@@ -504,3 +507,4 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 });
+
