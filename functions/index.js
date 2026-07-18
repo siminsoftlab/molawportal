@@ -448,9 +448,6 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Max-Age", "3600");
 
-  // ⭐ 첫 바이트 즉시 전송 → 503 방지
-  res.write(" ");
-
   if (req.method === "OPTIONS") {
     return res.status(204).send("");
   }
@@ -474,14 +471,13 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     });
     const client = await auth.getClient();
     const accessToken = await client.getAccessToken();
-
-    const fetch = global.fetch;   // ⭐ gcfv2 안정화
+    const token = accessToken.token || accessToken;   // ⭐ 안정화
 
     const docRes = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken.token || accessToken}`
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({
         rawDocument: {
@@ -507,4 +503,5 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 });
+
 
