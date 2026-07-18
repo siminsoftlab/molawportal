@@ -469,10 +469,14 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     const auth = new GoogleAuth({
       scopes: ["https://www.googleapis.com/auth/cloud-platform"]
     });
-    const client = await auth.getClient();
-    const token = await client.getAccessToken();   // ⭐ 안정화된 토큰
 
-    const fetch = global.fetch;   // ⭐ gcfv2 안정화
+    const client = await auth.getClient();
+
+    // ⭐ OAuth2 Access Token을 정확히 가져오는 방식
+    const tokenResponse = await client.getAccessToken();
+    const token = tokenResponse.token;
+
+    const fetch = global.fetch;
 
     const docRes = await fetch(endpoint, {
       method: "POST",
@@ -504,4 +508,5 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 });
+
 
