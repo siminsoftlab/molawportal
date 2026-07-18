@@ -448,6 +448,9 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Max-Age", "3600");
 
+  // ⭐ 502 방지: 첫 바이트 즉시 전송
+  res.write(" ");
+
   if (req.method === "OPTIONS") {
     return res.status(204).send("");
   }
@@ -471,8 +474,6 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     });
 
     const client = await auth.getClient();
-
-    // ⭐ OAuth2 Access Token을 정확히 가져오는 방식
     const tokenResponse = await client.getAccessToken();
     const token = tokenResponse.token;
 
@@ -508,5 +509,6 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 });
+
 
 
