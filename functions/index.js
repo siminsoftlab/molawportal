@@ -10,7 +10,7 @@ const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const { GoogleAuth } = require("google-auth-library");
-const fetch = require("node-fetch");
+//const fetch = require("node-fetch");
 
 admin.initializeApp();
 const db = admin.firestore();
