@@ -12,6 +12,10 @@
         "function": "geoip"
       },
       {
+        "source": "/docAI",
+        "function": "docAI"
+      },
+      {
         "source": "!**/*.{js,css,png,jpg,jpeg,gif,svg,ico,json,map}",
         "destination": "/index.html"
       }
