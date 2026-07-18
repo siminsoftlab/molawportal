@@ -461,7 +461,7 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
 
     const PROJECT_ID = "989958208701";
     const PROCESSOR_ID = "f9e461994ba2266a";
-    const LOCATION = "us-central1";   // ⭐ 반드시 콘솔에서 확인
+    const LOCATION = "us";   // ⭐ 반드시 us
 
     const endpoint =
       `https://${LOCATION}-documentai.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}:process`;
@@ -471,7 +471,7 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     });
     const client = await auth.getClient();
     const accessToken = await client.getAccessToken();
-    const token = accessToken.token || accessToken;   // ⭐ 안정화
+    const token = accessToken.token || accessToken;
 
     const docRes = await fetch(endpoint, {
       method: "POST",
@@ -503,5 +503,3 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     return res.status(500).json({ error: e.message });
   }
 });
-
-
