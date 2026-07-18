@@ -56,12 +56,12 @@ async function pdfToBase64(file) {
 async function callDocumentAI(base64) {
   log("API Gateway(docAI) 호출 중...");
 
-  const res = await fetch("https://docai-api.endpoints.molawcounter.cloud.goog/docAI", {
+  const res = await fetch("https://docai-server-989958208701.us-central1.run.app/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ base64 })
   });
-
+  
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`docAI 호출 실패: ${res.status} ${text}`);
