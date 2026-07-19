@@ -51,13 +51,14 @@ async function callDocumentAI(base64) {
 
   const result = await res.json();
 
+  console.log("docAI raw response:", result);   // ⭐ 반드시 추가
+
   if (!result || !result.document) {
-    throw new Error("docAI 응답에 document가 없습니다: " + JSON.stringify(result));
+    throw new Error("docAI 응답에 document가 없습니다. 응답: " + JSON.stringify(result));
   }
 
   return result.document;
 }
-
 
 // ===================== Document AI 응답 → 테이블 추출 =====================
 function extractTables(document) {
