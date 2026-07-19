@@ -445,3 +445,11 @@ exports.sendPushToUser = onCall(async request => {
     throw new HttpsError("internal", err.message);
   }
 });
+const functions = require("firebase-functions");
+
+exports.autoMatchDeposits = functions.firestore
+  .document("bank_deposits/{depositId}")
+  .onCreate((snap, context) => {
+    console.log("TEMP 1st GEN TRIGGER RESTORED");
+    return null;
+  });
