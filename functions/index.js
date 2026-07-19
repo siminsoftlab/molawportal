@@ -443,6 +443,16 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 ============================================================ */
 
 exports.docAI = functions.https.onRequest(async (req, res) => {
+
+  // ⭐ CORS 허용
+  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
+  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).send("");
+  }
+
   try {
     const { base64 } = req.body;
 
@@ -453,7 +463,8 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     const tokenResponse = await client.getAccessToken();
     const token = tokenResponse.token;
 
-    const endpoint = "https://us-documentai.googleapis.com/v1/projects/989958208701/locations/us/processors/f9e461994ba2266a:process";
+    const endpoint =
+      "https://us-documentai.googleapis.com/v1/projects/989958208701/locations/us/processors/f9e461994ba2266a:process";
 
     const docRes = await fetch(endpoint, {
       method: "POST",
@@ -470,8 +481,9 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     });
 
     const result = await docRes.json();
-    res.status(200).json(result);
+    return res.status(200).json(result);
+
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message });
   }
 });
