@@ -69,7 +69,9 @@ async function callDocumentAI(base64Pages) {
   const res = await fetch("https://molawcalculator.com/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ pages: base64Pages })
+    body: JSON.stringify({
+      base64: base64Pages[0]   // ⭐ 첫 페이지만 전송
+    })
   });
 
   if (!res.ok) {
