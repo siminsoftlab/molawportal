@@ -31,55 +31,30 @@ function log(msg) {
 }
 
 // ===================== PDF → base64 + 페이지 진행률 =====================
-async function fileToBase64WithProgress(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-
-  const totalPages = pdf.numPages;
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  let pagesBase64 = [];
-
-  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-    log(`PDF 페이지 처리 중... (${pageNum} / ${totalPages})`);
-
-    const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 2.5 });
-
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    await page.render({ canvasContext: ctx, viewport }).promise;
-
-    const dataUrl = canvas.toDataURL("image/png");
-    const base64 = dataUrl.replace(/^data:image\/png;base64,/, "");
-
-    pagesBase64.push(base64);
-  }
-
-  log("PDF 페이지 렌더링 완료!");
-  return pagesBase64;
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
-
 // ===================== Cloud Functions(docAI) 호출 =====================
-async function callDocumentAI(base64Pages) {
+async function callDocumentAI(base64) {
   log("Document AI 호출 중...");
 
   const res = await fetch("https://molawcalculator.com/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      base64: base64Pages[0]   // ⭐ 첫 페이지만 전송
-    })
+    body: JSON.stringify({ base64 })   // ⭐ PDF 원본 base64
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`docAI 호출 실패: ${res.status} ${text}`);
+  const result = await res.json();
+
+  if (!result || !result.document) {
+    throw new Error("docAI 응답에 document가 없습니다: " + JSON.stringify(result));
   }
 
-  const result = await res.json();
   return result.document;
 }
 
@@ -280,8 +255,8 @@ parseBtn.addEventListener("click", async () => {
   try {
     log("PDF 처리 시작...");
 
-    const base64Pages = await fileToBase64WithProgress(file);
-    const document = await callDocumentAI(base64Pages);
+    const base64 = await fileToBase64(file);   // ⭐ PDF 원본 base64
+    const document = await callDocumentAI(base64);
 
     const rows = buildRowsFromDocumentAI(document);
     _rows = rows;
