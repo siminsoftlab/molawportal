@@ -443,9 +443,9 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
    8) Document AI — Cloud Run 완전 대응 버전 (CORS + OPTIONS)
 ============================================================ */
 
-exports.docAI = onRequest(
+exports.docAI2 = onRequest(
   {
-    cors: ["https://molawcalculator.com"],   // ⭐ 2nd gen은 cors 옵션이 작동함
+    cors: ["https://molawcalculator.com"],   // ⭐ 2nd Gen은 cors 옵션이 실제로 작동함
   },
   async (req, res) => {
     try {
