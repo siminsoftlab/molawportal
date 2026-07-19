@@ -1,11 +1,8 @@
-/* ============================================================
-   Firebase Cloud Functions → Cloud Run(1st gen) 환경 최종본
-   - Cloud Run은 cors() 미들웨어가 작동하지 않음
-   - 반드시 직접 CORS 헤더를 붙여야 함
-   - OPTIONS 프리플라이트도 직접 처리해야 함
-============================================================ */
+// v2용 Firebase Functions SDK
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { onRequest, onCall, HttpsError } = require("firebase-functions/v2/https");
 
-const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
@@ -71,7 +68,7 @@ async function sendFcmV1(tokens, title, body, url) {
     await fetch(endpoint, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(message)
@@ -121,13 +118,14 @@ async function saveNotification(uid, role, title, body, url) {
 }
 
 /* ============================================================
-   1) 이용권 만료 3일 전 알림
+   1) 이용권 만료 3일 전 알림 (v2 scheduler)
 ============================================================ */
-exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(async () => {
+exports.sendExpireAlerts = onSchedule("every 24 hours", async event => {
   const now = Date.now();
-  const target = now + (3 * 24 * 60 * 60 * 1000);
+  const target = now + 3 * 24 * 60 * 60 * 1000;
 
-  const snap = await db.collection("access_tokens")
+  const snap = await db
+    .collection("access_tokens")
     .where("expire_at", ">=", target - 3600000)
     .where("expire_at", "<=", target + 3600000)
     .get();
@@ -136,7 +134,8 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
     const token = doc.data();
     const userId = token.user_id;
 
-    const alertDoc = await db.collection("notifications")
+    const alertDoc = await db
+      .collection("notifications")
       .doc(userId)
       .collection("alerts")
       .doc("expire_3days")
@@ -163,7 +162,8 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
 
     await saveNotification(userId, "user", title, body, url);
 
-    await db.collection("notifications")
+    await db
+      .collection("notifications")
       .doc(userId)
       .collection("alerts")
       .doc("expire_3days")
@@ -177,16 +177,17 @@ exports.sendExpireAlerts = functions.pubsub.schedule("every 24 hours").onRun(asy
 });
 
 /* ============================================================
-   2) 자동 매칭 시스템
+   2) 자동 매칭 시스템 (v2 firestore trigger)
 ============================================================ */
-exports.autoMatchDeposits = functions.firestore
-  .document("bank_deposits/{depositId}")
-  .onCreate(async (snap, context) => {
-
+exports.autoMatchDeposits = onDocumentCreated(
+  "bank_deposits/{depositId}",
+  async event => {
+    const snap = event.data;
     const deposit = snap.data();
     const depositor = deposit.depositor_name.trim();
 
-    const pendingSnap = await db.collection("payments")
+    const pendingSnap = await db
+      .collection("payments")
       .where("status", "==", "PENDING")
       .where("depositor_name", "==", depositor)
       .get();
@@ -233,7 +234,7 @@ exports.autoMatchDeposits = functions.firestore
 
       const tokenId = db.collection("access_tokens").doc().id;
       const now = Date.now();
-      const expire = now + (30 * 24 * 60 * 60 * 1000);
+      const expire = now + 30 * 24 * 60 * 60 * 1000;
 
       await db.collection("access_tokens").doc(tokenId).set({
         user_id: payment.user_id,
@@ -244,7 +245,8 @@ exports.autoMatchDeposits = functions.firestore
         is_active: true
       });
 
-      await db.collection("payments")
+      await db
+        .collection("payments")
         .doc(paymentId)
         .collection("logs")
         .add({
@@ -260,77 +262,73 @@ exports.autoMatchDeposits = functions.firestore
     }
 
     return null;
-  });
+  }
+);
 
 /* ============================================================
-   3) 오픈뱅킹 자동 입금 수집
+   3) 오픈뱅킹 자동 입금 수집 (v2 scheduler)
 ============================================================ */
-exports.fetchBankDeposits = functions.pubsub
-  .schedule("every 5 minutes")
-  .onRun(async () => {
+exports.fetchBankDeposits = onSchedule("every 5 minutes", async event => {
+  const accessToken = "OPENBANKING_ACCESS_TOKEN";
+  const fintechUseNum = "YOUR_FINTECH_USE_NUM";
 
-    const accessToken = "OPENBANKING_ACCESS_TOKEN";
-    const fintechUseNum = "YOUR_FINTECH_USE_NUM";
-
-    try {
-      const response = await axios.post(
-        "https://openapi.openbanking.or.kr/v2.0/account/transaction_list",
-        {
-          bank_tran_id: "MOLAW" + Date.now(),
-          fintech_use_num: fintechUse_num,
-          inquiry_type: "A",
-          inquiry_base: "D",
-          from_date: "20240101",
-          to_date: "20241231",
-          sort_order: "D"
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json"
-          }
+  try {
+    const response = await axios.post(
+      "https://openapi.openbanking.or.kr/v2.0/account/transaction_list",
+      {
+        bank_tran_id: "MOLAW" + Date.now(),
+        fintech_use_num: fintechUseNum,
+        inquiry_type: "A",
+        inquiry_base: "D",
+        from_date: "20240101",
+        to_date: "20241231",
+        sort_order: "D"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
         }
-      );
-
-      const list = response.data.res_list;
-
-      for (const item of list) {
-        if (item.inout_type !== "입금") continue;
-
-        const depositor = item.print_content.trim();
-        const amount = Number(item.tran_amt);
-        const timestamp = new Date(
-          item.tran_date + " " + item.tran_time
-        ).getTime();
-
-        const exists = await db.collection("bank_deposits")
-          .where("timestamp", "==", timestamp)
-          .where("amount", "==", amount)
-          .get();
-
-        if (!exists.empty) continue;
-
-        await db.collection("bank_deposits").add({
-          depositor_name: depositor,
-          amount: amount,
-          timestamp: timestamp,
-          matched: false
-        });
       }
+    );
 
-    } catch (err) {
-      console.error("은행 API 오류:", err);
+    const list = response.data.res_list;
+
+    for (const item of list) {
+      if (item.inout_type !== "입금") continue;
+
+      const depositor = item.print_content.trim();
+      const amount = Number(item.tran_amt);
+      const timestamp = new Date(
+        item.tran_date + " " + item.tran_time
+      ).getTime();
+
+      const exists = await db
+        .collection("bank_deposits")
+        .where("timestamp", "==", timestamp)
+        .where("amount", "==", amount)
+        .get();
+
+      if (!exists.empty) continue;
+
+      await db.collection("bank_deposits").add({
+        depositor_name: depositor,
+        amount: amount,
+        timestamp: timestamp,
+        matched: false
+      });
     }
+  } catch (err) {
+    console.error("은행 API 오류:", err);
+  }
 
-    return null;
-  });
+  return null;
+});
 
 /* ============================================================
-   4) GeoIP API (Cloud Run용 CORS 적용)
+   4) GeoIP API (v2 https onRequest)
 ============================================================ */
-exports.geoip = functions.https.onRequest(async (req, res) => {
-  return null;
-
+exports.geoip = onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
@@ -361,11 +359,14 @@ exports.geoip = functions.https.onRequest(async (req, res) => {
 });
 
 /* ============================================================
-   5) 관리자 권한 설정
+   5) 관리자 권한 설정 (v2 https onCall)
 ============================================================ */
-exports.setAdminRole = functions.https.onCall(async (data, context) => {
+exports.setAdminRole = onCall(async request => {
+  const data = request.data;
+  const context = request;
+
   if (!context.auth || context.auth.token.role !== "admin") {
-    throw new functions.https.HttpsError(
+    throw new HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
@@ -375,23 +376,29 @@ exports.setAdminRole = functions.https.onCall(async (data, context) => {
 
   await admin.auth().setCustomUserClaims(uid, { role: "admin" });
 
-  await db.collection("users").doc(uid).set(
-    {
-      role: "admin",
-      role_updated_at: Date.now()
-    },
-    { merge: true }
-  );
+  await db
+    .collection("users")
+    .doc(uid)
+    .set(
+      {
+        role: "admin",
+        role_updated_at: Date.now()
+      },
+      { merge: true }
+    );
 
   return { message: `관리자 권한이 부여되었습니다: ${uid}` };
 });
 
 /* ============================================================
-   6) 담당자 권한 설정
+   6) 담당자 권한 설정 (v2 https onCall)
 ============================================================ */
-exports.setManagerRole = functions.https.onCall(async (data, context) => {
+exports.setManagerRole = onCall(async request => {
+  const data = request.data;
+  const context = request;
+
   if (!context.auth || context.auth.token.role !== "admin") {
-    throw new functions.https.HttpsError(
+    throw new HttpsError(
       "permission-denied",
       "관리자만 권한을 변경할 수 있습니다."
     );
@@ -401,23 +408,26 @@ exports.setManagerRole = functions.https.onCall(async (data, context) => {
 
   await admin.auth().setCustomUserClaims(uid, { role: "manager" });
 
-  await db.collection("users").doc(uid).set(
-    {
-      role: "manager",
-      role_updated_at: Date.now()
-    },
-    { merge: true }
-  );
+  await db
+    .collection("users")
+    .doc(uid)
+    .set(
+      {
+        role: "manager",
+        role_updated_at: Date.now()
+      },
+      { merge: true }
+    );
 
   return { message: `담당자 권한이 부여되었습니다: ${uid}` };
 });
 
 /* ============================================================
-   7) 관리자 → 특정 사용자에게 FCM v1 푸시 발송
+   7) 관리자 → 특정 사용자에게 FCM v1 푸시 발송 (v2 https onCall)
 ============================================================ */
-exports.sendPushToUser = functions.https.onCall(async (data, context) => {
+exports.sendPushToUser = onCall(async request => {
   try {
-    const { uid, title, body } = data;
+    const { uid, title, body } = request.data;
 
     const tokens = await getValidFcmTokens(uid);
 
@@ -433,7 +443,6 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
     return { success: true, sent: tokens.length };
   } catch (err) {
     console.error("sendPushToUser 오류:", err);
-    throw new functions.https.HttpsError("internal", err.message);
+    throw new HttpsError("internal", err.message);
   }
 });
-
