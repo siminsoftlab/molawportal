@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 const axios = require("axios");
 const { GoogleAuth } = require("google-auth-library");
 
-const db = admin.getFirestore();
+const db = admin.firestore();
 
 /* ============================================================
    이메일 설정
