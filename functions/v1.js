@@ -12,7 +12,7 @@ const axios = require("axios");
 const { GoogleAuth } = require("google-auth-library");
 
 admin.initializeApp();
-const db = admin.firestore();
+const db = admin.getFirestore();
 
 /* ============================================================
    이메일 설정
