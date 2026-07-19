@@ -1,14 +1,11 @@
-// ===================== v2 Functions Only =====================
 const { onRequest } = require("firebase-functions/v2/https");
 const { DocumentProcessorServiceClient } = require("@google-cloud/documentai").v1;
 
 // v1 함수들 불러오기
-module.exports = {
-  ...require("./v1"),
-};
+const v1 = require("./v1");
 
 // ===================== Document AI — Cloud Functions v2 =====================
-exports.docAI2 = onRequest(
+const docAI2 = onRequest(
   {
     cors: ["https://molawcalculator.com"],
   },
@@ -38,3 +35,9 @@ exports.docAI2 = onRequest(
     }
   }
 );
+
+// ===================== 모든 함수 export =====================
+module.exports = {
+  ...v1,
+  docAI2,
+};
