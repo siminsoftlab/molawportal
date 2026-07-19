@@ -1,10 +1,11 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const { DocumentProcessorServiceClient } = require("@google-cloud/documentai").v1beta3;
+
 exports.docAI2 = onRequest(
   { timeoutSeconds: 300, memory: "1GiB" },
   async (req, res) => {
 
-    // ⭐ Cloud Run(v2) CORS 설정 — 반드시 응답 최상단에서 실행
+    // ⭐ Cloud Run(v2) CORS 설정
     res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
     res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.set("Access-Control-Allow-Headers", "Content-Type");
@@ -17,6 +18,10 @@ exports.docAI2 = onRequest(
 
     try {
       const { base64 } = req.body;
+
+      if (!base64) {
+        return res.status(400).json({ error: "base64 is missing" });
+      }
 
       const client = new DocumentProcessorServiceClient();
       const name = "projects/989958208701/locations/us/processors/f9e461994ba2266a";
@@ -31,8 +36,17 @@ exports.docAI2 = onRequest(
 
       const [result] = await client.processDocument(request);
 
-      // ⭐ 반드시 JSON 응답 전에 CORS 헤더가 살아 있어야 함
-      return res.status(200).json(result);
+      // ⭐ 응답 크기 제한 해결: 전체 result를 반환하지 않고 필요한 부분만 반환
+      const document = result.document;
+
+      return res.status(200).json({
+        text: document.text || "",
+        entities: document.entities || [],
+        pages: (document.pages || []).map(p => ({
+          pageNumber: p.pageNumber,
+          text: p.layout?.textAnchor?.content || ""
+        }))
+      });
 
     } catch (e) {
       console.error("docAI2 error:", e);
@@ -40,4 +54,3 @@ exports.docAI2 = onRequest(
     }
   }
 );
-
