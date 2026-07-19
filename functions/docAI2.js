@@ -41,3 +41,10 @@ exports.docAI2 = onRequest(
     }
   }
 );
+
+const functions = require("firebase-functions");
+
+exports.docAI2 = functions.https.onCall((data, context) => {
+  console.log("TEMP CALLABLE RESTORED");
+  return { ok: true };
+});
