@@ -445,7 +445,7 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 
 exports.docAI2 = onRequest(
   {
-    cors: ["https://molawcalculator.com"],   // ⭐ 2nd Gen은 cors 옵션이 실제로 작동함
+    cors: ["https://molawcalculator.com"],
   },
   async (req, res) => {
     try {
@@ -461,22 +461,23 @@ exports.docAI2 = onRequest(
       const endpoint =
         "https://us-documentai.googleapis.com/v1/projects/989958208701/locations/us/processors/f9e461994ba2266a:process";
 
-      const docRes = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
+      const docRes = await axios.post(
+        endpoint,
+        {
           rawDocument: {
             content: base64,
             mimeType: "application/pdf"
           }
-        })
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
 
-      const result = await docRes.json();
-      res.status(200).json(result);
+      res.status(200).json(docRes.data);
 
     } catch (e) {
       res.status(500).json({ error: e.message });
