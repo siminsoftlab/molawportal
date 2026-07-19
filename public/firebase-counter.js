@@ -94,10 +94,9 @@ async function updateVisitorCount() {
 /* ============================================================
    GeoIP 저장 (admin.js와 호환되는 구조)
 ============================================================ */
-async function saveVisitorGeoIP() {
-   return;
-   
+async function saveVisitorGeoIP() {   
   try {
+    return;
     const response = await fetch("https://molawcounter.web.app/api/geoip");
 
     if (!response.ok) {
