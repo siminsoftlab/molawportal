@@ -96,7 +96,7 @@ async function updateVisitorCount() {
 ============================================================ */
 async function saveVisitorGeoIP() {   
   try {
-    return;
+    return null;
     const response = await fetch("https://molawcounter.web.app/api/geoip");
 
     if (!response.ok) {
