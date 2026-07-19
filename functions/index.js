@@ -1,40 +1,26 @@
-const { onRequest } = require("firebase-functions/v2/https");
-const cors = require("cors");
-const { DocumentProcessorServiceClient } = require("@google-cloud/documentai").v1beta3;
+// Cloud Functions v2용 index.js
 
-const v1 = require("./v1");
+// v2로 변환된 v1.js 함수들 가져오기
+const {
+  sendExpireAlerts,
+  autoMatchDeposits,
+  fetchBankDeposits,
+  geoip,
+  setAdminRole,
+  setManagerRole,
+  sendPushToUser
+} = require("./v1");
 
-const docAI2 = onRequest(
-  { timeoutSeconds: 300, memory: "1GiB" },
-  async (req, res) => {
-    cors({ origin: "https://molawcalculator.com" })(req, res, async () => {
-      try {
-        const { base64 } = req.body;
+// docAI2 함수 가져오기
+const { docAI2 } = require("./docAI2");
 
-        const client = new DocumentProcessorServiceClient();
+// v2 방식으로 함수 export
+exports.sendExpireAlerts = sendExpireAlerts;
+exports.autoMatchDeposits = autoMatchDeposits;
+exports.fetchBankDeposits = fetchBankDeposits;
+exports.geoip = geoip;
+exports.setAdminRole = setAdminRole;
+exports.setManagerRole = setManagerRole;
+exports.sendPushToUser = sendPushToUser;
 
-        const name =
-          "projects/989958208701/locations/us/processors/f9e461994ba2266a";
-
-        const request = {
-          name,
-          rawDocument: {
-            content: base64,
-            mimeType: "application/pdf",
-          },
-        };
-
-        const [result] = await client.processDocument(request);
-
-        res.status(200).json(result);
-      } catch (e) {
-        res.status(500).json({ error: e.message });
-      }
-    });
-  }
-);
-
-module.exports = {
-  ...v1,
-  docAI2,
-};
+exports.docAI2 = docAI2;
