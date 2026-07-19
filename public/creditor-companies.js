@@ -43,7 +43,7 @@ function fileToBase64(file) {
 async function callDocumentAI(base64) {
   log("Document AI 호출 중...");
 
-  const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/docAI", {
+  const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/docAI2", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ base64 })
@@ -51,15 +51,14 @@ async function callDocumentAI(base64) {
 
   const result = await res.json();
 
-  console.log("docAI raw response:", result);   // ⭐ 반드시 추가
+  console.log("docAI2 raw response:", result);
 
   if (!result || !result.document) {
-    throw new Error("docAI 응답에 document가 없습니다. 응답: " + JSON.stringify(result));
+    throw new Error("docAI2 응답에 document가 없습니다: " + JSON.stringify(result));
   }
 
   return result.document;
 }
-
 // ===================== Document AI 응답 → 테이블 추출 =====================
 function extractTables(document) {
   const tables = [];
