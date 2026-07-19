@@ -330,7 +330,8 @@ exports.fetchBankDeposits = functions.pubsub
    4) GeoIP API (Cloud Run용 CORS 적용)
 ============================================================ */
 exports.geoip = functions.https.onRequest(async (req, res) => {
-
+  return null;
+   
   res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
