@@ -8,7 +8,6 @@ const nodemailer = require("nodemailer");
 const axios = require("axios");
 const { GoogleAuth } = require("google-auth-library");
 
-admin.initializeApp();
 const db = admin.getFirestore();
 
 /* ============================================================
