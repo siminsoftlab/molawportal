@@ -1,9 +1,9 @@
 /* ============================================================
    채권사 정보 추출 + alive 판정 + Firestore 저장 (v9)
-   + PDF 페이지 진행률 표시 추가
+   + PDF 페이지 진행률 표시 기능 포함
 ============================================================ */
 
-import { app, db } from "./firebase-init.js";
+import { app, db } from "/firebase-init.js";
 import {
   collection,
   doc,
@@ -30,8 +30,8 @@ function log(msg) {
   statusEl.textContent = msg;
 }
 
-// ===================== PDF → base64 (페이지 진행률 표시 추가) =====================
-async function fileToBase64(file) {
+// ===================== PDF → base64 + 페이지 진행률 =====================
+async function fileToBase64WithProgress(file) {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
@@ -42,7 +42,7 @@ async function fileToBase64(file) {
   let pagesBase64 = [];
 
   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-    log(`PDF 처리 중... (${pageNum} / ${totalPages} 페이지)`);
+    log(`PDF 페이지 처리 중... (${pageNum} / ${totalPages})`);
 
     const page = await pdf.getPage(pageNum);
     const viewport = page.getViewport({ scale: 2.5 });
@@ -58,17 +58,18 @@ async function fileToBase64(file) {
     pagesBase64.push(base64);
   }
 
+  log("PDF 페이지 렌더링 완료!");
   return pagesBase64;
 }
 
 // ===================== Cloud Functions(docAI) 호출 =====================
 async function callDocumentAI(base64Pages) {
-  log("Firebase Functions(docAI) 호출 중...");
+  log("Document AI 호출 중...");
 
-  const res = await fetch("/docAI", {
+  const res = await fetch("https://molawcalculator.com/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ base64: base64Pages })
+    body: JSON.stringify({ pages: base64Pages })
   });
 
   if (!res.ok) {
@@ -107,10 +108,10 @@ function detectSection(table) {
     .map(c => cellText(c))
     .join(" ");
 
-  if (/연체|변동|연체변동/i.test(header)) return "연체변동";
-  if (/등록|공공정보|신용정보/i.test(header)) return "등록";
-  if (/대출|원리금|상환/i.test(header)) return "대출";
-  if (/보증|서울보증|대위변제/i.test(header)) return "보증";
+  if (/연체|변동/i.test(header)) return "연체변동";
+  if (/등록|공공정보/i.test(header)) return "등록";
+  if (/대출|원리금/i.test(header)) return "대출";
+  if (/보증|대위변제/i.test(header)) return "보증";
 
   return "기타";
 }
@@ -142,7 +143,7 @@ function buildRowsFromDocumentAI(document) {
   return rows;
 }
 
-// ===================== alive 판정 (true/false만 저장) =====================
+// ===================== alive 판정 =====================
 function normalize(str) {
   return (str || "")
     .replace(/\s+/g, "")
@@ -274,10 +275,10 @@ parseBtn.addEventListener("click", async () => {
     return;
   }
 
-  statusEl.textContent = "PDF 처리 시작...";
-
   try {
-    const base64Pages = await fileToBase64(file);
+    log("PDF 처리 시작...");
+
+    const base64Pages = await fileToBase64WithProgress(file);
     const document = await callDocumentAI(base64Pages);
 
     const rows = buildRowsFromDocumentAI(document);
@@ -287,10 +288,10 @@ parseBtn.addEventListener("click", async () => {
     _creditors = creditors;
 
     renderTable(creditors);
-    statusEl.textContent = `완료 (${creditors.length}개 채권사, alive 판정 포함)`;
+    log(`완료 (${creditors.length}개 채권사, alive 판정 포함)`);
   } catch (e) {
     console.error(e);
-    statusEl.textContent = "오류: " + e.message;
+    log("오류: " + e.message);
   }
 });
 
