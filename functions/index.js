@@ -11,6 +11,7 @@ const nodemailer = require("nodemailer");
 const axios = require("axios");
 const { onRequest } = require("firebase-functions/v2/https");
 const { GoogleAuth } = require("google-auth-library");
+const { DocumentProcessorServiceClient } = require("@google-cloud/documentai").v1;
 //const fetch = require("node-fetch");
 
 admin.initializeApp();
@@ -451,33 +452,22 @@ exports.docAI2 = onRequest(
     try {
       const { base64 } = req.body;
 
-      const auth = new GoogleAuth({
-        scopes: ["https://www.googleapis.com/auth/cloud-platform"]
-      });
-      const client = await auth.getClient();
-      const tokenResponse = await client.getAccessToken();
-      const token = tokenResponse.token;
+      const client = new DocumentProcessorServiceClient();
 
-      const endpoint =
-        "https://us-documentai.googleapis.com/v1/projects/989958208701/locations/us/processors/f9e461994ba2266a:process";
+      const name =
+        "projects/989958208701/locations/us/processors/f9e461994ba2266a";
 
-      const docRes = await axios.post(
-        endpoint,
-        {
-          rawDocument: {
-            content: base64,
-            mimeType: "application/pdf"
-          }
+      const request = {
+        name,
+        rawDocument: {
+          content: base64,
+          mimeType: "application/pdf",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
-        }
-      );
+      };
 
-      res.status(200).json(docRes.data);
+      const [result] = await client.processDocument(request);
+
+      res.status(200).json(result);
 
     } catch (e) {
       res.status(500).json({ error: e.message });
