@@ -56,7 +56,7 @@ async function pdfToBase64(file) {
 async function callDocumentAI(base64) {
   log("Firebase Functions(docAI) 호출 중...");
 
-  const res = await fetch("https://us-central1-molawcalculator.cloudfunctions.net/docAI", {
+  const res = await fetch("/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ base64 })
