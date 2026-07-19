@@ -444,7 +444,7 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 
 exports.docAI = functions.https.onRequest(async (req, res) => {
 
-  // ⭐ CORS 허용
+  // OPTIONS 프리플라이트
   res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
@@ -481,9 +481,22 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
     });
 
     const result = await docRes.json();
+
+    // ⭐ 응답에도 반드시 CORS 헤더 다시 붙이기
+    res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+
     return res.status(200).json(result);
 
   } catch (e) {
+
+    // ⭐ 오류 응답에도 반드시 CORS 헤더 붙이기
+    res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+
     return res.status(500).json({ error: e.message });
   }
 });
+
