@@ -43,7 +43,7 @@ function fileToBase64(file) {
 async function callDocumentAI(base64) {
   log("Document AI 호출 중...");
 
-  const res = await fetch("https://docai2-5yfs2yzhrq-uc.a.run.app", {
+  const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/docAI2", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ base64 })
