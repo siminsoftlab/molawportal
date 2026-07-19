@@ -1,13 +1,5 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const { DocumentProcessorServiceClient } = require("@google-cloud/documentai").v1beta3;
-const functions = require("firebase-functions");
-
-exports.docAI2 = functions.https.onRequest((req, res) => {
-  console.log("TEMP 1ST GEN RESTORED");
-  res.send("temp");
-});
-
-
 exports.docAI2 = onRequest(
   { timeoutSeconds: 300, memory: "1GiB" },
   async (req, res) => {
