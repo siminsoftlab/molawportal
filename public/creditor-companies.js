@@ -43,10 +43,10 @@ function fileToBase64(file) {
 async function callDocumentAI(base64) {
   log("Document AI 호출 중...");
 
-  const res = await fetch("https://molawcalculator.com/docAI", {
+  const res = await fetch("https://us-central1-molawcounter.cloudfunctions.net/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ base64 })   // ⭐ PDF 원본 base64
+    body: JSON.stringify({ base64 })
   });
 
   const result = await res.json();
@@ -57,6 +57,7 @@ async function callDocumentAI(base64) {
 
   return result.document;
 }
+
 
 // ===================== Document AI 응답 → 테이블 추출 =====================
 function extractTables(document) {
