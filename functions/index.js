@@ -443,42 +443,17 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
 ============================================================ */
 
 exports.docAI = functions.https.onRequest(async (req, res) => {
-
-  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
-  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.set("Access-Control-Allow-Headers", "Content-Type");
-  res.set("Access-Control-Max-Age", "3600");
-
-  // ⭐ 502 방지: 첫 바이트 즉시 전송
-  res.write(" ");
-
-  if (req.method === "OPTIONS") {
-    return res.status(204).send("");
-  }
-
   try {
     const { base64 } = req.body;
-
-    if (!base64) {
-      return res.status(400).json({ 오류: "base64가 누락되었습니다" });
-    }
-
-    const PROJECT_ID = "989958208701";
-    const PROCESSOR_ID = "f9e461994ba2266a";
-    const LOCATION = "us";
-
-    const endpoint =
-      `https://${LOCATION}-documentai.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}:process`;
 
     const auth = new GoogleAuth({
       scopes: ["https://www.googleapis.com/auth/cloud-platform"]
     });
-
     const client = await auth.getClient();
     const tokenResponse = await client.getAccessToken();
     const token = tokenResponse.token;
 
-    const fetch = global.fetch;
+    const endpoint = "https://us-documentai.googleapis.com/v1/projects/989958208701/locations/us/processors/f9e461994ba2266a:process";
 
     const docRes = await fetch(endpoint, {
       method: "POST",
@@ -494,23 +469,9 @@ exports.docAI = functions.https.onRequest(async (req, res) => {
       })
     });
 
-    if (!docRes.ok) {
-      const text = await docRes.text();
-      return res.status(docRes.status).json({
-        error: "Document AI error",
-        status: docRes.status,
-        message: text
-      });
-    }
-
     const result = await docRes.json();
-    return res.status(200).json(result.document);
-
+    res.status(200).json(result);
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    res.status(500).json({ error: e.message });
   }
 });
-
-
-
-
