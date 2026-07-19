@@ -1,5 +1,6 @@
 /* ============================================================
    채권사 정보 추출 + alive 판정 + Firestore 저장 (v9)
+   + PDF 페이지 진행률 표시 추가
 ============================================================ */
 
 import { app, db } from "./firebase-init.js";
@@ -20,8 +21,8 @@ const statusEl = document.getElementById("status");
 const tableBody = document.querySelector("#creditorTable tbody");
 const saveBtn = document.getElementById("saveToFirestoreBtn");
 
-let _rows = [];          // 모든 row (채권사별 상세)
-let _creditors = [];     // 채권사별 요약 + alive
+let _rows = [];
+let _creditors = [];
 
 // ===================== 로그 =====================
 function log(msg) {
@@ -29,24 +30,45 @@ function log(msg) {
   statusEl.textContent = msg;
 }
 
-// ===================== PDF → base64 (원본) =====================
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(",")[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+// ===================== PDF → base64 (페이지 진행률 표시 추가) =====================
+async function fileToBase64(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+  const totalPages = pdf.numPages;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  let pagesBase64 = [];
+
+  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+    log(`PDF 처리 중... (${pageNum} / ${totalPages} 페이지)`);
+
+    const page = await pdf.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2.5 });
+
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+
+    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    const dataUrl = canvas.toDataURL("image/png");
+    const base64 = dataUrl.replace(/^data:image\/png;base64,/, "");
+
+    pagesBase64.push(base64);
+  }
+
+  return pagesBase64;
 }
 
 // ===================== Cloud Functions(docAI) 호출 =====================
-async function callDocumentAI(base64) {
+async function callDocumentAI(base64Pages) {
   log("Firebase Functions(docAI) 호출 중...");
 
   const res = await fetch("/docAI", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ base64 })
+    body: JSON.stringify({ base64: base64Pages })
   });
 
   if (!res.ok) {
@@ -93,7 +115,6 @@ function detectSection(table) {
   return "기타";
 }
 
-// Document AI → row 리스트
 function buildRowsFromDocumentAI(document) {
   const tables = extractTables(document);
   const rows = [];
@@ -121,7 +142,7 @@ function buildRowsFromDocumentAI(document) {
   return rows;
 }
 
-// ===================== alive 판정 (true/false만 계산, 필터링 X) =====================
+// ===================== alive 판정 (true/false만 저장) =====================
 function normalize(str) {
   return (str || "")
     .replace(/\s+/g, "")
@@ -129,7 +150,6 @@ function normalize(str) {
     .trim();
 }
 
-// name → alive(boolean) 맵 생성
 function computeAliveMap(rows) {
   const byName = new Map();
 
@@ -157,10 +177,8 @@ function computeAliveMap(rows) {
       (r.transfers || "").includes("대위변제")
     );
 
-    // 기존 로직을 그대로 사용해 alive true/false만 판정
     let alive = true;
 
-    // 1) 연체변동만 있고, 양수/대위변제도 없으면 → 양도인 → alive = false
     if (hasOnlyArrear && !hasLoanOrRegister && !hasAcquisition) {
       alive = false;
     }
@@ -171,7 +189,6 @@ function computeAliveMap(rows) {
   return aliveMap;
 }
 
-// 채권사별 요약 배열 생성
 function buildCreditorsSummary(rows) {
   const aliveMap = computeAliveMap(rows);
   const byName = new Map();
@@ -222,7 +239,6 @@ function renderTable(creditors) {
 }
 
 // ===================== Firestore 저장 =====================
-// creditor_companies 컬렉션에 upsert
 async function saveCreditorsToFirestore(creditors) {
   log("Firestore 저장 중...");
 
@@ -230,15 +246,12 @@ async function saveCreditorsToFirestore(creditors) {
 
   for (const c of creditors) {
     const docId = c.nameKey || c.name || crypto.randomUUID();
-
     const docRef = doc(colRef, docId);
 
-    // 최소 필드: name, alive, is_active, createdAt/updatedAt
-    // 나중에 필요한 필드는 추가로 확장 가능
     const data = {
       name: c.name,
-      alive: c.alive,          // 요청: alive true/false 저장
-      is_active: c.alive,      // 스키마의 is_active(살아있는 채권사 여부)와 동일하게 사용
+      alive: c.alive,
+      is_active: c.alive,
       account_sample: c.account,
       loan_type_sample: c.loanType,
       transfers_sample: c.transfers,
@@ -261,11 +274,11 @@ parseBtn.addEventListener("click", async () => {
     return;
   }
 
-  statusEl.textContent = "PDF 처리 중...";
+  statusEl.textContent = "PDF 처리 시작...";
 
   try {
-    const base64 = await fileToBase64(file);   // PDF 원본 그대로 base64
-    const document = await callDocumentAI(base64);
+    const base64Pages = await fileToBase64(file);
+    const document = await callDocumentAI(base64Pages);
 
     const rows = buildRowsFromDocumentAI(document);
     _rows = rows;
@@ -281,7 +294,7 @@ parseBtn.addEventListener("click", async () => {
   }
 });
 
-// Firestore 저장 버튼
+// ===================== Firestore 저장 버튼 =====================
 saveBtn.addEventListener("click", async () => {
   if (!_creditors.length) {
     alert("먼저 PDF를 분석해서 채권사를 추출하세요.");
