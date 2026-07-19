@@ -49,9 +49,15 @@ async function callDocumentAI(base64) {
     body: JSON.stringify({ base64 })
   });
 
-  const result = await res.json();
+  const text = await res.text();
+  console.log("docAI2 raw response:", text);
 
-  console.log("docAI2 raw response:", result);
+  let result;
+  try {
+    result = JSON.parse(text);
+  } catch (e) {
+    throw new Error("docAI2 응답이 JSON이 아닙니다: " + text);
+  }
 
   if (!result || !result.document) {
     throw new Error("docAI2 응답에 document가 없습니다: " + JSON.stringify(result));
@@ -59,6 +65,7 @@ async function callDocumentAI(base64) {
 
   return result.document;
 }
+
 // ===================== Document AI 응답 → 테이블 추출 =====================
 function extractTables(document) {
   const tables = [];
