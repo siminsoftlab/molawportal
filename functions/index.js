@@ -9,6 +9,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
+const { onRequest } = require("firebase-functions/v2/https");
 const { GoogleAuth } = require("google-auth-library");
 //const fetch = require("node-fetch");
 
@@ -331,7 +332,7 @@ exports.fetchBankDeposits = functions.pubsub
 ============================================================ */
 exports.geoip = functions.https.onRequest(async (req, res) => {
   return null;
-   
+
   res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type");
@@ -442,61 +443,43 @@ exports.sendPushToUser = functions.https.onCall(async (data, context) => {
    8) Document AI — Cloud Run 완전 대응 버전 (CORS + OPTIONS)
 ============================================================ */
 
-exports.docAI = functions.https.onRequest(async (req, res) => {
+exports.docAI = onRequest(
+  {
+    cors: ["https://molawcalculator.com"],   // ⭐ 2nd gen은 cors 옵션이 작동함
+  },
+  async (req, res) => {
+    try {
+      const { base64 } = req.body;
 
-  // OPTIONS 프리플라이트
-  res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
-  res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.set("Access-Control-Allow-Headers", "Content-Type");
+      const auth = new GoogleAuth({
+        scopes: ["https://www.googleapis.com/auth/cloud-platform"]
+      });
+      const client = await auth.getClient();
+      const tokenResponse = await client.getAccessToken();
+      const token = tokenResponse.token;
 
-  if (req.method === "OPTIONS") {
-    return res.status(204).send("");
+      const endpoint =
+        "https://us-documentai.googleapis.com/v1/projects/989958208701/locations/us/processors/f9e461994ba2266a:process";
+
+      const docRes = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          rawDocument: {
+            content: base64,
+            mimeType: "application/pdf"
+          }
+        })
+      });
+
+      const result = await docRes.json();
+      res.status(200).json(result);
+
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
   }
-
-  try {
-    const { base64 } = req.body;
-
-    const auth = new GoogleAuth({
-      scopes: ["https://www.googleapis.com/auth/cloud-platform"]
-    });
-    const client = await auth.getClient();
-    const tokenResponse = await client.getAccessToken();
-    const token = tokenResponse.token;
-
-    const endpoint =
-      "https://us-documentai.googleapis.com/v1/projects/989958208701/locations/us/processors/f9e461994ba2266a:process";
-
-    const docRes = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        rawDocument: {
-          content: base64,
-          mimeType: "application/pdf"
-        }
-      })
-    });
-
-    const result = await docRes.json();
-
-    // ⭐ 응답에도 반드시 CORS 헤더 다시 붙이기
-    res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
-    res.set("Access-Control-Allow-Headers", "Content-Type");
-    res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-
-    return res.status(200).json(result);
-
-  } catch (e) {
-
-    // ⭐ 오류 응답에도 반드시 CORS 헤더 붙이기
-    res.set("Access-Control-Allow-Origin", "https://molawcalculator.com");
-    res.set("Access-Control-Allow-Headers", "Content-Type");
-    res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-
-    return res.status(500).json({ error: e.message });
-  }
-});
-
+);
