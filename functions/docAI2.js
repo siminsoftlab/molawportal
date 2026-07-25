@@ -36,16 +36,12 @@ exports.docAI2 = onRequest(
 
       const [result] = await client.processDocument(request);
 
-      // ⭐ 응답 크기 제한 해결: 전체 result를 반환하지 않고 필요한 부분만 반환
       const document = result.document;
 
+      // ⭐ 응답 크기 제한 해결: pages 제거
       return res.status(200).json({
         text: document.text || "",
-        entities: document.entities || [],
-        pages: (document.pages || []).map(p => ({
-          pageNumber: p.pageNumber,
-          text: p.layout?.textAnchor?.content || ""
-        }))
+        entities: document.entities || []
       });
 
     } catch (e) {
