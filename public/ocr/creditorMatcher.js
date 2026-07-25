@@ -1,32 +1,51 @@
 // creditorMatcher.js
 import { db } from "/firebase-init.js";
 import {
-  collection,
-  getDocs,
   doc,
+  getDoc,
   setDoc
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 export async function matchCreditors(text, debtorId) {
-  // ⭐ Firestore 컬렉션 이름 수정
-  const snapshot = await getDocs(collection(db, "creditorData"));
+  // ⭐ creditorData/latest 문서 읽기
+  const docSnap = await getDoc(doc(db, "creditorData", "latest"));
 
-  const creditorList = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
+  if (!docSnap.exists()) {
+    console.error("creditorData/latest 문서가 없습니다.");
+    return [];
+  }
+
+  // ⭐ 실제 채권사 목록
+  const creditorList = docSnap.data().creditors || [];
+
+  // ⭐ 텍스트에서 채권사 이름 매칭
+  const found = creditorList.filter(c => {
+    const name = (c.name || "").replace(/\s+/g, "");
+    const normalizedText = text.replace(/\s+/g, "");
+    return normalizedText.includes(name);
+  });
+
+  // ⭐ is_active가 없으므로 모두 alive 처리
+  const alive = found.map(c => ({
+    creditor_id: c.account || "-",
+    name: c.name,
+    account: c.account || "-",
+    registeredAmount: c.registeredAmount || null,
+    overdueAmount: c.overdueAmount || null,
+    releaseReason: c.releaseReason || null
   }));
 
-  const found = creditorList.filter(c => text.includes(c.name));
-  const alive = found.filter(c => c.is_active);
-
+  // ⭐ debtor_creditors DB 저장
   for (const creditor of alive) {
     await setDoc(
-      doc(db, "debtor_creditors", `${debtorId}_${creditor.id}`),
+      doc(db, "debtor_creditors", `${debtorId}_${creditor.name}`),
       {
         debtor_id: debtorId,
-        creditor_id: creditor.id,
-        name: creditor.name,
-        is_active: creditor.is_active,
+        creditor_name: creditor.name,
+        account: creditor.account,
+        registeredAmount: creditor.registeredAmount,
+        overdueAmount: creditor.overdueAmount,
+        releaseReason: creditor.releaseReason,
         created_at: new Date()
       }
     );
