@@ -64,20 +64,30 @@ function renderTable(alive) {
       "파이낸셜": "category-capital"
     }[c.category] || "";
 
+    const principal = c.registeredAmount ?? 0;
+    const overdue = c.overdueAmount ?? 0;
+    const totalDebt = principal + overdue;
+
     tr.innerHTML = `
       <td><strong>${c.name}</strong></td>
       <td class="${categoryClass}">${c.category}</td>
       <td>${c.phone || "-"}</td>
+
       <td>
         ${c.aliases && c.aliases.length
           ? c.aliases.map(a => `<div class="alias-box">${a}</div>`).join("")
           : "-"
         }
       </td>
+
       <td>${c.account || "-"}</td>
       <td>${c.loanType || "-"}</td>
       <td>${c.department || "-"}</td>
       <td>${c.collateral ? "담보" : "-"}</td>
+
+      <td>${principal ? principal.toLocaleString() : "-"}</td>
+      <td>${overdue ? overdue.toLocaleString() : "-"}</td>
+      <td><strong>${totalDebt ? totalDebt.toLocaleString() : "-"}</strong></td>
     `;
 
     tableBody.appendChild(tr);
@@ -113,21 +123,30 @@ parseBtn.addEventListener("click", async () => {
 
 /* ===================== 엑셀 내보내기 ===================== */
 exportExcelBtn.addEventListener("click", () => {
-  if (!_rows.length) {
+   if (!_rows.length) {
     alert("먼저 PDF를 분석하세요.");
     return;
   }
 
-  const data = _rows.map(c => ({
-    채권사: c.name,
-    카테고리: c.category || "-",
-    연락처: c.phone || "-",
-    alias: c.aliases && c.aliases.length ? c.aliases.join(", ") : "-",
-    계좌번호: c.account || "-",
-    대출종류: c.loanType || "-",
-    부서명: c.department || "-",
-    담보여부: c.collateral ? "담보" : "-"
-  }));
+  const data = _rows.map(c => {
+    const principal = c.registeredAmount ?? 0;
+    const overdue = c.overdueAmount ?? 0;
+    const totalDebt = principal + overdue;
+
+    return {
+      채권사: c.name,
+      카테고리: c.category || "-",
+      연락처: c.phone || "-",
+      alias: c.aliases && c.aliases.length ? c.aliases.join(", ") : "-",
+      계좌번호: c.account || "-",
+      대출종류: c.loanType || "-",
+      부서명: c.department || "-",
+      담보여부: c.collateral ? "담보" : "-",
+      원금: principal || "-",
+      연체금액: overdue || "-",
+      총채무액: totalDebt || "-"
+    };
+  });
 
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
