@@ -21,7 +21,7 @@ function normalizeCompanyPrefix(name) {
 }
 
 /* ---------------------------
-   baseName 자동 추출 (정규식 기반)
+   baseName 자동 추출
 ---------------------------- */
 function extractBaseName(fullName) {
   if (!fullName) return "";
@@ -33,7 +33,7 @@ function extractBaseName(fullName) {
 }
 
 /* ---------------------------
-   비채권사 필터링 강화
+   비채권사 필터링
 ---------------------------- */
 function isRealCreditor(baseName) {
   const invalid = [
@@ -204,11 +204,7 @@ async function addNewCreditor(fullName) {
     name: normalizedBase,
     aliases: [fullName],
     category: extractCategory(normalizedBase),
-    phone: extractPhone(normalizedBase),
-    account: "-",
-    registeredAmount: null,
-    overdueAmount: null,
-    releaseReason: null
+    phone: extractPhone(normalizedBase)
   };
 
   await updateDoc(latestRef, {
@@ -219,7 +215,7 @@ async function addNewCreditor(fullName) {
 /* ---------------------------
    최종 매칭 엔진
 ---------------------------- */
-export async function matchCreditors(text, debtorId) {
+export async function matchCreditors(text, debtorId, debtorName, debtorRRN) {
   const latestRef = doc(db, "creditorData", "latest");
   const snap = await getDoc(latestRef);
   const creditorList = snap.data().creditors || [];
@@ -269,10 +265,7 @@ export async function matchCreditors(text, debtorId) {
         account: accountNumber,
         loanType: extractLoanType(fullName),
         department: extractDepartment(fullName),
-        collateral: extractCollateral(fullName),
-        registeredAmount: null,
-        overdueAmount: null,
-        releaseReason: null
+        collateral: extractCollateral(fullName)
       };
     }
   }
@@ -285,17 +278,21 @@ export async function matchCreditors(text, debtorId) {
       doc(db, "debtor_creditors", `${debtorId}_${creditor.name}`),
       {
         debtor_id: debtorId,
+        debtor_name: debtorName || "-",
+        debtor_rrn: debtorRRN || "-",
         creditor_name: creditor.name,
         aliases: creditor.aliases || [],
         category: creditor.category || "기타",
         phone: creditor.phone || "-",
+        creditor_address: "-",   // ★ 채권사 주소 (추후 자동추출 가능)
         account: creditor.account || "-",
         loanType: creditor.loanType || "-",
         department: creditor.department || "-",
         collateral: creditor.collateral ? true : false,
-        registeredAmount: creditor.registeredAmount ?? null,
-        overdueAmount: creditor.overdueAmount ?? null,
-        releaseReason: creditor.releaseReason ?? null,
+        registeredAmount: null,
+        overdueAmount: null,
+        debt_valid: true,        // ★ 채무유효여부
+        releaseReason: null,
         created_at: new Date()
       }
     );
