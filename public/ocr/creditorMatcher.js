@@ -52,6 +52,8 @@ function isRealCreditor(baseName) {
    카테고리 자동 분류
 ---------------------------- */
 function extractCategory(baseName) {
+  if (!baseName || typeof baseName !== "string") return "기타";
+
   if (baseName.includes("은행")) return "은행";
   if (baseName.includes("카드")) return "카드";
   if (baseName.includes("캐피탈")) return "캐피탈";
@@ -59,6 +61,7 @@ function extractCategory(baseName) {
   if (baseName.includes("대부")) return "대부업체";
   if (baseName.includes("보증보험")) return "보증보험";
   if (baseName.includes("파이낸셜")) return "파이낸셜";
+
   return "기타";
 }
 
