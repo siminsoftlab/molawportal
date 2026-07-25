@@ -51,16 +51,35 @@ async function callDocumentAI(base64) {
 function renderTable(alive) {
   tableBody.innerHTML = "";
 
-  alive.forEach(item => {
+  alive.forEach(c => {
     const tr = document.createElement("tr");
+
+    const categoryClass = {
+      "은행": "category-bank",
+      "카드": "category-card",
+      "캐피탈": "category-capital",
+      "저축은행": "category-bank",
+      "대부업체": "category-loan",
+      "보증보험": "category-bank",
+      "파이낸셜": "category-capital"
+    }[c.category] || "";
+
     tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.creditor_id || "-"}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
+      <td><strong>${c.name}</strong></td>
+      <td class="${categoryClass}">${c.category}</td>
+      <td>${c.phone || "-"}</td>
+      <td>
+        ${c.aliases && c.aliases.length
+          ? c.aliases.map(a => `<div class="alias-box">${a}</div>`).join("")
+          : "-"
+        }
+      </td>
+      <td>${c.account || "-"}</td>
+      <td>${c.loanType || "-"}</td>
+      <td>${c.department || "-"}</td>
+      <td>${c.collateral ? "담보" : "-"}</td>
     `;
+
     tableBody.appendChild(tr);
   });
 }
@@ -99,13 +118,15 @@ exportExcelBtn.addEventListener("click", () => {
     return;
   }
 
-  const data = _rows.map(item => ({
-    채권사: item.name,
-    채권사ID: item.creditor_id,
-    계좌번호: "-",
-    대출종류: "-",
-    양도양수이력: "-",
-    채무변제여부: "-"
+  const data = _rows.map(c => ({
+    채권사: c.name,
+    카테고리: c.category || "-",
+    연락처: c.phone || "-",
+    alias: c.aliases && c.aliases.length ? c.aliases.join(", ") : "-",
+    계좌번호: c.account || "-",
+    대출종류: c.loanType || "-",
+    부서명: c.department || "-",
+    담보여부: c.collateral ? "담보" : "-"
   }));
 
   const ws = XLSX.utils.json_to_sheet(data);
