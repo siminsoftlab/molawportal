@@ -1,4 +1,7 @@
-// ===================== PDF.js 설정 =====================
+// ocr.js
+import { matchCreditors } from "/ocr/creditorMatcher.js";
+
+/* ===================== PDF.js 설정 ===================== */
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
@@ -10,13 +13,13 @@ const exportExcelBtn = document.getElementById("exportExcelBtn");
 
 let _rows = [];   // alive creditors
 
-// ===================== 로그 =====================
+/* ===================== 로그 ===================== */
 function log(msg) {
   console.log(msg);
   statusEl.textContent = msg;
 }
 
-// ===================== PDF → base64 =====================
+/* ===================== PDF → base64 ===================== */
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -26,7 +29,7 @@ function fileToBase64(file) {
   });
 }
 
-// ===================== Cloud Functions(docAI2) 호출 =====================
+/* ===================== Cloud Functions(docAI2) 호출 ===================== */
 async function callDocumentAI(base64) {
   log("docAI2 호출 중...");
 
@@ -44,7 +47,7 @@ async function callDocumentAI(base64) {
   return await res.json();   // { text, entities }
 }
 
-// ===================== 테이블 렌더링 =====================
+/* ===================== 테이블 렌더링 ===================== */
 function renderTable(alive) {
   tableBody.innerHTML = "";
 
@@ -62,7 +65,7 @@ function renderTable(alive) {
   });
 }
 
-// ===================== 실행 =====================
+/* ===================== 실행 ===================== */
 parseBtn.addEventListener("click", async () => {
   const file = pdfInput.files?.[0];
   if (!file) {
@@ -76,7 +79,7 @@ parseBtn.addEventListener("click", async () => {
     const base64 = await fileToBase64(file);
     const { text } = await callDocumentAI(base64);
 
-    const debtorId = "user123"; // 로그인 사용자 ID 또는 Firestore UID
+    const debtorId = "user123"; // 로그인 사용자 UID로 변경 가능
     const aliveCreditors = await matchCreditors(text, debtorId);
 
     _rows = aliveCreditors;
@@ -89,7 +92,7 @@ parseBtn.addEventListener("click", async () => {
   }
 });
 
-// ===================== 엑셀 내보내기 =====================
+/* ===================== 엑셀 내보내기 ===================== */
 exportExcelBtn.addEventListener("click", () => {
   if (!_rows.length) {
     alert("먼저 PDF를 분석하세요.");
