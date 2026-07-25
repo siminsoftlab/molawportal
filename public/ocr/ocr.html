@@ -2,12 +2,12 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>채권사별 채권현황 정리</title>
+  <title>채권사 현황</title>
   <link rel="stylesheet" href="ocr.css" />
 </head>
 <body>
   <div class="container">
-    <h1>채권사별 채권현황 정리</h1>
+    <h1>채권사 현황</h1>
 
     <div class="upload-section">
       <label for="pdfFile">PDF 파일 업로드:</label>
@@ -17,26 +17,20 @@
 
     <div id="status" class="status">PDF 파일을 선택한 후 버튼을 눌러주세요.</div>
 
-    <div class="table-section">
-      <h2>채권사별 채권현황</h2>
-      <table id="debtTable">
-      <thead>
-        <tr>
-          <th>채권사</th>
-          <th>카테고리</th>
-          <th>채권사 전화번호</th>
-          <th>alias</th>
-          <th>계좌번호/사건번호</th>
-          <th>대출종류</th>
-          <th>부서명</th>
-          <th>담보여부</th>
-          <th>원금</th>
-          <th>연체금액</th>
-          <th>총 채무액</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-section">    
+      <h2>채권사 현황</h2>
+
+      <table id="creditorTable">
+        <thead>
+          <tr>
+            <th>채권사</th>
+            <th>카테고리</th>
+            <th>채권사 전화번호</th>
+            <th>alias</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
     <div id="flowContainer"></div>
@@ -61,6 +55,5 @@
   <script type="module" src="/firebase-init.js"></script>  
   <script type="module" src="/ocr/creditorMatcher.js"></script>
   <script type="module" src="/ocr/ocr.js"></script>
-  
 </body>
 </html>
