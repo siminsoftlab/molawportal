@@ -2,8 +2,6 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
-import { matchCreditors } from "/ocr/creditorMatcher.js";
-
 const pdfInput = document.getElementById("pdfFile");
 const parseBtn = document.getElementById("parseBtn");
 const statusEl = document.getElementById("status");
