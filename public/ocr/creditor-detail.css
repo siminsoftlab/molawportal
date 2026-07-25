@@ -1,0 +1,22 @@
+#debtDetailTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 14px;
+}
+
+#debtDetailTable th {
+  background: #2c3e50;
+  color: #fff;
+  padding: 10px;
+}
+
+#debtDetailTable td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+#debtDetailTable tr:hover {
+  background: #f5f7fa;
+}
