@@ -7,17 +7,33 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ---------------------------
+   (주), ㈜, 주식회사 제거
+---------------------------- */
+function normalizeCompanyPrefix(name) {
+  if (!name) return "";
+  return name
+    .replace(/^\(주\)/, "")
+    .replace(/^주식회사/, "")
+    .replace(/^㈜/, "")
+    .replace(/^주 /, "")
+    .replace(/^주\)/, "")
+    .trim();
+}
+
+/* ---------------------------
    baseName 자동 추출 (정규식 기반)
 ---------------------------- */
 function extractBaseName(fullName) {
   if (!fullName) return "";
+
+  fullName = normalizeCompanyPrefix(fullName);
 
   const match = fullName.match(/(.+?(은행|카드|캐피탈|저축은행|대부|파이낸셜|보증보험))/);
   return match ? match[1] : fullName;
 }
 
 /* ---------------------------
-   비채권사 필터링
+   비채권사 필터링 강화
 ---------------------------- */
 function isRealCreditor(baseName) {
   const invalid = [
@@ -28,7 +44,10 @@ function isRealCreditor(baseName) {
     "카드",
     "은행",
     "저축은행",
-    "캐피탈"
+    "캐피탈",
+    "대부업자의",
+    "대부업자",
+    "대부업체"
   ];
 
   return !invalid.includes(baseName);
@@ -136,12 +155,12 @@ function extractAccountNumber(text) {
 function matchName(text, creditor) {
   const normalizedText = text.replace(/\s+/g, "");
 
-  const baseName = creditor.name.replace(/\s+/g, "");
+  const baseName = normalizeCompanyPrefix(creditor.name).replace(/\s+/g, "");
   if (normalizedText.includes(baseName)) return true;
 
   if (creditor.aliases) {
     return creditor.aliases.some(alias => {
-      const normalizedAlias = alias.replace(/\s+/g, "");
+      const normalizedAlias = normalizeCompanyPrefix(alias).replace(/\s+/g, "");
       return normalizedText.includes(normalizedAlias);
     });
   }
@@ -158,15 +177,17 @@ async function addNewCreditor(fullName) {
   if (!snap.exists()) return;
 
   const list = snap.data().creditors || [];
+
   const baseName = extractBaseName(fullName);
+  const normalizedBase = normalizeCompanyPrefix(baseName);
 
-  if (!isRealCreditor(baseName)) return;
+  if (!isRealCreditor(normalizedBase)) return;
 
-  const exists = list.some(c => c.name === baseName);
+  const exists = list.some(c => normalizeCompanyPrefix(c.name) === normalizedBase);
 
   if (exists) {
     const updated = list.map(c => {
-      if (c.name === baseName) {
+      if (normalizeCompanyPrefix(c.name) === normalizedBase) {
         const aliases = c.aliases || [];
         if (!aliases.includes(fullName)) {
           return { ...c, aliases: [...aliases, fullName] };
@@ -180,10 +201,10 @@ async function addNewCreditor(fullName) {
   }
 
   const newCreditor = {
-    name: baseName,
+    name: normalizedBase,
     aliases: [fullName],
-    category: extractCategory(baseName),
-    phone: extractPhone(baseName),
+    category: extractCategory(normalizedBase),
+    phone: extractPhone(normalizedBase),
     account: "-",
     registeredAmount: null,
     overdueAmount: null,
@@ -211,12 +232,13 @@ export async function matchCreditors(text, debtorId) {
   // 기존 채권사 매칭
   for (const c of creditorList) {
     if (matchName(normalizedText, c)) {
-      const baseName = c.name;
+      const baseName = normalizeCompanyPrefix(c.name);
 
       if (!isRealCreditor(baseName)) continue;
 
       foundMap[baseName] = {
         ...c,
+        name: baseName,
         loanType: extractLoanType(c.name),
         department: extractDepartment(c.name),
         collateral: extractCollateral(c.name),
@@ -232,17 +254,18 @@ export async function matchCreditors(text, debtorId) {
     if (!/(은행|카드|캐피탈|저축은행|대부|파이낸셜|보증보험)/.test(fullName)) continue;
 
     const baseName = extractBaseName(fullName);
+    const normalizedBase = normalizeCompanyPrefix(baseName);
 
-    if (!isRealCreditor(baseName)) continue;
+    if (!isRealCreditor(normalizedBase)) continue;
 
-    if (!foundMap[baseName]) {
+    if (!foundMap[normalizedBase]) {
       await addNewCreditor(fullName);
 
-      foundMap[baseName] = {
-        name: baseName,
+      foundMap[normalizedBase] = {
+        name: normalizedBase,
         aliases: [fullName],
-        category: extractCategory(baseName),
-        phone: extractPhone(baseName),
+        category: extractCategory(normalizedBase),
+        phone: extractPhone(normalizedBase),
         account: accountNumber,
         loanType: extractLoanType(fullName),
         department: extractDepartment(fullName),
