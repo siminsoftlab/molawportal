@@ -7,7 +7,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ---------------------------
-   1) baseName 자동 추출
+   baseName 자동 추출
 ---------------------------- */
 function extractBaseName(fullName) {
   const keywords = [
@@ -31,7 +31,25 @@ function extractBaseName(fullName) {
 }
 
 /* ---------------------------
-   2) 카테고리 자동 분류
+   비채권사 필터링
+---------------------------- */
+function isRealCreditor(baseName) {
+  const invalid = [
+    "대부",
+    "대부대출",
+    "대부대출(통합)",
+    "신용카드",
+    "카드",
+    "은행",
+    "저축은행",
+    "캐피탈"
+  ];
+
+  return !invalid.includes(baseName);
+}
+
+/* ---------------------------
+   카테고리 자동 분류
 ---------------------------- */
 function extractCategory(baseName) {
   if (baseName.includes("은행")) return "은행";
@@ -45,7 +63,7 @@ function extractCategory(baseName) {
 }
 
 /* ---------------------------
-   3) 연락처 자동 매칭
+   연락처 자동 매칭
 ---------------------------- */
 function extractPhone(baseName) {
   const phoneMap = {
@@ -69,7 +87,7 @@ function extractPhone(baseName) {
 }
 
 /* ---------------------------
-   4) 대출종류 자동 분류
+   대출종류 자동 분류
 ---------------------------- */
 function extractLoanType(fullName) {
   if (fullName.includes("주택담보")) return "주택담보";
@@ -82,7 +100,7 @@ function extractLoanType(fullName) {
 }
 
 /* ---------------------------
-   5) 부서명 자동 분리
+   부서명 자동 분리
 ---------------------------- */
 function extractDepartment(fullName) {
   const deptKeywords = [
@@ -102,14 +120,14 @@ function extractDepartment(fullName) {
 }
 
 /* ---------------------------
-   6) 담보 여부 자동 분류
+   담보 여부 자동 분류
 ---------------------------- */
 function extractCollateral(fullName) {
   return fullName.includes("담보");
 }
 
 /* ---------------------------
-   7) 계좌번호 자동 추출
+   계좌번호 자동 추출
 ---------------------------- */
 function extractAccountNumber(text) {
   const accountRegex = /\b\d{10,}\b/g;
@@ -118,7 +136,7 @@ function extractAccountNumber(text) {
 }
 
 /* ---------------------------
-   8) 이름 매칭
+   이름 매칭
 ---------------------------- */
 function matchName(text, creditor) {
   const normalizedText = text.replace(/\s+/g, "");
@@ -137,7 +155,7 @@ function matchName(text, creditor) {
 }
 
 /* ---------------------------
-   9) 새로운 채권사 자동 추가
+   새로운 채권사 자동 추가
 ---------------------------- */
 async function addNewCreditor(fullName) {
   const latestRef = doc(db, "creditorData", "latest");
@@ -146,6 +164,8 @@ async function addNewCreditor(fullName) {
 
   const list = snap.data().creditors || [];
   const baseName = extractBaseName(fullName);
+
+  if (!isRealCreditor(baseName)) return;
 
   const exists = list.some(c => c.name === baseName);
 
@@ -181,7 +201,7 @@ async function addNewCreditor(fullName) {
 }
 
 /* ---------------------------
-   10) 최종 매칭 엔진
+   최종 매칭 엔진
 ---------------------------- */
 export async function matchCreditors(text, debtorId) {
   const latestRef = doc(db, "creditorData", "latest");
@@ -197,6 +217,8 @@ export async function matchCreditors(text, debtorId) {
   for (const c of creditorList) {
     if (matchName(normalizedText, c)) {
       const baseName = c.name;
+
+      if (!isRealCreditor(baseName)) continue;
 
       foundMap[baseName] = {
         ...c,
@@ -215,6 +237,8 @@ export async function matchCreditors(text, debtorId) {
     if (!/(은행|카드|캐피탈|저축은행|대부|파이낸셜|보증보험)/.test(fullName)) continue;
 
     const baseName = extractBaseName(fullName);
+
+    if (!isRealCreditor(baseName)) continue;
 
     if (!foundMap[baseName]) {
       await addNewCreditor(fullName);
