@@ -7,27 +7,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 /* ---------------------------
-   baseName 자동 추출
+   baseName 자동 추출 (정규식 기반)
 ---------------------------- */
 function extractBaseName(fullName) {
-  const keywords = [
-    "은행",
-    "카드",
-    "캐피탈",
-    "저축은행",
-    "대부",
-    "파이낸셜",
-    "보증보험"
-  ];
+  if (!fullName) return "";
 
-  for (const keyword of keywords) {
-    const idx = fullName.indexOf(keyword);
-    if (idx !== -1) {
-      return fullName.substring(0, idx + keyword.length);
-    }
-  }
-
-  return fullName;
+  const match = fullName.match(/(.+?(은행|카드|캐피탈|저축은행|대부|파이낸셜|보증보험))/);
+  return match ? match[1] : fullName;
 }
 
 /* ---------------------------
@@ -93,12 +79,15 @@ function extractPhone(baseName) {
    대출종류 자동 분류
 ---------------------------- */
 function extractLoanType(fullName) {
+  if (!fullName) return "-";
+
   if (fullName.includes("주택담보")) return "주택담보";
   if (fullName.includes("신용대출")) return "신용대출";
   if (fullName.includes("연체")) return "연체";
   if (fullName.includes("담보")) return "담보";
   if (fullName.includes("통합")) return "통합";
   if (fullName.includes("여신")) return "여신관리";
+
   return "-";
 }
 
@@ -106,6 +95,8 @@ function extractLoanType(fullName) {
    부서명 자동 분리
 ---------------------------- */
 function extractDepartment(fullName) {
+  if (!fullName) return "-";
+
   const deptKeywords = [
     "여신관리부",
     "마케팅부",
@@ -126,6 +117,7 @@ function extractDepartment(fullName) {
    담보 여부 자동 분류
 ---------------------------- */
 function extractCollateral(fullName) {
+  if (!fullName) return false;
   return fullName.includes("담보");
 }
 
@@ -272,15 +264,15 @@ export async function matchCreditors(text, debtorId) {
         debtor_id: debtorId,
         creditor_name: creditor.name,
         aliases: creditor.aliases || [],
-        category: creditor.category,
-        phone: creditor.phone,
-        account: creditor.account,
-        loanType: creditor.loanType,
-        department: creditor.department,
-        collateral: creditor.collateral,
-        registeredAmount: creditor.registeredAmount || null,
-        overdueAmount: creditor.overdueAmount || null,
-        releaseReason: creditor.releaseReason || null,
+        category: creditor.category || "기타",
+        phone: creditor.phone || "-",
+        account: creditor.account || "-",
+        loanType: creditor.loanType || "-",
+        department: creditor.department || "-",
+        collateral: creditor.collateral ? true : false,
+        registeredAmount: creditor.registeredAmount ?? null,
+        overdueAmount: creditor.overdueAmount ?? null,
+        releaseReason: creditor.releaseReason ?? null,
         created_at: new Date()
       }
     );
