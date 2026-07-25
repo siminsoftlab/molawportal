@@ -1,9 +1,15 @@
 // creditorMatcher.js
-import { getFirestore, collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { db } from "/firebase-init.js";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-const db = getFirestore();
-
-// 텍스트에서 채권사 이름 추출
+/**
+ * 텍스트에서 채권사 이름 자동 추출
+ */
 function extractCreditorsFromText(text, creditorList) {
   const found = [];
 
@@ -16,12 +22,16 @@ function extractCreditorsFromText(text, creditorList) {
   return found;
 }
 
-// alive 판정
+/**
+ * is_active = true인 채권사만 alive
+ */
 function filterAliveCreditors(creditors) {
-  return creditors.filter(c => c.is_active === true);
+  return creditors.filter(c => c.is_active === true);a
 }
 
-// 채무자 DB에 저장
+/**
+ * 채무자 DB에 저장
+ */
 async function saveDebtorCreditors(debtorId, aliveCreditors) {
   for (const creditor of aliveCreditors) {
     await setDoc(
@@ -37,7 +47,9 @@ async function saveDebtorCreditors(debtorId, aliveCreditors) {
   }
 }
 
-// 전체 자동화 실행
+/**
+ * 전체 자동 매칭 실행
+ */
 export async function matchCreditors(text, debtorId) {
   // 1) creditor_companies 전체 불러오기
   const snapshot = await getDocs(collection(db, "creditor_companies"));
