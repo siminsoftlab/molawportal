@@ -344,7 +344,7 @@ a {
 }
 
 .slide-inner {
-  background: linear-gradient(135deg, #4aa8ff, #6bc3ff);
+  /*background: linear-gradient(135deg, #4aa8ff, #6bc3ff);*/
   padding: 40px;
   border-radius: 20px;
   color: #fff;
