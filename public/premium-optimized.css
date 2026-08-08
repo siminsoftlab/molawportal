@@ -86,6 +86,28 @@ a {
   cursor: pointer;
 }
 
+/* ============================
+   슬라이드별 배경색 개별 적용
+============================ */
+
+/* 첫 번째 슬라이드 - 블루 */
+.slide-bg-blue {
+  background: linear-gradient(135deg, #4a6fff, #6fa3ff);
+  color: #fff;
+}
+
+/* 두 번째 슬라이드 - 그린 */
+.slide-bg-green {
+  background: linear-gradient(135deg, #2ecc71, #6fdc9b);
+  color: #fff;
+}
+
+/* 세 번째 슬라이드 - 퍼플 */
+.slide-bg-purple {
+  background: linear-gradient(135deg, #8e44ad, #c27bdb);
+  color: #fff;
+}
+
 /* =========================================================
    GLOBAL MENU (전체메뉴)
 ========================================================= */
